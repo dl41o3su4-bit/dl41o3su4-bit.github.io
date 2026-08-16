@@ -1,0 +1,33 @@
+name: Play fix5
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/play-fix5.yml"
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch platform draw
+        run: |
+          python3 << 'PY'
+          from pathlib import Path
+          p = Path("assets/index-cB77LQkQ.js")
+          js = p.read_text()
+          old = "drawPlatform(e){let t=this.ctx,n=e.sprite===`wood`,r=e.h>40?36:Math.max(e.h,16);t.fillStyle=n?`#4e3428`:`#4a433c`;t.fillRect(e.x,e.y,e.w,r);t.fillStyle=n?`#8a6248`:`#7d7266`;t.fillRect(e.x,e.y,e.w,6);t.fillStyle=n?`#c4a07a`:`#b2a490`;t.fillRect(e.x,e.y,e.w,2);t.fillStyle=`rgba(0,0,0,0.28)`;t.fillRect(e.x,e.y+6,e.w,2);if(e.h>40){t.fillStyle=n?`rgba(42,26,20,0.72)`:`rgba(28,24,22,0.62)`;t.fillRect(e.x,e.y+36,e.w,Math.min(22,e.h-36))}}"
+          new = "drawPlatform(e){let t=this.ctx,n=e.sprite===`wood`,H=e.h>40?54:22;t.save();t.beginPath();t.rect(e.x,e.y,e.w,H);t.clip();if(n){t.fillStyle=`#4a2c18`;t.fillRect(e.x,e.y,e.w,H);for(let y=0;y<H;y+=10){t.fillStyle=y%20?`#6e4428`:`#5a361c`;t.fillRect(e.x,e.y+y,e.w,8);t.fillStyle=`rgba(0,0,0,0.32)`;t.fillRect(e.x,e.y+y+8,e.w,2);t.fillStyle=`rgba(210,160,110,0.16)`;t.fillRect(e.x,e.y+y+1,e.w,2)}}else{t.fillStyle=`#3a2e28`;t.fillRect(e.x,e.y,e.w,H);let row=0,bh=13,bw=30;for(let y=e.y+10;y<e.y+H;y+=bh,row++){let x0=e.x-(row%2?15:0);for(let x=x0;x<e.x+e.w;x+=bw){let k=((x*3+y)|0)%4;t.fillStyle=k==0?`#c4966c`:k==1?`#a87d58`:k==2?`#b88962`:`#9a7354`;t.fillRect(x+1,y+1,bw-2,bh-2);t.fillStyle=`rgba(255,228,190,0.18)`;t.fillRect(x+1,y+1,bw-2,2)}}for(let x=e.x;x<e.x+e.w;x+=38){t.fillStyle=((x/38)|0)%2?`#d4b898`:`#c2a480`;t.fillRect(x,e.y,36,9)}t.fillStyle=`rgba(0,0,0,0.28)`;t.fillRect(e.x,e.y+9,e.w,2)}t.restore();t.fillStyle=n?`rgba(210,168,120,0.3)`:`rgba(232,214,186,0.32)`;t.fillRect(e.x,e.y,e.w,3);t.fillStyle=`rgba(0,0,0,0.42)`;t.fillRect(e.x,e.y+H-4,e.w,4);t.fillStyle=`rgba(0,0,0,0.22)`;t.fillRect(e.x,e.y,3,H);t.fillRect(e.x+e.w-3,e.y,3,H);if(e.h>40){t.fillStyle=`rgba(20,14,10,0.45)`;t.fillRect(e.x,e.y+H,e.w,6)}}"
+          assert old in js, "drawPlatform missing"
+          js = js.replace(old, new, 1)
+          p.write_text(js)
+          print("patched", len(new))
+          PY
+      - name: Commit
+        run: |
+          git config user.name build
+          git config user.email build@local
+          git add assets/index-cB77LQkQ.js
+          git diff --cached --quiet || git commit -m "Restore brick stone wood platform texture and thickness"
+          git push
