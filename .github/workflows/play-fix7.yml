@@ -1,0 +1,21 @@
+name: Play fix7
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/play-fix7.yml"
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/patch-vis.py
+      - name: Commit
+        run: |
+          git config user.name build
+          git config user.email build@local
+          git add assets/index-cB77LQkQ.js
+          git diff --cached --quiet || git commit -m "Stable floors and painted temple censer"
+          git push
