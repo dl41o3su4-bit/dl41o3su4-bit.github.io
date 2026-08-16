@@ -1,0 +1,57 @@
+name: Play fix
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/play-fix.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch game JS
+        run: |
+          python3 << 'PY'
+          from pathlib import Path
+          p = Path('assets/index-cB77LQkQ.js')
+          js = p.read_text()
+          old_ln = "function Ln(){return{id:0,route:`fu`,name:`迎春門`,subtitle:`大東門 · 遺址`,width:3480,height:720,spawn:{x:72,y:500},midKey:`east`,tint:`rgba(180,90,40,0.10)`,platforms:[k(0,600,560,120),k(700,600,300,120),A(1060,520,170,22),A(1300,450,160,22),j(1560,400,150,22,130,0,3.2),k(1920,520,260,28),k(2260,600,340,120),A(2660,510,150,22),k(2880,460,600,260)],coins:[M(240,540),M(320,540),M(400,540),M(780,540),M(860,540),M(1100,470),M(1340,400),M(1630,340),M(2e3,460),M(2080,460),M(2360,540),M(2700,460),M(3040,400),M(3140,400)],flames:[N(980,554),N(1840,474),N(2588,554)],checkpoints:[Fn(2040,464)],flag:In(3320,382)}}"
+          new_ln = "function Ln(){return{id:0,route:`fu`,name:`迎春門`,subtitle:`大東門 · 遺址`,width:3600,height:720,spawn:{x:80,y:554},midKey:`east`,tint:`rgba(180,90,40,0.10)`,platforms:[k(0,600,1820,120),k(1980,600,380,120),A(2420,510,180,22),j(2660,430,170,22,90,0,3.4),k(2980,500,240,28),A(3280,430,160,22),k(3480,460,120,260)],coins:[M(240,558),M(330,558),M(420,558),M(620,558),M(820,558),M(1100,558),M(1280,558),M(1680,558),M(2080,558),M(2180,558),M(2460,460),M(2720,370),M(3060,440),M(3320,380),M(3510,400)],flames:[N(2140,554),N(3120,454)],checkpoints:[Fn(1480,544)],flag:In(3520,382)}}"
+          old_wn = "function Wn(){return{id:0,route:`xian`,name:`三川殿`,subtitle:`山門夜色`,width:3480,height:720,spawn:{x:72,y:500},midKey:`hall`,tint:`rgba(20,10,30,0.14)`,platforms:[k(0,600,560,120),k(700,600,300,120),A(1060,520,170,22),A(1300,450,160,22),j(1560,400,150,22,130,0,3.2),k(1920,520,260,28),k(2260,600,340,120),A(2660,510,150,22),k(2880,460,600,260)],coins:[M(240,540),M(320,540),M(400,540),M(780,540),M(860,540),M(1100,470),M(1340,400),M(1630,340),M(2e3,460),M(2080,460),M(2360,540),M(2700,460),M(3040,400),M(3140,400)],flames:[N(980,554),N(1840,474),N(2588,554)],checkpoints:[Fn(2040,464)],flag:In(3320,382)}}"
+          new_wn = "function Wn(){return{id:0,route:`xian`,name:`三川殿`,subtitle:`山門夜色`,width:3600,height:720,spawn:{x:80,y:554},midKey:`hall`,tint:`rgba(20,10,30,0.14)`,platforms:[k(0,600,1760,120),k(1920,600,400,120),A(2380,510,180,22),j(2620,420,170,22,80,0,3.5),k(2940,500,240,28),A(3240,430,160,22),k(3460,460,140,260)],coins:[M(250,558),M(340,558),M(430,558),M(700,558),M(980,558),M(1200,558),M(1600,558),M(2040,558),M(2140,558),M(2420,460),M(2680,360),M(3020,440),M(3280,380),M(3500,400)],flames:[N(2080,554),N(3080,454)],checkpoints:[Fn(1360,544)],flag:In(3500,382)}}"
+          assert old_ln in js, 'Ln missing'
+          assert old_wn in js, 'Wn missing'
+          js = js.replace(old_ln, new_ln, 1).replace(old_wn, new_wn, 1)
+          js = js.replace('n.y>this.level.height+80&&this.die()', 'n.y>this.level.height+40&&n.invuln<=0&&this.die()')
+          js = js.replace('t={x:e.x+4,y:e.y+6,w:18,h:38}', 't={x:e.x+2,y:e.y-8,w:22,h:62}')
+          js = js.replace('this.spawn={x:e.x+8,y:e.y-8}', 'this.spawn=(function(g,c){let X=c.x+22,Y=null;for(let p of g.level.platforms)if(X>=p.x&&X<=p.x+p.w&&(Y==null||p.y<Y))Y=p.y;return{x:c.x+10,y:Y!=null?Y-46:c.y-8}})(this,e)')
+          old_re = 'respawn(){let e=this.player;e.x=this.spawn.x,e.y=this.spawn.y,e.vx=0,e.vy=0,e.invuln=.8,e.grounded=!1,e.jumps=2,e.airTime=0,e.djumpFlash=0,e.landTime=0,this.screen=`play`,this.sync()}'
+          new_re = 'respawn(){let e=this.player;e.x=this.spawn.x,e.y=this.spawn.y,e.vx=0,e.vy=0,e.invuln=1.1;let X=e.x+13,Y=null;for(let p of this.level.platforms)if(X>=p.x&&X<=p.x+p.w&&(Y==null||p.y<Y))Y=p.y;if(Y!=null){e.y=Y-46;e.grounded=!0}else e.grounded=!1;e.jumps=2,e.airTime=0,e.djumpFlash=0,e.landTime=0,this.screen=`play`,this.sync()}'
+          assert old_re in js, 'respawn missing'
+          js = js.replace(old_re, new_re, 1)
+          old_load = 'this.spawn={...this.level.spawn},this.player={x:this.spawn.x,y:this.spawn.y,vx:0,vy:0,facing:1,grounded:!1,jumps:2,coyote:0,buffer:0,anim:0,invuln:0,riding:null,cut:!1,airTime:0,djumpFlash:0,landTime:0},this.coins=0'
+          new_load = 'this.spawn={...this.level.spawn},this.player={x:this.spawn.x,y:this.spawn.y,vx:0,vy:0,facing:1,grounded:!1,jumps:2,coyote:0,buffer:0,anim:0,invuln:0,riding:null,cut:!1,airTime:0,djumpFlash:0,landTime:0};{let X=this.player.x+13,Y=null;for(let p of this.level.platforms)if(X>=p.x&&X<=p.x+p.w&&(Y==null||p.y<Y))Y=p.y;if(Y!=null){this.player.y=Y-46;this.player.grounded=!0;this.spawn.y=this.player.y}},this.coins=0'
+          assert old_load in js, 'loadLevel missing'
+          js = js.replace(old_load, new_load, 1)
+          old_dp = 'drawPlatform(e){let t=this.ctx,n=e.sprite===`wood`?this.assets.wood:this.assets.stone;n?e.h>40?(t.drawImage(n,e.x,e.y-2,e.w,32),t.fillStyle=e.sprite===`wood`?`rgba(62,36,28,0.85)`:`rgba(58,48,40,0.82)`,t.fillRect(e.x,e.y+26,e.w,18),t.fillStyle=`rgba(0,0,0,0.22)`,t.fillRect(e.x,e.y+26,e.w,4)):t.drawImage(n,e.x,e.y-2,e.w,e.h+8):(t.fillStyle=e.sprite===`wood`?`#5a2e22`:`#6b5344`,t.fillRect(e.x,e.y,e.w,e.h),t.fillStyle=e.sprite===`wood`?`#8a4634`:`#8a7360`,t.fillRect(e.x,e.y,e.w,5))}'
+          new_dp = 'drawPlatform(e){let t=this.ctx,n=e.sprite===`wood`,r=e.h>40?36:Math.max(e.h,16);t.fillStyle=n?`#4e3428`:`#4a433c`;t.fillRect(e.x,e.y,e.w,r);t.fillStyle=n?`#8a6248`:`#7d7266`;t.fillRect(e.x,e.y,e.w,6);t.fillStyle=n?`#c4a07a`:`#b2a490`;t.fillRect(e.x,e.y,e.w,2);t.fillStyle=`rgba(0,0,0,0.28)`;t.fillRect(e.x,e.y+6,e.w,2);if(e.h>40){t.fillStyle=n?`rgba(42,26,20,0.72)`:`rgba(28,24,22,0.62)`;t.fillRect(e.x,e.y+36,e.w,Math.min(22,e.h-36))}}'
+          assert old_dp in js, 'drawPlatform missing'
+          js = js.replace(old_dp, new_dp, 1)
+          js = js.replace('e.restore(),e.restore()}blitParallax', 'e.restore()}blitParallax', 1)
+          js = js.replace('k(0,620,420,140)', 'k(0,620,780,140)', 1)
+          js = js.replace('k(0,640,300,160)', 'k(0,640,620,160)', 1)
+          js = js.replace('k(0,620,280,220)', 'k(0,620,560,220)', 1)
+          js = js.replace('k(0,640,360,140)', 'k(0,640,720,140)', 1)
+          js = js.replace('k(0,620,300,200)', 'k(0,620,580,200)', 1)
+          p.write_text(js)
+          print('patched', p.stat().st_size)
+          PY
+      - name: Commit
+        run: |
+          git config user.name build
+          git config user.email build@local
+          git add assets/index-cB77LQkQ.js
+          git diff --cached --quiet || git commit -m 'Fix 迎春門/三川殿 pits, checkpoint respawn, hide debug-like platform frames'
+          git push
