@@ -13,11 +13,17 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install deps
+        run: pip install pillow numpy
       - name: Restore and normalize run frame heights
         run: |
           set -e
-          # restore broken placeholder
-          git checkout 2b18302 -- assets/sprites/zf-run-1.png
+          git checkout 2b18302 -- assets/sprites/zf-run-1.png || git checkout 2b183029e0a0e318f0bc9531e36dc5af217e35d4 -- assets/sprites/zf-run-1.png
           rm -f assets/sprites/_binary-test.png assets/sprites/_binary-test2.png
           python3 << 'PY'
           from PIL import Image
@@ -57,7 +63,7 @@ jobs:
               a = np.array(im)
               x0,y0,x1,y1 = content(a)
               crop = a[y0:y1+1, x0:x1+1]
-              scale = target_h / crop.shape[0]
+              scale = target_h / float(crop.shape[0])
               new_w = max(1, int(round(crop.shape[1] * scale)))
               new_h = max(1, int(round(crop.shape[0] * scale)))
               scaled = np.array(Image.fromarray(crop, 'RGBA').resize((new_w, new_h), Image.Resampling.LANCZOS))
@@ -75,7 +81,9 @@ jobs:
               sx0, sy0 = cx0-x0p, cy0-y0p
               canvas[cy0:cy1, cx0:cx1] = scaled[sy0:sy0+(cy1-cy0), sx0:sx0+(cx1-cx0)]
               Image.fromarray(canvas, 'RGBA').save(path)
-              print(path, 'h=', TARGET_H)
+              va = np.array(Image.open(path))
+              vys, vxs = np.where(va[:,:,3] > 18)
+              print(path.name, 'h=', int(vys.max()-vys.min()+1), 'head=', int(vys.min()), 'feet=', int(vys.max()))
 
           for i in range(1,7):
               normalize(SRC / f'zf-run-{i}.png')
