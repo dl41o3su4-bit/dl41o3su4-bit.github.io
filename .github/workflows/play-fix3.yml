@@ -1,0 +1,32 @@
+name: Play fix3
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/play-fix3.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch checkpoint draw
+        run: |
+          python3 << 'PY'
+          from pathlib import Path
+          p = Path('assets/index-cB77LQkQ.js')
+          js = p.read_text()
+          old = "drawCheckpoint(e){let t=this.ctx;t.globalAlpha=e.active?1:.75,this.assets.checkpoint?t.drawImage(this.assets.checkpoint,e.x-6,e.y-4,e.w+16,e.h+10):(t.fillStyle=e.active?`#e6c07a`:`#7a6a58`,t.fillRect(e.x,e.y+20,e.w,e.h-20)),t.globalAlpha=1}"
+          new = "drawCheckpoint(e){let t=this.ctx,n=!!e.active;t.fillStyle=n?`#8a6a3c`:`#4a4038`;t.fillRect(e.x+4,e.y+42,e.w-8,12);t.fillStyle=n?`#c4a36a`:`#6e6256`;t.fillRect(e.x+10,e.y+28,e.w-20,16);t.fillStyle=n?`#e6c07a`:`#8a7a68`;t.fillRect(e.x+16,e.y+8,3,24);t.fillRect(e.x+22,e.y+4,3,28);t.fillRect(e.x+28,e.y+10,3,22);if(n){t.fillStyle=`rgba(230,192,122,0.35)`;t.beginPath();t.arc(e.x+e.w/2,e.y+6,9+Math.sin(this.time*3)*2,0,Math.PI*2);t.fill()}}"
+          assert old in js
+          p.write_text(js.replace(old,new,1))
+          print('ok')
+          PY
+      - name: Commit
+        run: |
+          git config user.name build
+          git config user.email build@local
+          git add assets/index-cB77LQkQ.js
+          git diff --cached --quiet || git commit -m 'Remove red photo box on incense checkpoint'
+          git push
