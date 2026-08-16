@@ -1,0 +1,48 @@
+name: Play fix4
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/play-fix4.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch
+        run: |
+          python3 << 'PY'
+          from pathlib import Path
+          p = Path('assets/index-cB77LQkQ.js')
+          js = p.read_text()
+          old_die = "die(){let e=this.player;this.deaths+=1,this.shake=.28,this.audio.die(),this.burst(e.x+sr/2,e.y+cr/2,16,`#5ec4d4`),this.screen=`dead`,this.sync()}"
+          new_die = "die(){let e=this.player;this.deaths+=1,this.shake=.28,this.audio.die(),this.burst(e.x+sr/2,e.y+cr/2,16,`#5ec4d4`);this.input.keys.clear();this.input.touchLeft=this.input.touchRight=this.input.touchJump=!1;this.input.pointers&&this.input.pointers.clear();this.input.override=null;this.input.prevJump=this.input.prevConfirm=this.input.prevRestart=!0;e.vx=0;e.vy=0;this.screen=`dead`,this.sync()}"
+          assert old_die in js, 'die missing'
+          js = js.replace(old_die, new_die, 1)
+          old_re = "respawn(){let e=this.player;e.x=this.spawn.x,e.y=this.spawn.y,e.vx=0,e.vy=0,e.invuln=1.1;let X=e.x+13,Y=null;for(let p of this.level.platforms)if(X>=p.x&&X<=p.x+p.w&&(Y==null||p.y<Y))Y=p.y;if(Y!=null){e.y=Y-46;e.grounded=!0}else e.grounded=!1;e.jumps=2,e.airTime=0,e.djumpFlash=0,e.landTime=0,this.screen=`play`,this.sync()}"
+          new_re = "respawn(){this.input.keys.clear();this.input.touchLeft=this.input.touchRight=this.input.touchJump=!1;this.input.pointers&&this.input.pointers.clear();this.input.override=null;this.input.prevJump=this.input.prevConfirm=this.input.prevRestart=!0;let e=this.player;e.x=this.spawn.x,e.y=this.spawn.y,e.vx=0,e.vy=0,e.invuln=1.5;let X=e.x+13,Y=null;for(let p of this.level.platforms)if(X>=p.x&&X<=p.x+p.w&&(Y==null||p.y<Y))Y=p.y;if(Y!=null){e.y=Y-46;e.grounded=!0}else e.grounded=!1;e.jumps=2,e.airTime=0,e.djumpFlash=0,e.landTime=0,this.screen=`play`,this.sync()}"
+          assert old_re in js, 'respawn missing'
+          js = js.replace(old_re, new_re, 1)
+          assert 'k(0,600,1820,120)' in js
+          js = js.replace('k(0,600,1820,120)', 'k(0,600,2280,120)', 1)
+          js = js.replace('k(0,600,1760,120)', 'k(0,600,2200,120)', 1)
+          # ignore leftover move for first 0.5s of invuln
+          old_mv = 'if(t.moveX!==0){n.vx+=t.moveX*'
+          new_mv = 'if(n.invuln>1){t.moveX=0;n.vx=0;}if(t.moveX!==0){n.vx+=t.moveX*'
+          if old_mv in js:
+              js = js.replace(old_mv, new_mv, 1)
+              print('move lock ok')
+          else:
+              print('move lock skip', js.find('t.moveX'))
+          p.write_text(js)
+          print('patched')
+          PY
+      - name: Commit
+        run: |
+          git config user.name build
+          git config user.email build@local
+          git add assets/index-cB77LQkQ.js
+          git diff --cached --quiet || git commit -m 'Stop stuck run after checkpoint revive'
+          git push
