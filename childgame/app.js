@@ -129,7 +129,7 @@
     { id: "dress", name: "今天穿什麼", hint: "看天氣穿衣服", emoji: "👕", cls: "l1" },
     { id: "table", name: "擺餐桌", hint: "餐具放到桌上", emoji: "🍚", cls: "l2" },
     { id: "habitat", name: "誰住哪裡", hint: "魚鳥兔住哪裡", emoji: "🐟", cls: "l3" },
-    { id: "light", name: "紅燈停", hint: "紅燈停綠燈行", emoji: "🚦", cls: "l4" },
+    { id: "light", name: "紅燈停", hint: "紅燈停黃燈等", emoji: "🚦", cls: "l4" },
     { id: "sort", name: "分一分", hint: "吃的玩的分開", emoji: "🧺", cls: "l5" },
     { id: "order", name: "先做哪件", hint: "先做哪一件", emoji: "1️⃣", cls: "l6" },
     { id: "body", name: "身體在哪", hint: "頭手腳肚子", emoji: "🧒", cls: "l7" },
@@ -1239,13 +1239,15 @@
   }
 
   function makeLightQuestions() {
-    var colors = shuffle(["red", "red", "red", "red", "green", "green", "green", "green"]);
+    var colors = shuffle(["red", "red", "red", "green", "green", "green", "yellow", "yellow"]);
     return colors.map(function (color) {
-      var red = color === "red";
+      var ask =
+        color === "red" ? "紅燈，停還是走？" : color === "green" ? "綠燈，拖過去" : "黃燈，等一等";
       return {
         color: color,
-        answer: red ? "stop" : "go",
-        ask: red ? "紅燈，停還是走？" : "綠燈，停還是走？",
+        answer: color === "red" ? "stop" : color === "green" ? "go" : "wait",
+        ask: ask,
+        items: [lifeItem("kid", "🧒", "小朋友", "far")],
       };
     });
   }
@@ -1427,7 +1429,7 @@
   }
 
   function isDragPlaceLevel() {
-    return isPlaceLevel() || state.levelId === "bond";
+    return isPlaceLevel() || state.levelId === "bond" || state.levelId === "light";
   }
 
   function resetMoreTaps() {
@@ -1670,7 +1672,7 @@
       return '<span class="preview-art preview-match" aria-hidden="true"><span>🐟</span><b>🌊</b></span>';
     }
     if (id === "light") {
-      return '<span class="preview-art preview-match" aria-hidden="true"><span>🔴</span><b>停</b></span>';
+      return '<span class="preview-art preview-match" aria-hidden="true"><span>🔴</span><span>🧒</span><b>停</b></span>';
     }
     if (id === "sort") {
       return '<span class="preview-art preview-match" aria-hidden="true"><span>🍎</span><b>吃</b><span>🧸</span></span>';
@@ -2434,31 +2436,47 @@
   }
 
   function renderLight(q) {
-    var red = q.color === "red";
+    var color = q.color;
     var stopMark = state.choiceMark && state.choiceMark.value === "stop" ? " " + state.choiceMark.cls : "";
+    var waitMark = state.choiceMark && state.choiceMark.value === "wait" ? " " + state.choiceMark.cls : "";
     var goMark = state.choiceMark && state.choiceMark.value === "go" ? " " + state.choiceMark.cls : "";
+    var word = color === "red" ? "紅燈" : color === "green" ? "綠燈" : "黃燈";
+    var carCls = color === "red" ? " drive" : color === "yellow" ? " slow" : " wait";
     return (
       '<div class="play-col">' +
       '<div class="prompt">' +
       escapeHtml(q.ask) +
       "</div>" +
-      '<div class="life-stage light-play">' +
-      '<div class="light-card">' +
+      '<div class="life-stage light-play is-place">' +
+      '<div class="street-scene light-card">' +
       '<div class="light-pole" aria-hidden="true">' +
       '<div class="light-lamp red' +
-      (red ? " on" : "") +
+      (color === "red" ? " on" : "") +
       '"></div>' +
-      '<div class="light-lamp amber"></div>' +
+      '<div class="light-lamp amber' +
+      (color === "yellow" ? " on" : "") +
+      '"></div>' +
       '<div class="light-lamp green' +
-      (red ? "" : " on") +
+      (color === "green" ? " on" : "") +
       '"></div></div>' +
+      '<div class="street-road">' +
+      '<div class="street-car' +
+      carCls +
+      '" aria-hidden="true">🚗</div>' +
+      '<div class="street-cross" data-life-slot="cross" aria-label="斑馬線"></div>' +
+      '<div class="street-kid" data-life-item="kid" role="img" aria-label="小朋友">🧒</div>' +
+      '<div class="street-far" data-life-slot="far" aria-label="對面"></div>' +
+      "</div>" +
       '<div class="light-word">' +
-      (red ? "紅燈" : "綠燈") +
+      word +
       "</div></div>" +
       '<div class="light-choices">' +
       '<button class="light-btn stop-btn' +
       stopMark +
       '" type="button" data-action="answer" data-value="stop"><span class="light-btn-ico">🛑</span>停</button>' +
+      '<button class="light-btn wait-btn' +
+      waitMark +
+      '" type="button" data-action="answer" data-value="wait"><span class="light-btn-ico">⏳</span>等一等</button>' +
       '<button class="light-btn go-btn' +
       goMark +
       '" type="button" data-action="answer" data-value="go"><span class="light-btn-ico">🚶</span>走</button>' +
@@ -2676,6 +2694,12 @@
 
   function tryPlace(itemId, slotId) {
     if (state.locked || !isDragPlaceLevel()) return;
+    if (state.levelId === "light") {
+      hidePlaceGhost();
+      clearItemDragClass(itemId);
+      if (slotId === "far" || slotId === "cross") handleLightCross();
+      return;
+    }
     var item = lifeItemById(itemId);
     if (!item || state.placed[item.id]) {
       hidePlaceGhost();
@@ -3123,6 +3147,57 @@
     }, 850);
   }
 
+  function lightWrongMsg(color, raw) {
+    if (color === "red" && raw === "go") return "危險，再看一次";
+    if (color === "yellow" && raw === "go") return "再等一下";
+    if (color === "yellow") return "再等一下";
+    return "再看一次";
+  }
+
+  function lightRetry(value, msg) {
+    state.locked = true;
+    state.choiceMark = { value: value, cls: "bad" };
+    state.foxMsg = msg || "再看一次";
+    state.foxMood = "think";
+    playWrong();
+    render();
+    var kid = app.querySelector(".street-kid");
+    if (kid) kid.classList.add("bounce");
+    setTimeout(function () {
+      if (state.levelId !== "light" || state.screen !== "play") return;
+      state.locked = false;
+      state.choiceMark = null;
+      state.foxMood = "idle";
+      state.foxMsg = foxPrompt();
+      render();
+    }, 900);
+  }
+
+  function lightSuccess(value) {
+    state.locked = true;
+    state.choiceMark = { value: value, cls: "ok" };
+    state.foxMsg = "好棒";
+    state.foxMood = "happy";
+    playCorrect();
+    render();
+    replayFoxHappy();
+    if (value === "go") {
+      requestAnimationFrame(function () {
+        var kid = app.querySelector(".street-kid");
+        if (kid) kid.classList.add("walk");
+      });
+    }
+    setTimeout(nextQuestion, value === "go" ? 1100 : 950);
+  }
+
+  function handleLightCross() {
+    if (state.locked || state.levelId !== "light") return;
+    var q = state.questions[state.qIndex];
+    if (!q) return;
+    if (q.color === "green") lightSuccess("go");
+    else lightRetry("go", lightWrongMsg(q.color, "go"));
+  }
+
   function handleAnswer(raw) {
     if (state.locked || state.screen !== "play") return;
     var q = state.questions[state.qIndex];
@@ -3169,16 +3244,9 @@
     }
     if (state.levelId === "light") {
       if (raw === q.answer) {
-        state.locked = true;
-        state.choiceMark = { value: raw, cls: "ok" };
-        state.foxMsg = "好棒";
-        state.foxMood = "happy";
-        playCorrect();
-        render();
-        replayFoxHappy();
-        setTimeout(nextQuestion, 1000);
+        lightSuccess(raw);
       } else {
-        markRetry(raw, "再看一次");
+        lightRetry(raw, lightWrongMsg(q.color, raw));
       }
       return;
     }
