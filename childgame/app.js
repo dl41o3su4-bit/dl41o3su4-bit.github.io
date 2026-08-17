@@ -639,6 +639,11 @@
   }
 
   function startLevel(id) {
+    if (location.hash !== "#" + id) {
+      try {
+        history.replaceState(null, "", "#" + id);
+      } catch (e) {}
+    }
     state.levelId = id;
     state.qIndex = 0;
     state.starsRun = 0;
@@ -665,6 +670,11 @@
   }
 
   function goHome() {
+    if (location.hash) {
+      try {
+        history.replaceState(null, "", location.pathname + location.search);
+      } catch (e) {}
+    }
     state.screen = "home";
     state.levelId = null;
     state.foxMsg = "選一關開始吧！";
@@ -816,5 +826,13 @@
     }
   });
 
+  function bootFromHash() {
+    var id = (location.hash || "").replace("#", "");
+    if (id === "count" || id === "match" || id === "next" || id === "trace") {
+      startLevel(id);
+    }
+  }
+
   render();
+  bootFromHash();
 })();
