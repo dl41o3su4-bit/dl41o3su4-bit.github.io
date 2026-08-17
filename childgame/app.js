@@ -2119,6 +2119,28 @@
     return drawn.length ? far / drawn.length > 0.42 : false;
   }
 
+  function anyNear(drawn, target, radius) {
+    var r2 = radius * radius;
+    for (var i = 0; i < drawn.length; i++) {
+      if (dist2(drawn[i], target) <= r2) return true;
+    }
+    return false;
+  }
+
+  function nearestOutlinePoint(outlineD, target) {
+    var pts = sampleStroke(outlineD);
+    var best = pts[0] || target;
+    var bestD = Infinity;
+    for (var i = 0; i < pts.length; i++) {
+      var d = dist2(pts[i], target);
+      if (d < bestD) {
+        bestD = d;
+        best = pts[i];
+      }
+    }
+    return best;
+  }
+
   function updateWriteStroke() {
     var live = app.querySelector(".crayon-live");
     if (live) live.setAttribute("d", pathFromPoints(writeDraw.points));
@@ -2206,20 +2228,28 @@
     var radius = writeRadius(svg);
     var drawn = writeDraw.points;
     var start = samples[0];
-    var tooShort = polylineLen(drawn) < Math.max(40, pathLength(d) * 0.55);
-    var startFar = !drawn.length || dist2(drawn[0], start) > radius * radius * 1.6;
     var end = samples[samples.length - 1];
     var lastDrawn = drawn[drawn.length - 1];
-    var endFar = !lastDrawn || dist2(lastDrawn, end) > radius * radius * 1.8 * 1.8;
+    var tooShort = polylineLen(drawn) < Math.max(40, pathLength(d) * 0.55);
+    var startFar = !drawn.length || dist2(drawn[0], start) > radius * radius * 1.6;
+    var endFar = !lastDrawn || dist2(lastDrawn, end) > radius * radius * 1.05 * 1.05;
     var covered = coverRatio(drawn, samples, radius);
-    var tailFrom = Math.max(0, Math.floor(samples.length * 0.75));
+    var lastHit = coverRatio(drawn, [end], radius) === 1;
+    var tailFrom = Math.max(0, Math.floor(samples.length * 0.88));
     var tailCovered = coverRatio(drawn, samples.slice(tailFrom), radius);
+    var outlineMiss = false;
+    if (spec.outlines && spec.outlines[state.traceNext]) {
+      var tip = nearestOutlinePoint(spec.outlines[state.traceNext], end);
+      outlineMiss = !anyNear(drawn, tip, radius * 1.2);
+    }
     if (
       tooShort ||
       startFar ||
       endFar ||
+      !lastHit ||
       covered < 0.86 ||
-      tailCovered < 0.72 ||
+      tailCovered < 0.88 ||
+      outlineMiss ||
       scribbleFar(drawn, samples, radius)
     ) {
       rejectWrite();
