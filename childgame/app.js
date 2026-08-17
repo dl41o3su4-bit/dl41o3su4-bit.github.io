@@ -1226,6 +1226,20 @@
     return isPlaceLevel() || state.levelId === "light";
   }
 
+  function lifeCheer() {
+    if (state.levelId === "dress") return "穿好了";
+    if (state.levelId === "table") return "擺好了";
+    return "好棒";
+  }
+
+  function replayFoxHappy() {
+    var fox = app.querySelector(".fox");
+    if (!fox) return;
+    fox.classList.remove("happy");
+    void fox.getBoundingClientRect();
+    fox.classList.add("happy");
+  }
+
   function isConnectLevel() {
     if (state.levelId === "match-draw" || state.levelId === "bpm-draw" || state.levelId === "abc-case" || state.levelId === "abc-draw") return true;
     if (state.levelId === "hanzi") {
@@ -2163,11 +2177,15 @@
 
   function renderClear() {
     return (
-      '<div class="shell">' +
+      '<div class="shell' +
+      (isLifeLevel() ? " is-life" : "") +
+      '">' +
       topTools("<span></span>") +
       '<div class="clear">' +
       foxImg() +
-      "<h2>你好棒！</h2>" +
+      "<h2>" +
+      escapeHtml(isLifeLevel() ? lifeCheer() : "你好棒！") +
+      "</h2>" +
       '<p class="star-burst">⭐ × ' +
       state.starsRun +
       "</p>" +
@@ -2258,8 +2276,9 @@
   function finishPlaceIfDone() {
     var q = state.questions[state.qIndex];
     if (!allNeededPlaced(q)) {
-      setFox("答對了", "happy");
+      setFox("好棒", "happy");
       render();
+      replayFoxHappy();
       setTimeout(function () {
         if (isPlaceLevel() && state.screen === "play" && !state.locked) {
           setFox(foxPrompt(), "idle");
@@ -2269,10 +2288,11 @@
     }
     state.locked = true;
     state.heldItem = null;
-    state.foxMsg = "答對了";
+    state.foxMsg = lifeCheer();
     state.foxMood = "happy";
     render();
-    setTimeout(nextQuestion, 900);
+    replayFoxHappy();
+    setTimeout(nextQuestion, 1000);
   }
 
   function clearItemDragClass(itemId) {
@@ -2339,7 +2359,8 @@
     clearItemDragClass(itemId);
     state.heldItem = null;
     state.placed[item.id] = slotId;
-    playCorrect();
+    if (allNeededPlaced(state.questions[state.qIndex])) playStar();
+    else playCorrect();
     finishPlaceIfDone();
   }
 
@@ -2703,10 +2724,11 @@
     state.starsRun = 1;
     saveStars(state.starsTotal + 1);
     state.screen = "clear";
-    state.foxMsg = "你好棒！";
+    state.foxMsg = isLifeLevel() ? lifeCheer() : "你好棒！";
     state.foxMood = "happy";
     playStar();
     render();
+    if (isLifeLevel()) replayFoxHappy();
   }
 
   function nextQuestion() {
@@ -2807,11 +2829,12 @@
       if (raw === q.answer) {
         state.locked = true;
         state.choiceMark = { value: raw, cls: "ok" };
-        state.foxMsg = "答對了";
+        state.foxMsg = "好棒";
         state.foxMood = "happy";
         playCorrect();
         render();
-        setTimeout(nextQuestion, 900);
+        replayFoxHappy();
+        setTimeout(nextQuestion, 1000);
       } else {
         markRetry(raw, "再看一次");
       }
