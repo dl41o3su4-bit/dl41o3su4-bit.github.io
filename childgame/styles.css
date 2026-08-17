@@ -30,7 +30,7 @@ body {
   margin: 0;
   height: 100%;
   overflow: hidden;
-  background: #ffe8c2;
+  background: #f3e6cf;
   color: var(--ink);
   font-family: Nunito, "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", "Noto Sans CJK TC", sans-serif;
   -webkit-tap-highlight-color: transparent;
@@ -41,10 +41,9 @@ body {
 
 body {
   background:
-    radial-gradient(circle at 12% 8%, #fff8 0 28px, transparent 29px),
-    radial-gradient(circle at 88% 12%, #fff6 0 18px, transparent 19px),
-    radial-gradient(circle at 70% 92%, #ffd8a8 0 80px, transparent 81px),
-    linear-gradient(180deg, #7ec8e3 0%, #d8f3dc 38%, #ffe8c2 100%);
+    radial-gradient(circle at 14% 10%, #fff8 0 22px, transparent 23px),
+    radial-gradient(circle at 78% 88%, #ffe0b3 0 70px, transparent 71px),
+    linear-gradient(180deg, #9fd6ea 0%, #e7f4ea 40%, #f4e4c8 100%);
 }
 
 button {
@@ -75,6 +74,7 @@ button:focus-visible {
 }
 
 .shell {
+  position: relative;
   height: 100%;
   max-width: 880px;
   margin: 0 auto;
@@ -112,6 +112,22 @@ button:focus-visible {
   background: #fff;
 }
 
+.home-hero {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 0 72px 2px;
+  flex: 0 0 auto;
+}
+
+.kicker {
+  margin: 0 0 2px;
+  font-size: clamp(14px, 3.2vmin, 20px);
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  color: var(--ink-soft);
+}
+
 .title {
   margin: 0;
   font-size: clamp(28px, 8vmin, 44px);
@@ -119,6 +135,31 @@ button:focus-visible {
   text-align: center;
   line-height: 1.15;
   text-shadow: 0 3px 0 #fff6;
+}
+
+.sun {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 35% 32%, #fff6de 0 12px, #ffd43b 13px 26px, #fab005 27px);
+  box-shadow: 0 0 0 6px rgba(255, 212, 59, 0.28);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.sun::after {
+  content: "";
+  position: absolute;
+  inset: -14px;
+  background:
+    repeating-conic-gradient(from 8deg, #ffd43b 0 8deg, transparent 8deg 45deg);
+  border-radius: 50%;
+  opacity: 0.45;
+  z-index: -1;
 }
 
 .fox-row {
@@ -129,11 +170,23 @@ button:focus-visible {
   min-height: 0;
 }
 
-.fox {
-  width: clamp(64px, 16vmin, 108px);
-  height: clamp(64px, 16vmin, 108px);
+.fox-frame {
+  width: clamp(68px, 16vmin, 112px);
+  height: clamp(68px, 16vmin, 112px);
   flex: 0 0 auto;
-  filter: drop-shadow(0 6px 0 rgba(27, 42, 74, 0.12));
+  border-radius: 50%;
+  background: #fff6e8;
+  border: 4px solid var(--line);
+  box-shadow: var(--shadow);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.fox {
+  width: 86%;
+  height: 86%;
+  display: block;
 }
 
 .fox.happy {
@@ -155,6 +208,11 @@ button:focus-visible {
   font-weight: 800;
   line-height: 1.35;
   box-shadow: var(--shadow);
+}
+
+.shell.is-home .topbar {
+  position: relative;
+  z-index: 1;
 }
 
 .star-chip,
@@ -195,7 +253,7 @@ button:focus-visible {
   flex: 0 0 auto;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-auto-rows: minmax(108px, auto);
+  grid-auto-rows: minmax(124px, auto);
   gap: 10px;
 }
 
@@ -206,13 +264,76 @@ button:focus-visible {
   justify-content: center;
   gap: 4px;
   min-height: 0;
-  padding: 8px;
+  padding: 10px 8px 8px;
   font-weight: 800;
+  border-radius: 24px;
 }
 
-.level-card .emoji {
-  font-size: clamp(28px, 8vmin, 52px);
+.preview-art {
+  width: 100%;
+  min-height: clamp(48px, 11vmin, 72px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.62);
+  border-radius: 16px;
+  font-size: clamp(18px, 4.4vmin, 28px);
   line-height: 1;
+}
+
+.preview-art b {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.15em;
+  padding: 0 6px;
+  background: #fff;
+  border: 3px solid var(--line);
+  border-radius: 10px;
+  font-size: 1.05em;
+}
+
+.preview-art em {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.1em;
+  background: #fff3bf;
+  border: 3px solid var(--line);
+  border-radius: 10px;
+  font-style: normal;
+  color: var(--fox-deep);
+}
+
+.preview-art i {
+  font-style: normal;
+  font-weight: 900;
+}
+
+.preview-more .vs {
+  font-size: 0.7em;
+  font-weight: 900;
+  color: var(--ink-soft);
+}
+
+.preview-trace svg {
+  width: 42px;
+  height: 48px;
+  display: block;
+}
+
+.preview-trace path {
+  fill: none;
+  stroke: #1b2a4a;
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 5 5;
+}
+
+.preview-match .draw-line {
+  width: 18px;
+  height: 0;
+  border-top: 4px solid #f76707;
 }
 
 .level-card .name {
@@ -640,62 +761,82 @@ button:focus-visible {
   color: var(--fox-deep);
 }
 
-.trace-stage svg {
+.trace-stage svg,
+.trace-svg {
   width: 100%;
   height: 100%;
   max-height: 100%;
   display: block;
-  background: #fff;
+  background: #fffdf7;
   border: 4px solid var(--line);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
 }
 
-.numeral {
+.trace-stage.is-write,
+.trace-stage.is-write .trace-svg {
+  touch-action: none;
+  overscroll-behavior: none;
+}
+
+.glyph-wait,
+.glyph-now,
+.glyph-done {
   fill: none;
-  stroke: #1b2a4a;
-  stroke-width: 16;
   stroke-linecap: round;
   stroke-linejoin: round;
+}
+
+.glyph-wait {
+  stroke: #1b2a4a;
+  stroke-width: 16;
   stroke-dasharray: 14 12;
-  opacity: 0.28;
+  opacity: 0.16;
 }
 
-.dot-hit {
-  fill: transparent;
-  cursor: pointer;
+.glyph-now {
+  stroke: #1b2a4a;
+  stroke-width: 18;
+  stroke-dasharray: 15 12;
+  opacity: 0.42;
 }
 
-.dot-face {
-  stroke: var(--line);
-  stroke-width: 4;
+.glyph-done {
+  stroke: #1b2a4a;
+  stroke-width: 18;
+  opacity: 1;
 }
 
-.dot-face.next {
+.start-dot {
   fill: #ff922b;
+  stroke: #1b2a4a;
+  stroke-width: 3;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: pulse 1s ease-in-out infinite;
 }
 
-.dot-face.done {
-  fill: #fab005;
-}
-
-.dot-face.wait {
-  fill: #fff;
-}
-
-.dot-label {
-  font-family: Nunito, "Noto Sans TC", sans-serif;
-  font-size: 18px;
-  font-weight: 900;
-  fill: var(--ink);
+.trace-arrow {
+  fill: #ff922b;
+  stroke: #1b2a4a;
+  stroke-width: 2;
+  opacity: 0.72;
   pointer-events: none;
-  text-anchor: middle;
-  dominant-baseline: central;
 }
 
-.dot-face.next + .dot-label,
-.dot-hit:has(+ .dot-face.next) {
-  fill: #fff;
+.crayon-live {
+  fill: none;
+  stroke: #f76707;
+  stroke-width: 18;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.88;
+  pointer-events: none;
+}
+
+.crayon-live.fade {
+  opacity: 0;
+  transition: opacity 0.35s ease;
 }
 
 .clear {
@@ -735,9 +876,20 @@ button:focus-visible {
 }
 
 @media (max-height: 520px) {
-  .fox {
+  .fox-frame {
     width: 56px;
     height: 56px;
+  }
+
+  .home-hero {
+    padding: 0 64px 0;
+  }
+
+  .sun {
+    width: 44px;
+    height: 44px;
+    top: 8px;
+    right: 8px;
   }
 
   .icon-btn,
@@ -841,11 +993,5 @@ button:focus-visible {
 
 @keyframes pulse {
   0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.12); }
-}
-
-.dot-face.next {
-  animation: pulse 1s ease-in-out infinite;
-  transform-box: fill-box;
-  transform-origin: center;
+  50% { transform: scale(1.18); }
 }

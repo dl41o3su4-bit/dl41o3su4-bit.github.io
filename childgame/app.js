@@ -10,120 +10,46 @@
   var TRACE = {
     1: {
       viewBox: "0 0 240 280",
-      d: "M 86 58 L 128 32 L 128 242",
-      dots: [
-        [86, 58],
-        [128, 32],
-        [128, 102],
-        [128, 172],
-        [128, 242],
-      ],
+      strokes: ["M 86 62 L 128 34 L 128 246"],
     },
     2: {
       viewBox: "0 0 240 280",
-      d: "M 48 92 C 52 28 188 22 192 92 C 194 140 70 168 50 242 L 198 242",
-      dots: [
-        [62, 58],
-        [150, 36],
-        [188, 100],
-        [108, 168],
-        [50, 242],
-        [198, 242],
-      ],
+      strokes: ["M 52 96 C 56 30 186 24 188 96 C 190 138 86 168 58 238 L 192 238"],
     },
     3: {
       viewBox: "0 0 240 280",
-      d: "M 52 58 C 196 12 204 128 112 140 C 208 150 200 268 50 236",
-      dots: [
-        [58, 52],
-        [168, 42],
-        [140, 108],
-        [112, 140],
-        [176, 200],
-        [50, 236],
-      ],
+      strokes: ["M 56 56 C 188 16 204 118 116 140 C 208 152 202 262 54 230"],
     },
     4: {
       viewBox: "0 0 240 280",
-      d: "M 158 32 L 42 168 L 208 168 M 158 32 L 158 248",
-      dots: [
-        [158, 32],
-        [100, 100],
-        [42, 168],
-        [208, 168],
-        [158, 208],
-        [158, 248],
-      ],
+      strokes: ["M 162 34 L 46 170 L 204 170", "M 162 34 L 162 248"],
     },
     5: {
       viewBox: "0 0 240 280",
-      d: "M 188 38 L 58 38 L 50 128 C 58 108 198 100 196 186 C 194 258 52 268 52 228",
-      dots: [
-        [188, 38],
-        [58, 38],
-        [50, 128],
-        [150, 128],
-        [196, 186],
-        [52, 228],
-      ],
+      strokes: ["M 186 40 L 60 40 L 52 126", "M 52 126 C 72 104 198 108 196 184 C 194 250 58 260 56 218"],
     },
     6: {
       viewBox: "0 0 240 280",
-      d: "M 168 42 C 48 58 32 250 128 252 C 214 254 220 148 118 144",
-      dots: [
-        [168, 42],
-        [78, 88],
-        [44, 168],
-        [128, 252],
-        [196, 196],
-        [118, 144],
-      ],
+      strokes: ["M 170 44 C 50 62 34 236 124 250 C 212 260 216 152 116 148"],
     },
     7: {
       viewBox: "0 0 240 280",
-      d: "M 42 42 L 200 42 L 88 248",
-      dots: [
-        [42, 42],
-        [200, 42],
-        [156, 122],
-        [88, 248],
-      ],
+      strokes: ["M 46 44 L 198 44 L 90 248"],
     },
     8: {
       viewBox: "0 0 240 280",
-      d: "M 120 32 C 198 32 202 132 120 140 C 38 148 36 32 120 32 M 120 140 C 210 148 208 258 120 258 C 32 258 30 148 120 140",
-      dots: [
-        [120, 32],
-        [186, 80],
-        [120, 140],
-        [48, 198],
-        [120, 258],
-        [192, 198],
+      strokes: [
+        "M 120 34 C 196 34 200 132 120 140 C 44 148 42 34 120 34",
+        "M 120 140 C 208 148 206 256 120 256 C 34 256 32 148 120 140",
       ],
     },
     9: {
       viewBox: "0 0 240 280",
-      d: "M 128 34 C 210 34 214 146 128 146 C 42 146 40 34 128 34 M 196 92 L 158 248",
-      dots: [
-        [128, 34],
-        [48, 88],
-        [128, 146],
-        [196, 92],
-        [180, 168],
-        [158, 248],
-      ],
+      strokes: ["M 128 36 C 208 36 212 146 128 146 C 46 146 44 36 128 36", "M 196 94 L 158 248"],
     },
     10: {
       viewBox: "0 0 340 280",
-      d: "M 58 58 L 92 32 L 92 242 M 220 40 C 300 40 304 240 220 240 C 136 240 132 40 220 40",
-      dots: [
-        [58, 58],
-        [92, 32],
-        [92, 242],
-        [220, 40],
-        [292, 140],
-        [220, 240],
-      ],
+      strokes: ["M 60 60 L 94 34 L 94 246", "M 220 40 C 300 40 304 240 220 240 C 136 240 132 40 220 40"],
     },
   };
 
@@ -131,7 +57,7 @@
     { id: "count", name: "數一數", hint: "數一數有幾個", emoji: "🍎", cls: "c1" },
     { id: "match", name: "連連看", hint: "找到一樣多的", emoji: "🔢", cls: "c2" },
     { id: "next", name: "下一個是誰", hint: "3 4 5 ？", emoji: "➡️", cls: "c3" },
-    { id: "trace", name: "描一描", hint: "跟著點 1～10", emoji: "✏️", cls: "c4" },
+    { id: "trace", name: "描一描", hint: "用手指描 1～10", emoji: "✏️", cls: "c4" },
   ];
 
   var NEW_MATH_LEVELS = [
@@ -143,7 +69,7 @@
   ];
 
   var WORD_LEVELS = [
-    { id: "bpm-trace", name: "描注音", hint: "跟著點聲符", emoji: "ㄅ", cls: "w1" },
+    { id: "bpm-trace", name: "描注音", hint: "用手指描聲符", emoji: "ㄅ", cls: "w1" },
     { id: "bpm-pic", name: "圖配注音", hint: "圖配哪個注音", emoji: "🥟", cls: "w2" },
     { id: "bpm-draw", name: "注音連連看", hint: "畫線連注音", emoji: "🔗", cls: "w3" },
     { id: "hanzi", name: "看圖認字", hint: "圖配哪個字", emoji: "山", cls: "w4" },
@@ -178,243 +104,87 @@
   var BPM_TRACE = {
     ㄅ: {
       viewBox: "0 0 240 280",
-      d: "M 78 40 L 78 248 M 78 40 L 172 40 C 214 58 218 128 172 168",
-      dots: [
-        [78, 40],
-        [78, 144],
-        [78, 248],
-        [172, 40],
-        [208, 96],
-        [172, 168],
-      ],
+      strokes: ["M 84 40 L 70 248", "M 84 40 L 172 46 C 216 70 214 152 148 184"],
     },
     ㄆ: {
       viewBox: "0 0 240 280",
-      d: "M 48 36 L 128 80 M 88 96 L 88 248 M 88 96 L 178 96 C 216 114 216 176 172 216",
-      dots: [
-        [48, 36],
-        [128, 80],
-        [88, 96],
-        [178, 96],
-        [88, 248],
-        [172, 216],
-      ],
+      strokes: ["M 46 30 L 126 84", "M 88 70 L 88 248", "M 88 102 L 182 102 C 220 124 216 188 154 216"],
     },
     ㄇ: {
       viewBox: "0 0 240 280",
-      d: "M 56 42 L 56 248 M 56 42 L 184 42 L 184 248",
-      dots: [
-        [56, 42],
-        [56, 145],
-        [56, 248],
-        [120, 42],
-        [184, 42],
-        [184, 248],
-      ],
+      strokes: ["M 58 44 L 58 246", "M 58 44 L 184 44 L 184 246"],
     },
     ㄈ: {
       viewBox: "0 0 240 280",
-      d: "M 58 44 L 188 44 M 58 44 L 58 198 L 188 246",
-      dots: [
-        [58, 44],
-        [188, 44],
-        [58, 121],
-        [58, 198],
-        [123, 222],
-        [188, 246],
-      ],
+      strokes: ["M 56 46 L 188 46", "M 56 46 L 56 236 L 188 236"],
     },
     ㄉ: {
       viewBox: "0 0 240 280",
-      d: "M 68 46 L 158 90 M 176 68 C 216 110 206 198 68 236",
-      dots: [
-        [68, 46],
-        [158, 90],
-        [196, 102],
-        [198, 162],
-        [68, 236],
-      ],
+      strokes: ["M 62 42 L 152 98", "M 180 62 C 222 108 208 204 58 242"],
     },
     ㄊ: {
       viewBox: "0 0 240 280",
-      d: "M 48 48 L 192 48 M 128 48 L 68 128 L 176 128 M 156 128 L 156 246",
-      dots: [
-        [48, 48],
-        [192, 48],
-        [128, 48],
-        [68, 128],
-        [176, 128],
-        [156, 246],
-      ],
+      strokes: ["M 44 48 L 196 48", "M 128 48 L 58 140 L 184 140", "M 166 140 L 166 248"],
     },
     ㄋ: {
       viewBox: "0 0 240 280",
-      d: "M 70 48 L 166 48 C 206 70 200 138 84 168 M 156 88 L 72 246",
-      dots: [
-        [70, 48],
-        [166, 48],
-        [196, 100],
-        [84, 168],
-        [156, 88],
-        [72, 246],
-      ],
+      strokes: ["M 64 48 L 172 48 C 214 72 204 128 158 148 L 60 248"],
     },
     ㄌ: {
       viewBox: "0 0 240 280",
-      d: "M 78 46 L 168 46 C 208 74 196 158 70 208 M 146 70 L 96 246",
-      dots: [
-        [78, 46],
-        [168, 46],
-        [198, 108],
-        [70, 208],
-        [146, 70],
-        [96, 246],
-      ],
+      strokes: ["M 70 46 L 176 46 C 216 78 202 164 68 214", "M 152 74 L 86 248"],
     },
     ㄍ: {
       viewBox: "0 0 240 280",
-      d: "M 70 42 L 128 152 L 66 250 M 128 152 L 206 68",
-      dots: [
-        [70, 42],
-        [128, 152],
-        [66, 250],
-        [167, 110],
-        [206, 68],
-      ],
+      strokes: ["M 108 40 L 48 140 L 112 248", "M 184 40 L 124 140 L 188 248"],
     },
     ㄎ: {
       viewBox: "0 0 240 280",
-      d: "M 48 48 L 192 48 M 146 48 L 80 156 L 190 240",
-      dots: [
-        [48, 48],
-        [192, 48],
-        [146, 48],
-        [80, 156],
-        [190, 240],
-      ],
+      strokes: ["M 46 48 L 196 48", "M 152 48 L 76 152 L 190 244"],
     },
     ㄏ: {
       viewBox: "0 0 240 280",
-      d: "M 52 46 L 196 46 M 72 46 L 72 248 M 72 150 L 196 236",
-      dots: [
-        [52, 46],
-        [196, 46],
-        [72, 46],
-        [72, 150],
-        [72, 248],
-        [196, 236],
-      ],
+      strokes: ["M 52 46 L 198 46", "M 52 46 L 46 248"],
     },
     ㄐ: {
       viewBox: "0 0 240 280",
-      d: "M 90 40 L 90 190 C 90 242 176 246 180 188 M 90 108 L 186 42",
-      dots: [
-        [90, 40],
-        [90, 108],
-        [90, 190],
-        [180, 188],
-        [186, 42],
-      ],
+      strokes: ["M 86 40 L 86 198 C 86 244 172 248 178 196", "M 86 108 L 192 42"],
     },
     ㄑ: {
       viewBox: "0 0 240 280",
-      d: "M 188 48 C 48 70 42 210 188 242",
-      dots: [
-        [188, 48],
-        [90, 80],
-        [52, 140],
-        [96, 210],
-        [188, 242],
-      ],
+      strokes: ["M 190 46 C 42 72 38 210 190 244"],
     },
     ㄒ: {
       viewBox: "0 0 240 280",
-      d: "M 48 46 L 192 46 M 120 46 L 68 246 M 120 46 L 192 246",
-      dots: [
-        [48, 46],
-        [192, 46],
-        [120, 46],
-        [68, 246],
-        [192, 246],
-      ],
+      strokes: ["M 44 48 L 196 48", "M 120 48 L 120 248"],
     },
     ㄓ: {
       viewBox: "0 0 240 280",
-      d: "M 56 50 L 184 50 M 170 50 L 80 130 L 170 130 M 120 130 L 90 246",
-      dots: [
-        [56, 50],
-        [184, 50],
-        [80, 130],
-        [170, 130],
-        [120, 130],
-        [90, 246],
-      ],
+      strokes: ["M 132 40 L 188 56", "M 50 92 L 188 92 L 80 168", "M 80 168 L 178 248"],
     },
     ㄔ: {
       viewBox: "0 0 240 280",
-      d: "M 70 44 L 168 86 M 92 96 L 92 246 M 92 150 L 186 118",
-      dots: [
-        [70, 44],
-        [168, 86],
-        [92, 96],
-        [92, 246],
-        [186, 118],
-      ],
+      strokes: ["M 64 40 L 162 90", "M 90 94 L 90 248", "M 90 152 L 188 114"],
     },
     ㄕ: {
       viewBox: "0 0 240 280",
-      d: "M 70 44 L 180 44 L 180 112 L 70 112 L 70 246",
-      dots: [
-        [70, 44],
-        [180, 44],
-        [180, 112],
-        [70, 112],
-        [70, 246],
-      ],
+      strokes: ["M 72 44 L 186 44", "M 72 44 L 72 118 L 186 118", "M 72 44 L 72 248"],
     },
     ㄖ: {
       viewBox: "0 0 240 280",
-      d: "M 70 48 L 170 48 L 170 232 L 70 232 Z M 70 140 L 170 140",
-      dots: [
-        [70, 48],
-        [170, 48],
-        [170, 232],
-        [70, 232],
-        [70, 140],
-        [170, 140],
-      ],
+      strokes: ["M 70 48 L 70 236", "M 70 48 L 174 48 L 174 236 L 70 236", "M 70 142 L 174 142"],
     },
     ㄗ: {
       viewBox: "0 0 240 280",
-      d: "M 60 48 L 180 48 L 80 140 L 170 140 M 125 140 L 125 246",
-      dots: [
-        [60, 48],
-        [180, 48],
-        [80, 140],
-        [170, 140],
-        [125, 246],
-      ],
+      strokes: ["M 56 48 L 182 48 L 82 140 L 176 140", "M 128 140 L 128 248"],
     },
     ㄘ: {
       viewBox: "0 0 240 280",
-      d: "M 55 50 L 185 50 M 80 50 L 80 246 M 80 140 L 180 140",
-      dots: [
-        [55, 50],
-        [185, 50],
-        [80, 50],
-        [80, 246],
-        [180, 140],
-      ],
+      strokes: ["M 50 48 L 190 48", "M 78 48 L 78 248", "M 78 142 L 186 142"],
     },
     ㄙ: {
       viewBox: "0 0 240 280",
-      d: "M 120 44 L 50 236 L 190 236 Z",
-      dots: [
-        [120, 44],
-        [50, 236],
-        [190, 236],
-        [120, 140],
-      ],
+      strokes: ["M 120 44 L 48 236", "M 120 44 L 192 236 L 48 236"],
     },
   };
 
@@ -506,6 +276,14 @@
     startPair: -1,
     points: [],
   };
+
+  var writeDraw = {
+    active: false,
+    pointerId: null,
+    points: [],
+  };
+
+  var measurePath = document.createElementNS("http://www.w3.org/2000/svg", "path");
 
   var app = document.getElementById("app");
 
@@ -922,14 +700,14 @@
     if (state.levelId === "match") return "哪一群跟上面的數字一樣多？";
     if (state.levelId === "match-draw") return "把一樣多的連起來";
     if (state.levelId === "next") return "下一個數字是誰？";
-    if (state.levelId === "trace") return "照著順序點一點";
+    if (state.levelId === "trace") return "從亮點開始，描一描";
     if (state.levelId === "more") {
       return q && q.equal ? "一樣多還是有一邊比較多？" : "哪一邊比較多？";
     }
     if (state.levelId === "ord") return "從左邊數，第幾個？";
     if (state.levelId === "missing") return "少了哪個數字？";
     if (state.levelId === "bond") return "還要幾個才滿？";
-    if (state.levelId === "bpm-trace") return "照著順序點一點";
+    if (state.levelId === "bpm-trace") return "從亮點開始，描一描";
     if (state.levelId === "bpm-pic") return "這是哪個音？";
     if (state.levelId === "bpm-draw") return "把注音和圖連起來";
     if (state.levelId === "hanzi") {
@@ -1022,7 +800,72 @@
   }
 
   function foxImg() {
-    return '<img class="fox ' + state.foxMood + '" src="./fox.svg" alt="小狐狸老師" width="108" height="108">';
+    return (
+      '<span class="fox-frame">' +
+      '<img class="fox ' +
+      state.foxMood +
+      '" src="./fox.svg" alt="小狐狸老師" width="108" height="108">' +
+      "</span>"
+    );
+  }
+
+  function starChip(n, extraClass) {
+    return (
+      '<div class="star-chip' +
+      (extraClass ? " " + extraClass : "") +
+      '" aria-label="星星總數">星星 : ' +
+      n +
+      "</div>"
+    );
+  }
+
+  function levelPreview(id) {
+    if (id === "count") {
+      return '<span class="preview-art preview-count" aria-hidden="true"><span>🍒</span><span>🍒</span><span>🍒</span></span>';
+    }
+    if (id === "match") {
+      return '<span class="preview-art preview-match" aria-hidden="true"><b>3</b><span>⭐⭐⭐</span></span>';
+    }
+    if (id === "next") {
+      return '<span class="preview-art preview-next" aria-hidden="true"><i>3</i><i>4</i><i>5</i><em>?</em></span>';
+    }
+    if (id === "trace") {
+      return (
+        '<span class="preview-art preview-trace" aria-hidden="true">' +
+        '<svg viewBox="0 0 80 90"><path d="M 16 18 C 64 6 70 40 38 46 C 72 50 70 84 16 74"></path></svg></span>'
+      );
+    }
+    if (id === "more") {
+      return '<span class="preview-art preview-more" aria-hidden="true"><span>🍉🍉🍉</span><span class="vs">:</span><span>🍉🍉</span></span>';
+    }
+    if (id === "ord") {
+      return '<span class="preview-art preview-ord" aria-hidden="true">🐶🐱🐰<b>5</b></span>';
+    }
+    if (id === "missing") {
+      return '<span class="preview-art preview-next" aria-hidden="true"><i>3</i><i>4</i><em>?</em><i>6</i></span>';
+    }
+    if (id === "bond") {
+      return '<span class="preview-art preview-count" aria-hidden="true"><span>🍇</span><span>🍇</span><span class="slot">+</span></span>';
+    }
+    if (id === "match-draw") {
+      return '<span class="preview-art preview-match" aria-hidden="true"><b>2</b><span class="draw-line"></span><span>⭐⭐</span></span>';
+    }
+    if (id === "bpm-trace") {
+      return (
+        '<span class="preview-art preview-trace" aria-hidden="true">' +
+        '<svg viewBox="0 0 80 90"><path d="M 24 12 L 24 78"></path><path d="M 24 12 L 58 12 C 74 22 74 48 52 58"></path></svg></span>'
+      );
+    }
+    if (id === "bpm-pic") {
+      return '<span class="preview-art preview-match" aria-hidden="true"><span>🥟</span><b>ㄅ</b></span>';
+    }
+    if (id === "bpm-draw") {
+      return '<span class="preview-art preview-match" aria-hidden="true"><b>ㄅ</b><span class="draw-line"></span><span>🥟</span></span>';
+    }
+    if (id === "hanzi") {
+      return '<span class="preview-art preview-match" aria-hidden="true"><span>⛰️</span><b>山</b></span>';
+    }
+    return "";
   }
 
   function topTools(extraLeft) {
@@ -1049,9 +892,7 @@
           '" type="button" data-action="start" data-level="' +
           lv.id +
           '">' +
-          '<span class="emoji">' +
-          lv.emoji +
-          "</span>" +
+          levelPreview(lv.id) +
           '<span class="name">' +
           lv.name +
           "</span>" +
@@ -1066,7 +907,11 @@
   function renderHome() {
     return (
       '<div class="shell is-home">' +
-      topTools('<h1 class="title">數字小探險</h1>') +
+      '<div class="sun" aria-hidden="true"></div>' +
+      topTools("<span></span>") +
+      '<div class="home-hero">' +
+      '<p class="kicker">小狐狸老師的數字課</p>' +
+      '<h1 class="title">數字小探險</h1></div>' +
       '<div class="fox-row">' +
       foxImg() +
       '<p class="speech" aria-live="polite">' +
@@ -1086,9 +931,7 @@
       renderLevelCards(WORD_LEVELS) +
       "</div></div>" +
       '<div class="home-foot">' +
-      '<div class="star-chip" aria-label="星星總數">⭐ ' +
-      state.starsTotal +
-      "</div>" +
+      starChip(state.starsTotal) +
       "<span></span></div></div>"
     );
   }
@@ -1112,9 +955,8 @@
       '<div class="progress-chip">' +
       progressLabel() +
       "</div>" +
-      '<div class="star-chip">⭐ ' +
-      state.starsTotal +
-      "</div></div>" +
+      starChip(state.starsTotal) +
+      "</div>" +
       '<div class="fox-row">' +
       foxImg() +
       '<p class="speech" aria-live="polite">' +
@@ -1293,55 +1135,75 @@
     );
   }
 
+  function pathLength(d) {
+    measurePath.setAttribute("d", d);
+    try {
+      return measurePath.getTotalLength();
+    } catch (e) {
+      return 0;
+    }
+  }
+
+  function pathPoint(d, t) {
+    measurePath.setAttribute("d", d);
+    var len = 0;
+    try {
+      len = measurePath.getTotalLength();
+      var p = measurePath.getPointAtLength(Math.max(0, Math.min(len, t * len)));
+      return { x: p.x, y: p.y };
+    } catch (e) {
+      return { x: 0, y: 0 };
+    }
+  }
+
+  function sampleStroke(d) {
+    var len = pathLength(d);
+    var n = Math.max(8, Math.round(len / 16));
+    var pts = [];
+    for (var i = 0; i <= n; i++) pts.push(pathPoint(d, i / n));
+    return pts;
+  }
+
   function renderTrace(q) {
     var spec = currentTraceSpec();
     var label = state.levelId === "bpm-trace" ? q.sym : q.n;
-    var dots = spec.dots
-      .map(function (pt, i) {
-        var cls = i < state.traceNext ? "done" : i === state.traceNext ? "next" : "wait";
-        var labelFill = cls === "wait" ? "#1b2a4a" : "#1b2a4a";
-        if (cls === "next") labelFill = "#fff";
-        return (
-          '<g data-action="dot" data-value="' +
-          i +
-          '">' +
-          '<circle class="dot-hit" cx="' +
-          pt[0] +
-          '" cy="' +
-          pt[1] +
-          '" r="28"></circle>' +
-          '<circle class="dot-face ' +
-          cls +
-          '" cx="' +
-          pt[0] +
-          '" cy="' +
-          pt[1] +
-          '" r="16"></circle>' +
-          '<text class="dot-label" x="' +
-          pt[0] +
-          '" y="' +
-          pt[1] +
-          '" fill="' +
-          labelFill +
-          '">' +
-          (i + 1) +
-          "</text></g>"
-        );
-      })
-      .join("");
+    var paths = "";
+    var i;
+    for (i = 0; i < spec.strokes.length; i++) {
+      var cls = i < state.traceNext ? "glyph-done" : i === state.traceNext ? "glyph-now" : "glyph-wait";
+      paths += '<path class="' + cls + '" d="' + spec.strokes[i] + '"></path>';
+    }
+    var guide = "";
+    if (state.traceNext < spec.strokes.length) {
+      var d = spec.strokes[state.traceNext];
+      var start = pathPoint(d, 0);
+      if (state.traceNext === 0) {
+        var a0 = pathPoint(d, 0.04);
+        var a1 = pathPoint(d, 0.16);
+        var ang = (Math.atan2(a1.y - a0.y, a1.x - a0.x) * 180) / Math.PI;
+        guide +=
+          '<g class="trace-arrow" transform="translate(' +
+          a1.x +
+          " " +
+          a1.y +
+          ") rotate(" +
+          ang +
+          ')"><path d="M -10 -8 L 12 0 L -10 8 Z"></path></g>';
+      }
+      guide += '<circle class="start-dot" cx="' + start.x + '" cy="' + start.y + '" r="11"></circle>';
+    }
     return (
       '<div class="play-col">' +
-      '<div class="prompt">照順序點一點</div>' +
-      '<div class="trace-stage"><svg viewBox="' +
+      '<div class="prompt">用手指描一描</div>' +
+      '<div class="trace-stage is-write"><svg class="trace-svg" viewBox="' +
       spec.viewBox +
       '" role="img" aria-label="' +
       (state.levelId === "bpm-trace" ? "注音 " : "數字 ") +
       label +
       '">' +
-      '<path class="numeral" d="' +
-      spec.d +
-      '"></path>' +
-      dots +
+      paths +
+      guide +
+      '<path class="crayon-live" d=""></path>' +
       "</svg></div></div>"
     );
   }
@@ -1626,6 +1488,12 @@
     }
   }
 
+  function resetWriteDraw() {
+    writeDraw.active = false;
+    writeDraw.pointerId = null;
+    writeDraw.points = [];
+  }
+
   function resetMatchDraw() {
     matchDraw.active = false;
     matchDraw.pointerId = null;
@@ -1867,6 +1735,7 @@
     state.traceNext = 0;
     state.matchDone = {};
     resetMatchDraw();
+    resetWriteDraw();
     state.foxMood = "idle";
     if (id === "count") state.questions = makeCountQuestions();
     else if (id === "match") state.questions = makeMatchQuestions();
@@ -1901,6 +1770,7 @@
     state.choiceMark = null;
     state.matchDone = {};
     resetMatchDraw();
+    resetWriteDraw();
     render();
   }
 
@@ -1919,6 +1789,7 @@
     state.traceNext = 0;
     state.matchDone = {};
     resetMatchDraw();
+    resetWriteDraw();
     state.locked = false;
     state.foxMood = "idle";
     if (state.qIndex + 1 >= state.questions.length) {
@@ -2005,17 +1876,101 @@
     }
   }
 
-  function handleDot(raw) {
-    if (state.locked || state.screen !== "play" || !isTraceLevel()) return;
-    var i = parseInt(raw, 10);
-    var spec = currentTraceSpec();
-    if (i !== state.traceNext) {
-      markRetry(null, "再看一次，依序點喔");
-      return;
+  function traceSvg() {
+    return app.querySelector(".trace-svg");
+  }
+
+  function writePoint(e) {
+    var svg = traceSvg();
+    if (!svg) return { x: 0, y: 0 };
+    var pt = svg.createSVGPoint();
+    pt.x = e.clientX;
+    pt.y = e.clientY;
+    var ctm = svg.getScreenCTM();
+    if (!ctm) return { x: 0, y: 0 };
+    var p = pt.matrixTransform(ctm.inverse());
+    return { x: p.x, y: p.y };
+  }
+
+  function writeRadius(svg) {
+    var ctm = svg && svg.getScreenCTM();
+    var scale = ctm ? (Math.abs(ctm.a) + Math.abs(ctm.d)) / 2 : 1;
+    if (scale < 0.15) scale = 0.15;
+    return 32 / scale;
+  }
+
+  function dist2(a, b) {
+    var dx = a.x - b.x;
+    var dy = a.y - b.y;
+    return dx * dx + dy * dy;
+  }
+
+  function polylineLen(pts) {
+    var n = 0;
+    for (var i = 1; i < pts.length; i++) {
+      n += Math.sqrt(dist2(pts[i - 1], pts[i]));
     }
+    return n;
+  }
+
+  function coverRatio(drawn, samples, radius) {
+    var r2 = radius * radius;
+    var di = 0;
+    var hit = 0;
+    for (var s = 0; s < samples.length; s++) {
+      var found = false;
+      for (var i = di; i < drawn.length; i++) {
+        if (dist2(drawn[i], samples[s]) <= r2) {
+          found = true;
+          di = i;
+          hit += 1;
+          break;
+        }
+      }
+    }
+    return samples.length ? hit / samples.length : 0;
+  }
+
+  function scribbleFar(drawn, samples, radius) {
+    var r2 = radius * radius * 2.4;
+    var far = 0;
+    for (var i = 0; i < drawn.length; i++) {
+      var near = false;
+      for (var s = 0; s < samples.length; s++) {
+        if (dist2(drawn[i], samples[s]) <= r2) {
+          near = true;
+          break;
+        }
+      }
+      if (!near) far += 1;
+    }
+    return drawn.length ? far / drawn.length > 0.42 : false;
+  }
+
+  function updateWriteStroke() {
+    var live = app.querySelector(".crayon-live");
+    if (live) live.setAttribute("d", pathFromPoints(writeDraw.points));
+  }
+
+  function fadeWriteStroke() {
+    var svg = traceSvg();
+    var live = svg && svg.querySelector(".crayon-live");
+    resetWriteDraw();
+    if (!live || !live.getAttribute("d")) return;
+    live.setAttribute("class", "crayon-live fade");
+    setTimeout(function () {
+      if (!live.parentNode) return;
+      live.setAttribute("d", "");
+      live.setAttribute("class", "crayon-live");
+    }, 380);
+  }
+
+  function finishWriteStroke() {
+    var spec = currentTraceSpec();
     playTap();
     state.traceNext += 1;
-    if (state.traceNext >= spec.dots.length) {
+    resetWriteDraw();
+    if (state.traceNext >= spec.strokes.length) {
       state.locked = true;
       state.foxMsg = pick(PRAISE);
       state.foxMood = "happy";
@@ -2024,8 +1979,69 @@
       setTimeout(nextQuestion, 900);
       return;
     }
-    state.foxMsg = "接著點 " + (state.traceNext + 1);
+    setFox("下一筆，從亮點開始", "idle");
     render();
+  }
+
+  function rejectWrite() {
+    playWrong();
+    setFox("再看一次", "think");
+    fadeWriteStroke();
+    setTimeout(function () {
+      if (isTraceLevel() && state.screen === "play" && state.foxMood === "think") {
+        setFox(foxPrompt(), "idle");
+      }
+    }, 850);
+  }
+
+  function onWritePointerDown(e) {
+    if (state.locked || state.screen !== "play" || !isTraceLevel()) return;
+    if (writeDraw.active) return;
+    var stage = e.target.closest(".trace-stage");
+    if (!stage) return;
+    e.preventDefault();
+    try {
+      stage.setPointerCapture(e.pointerId);
+    } catch (err) {}
+    writeDraw.active = true;
+    writeDraw.pointerId = e.pointerId;
+    writeDraw.points = [writePoint(e)];
+    updateWriteStroke();
+  }
+
+  function onWritePointerMove(e) {
+    if (!writeDraw.active || writeDraw.pointerId !== e.pointerId) return;
+    e.preventDefault();
+    var pt = writePoint(e);
+    var last = writeDraw.points[writeDraw.points.length - 1];
+    if (!last || Math.abs(pt.x - last.x) + Math.abs(pt.y - last.y) >= 1.4) {
+      writeDraw.points.push(pt);
+    }
+    updateWriteStroke();
+  }
+
+  function onWritePointerUp(e) {
+    if (!writeDraw.active || writeDraw.pointerId !== e.pointerId) return;
+    e.preventDefault();
+    var spec = currentTraceSpec();
+    var svg = traceSvg();
+    if (!spec || !svg || state.traceNext >= spec.strokes.length) {
+      resetWriteDraw();
+      return;
+    }
+    var d = spec.strokes[state.traceNext];
+    var samples = sampleStroke(d);
+    var radius = writeRadius(svg);
+    var drawn = writeDraw.points;
+    var start = samples[0];
+    var tooShort = polylineLen(drawn) < Math.max(28, pathLength(d) * 0.32);
+    var startFar = !drawn.length || dist2(drawn[0], start) > radius * radius * 1.6;
+    var covered = coverRatio(drawn, samples, radius);
+    if (tooShort || startFar || covered < 0.7 || scribbleFar(drawn, samples, radius)) {
+      rejectWrite();
+      return;
+    }
+    finishWriteStroke();
   }
 
   function toggleSound() {
@@ -2050,14 +2066,26 @@
     } catch (e) {}
   }
 
-  app.addEventListener("pointerdown", onMatchPointerDown);
-  app.addEventListener("pointermove", onMatchPointerMove);
-  app.addEventListener("pointerup", onMatchPointerUp);
-  app.addEventListener("pointercancel", onMatchPointerUp);
+  app.addEventListener("pointerdown", function (e) {
+    onMatchPointerDown(e);
+    onWritePointerDown(e);
+  });
+  app.addEventListener("pointermove", function (e) {
+    onMatchPointerMove(e);
+    onWritePointerMove(e);
+  });
+  app.addEventListener("pointerup", function (e) {
+    onMatchPointerUp(e);
+    onWritePointerUp(e);
+  });
+  app.addEventListener("pointercancel", function (e) {
+    onMatchPointerUp(e);
+    onWritePointerUp(e);
+  });
   document.addEventListener(
     "touchmove",
     function (e) {
-      if (matchDraw.active) e.preventDefault();
+      if (matchDraw.active || writeDraw.active) e.preventDefault();
     },
     { passive: false }
   );
@@ -2082,8 +2110,6 @@
       toggleFullscreen();
     } else if (action === "answer") {
       handleAnswer(t.getAttribute("data-value"));
-    } else if (action === "dot") {
-      handleDot(t.getAttribute("data-value"));
     }
   });
 
