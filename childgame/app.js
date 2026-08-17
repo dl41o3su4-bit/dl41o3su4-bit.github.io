@@ -125,7 +125,14 @@
     { id: "abc-draw", name: "字母連連看", hint: "字母連圖", emoji: "🔗", cls: "e4" },
   ];
 
-  var LEVELS = OLD_MATH_LEVELS.concat(NEW_MATH_LEVELS, WORD_LEVELS, ENGLISH_LEVELS);
+  var LIFE_LEVELS = [
+    { id: "dress", name: "今天穿什麼", hint: "看天氣穿衣服", emoji: "👕", cls: "l1" },
+    { id: "table", name: "擺餐桌", hint: "碗筷子杯子放好", emoji: "🍚", cls: "l2" },
+    { id: "habitat", name: "誰住哪裡", hint: "魚鳥兔住哪裡", emoji: "🐟", cls: "l3" },
+    { id: "light", name: "紅燈停", hint: "紅燈停綠燈行", emoji: "🚦", cls: "l4" },
+  ];
+
+  var LEVELS = OLD_MATH_LEVELS.concat(NEW_MATH_LEVELS, WORD_LEVELS, ENGLISH_LEVELS, LIFE_LEVELS);
 
   var ABC_ORDER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
@@ -501,6 +508,8 @@
     traceNext: 0,
     choiceMark: null,
     matchDone: {},
+    placed: {},
+    heldItem: null,
   };
 
   var matchDraw = {
@@ -515,6 +524,17 @@
     active: false,
     pointerId: null,
     points: [],
+  };
+
+  var placeDrag = {
+    active: false,
+    pointerId: null,
+    itemId: null,
+    startX: 0,
+    startY: 0,
+    x: 0,
+    y: 0,
+    moved: false,
   };
 
   var measurePath = document.createElementNS("http://www.w3.org/2000/svg", "path");
@@ -1024,6 +1044,88 @@
     return qs;
   }
 
+  function lifeItem(id, emoji, name, slot) {
+    return { id: id, emoji: emoji, name: name, slot: slot || "" };
+  }
+
+  function makeDressQuestions() {
+    var rounds = [
+      { weather: "☀️", label: "大太陽", ask: "大太陽，要穿什麼？", ok: lifeItem("tee", "👕", "短袖", "wear"), wrong: [lifeItem("scarf", "🧣", "圍巾"), lifeItem("boot", "👢", "雨靴")] },
+      { weather: "🌧️", label: "下雨了", ask: "下雨了，要帶什麼？", ok: lifeItem("umb", "☂️", "雨傘", "wear"), wrong: [lifeItem("glass", "🕶️", "太陽眼鏡"), lifeItem("tee2", "👕", "短袖")] },
+      { weather: "❄️", label: "好冷哦", ask: "好冷，要穿什麼？", ok: lifeItem("coat", "🧥", "外套", "wear"), wrong: [lifeItem("tee3", "👕", "短袖"), lifeItem("sandal", "👡", "拖鞋")] },
+      { weather: "☀️", label: "大太陽", ask: "大太陽，戴什麼？", ok: lifeItem("cap", "🧢", "帽子", "wear"), wrong: [lifeItem("glove", "🧤", "手套"), lifeItem("scarf2", "🧣", "圍巾")] },
+      { weather: "🌧️", label: "下雨了", ask: "下雨了，穿什麼？", ok: lifeItem("rainboot", "👢", "雨靴", "wear"), wrong: [lifeItem("cap2", "🧢", "帽子"), lifeItem("glass2", "🕶️", "太陽眼鏡")] },
+      { weather: "❄️", label: "好冷哦", ask: "好冷，戴什麼？", ok: lifeItem("glove2", "🧤", "手套", "wear"), wrong: [lifeItem("tee4", "👕", "短袖"), lifeItem("sandal2", "👡", "拖鞋")] },
+      { weather: "☀️", label: "好熱哦", ask: "好熱，戴什麼？", ok: lifeItem("sunglass", "🕶️", "太陽眼鏡", "wear"), wrong: [lifeItem("scarf3", "🧣", "圍巾"), lifeItem("coat2", "🧥", "外套")] },
+      { weather: "💨", label: "風好大", ask: "風好大，穿什麼？", ok: lifeItem("windcoat", "🧥", "外套", "wear"), wrong: [lifeItem("sandal3", "👡", "拖鞋"), lifeItem("tee5", "👕", "短袖")] },
+    ];
+    return shuffle(rounds).map(function (r) {
+      return {
+        ask: r.ask,
+        sceneEmoji: r.weather,
+        sceneLabel: r.label,
+        slots: [{ id: "wear", emoji: "🧒", label: "穿這個" }],
+        items: shuffle([r.ok].concat(r.wrong)),
+      };
+    });
+  }
+
+  function makeTableQuestions() {
+    var qs = [];
+    for (var i = 0; i < 6; i++) {
+      var items = [
+        lifeItem("bowl", "🍚", "碗", "bowl"),
+        lifeItem("sticks", "🥢", "筷子", "sticks"),
+        lifeItem("cup", "🥛", "杯子", "cup"),
+      ];
+      if (i >= 3) items.push(lifeItem("spoon", "🥄", "湯匙"));
+      qs.push({
+        ask: "把碗、筷子、杯子放到桌上",
+        slots: [
+          { id: "bowl", emoji: "🍽️", label: "碗" },
+          { id: "sticks", emoji: "🍽️", label: "筷子" },
+          { id: "cup", emoji: "🍽️", label: "杯子" },
+        ],
+        items: shuffle(items),
+      });
+    }
+    return qs;
+  }
+
+  function makeHabitatQuestions() {
+    var sets = [
+      [lifeItem("fish", "🐟", "魚", "water"), lifeItem("bird", "🐦", "鳥", "tree"), lifeItem("rabbit", "🐰", "兔子", "grass")],
+      [lifeItem("fish2", "🐠", "魚", "water"), lifeItem("owl", "🦉", "貓頭鷹", "tree"), lifeItem("sheep", "🐑", "羊", "grass")],
+      [lifeItem("duck", "🦆", "鴨子", "water"), lifeItem("parrot", "🦜", "鸚鵡", "tree"), lifeItem("cow", "🐄", "牛", "grass")],
+      [lifeItem("whale", "🐳", "鯨魚", "water"), lifeItem("bird2", "🐦", "鳥", "tree"), lifeItem("rabbit2", "🐰", "兔子", "grass")],
+      [lifeItem("blow", "🐡", "魚", "water"), lifeItem("owl2", "🦉", "貓頭鷹", "tree"), lifeItem("deer", "🦌", "鹿", "grass")],
+      [lifeItem("fish3", "🐟", "魚", "water"), lifeItem("parrot2", "🦜", "鸚鵡", "tree"), lifeItem("sheep2", "🐑", "羊", "grass")],
+    ];
+    return shuffle(sets).map(function (items) {
+      return {
+        ask: "把小動物送回家",
+        slots: [
+          { id: "water", emoji: "🌊", label: "水" },
+          { id: "tree", emoji: "🌳", label: "樹" },
+          { id: "grass", emoji: "🌿", label: "草" },
+        ],
+        items: shuffle(items),
+      };
+    });
+  }
+
+  function makeLightQuestions() {
+    var colors = shuffle(["red", "red", "red", "red", "green", "green", "green", "green"]);
+    return colors.map(function (color) {
+      var red = color === "red";
+      return {
+        color: color,
+        answer: red ? "stop" : "go",
+        ask: red ? "紅燈了，要停還是走？" : "綠燈了，要停還是走？",
+      };
+    });
+  }
+
   function foxPrompt() {
     var q = state.questions[state.qIndex];
     if (state.levelId === "count") return "數一數，有幾個？";
@@ -1052,7 +1154,14 @@
     }
     if (state.levelId === "abc-case") return "把大寫和小寫連起來";
     if (state.levelId === "abc-draw") return "看圖上的字，連到第一個字母";
+    if (state.levelId === "dress" || state.levelId === "table" || state.levelId === "habitat" || state.levelId === "light") {
+      return (q && q.ask) || "看一看，做一做";
+    }
     return "選一關開始吧！";
+  }
+
+  function isPlaceLevel() {
+    return state.levelId === "dress" || state.levelId === "table" || state.levelId === "habitat";
   }
 
   function isConnectLevel() {
@@ -1246,6 +1355,18 @@
     if (id === "abc-draw") {
       return '<span class="preview-art preview-match" aria-hidden="true"><b>A</b><span class="draw-line"></span><span>🍎</span></span>';
     }
+    if (id === "dress") {
+      return '<span class="preview-art preview-match" aria-hidden="true"><span>☀️</span><b>👕</b></span>';
+    }
+    if (id === "table") {
+      return '<span class="preview-art preview-match" aria-hidden="true"><span>🍚</span><span>🥢</span><span>🥛</span></span>';
+    }
+    if (id === "habitat") {
+      return '<span class="preview-art preview-match" aria-hidden="true"><span>🐟</span><b>🌊</b></span>';
+    }
+    if (id === "light") {
+      return '<span class="preview-art preview-match" aria-hidden="true"><span>🔴</span><b>停</b></span>';
+    }
     return "";
   }
 
@@ -1306,6 +1427,10 @@
       '<h2 class="section-title">英文</h2>' +
       '<div class="level-grid">' +
       renderLevelCards(ENGLISH_LEVELS) +
+      "</div>" +
+      '<h2 class="section-title">生活</h2>' +
+      '<div class="level-grid">' +
+      renderLevelCards(LIFE_LEVELS) +
       "</div></div>" +
       '<div class="home-foot">' +
       starChip(state.starsTotal) +
@@ -1830,7 +1955,149 @@
       body = renderPicChoice(q, (q.word || "這個字") + "的第一個字母是誰？");
     }
     if (state.levelId === "abc-case" || state.levelId === "abc-draw") body = renderPicConnect(q);
+    if (state.levelId === "dress" || state.levelId === "table" || state.levelId === "habitat") {
+      body = renderLifePlace(q);
+    }
+    if (state.levelId === "light") body = renderLight(q);
     return '<div class="shell">' + playChrome() + body + "</div>";
+  }
+
+  function lifeItemById(id) {
+    var q = state.questions[state.qIndex];
+    if (!q || !q.items) return null;
+    for (var i = 0; i < q.items.length; i++) {
+      if (q.items[i].id === id) return q.items[i];
+    }
+    return null;
+  }
+
+  function itemInSlot(slotId) {
+    var q = state.questions[state.qIndex];
+    if (!q || !q.items) return null;
+    for (var i = 0; i < q.items.length; i++) {
+      if (state.placed[q.items[i].id] === slotId) return q.items[i];
+    }
+    return null;
+  }
+
+  function renderLifeChip(item, extraClass) {
+    var mark = extraClass ? " " + extraClass : "";
+    if (state.heldItem === item.id) mark += " held";
+    if (state.choiceMark && state.choiceMark.value === item.id) mark += " " + state.choiceMark.cls;
+    var placed = extraClass === "in-slot";
+    return (
+      '<button type="button" class="life-item' +
+      mark +
+      '" data-life-item="' +
+      item.id +
+      '"' +
+      (placed ? ' data-placed="1"' : "") +
+      '><span class="life-emoji">' +
+      item.emoji +
+      '</span><span class="life-name">' +
+      escapeHtml(item.name) +
+      "</span></button>"
+    );
+  }
+
+  function renderLifeSlot(slot) {
+    var filled = itemInSlot(slot.id);
+    var inner = filled
+      ? renderLifeChip(filled, "in-slot")
+      : '<span class="life-slot-empty"><span class="life-emoji">' +
+        slot.emoji +
+        '</span><span class="life-name">' +
+        escapeHtml(slot.label) +
+        "</span></span>";
+    if (state.levelId === "dress") {
+      inner =
+        '<span class="life-emoji" aria-hidden="true">🧒</span>' +
+        (filled
+          ? renderLifeChip(filled, "in-slot")
+          : '<span class="life-name">' + escapeHtml(slot.label) + "</span>");
+    }
+    return (
+      '<div class="life-slot' +
+      (filled ? " filled" : "") +
+      '" data-life-slot="' +
+      slot.id +
+      '" role="button" aria-label="' +
+      escapeHtml(slot.label) +
+      '">' +
+      inner +
+      "</div>"
+    );
+  }
+
+  function renderLifePlace(q) {
+    var tray = q.items
+      .filter(function (item) {
+        return !state.placed[item.id];
+      })
+      .map(function (item) {
+        return renderLifeChip(item, "");
+      })
+      .join("");
+    var slots = q.slots
+      .map(function (slot) {
+        return renderLifeSlot(slot);
+      })
+      .join("");
+    var board = "";
+    if (state.levelId === "dress") {
+      board =
+        '<div class="life-scene">' +
+        '<div class="life-weather"><span class="life-emoji">' +
+        q.sceneEmoji +
+        '</span><span class="life-name">' +
+        escapeHtml(q.sceneLabel) +
+        "</span></div>" +
+        slots +
+        "</div>";
+    } else if (state.levelId === "table") {
+      board = '<div class="life-table">' + slots + "</div>";
+    } else {
+      board = '<div class="life-homes">' + slots + "</div>";
+    }
+    return (
+      '<div class="play-col">' +
+      '<div class="prompt">' +
+      escapeHtml(q.ask) +
+      "</div>" +
+      '<div class="life-stage is-place">' +
+      board +
+      '<div class="life-tray">' +
+      tray +
+      "</div></div></div>"
+    );
+  }
+
+  function renderLight(q) {
+    var red = q.color === "red";
+    var stopMark = state.choiceMark && state.choiceMark.value === "stop" ? " " + state.choiceMark.cls : "";
+    var goMark = state.choiceMark && state.choiceMark.value === "go" ? " " + state.choiceMark.cls : "";
+    return (
+      '<div class="play-col">' +
+      '<div class="prompt">' +
+      escapeHtml(q.ask) +
+      "</div>" +
+      '<div class="life-stage">' +
+      '<div class="light-card">' +
+      '<div class="light-lamp ' +
+      q.color +
+      '" aria-hidden="true"></div>' +
+      '<div class="light-word">' +
+      (red ? "紅燈" : "綠燈") +
+      "</div></div>" +
+      '<div class="light-choices">' +
+      '<button class="choice light-btn stop-btn' +
+      stopMark +
+      '" type="button" data-action="answer" data-value="stop">🛑 停</button>' +
+      '<button class="choice light-btn go-btn' +
+      goMark +
+      '" type="button" data-action="answer" data-value="go">🚶 走</button>' +
+      "</div></div></div>"
+    );
   }
 
   function renderClear() {
@@ -1867,6 +2134,166 @@
     writeDraw.active = false;
     writeDraw.pointerId = null;
     writeDraw.points = [];
+  }
+
+  function resetPlaceDrag() {
+    placeDrag.active = false;
+    placeDrag.pointerId = null;
+    placeDrag.itemId = null;
+    placeDrag.startX = 0;
+    placeDrag.startY = 0;
+    placeDrag.x = 0;
+    placeDrag.y = 0;
+    placeDrag.moved = false;
+    hidePlaceGhost();
+    clearPlaceAim();
+  }
+
+  function hidePlaceGhost() {
+    var g = document.querySelector(".life-ghost");
+    if (g && g.parentNode) g.parentNode.removeChild(g);
+  }
+
+  function clearPlaceAim() {
+    var nodes = app.querySelectorAll(".life-slot.aim");
+    for (var i = 0; i < nodes.length; i++) nodes[i].classList.remove("aim");
+  }
+
+  function movePlaceGhost(x, y) {
+    var g = document.querySelector(".life-ghost");
+    if (!g) return;
+    g.style.left = x - g.offsetWidth / 2 + "px";
+    g.style.top = y - g.offsetHeight / 2 + "px";
+  }
+
+  function ensurePlaceGhost(item) {
+    hidePlaceGhost();
+    var g = document.createElement("div");
+    g.className = "life-ghost";
+    g.setAttribute("aria-hidden", "true");
+    g.innerHTML =
+      '<span class="life-emoji">' +
+      item.emoji +
+      '</span><span class="life-name">' +
+      escapeHtml(item.name) +
+      "</span>";
+    document.body.appendChild(g);
+    return g;
+  }
+
+  function slotFromPoint(x, y) {
+    var el = document.elementFromPoint(x, y);
+    return el ? el.closest("[data-life-slot]") : null;
+  }
+
+  function allNeededPlaced(q) {
+    for (var i = 0; i < q.items.length; i++) {
+      if (q.items[i].slot && !state.placed[q.items[i].id]) return false;
+    }
+    return true;
+  }
+
+  function finishPlaceIfDone() {
+    var q = state.questions[state.qIndex];
+    if (!allNeededPlaced(q)) {
+      setFox(pick(PRAISE), "happy");
+      render();
+      setTimeout(function () {
+        if (isPlaceLevel() && state.screen === "play" && !state.locked) {
+          setFox(foxPrompt(), "idle");
+        }
+      }, 700);
+      return;
+    }
+    state.locked = true;
+    state.heldItem = null;
+    state.foxMsg = pick(PRAISE);
+    state.foxMood = "happy";
+    render();
+    setTimeout(nextQuestion, 900);
+  }
+
+  function tryPlace(itemId, slotId) {
+    if (state.locked || !isPlaceLevel()) return;
+    var item = lifeItemById(itemId);
+    if (!item || state.placed[item.id]) return;
+    if (itemInSlot(slotId)) return;
+    state.heldItem = null;
+    if (item.slot && item.slot === slotId) {
+      state.placed[item.id] = slotId;
+      playCorrect();
+      finishPlaceIfDone();
+    } else {
+      markRetry(item.id, "再看一次");
+    }
+  }
+
+  function onPlacePointerDown(e) {
+    if (state.locked || state.screen !== "play" || !isPlaceLevel()) return;
+    if (placeDrag.active) return;
+    var itemEl = e.target.closest("[data-life-item]");
+    if (!itemEl || itemEl.getAttribute("data-placed")) return;
+    e.preventDefault();
+    try {
+      itemEl.setPointerCapture(e.pointerId);
+    } catch (err) {}
+    placeDrag.active = true;
+    placeDrag.pointerId = e.pointerId;
+    placeDrag.itemId = itemEl.getAttribute("data-life-item");
+    placeDrag.startX = e.clientX;
+    placeDrag.startY = e.clientY;
+    placeDrag.x = e.clientX;
+    placeDrag.y = e.clientY;
+    placeDrag.moved = false;
+  }
+
+  function onPlacePointerMove(e) {
+    if (!placeDrag.active || placeDrag.pointerId !== e.pointerId) return;
+    e.preventDefault();
+    placeDrag.x = e.clientX;
+    placeDrag.y = e.clientY;
+    if (!placeDrag.moved) {
+      if (Math.abs(e.clientX - placeDrag.startX) + Math.abs(e.clientY - placeDrag.startY) < 12) return;
+      placeDrag.moved = true;
+      var item = lifeItemById(placeDrag.itemId);
+      if (!item) return;
+      ensurePlaceGhost(item);
+      var el = app.querySelector('[data-life-item="' + placeDrag.itemId + '"]');
+      if (el) el.classList.add("dragging");
+    }
+    movePlaceGhost(e.clientX, e.clientY);
+    clearPlaceAim();
+    var over = slotFromPoint(e.clientX, e.clientY);
+    if (over && !over.classList.contains("filled")) over.classList.add("aim");
+  }
+
+  function onPlacePointerUp(e) {
+    if (isPlaceLevel() && !placeDrag.active && !state.locked && state.heldItem) {
+      var tapSlot = e.target.closest("[data-life-slot]");
+      if (tapSlot && !tapSlot.classList.contains("filled")) {
+        tryPlace(state.heldItem, tapSlot.getAttribute("data-life-slot"));
+      }
+      return;
+    }
+    if (!placeDrag.active || placeDrag.pointerId !== e.pointerId) return;
+    e.preventDefault();
+    var itemId = placeDrag.itemId;
+    var moved = placeDrag.moved;
+    var over = moved ? slotFromPoint(e.clientX, e.clientY) : null;
+    resetPlaceDrag();
+    if (moved) {
+      if (over && !over.classList.contains("filled")) {
+        tryPlace(itemId, over.getAttribute("data-life-slot"));
+      }
+      return;
+    }
+    if (state.levelId === "dress") {
+      tryPlace(itemId, "wear");
+      return;
+    }
+    if (state.heldItem === itemId) state.heldItem = null;
+    else state.heldItem = itemId;
+    render();
   }
 
   function resetMatchDraw() {
@@ -2109,8 +2536,11 @@
     state.choiceMark = null;
     state.traceNext = 0;
     state.matchDone = {};
+    state.placed = {};
+    state.heldItem = null;
     resetMatchDraw();
     resetWriteDraw();
+    resetPlaceDrag();
     state.foxMood = "idle";
     if (id === "count") state.questions = makeCountQuestions();
     else if (id === "match") state.questions = makeMatchQuestions();
@@ -2129,6 +2559,10 @@
     else if (id === "abc-pic") state.questions = makeAbcPicQuestions();
     else if (id === "abc-case") state.questions = makeAbcCaseQuestions();
     else if (id === "abc-draw") state.questions = makeAbcDrawQuestions();
+    else if (id === "dress") state.questions = makeDressQuestions();
+    else if (id === "table") state.questions = makeTableQuestions();
+    else if (id === "habitat") state.questions = makeHabitatQuestions();
+    else if (id === "light") state.questions = makeLightQuestions();
     else return;
     state.foxMsg = foxPrompt();
     state.screen = "play";
@@ -2148,8 +2582,11 @@
     state.locked = false;
     state.choiceMark = null;
     state.matchDone = {};
+    state.placed = {};
+    state.heldItem = null;
     resetMatchDraw();
     resetWriteDraw();
+    resetPlaceDrag();
     render();
   }
 
@@ -2167,8 +2604,11 @@
     state.choiceMark = null;
     state.traceNext = 0;
     state.matchDone = {};
+    state.placed = {};
+    state.heldItem = null;
     resetMatchDraw();
     resetWriteDraw();
+    resetPlaceDrag();
     state.locked = false;
     state.foxMood = "idle";
     if (state.qIndex + 1 >= state.questions.length) {
@@ -2250,6 +2690,11 @@
       return;
     }
     if (state.levelId === "bpm-pic" || state.levelId === "abc-pic" || (state.levelId === "hanzi" && q.mode !== "draw")) {
+      if (raw === q.answer) markCorrect(raw);
+      else markRetry(raw, "再看一次");
+      return;
+    }
+    if (state.levelId === "light") {
       if (raw === q.answer) markCorrect(raw);
       else markRetry(raw, "再看一次");
     }
@@ -2490,23 +2935,27 @@
   app.addEventListener("pointerdown", function (e) {
     onMatchPointerDown(e);
     onWritePointerDown(e);
+    onPlacePointerDown(e);
   });
   app.addEventListener("pointermove", function (e) {
     onMatchPointerMove(e);
     onWritePointerMove(e);
+    onPlacePointerMove(e);
   });
   app.addEventListener("pointerup", function (e) {
     onMatchPointerUp(e);
     onWritePointerUp(e);
+    onPlacePointerUp(e);
   });
   app.addEventListener("pointercancel", function (e) {
     onMatchPointerUp(e);
     onWritePointerUp(e);
+    onPlacePointerUp(e);
   });
   document.addEventListener(
     "touchmove",
     function (e) {
-      if (matchDraw.active || writeDraw.active) e.preventDefault();
+      if (matchDraw.active || writeDraw.active || placeDrag.active) e.preventDefault();
     },
     { passive: false }
   );
