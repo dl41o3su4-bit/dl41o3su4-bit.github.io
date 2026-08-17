@@ -997,7 +997,7 @@
     return (
       '<div class="star-chip' +
       (extraClass ? " " + extraClass : "") +
-      '" aria-label="星星總數">星星 : ' +
+      '" aria-label="星星總數">☀️ 星星：' +
       n +
       "</div>"
     );
@@ -1005,10 +1005,13 @@
 
   function levelPreview(id) {
     if (id === "count") {
-      return '<span class="preview-art preview-count" aria-hidden="true"><span>🍒</span><span>🍒</span><span>🍒</span></span>';
+      return (
+        '<span class="preview-art preview-count" aria-hidden="true">' +
+        '<span class="cherry-ball"></span><span class="cherry-ball"></span><span class="cherry-ball"></span></span>'
+      );
     }
     if (id === "match") {
-      return '<span class="preview-art preview-match" aria-hidden="true"><b>3</b><span>⭐⭐⭐</span></span>';
+      return '<span class="preview-art preview-match" aria-hidden="true"><b>3</b><span class="stars">⭐</span><span class="stars">⭐</span><span class="stars">⭐</span></span>';
     }
     if (id === "next") {
       return '<span class="preview-art preview-next" aria-hidden="true"><i>3</i><i>4</i><i>5</i><em>?</em></span>';
@@ -1016,7 +1019,10 @@
     if (id === "trace") {
       return (
         '<span class="preview-art preview-trace" aria-hidden="true">' +
-        '<svg viewBox="0 0 80 90"><path d="M 16 18 C 64 6 70 40 38 46 C 72 50 70 84 16 74"></path></svg></span>'
+        '<svg viewBox="0 0 80 90">' +
+        '<path d="M 16 18 C 64 6 70 40 38 46 C 72 50 70 84 16 74"></path>' +
+        '<circle class="preview-start" cx="16" cy="18" r="7"></circle>' +
+        "</svg></span>"
       );
     }
     if (id === "more") {
@@ -1081,37 +1087,15 @@
           levelPreview(lv.id) +
           '<span class="name">' +
           lv.name +
-          "</span>" +
-          '<span class="hint">' +
-          lv.hint +
           "</span></button>"
         );
       })
       .join("");
   }
 
-  function roomDecor(kind) {
-    if (kind === "home") {
-      return (
-        '<div class="sun" aria-hidden="true"></div>' +
-        '<span class="hang cherry c1" aria-hidden="true">🍒</span>' +
-        '<span class="hang cherry c2" aria-hidden="true">🍒</span>' +
-        '<span class="hang cherry c3" aria-hidden="true">🍒</span>' +
-        '<span class="hang star s1" aria-hidden="true">⭐</span>' +
-        '<span class="hang star s2" aria-hidden="true">⭐</span>'
-      );
-    }
-    return (
-      '<div class="sun play-sun" aria-hidden="true"></div>' +
-      '<span class="hang cherry play-c" aria-hidden="true">🍒</span>' +
-      '<span class="hang star play-s" aria-hidden="true">⭐</span>'
-    );
-  }
-
   function renderHome() {
     return (
       '<div class="shell is-home">' +
-      roomDecor("home") +
       topTools("<span></span>") +
       '<div class="home-hero">' +
       '<p class="kicker">小狐狸老師的數字課</p>' +
@@ -1136,7 +1120,7 @@
       "</div></div>" +
       '<div class="home-foot">' +
       starChip(state.starsTotal) +
-      "<span></span></div></div>"
+      "</div></div>"
     );
   }
 
@@ -1154,7 +1138,6 @@
 
   function playChrome() {
     return (
-      roomDecor("play") +
       '<div class="topbar">' +
       '<button class="home-btn" type="button" data-action="home" aria-label="回家">🏠</button>' +
       '<div class="progress-chip">' +
@@ -1650,7 +1633,6 @@
   function renderClear() {
     return (
       '<div class="shell">' +
-      roomDecor("play") +
       topTools("<span></span>") +
       '<div class="clear">' +
       foxImg() +
