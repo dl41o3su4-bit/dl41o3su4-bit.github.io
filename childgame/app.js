@@ -190,6 +190,7 @@
 
   var BPM_WORDS = [
     { bpm: "ㄅ", word: "包子", emoji: "🥟" },
+    { bpm: "ㄅ", word: "冰", emoji: "❄️" },
     { bpm: "ㄅ", word: "冰淇淋", emoji: "🍦" },
     { bpm: "ㄆ", word: "葡萄", emoji: "🍇" },
     { bpm: "ㄆ", word: "蘋果", emoji: "🍎" },
