@@ -1143,7 +1143,10 @@
   function bootFromHash() {
     var id = (location.hash || "").replace("#", "");
     if (isLevelId(id)) startLevel(id);
+    else if (state.screen !== "home") goHome();
   }
+
+  window.addEventListener("hashchange", bootFromHash);
 
   render();
   bootFromHash();

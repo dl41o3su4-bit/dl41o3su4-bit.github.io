@@ -333,8 +333,7 @@ button:focus-visible {
   padding: 6px;
   display: grid;
   place-items: center;
-  container-type: size;
-  font-size: min(70cqw, 70cqh, 72px);
+  font-size: min(14cqw, 55cqh, 72px);
   line-height: 1;
   background: #fff;
   overflow: hidden;
