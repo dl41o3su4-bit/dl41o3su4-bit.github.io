@@ -1050,22 +1050,80 @@
 
   function makeDressQuestions() {
     var rounds = [
-      { weather: "☀️", label: "大太陽", ask: "大太陽，要穿什麼？", ok: lifeItem("tee", "👕", "短袖", "wear"), wrong: [lifeItem("scarf", "🧣", "圍巾"), lifeItem("boot", "👢", "雨靴")] },
-      { weather: "🌧️", label: "下雨了", ask: "下雨了，要帶什麼？", ok: lifeItem("umb", "☂️", "雨傘", "wear"), wrong: [lifeItem("glass", "🕶️", "太陽眼鏡"), lifeItem("tee2", "👕", "短袖")] },
-      { weather: "❄️", label: "好冷哦", ask: "好冷，要穿什麼？", ok: lifeItem("coat", "🧥", "外套", "wear"), wrong: [lifeItem("tee3", "👕", "短袖"), lifeItem("sandal", "👡", "拖鞋")] },
-      { weather: "☀️", label: "大太陽", ask: "大太陽，戴什麼？", ok: lifeItem("cap", "🧢", "帽子", "wear"), wrong: [lifeItem("glove", "🧤", "手套"), lifeItem("scarf2", "🧣", "圍巾")] },
-      { weather: "🌧️", label: "下雨了", ask: "下雨了，穿什麼？", ok: lifeItem("rainboot", "👢", "雨靴", "wear"), wrong: [lifeItem("cap2", "🧢", "帽子"), lifeItem("glass2", "🕶️", "太陽眼鏡")] },
-      { weather: "❄️", label: "好冷哦", ask: "好冷，戴什麼？", ok: lifeItem("glove2", "🧤", "手套", "wear"), wrong: [lifeItem("tee4", "👕", "短袖"), lifeItem("sandal2", "👡", "拖鞋")] },
-      { weather: "☀️", label: "好熱哦", ask: "好熱，戴什麼？", ok: lifeItem("sunglass", "🕶️", "太陽眼鏡", "wear"), wrong: [lifeItem("scarf3", "🧣", "圍巾"), lifeItem("coat2", "🧥", "外套")] },
-      { weather: "💨", label: "風好大", ask: "風好大，穿什麼？", ok: lifeItem("windcoat", "🧥", "外套", "wear"), wrong: [lifeItem("sandal3", "👡", "拖鞋"), lifeItem("tee5", "👕", "短袖")] },
+      {
+        weather: "☀️",
+        label: "大太陽",
+        ask: "大太陽，拖上去",
+        slots: [
+          { id: "head", emoji: "🧒", label: "頭上" },
+          { id: "body", emoji: "👕", label: "衣服" },
+        ],
+        ok: [lifeItem("cap", "🧢", "帽子", "head"), lifeItem("tee", "👕", "短袖", "body")],
+        wrong: [lifeItem("scarf", "🧣", "圍巾"), lifeItem("boot", "👢", "雨靴")],
+      },
+      {
+        weather: "🌧️",
+        label: "下雨了",
+        ask: "下雨了，拖上去",
+        slots: [
+          { id: "head", emoji: "🧒", label: "頭上" },
+          { id: "body", emoji: "🧥", label: "衣服" },
+        ],
+        ok: [lifeItem("umb", "☂️", "雨傘", "head"), lifeItem("rain", "🧥", "雨衣", "body")],
+        wrong: [lifeItem("glass", "🕶️", "太陽眼鏡"), lifeItem("tee2", "👕", "短袖")],
+      },
+      {
+        weather: "❄️",
+        label: "好冷",
+        ask: "好冷，拖上去",
+        slots: [
+          { id: "head", emoji: "🧒", label: "頭上" },
+          { id: "body", emoji: "🧥", label: "衣服" },
+        ],
+        ok: [lifeItem("scarf2", "🧣", "圍巾", "head"), lifeItem("coat", "🧥", "外套", "body")],
+        wrong: [lifeItem("tee3", "👕", "短袖"), lifeItem("sandal", "👡", "拖鞋")],
+      },
+      {
+        weather: "☀️",
+        label: "好熱",
+        ask: "好熱，拖上去",
+        slots: [
+          { id: "head", emoji: "🧒", label: "頭上" },
+          { id: "body", emoji: "👕", label: "衣服" },
+        ],
+        ok: [lifeItem("sunglass", "🕶️", "太陽眼鏡", "head"), lifeItem("tee4", "👕", "短袖", "body")],
+        wrong: [lifeItem("scarf3", "🧣", "圍巾"), lifeItem("coat2", "🧥", "外套")],
+      },
+      {
+        weather: "💨",
+        label: "風好大",
+        ask: "風好大，拖上去",
+        slots: [
+          { id: "head", emoji: "🧒", label: "頭上" },
+          { id: "body", emoji: "🧥", label: "衣服" },
+        ],
+        ok: [lifeItem("cap2", "🧢", "帽子", "head"), lifeItem("windcoat", "🧥", "外套", "body")],
+        wrong: [lifeItem("sandal2", "👡", "拖鞋"), lifeItem("tee5", "👕", "短袖")],
+      },
+      {
+        weather: "🌧️",
+        label: "下雨了",
+        ask: "下雨了，拖上去",
+        slots: [
+          { id: "head", emoji: "🧒", label: "頭上" },
+          { id: "body", emoji: "👢", label: "腳上" },
+        ],
+        ok: [lifeItem("umb2", "☂️", "雨傘", "head"), lifeItem("rainboot", "👢", "雨靴", "body")],
+        wrong: [lifeItem("cap3", "🧢", "帽子"), lifeItem("glass2", "🕶️", "太陽眼鏡")],
+      },
     ];
     return shuffle(rounds).map(function (r) {
       return {
         ask: r.ask,
         sceneEmoji: r.weather,
         sceneLabel: r.label,
-        slots: [{ id: "wear", emoji: "🧒", label: "穿這個" }],
-        items: shuffle([r.ok].concat(r.wrong)),
+        slots: r.slots,
+        items: shuffle(r.ok.concat(r.wrong)),
       };
     });
   }
@@ -1080,7 +1138,7 @@
       ];
       if (i >= 3) items.push(lifeItem("spoon", "🥄", "湯匙"));
       qs.push({
-        ask: "把碗、筷子、杯子放到桌上",
+        ask: "拖到桌上",
         slots: [
           { id: "bowl", emoji: "🍽️", label: "碗" },
           { id: "sticks", emoji: "🍽️", label: "筷子" },
@@ -1103,7 +1161,7 @@
     ];
     return shuffle(sets).map(function (items) {
       return {
-        ask: "把小動物送回家",
+        ask: "拖回家",
         slots: [
           { id: "water", emoji: "🌊", label: "水" },
           { id: "tree", emoji: "🌳", label: "樹" },
@@ -1121,7 +1179,7 @@
       return {
         color: color,
         answer: red ? "stop" : "go",
-        ask: red ? "紅燈了，要停還是走？" : "綠燈了，要停還是走？",
+        ask: red ? "紅燈，停還是走？" : "綠燈，停還是走？",
       };
     });
   }
@@ -1162,6 +1220,10 @@
 
   function isPlaceLevel() {
     return state.levelId === "dress" || state.levelId === "table" || state.levelId === "habitat";
+  }
+
+  function isLifeLevel() {
+    return isPlaceLevel() || state.levelId === "light";
   }
 
   function isConnectLevel() {
@@ -1959,7 +2021,7 @@
       body = renderLifePlace(q);
     }
     if (state.levelId === "light") body = renderLight(q);
-    return '<div class="shell">' + playChrome() + body + "</div>";
+    return '<div class="shell' + (isLifeLevel() ? " is-life" : "") + '">' + playChrome() + body + "</div>";
   }
 
   function lifeItemById(id) {
@@ -1982,21 +2044,22 @@
 
   function renderLifeChip(item, extraClass) {
     var mark = extraClass ? " " + extraClass : "";
-    if (state.heldItem === item.id) mark += " held";
     if (state.choiceMark && state.choiceMark.value === item.id) mark += " " + state.choiceMark.cls;
     var placed = extraClass === "in-slot";
     return (
-      '<button type="button" class="life-item' +
+      '<div class="life-item' +
       mark +
       '" data-life-item="' +
       item.id +
       '"' +
       (placed ? ' data-placed="1"' : "") +
-      '><span class="life-emoji">' +
+      ' role="img" aria-label="' +
+      escapeHtml(item.name) +
+      '"><span class="life-emoji">' +
       item.emoji +
       '</span><span class="life-name">' +
       escapeHtml(item.name) +
-      "</span></button>"
+      "</span></div>"
     );
   }
 
@@ -2009,19 +2072,12 @@
         '</span><span class="life-name">' +
         escapeHtml(slot.label) +
         "</span></span>";
-    if (state.levelId === "dress") {
-      inner =
-        '<span class="life-emoji" aria-hidden="true">🧒</span>' +
-        (filled
-          ? renderLifeChip(filled, "in-slot")
-          : '<span class="life-name">' + escapeHtml(slot.label) + "</span>");
-    }
     return (
       '<div class="life-slot' +
       (filled ? " filled" : "") +
       '" data-life-slot="' +
       slot.id +
-      '" role="button" aria-label="' +
+      '" aria-label="' +
       escapeHtml(slot.label) +
       '">' +
       inner +
@@ -2081,21 +2137,26 @@
       '<div class="prompt">' +
       escapeHtml(q.ask) +
       "</div>" +
-      '<div class="life-stage">' +
+      '<div class="life-stage light-play">' +
       '<div class="light-card">' +
-      '<div class="light-lamp ' +
-      q.color +
-      '" aria-hidden="true"></div>' +
+      '<div class="light-pole" aria-hidden="true">' +
+      '<div class="light-lamp red' +
+      (red ? " on" : "") +
+      '"></div>' +
+      '<div class="light-lamp amber"></div>' +
+      '<div class="light-lamp green' +
+      (red ? "" : " on") +
+      '"></div></div>' +
       '<div class="light-word">' +
       (red ? "紅燈" : "綠燈") +
       "</div></div>" +
       '<div class="light-choices">' +
-      '<button class="choice light-btn stop-btn' +
+      '<button class="light-btn stop-btn' +
       stopMark +
-      '" type="button" data-action="answer" data-value="stop">🛑 停</button>' +
-      '<button class="choice light-btn go-btn' +
+      '" type="button" data-action="answer" data-value="stop"><span class="light-btn-ico">🛑</span>停</button>' +
+      '<button class="light-btn go-btn' +
       goMark +
-      '" type="button" data-action="answer" data-value="go">🚶 走</button>' +
+      '" type="button" data-action="answer" data-value="go"><span class="light-btn-ico">🚶</span>走</button>' +
       "</div></div></div>"
     );
   }
@@ -2170,6 +2231,7 @@
     hidePlaceGhost();
     var g = document.createElement("div");
     g.className = "life-ghost";
+    g.style.transition = "none";
     g.setAttribute("aria-hidden", "true");
     g.innerHTML =
       '<span class="life-emoji">' +
@@ -2196,7 +2258,7 @@
   function finishPlaceIfDone() {
     var q = state.questions[state.qIndex];
     if (!allNeededPlaced(q)) {
-      setFox(pick(PRAISE), "happy");
+      setFox("答對了", "happy");
       render();
       setTimeout(function () {
         if (isPlaceLevel() && state.screen === "play" && !state.locked) {
@@ -2207,25 +2269,78 @@
     }
     state.locked = true;
     state.heldItem = null;
-    state.foxMsg = pick(PRAISE);
+    state.foxMsg = "答對了";
     state.foxMood = "happy";
     render();
     setTimeout(nextQuestion, 900);
   }
 
+  function clearItemDragClass(itemId) {
+    var el = app.querySelector('[data-life-item="' + itemId + '"]');
+    if (el) el.classList.remove("dragging");
+    return el;
+  }
+
+  function bouncePlaceItem(itemId) {
+    var ghost = document.querySelector(".life-ghost");
+    var target = app.querySelector('[data-life-item="' + itemId + '"]');
+    playWrong();
+    setFox("再看一次", "think");
+    placeDrag.active = false;
+    placeDrag.pointerId = null;
+    placeDrag.moved = false;
+    clearPlaceAim();
+    if (ghost && target) {
+      var r = target.getBoundingClientRect();
+      ghost.style.transition = "left 0.32s ease, top 0.32s ease";
+      ghost.style.left = r.left + r.width / 2 - ghost.offsetWidth / 2 + "px";
+      ghost.style.top = r.top + r.height / 2 - ghost.offsetHeight / 2 + "px";
+      setTimeout(function () {
+        hidePlaceGhost();
+        if (target.parentNode) {
+          target.classList.remove("dragging");
+          target.classList.add("bounce");
+        }
+        setTimeout(function () {
+          if (target.parentNode) target.classList.remove("bounce");
+          if (isPlaceLevel() && state.screen === "play" && !state.locked) {
+            setFox(foxPrompt(), "idle");
+          }
+        }, 420);
+      }, 320);
+      return;
+    }
+    hidePlaceGhost();
+    if (target) {
+      target.classList.remove("dragging");
+      target.classList.add("bounce");
+    }
+    setTimeout(function () {
+      if (target && target.parentNode) target.classList.remove("bounce");
+      if (isPlaceLevel() && state.screen === "play" && !state.locked) {
+        setFox(foxPrompt(), "idle");
+      }
+    }, 420);
+  }
+
   function tryPlace(itemId, slotId) {
     if (state.locked || !isPlaceLevel()) return;
     var item = lifeItemById(itemId);
-    if (!item || state.placed[item.id]) return;
-    if (itemInSlot(slotId)) return;
-    state.heldItem = null;
-    if (item.slot && item.slot === slotId) {
-      state.placed[item.id] = slotId;
-      playCorrect();
-      finishPlaceIfDone();
-    } else {
-      markRetry(item.id, "再看一次");
+    if (!item || state.placed[item.id]) {
+      hidePlaceGhost();
+      clearItemDragClass(itemId);
+      return;
     }
+    if (itemInSlot(slotId) || !item.slot || item.slot !== slotId) {
+      bouncePlaceItem(itemId);
+      return;
+    }
+    hidePlaceGhost();
+    clearItemDragClass(itemId);
+    state.heldItem = null;
+    state.placed[item.id] = slotId;
+    playCorrect();
+    finishPlaceIfDone();
   }
 
   function onPlacePointerDown(e) {
@@ -2253,7 +2368,7 @@
     placeDrag.x = e.clientX;
     placeDrag.y = e.clientY;
     if (!placeDrag.moved) {
-      if (Math.abs(e.clientX - placeDrag.startX) + Math.abs(e.clientY - placeDrag.startY) < 12) return;
+      if (Math.abs(e.clientX - placeDrag.startX) + Math.abs(e.clientY - placeDrag.startY) < 18) return;
       placeDrag.moved = true;
       var item = lifeItemById(placeDrag.itemId);
       if (!item) return;
@@ -2268,32 +2383,26 @@
   }
 
   function onPlacePointerUp(e) {
-    if (isPlaceLevel() && !placeDrag.active && !state.locked && state.heldItem) {
-      var tapSlot = e.target.closest("[data-life-slot]");
-      if (tapSlot && !tapSlot.classList.contains("filled")) {
-        tryPlace(state.heldItem, tapSlot.getAttribute("data-life-slot"));
-      }
-      return;
-    }
     if (!placeDrag.active || placeDrag.pointerId !== e.pointerId) return;
     e.preventDefault();
     var itemId = placeDrag.itemId;
     var moved = placeDrag.moved;
     var over = moved ? slotFromPoint(e.clientX, e.clientY) : null;
-    resetPlaceDrag();
-    if (moved) {
-      if (over && !over.classList.contains("filled")) {
-        tryPlace(itemId, over.getAttribute("data-life-slot"));
-      }
+    placeDrag.active = false;
+    placeDrag.pointerId = null;
+    placeDrag.moved = false;
+    clearPlaceAim();
+    if (!moved) {
+      hidePlaceGhost();
+      clearItemDragClass(itemId);
       return;
     }
-    if (state.levelId === "dress") {
-      tryPlace(itemId, "wear");
+    if (over) {
+      tryPlace(itemId, over.getAttribute("data-life-slot"));
       return;
     }
-    if (state.heldItem === itemId) state.heldItem = null;
-    else state.heldItem = itemId;
-    render();
+    hidePlaceGhost();
+    clearItemDragClass(itemId);
   }
 
   function resetMatchDraw() {
@@ -2695,8 +2804,17 @@
       return;
     }
     if (state.levelId === "light") {
-      if (raw === q.answer) markCorrect(raw);
-      else markRetry(raw, "再看一次");
+      if (raw === q.answer) {
+        state.locked = true;
+        state.choiceMark = { value: raw, cls: "ok" };
+        state.foxMsg = "答對了";
+        state.foxMood = "happy";
+        playCorrect();
+        render();
+        setTimeout(nextQuestion, 900);
+      } else {
+        markRetry(raw, "再看一次");
+      }
     }
   }
 
