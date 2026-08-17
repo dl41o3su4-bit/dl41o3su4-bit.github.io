@@ -188,29 +188,34 @@
     },
   };
 
+  // 配對規則（大班 5–6 歲；後面新增也要過這關，寧少勿濫）：
+  // 1. 圖要讓孩子先說出「這一個詞」，不是親戚詞。
+  // 2. 卡片上一定印大大的繁體中文詞。
+  // 3. 狐狸一定唸詞：「Ｘ的第一個音是誰？」
+  // 4. 注音是該印出來的詞的聲符，不是諧音或再聯想。
+  // 5. 兩種唸法都合理就刪或換（冰塊/濕、杯子/可樂、鉛筆/字、雪花/雪、餃子/包子）。
+  // 6. 國字看圖認字：圖＋印的字就是那個字（山/水/火/人），不能再轉一層（大象≠大）。
   var BPM_WORDS = [
-    { bpm: "ㄅ", word: "包子", emoji: "🥟" },
-    { bpm: "ㄅ", word: "冰", emoji: "❄️" },
     { bpm: "ㄅ", word: "冰淇淋", emoji: "🍦" },
     { bpm: "ㄆ", word: "葡萄", emoji: "🍇" },
     { bpm: "ㄆ", word: "蘋果", emoji: "🍎" },
     { bpm: "ㄇ", word: "貓", emoji: "🐱" },
     { bpm: "ㄇ", word: "帽子", emoji: "🧢" },
     { bpm: "ㄈ", word: "飛機", emoji: "✈️" },
-    { bpm: "ㄉ", word: "蛋", emoji: "🥚" },
     { bpm: "ㄉ", word: "大象", emoji: "🐘" },
+    { bpm: "ㄉ", word: "蛋糕", emoji: "🎂" },
     { bpm: "ㄊ", word: "太陽", emoji: "☀️" },
     { bpm: "ㄊ", word: "兔子", emoji: "🐰" },
     { bpm: "ㄋ", word: "牛奶", emoji: "🥛" },
-    { bpm: "ㄋ", word: "鳥", emoji: "🐦" },
+    { bpm: "ㄋ", word: "牛", emoji: "🐄" },
     { bpm: "ㄌ", word: "老虎", emoji: "🐯" },
     { bpm: "ㄍ", word: "狗", emoji: "🐶" },
     { bpm: "ㄎ", word: "恐龍", emoji: "🦖" },
     { bpm: "ㄏ", word: "花朵", emoji: "🌸" },
     { bpm: "ㄏ", word: "猴子", emoji: "🐵" },
     { bpm: "ㄐ", word: "雞", emoji: "🐔" },
-    { bpm: "ㄑ", word: "球", emoji: "⚽" },
     { bpm: "ㄑ", word: "青蛙", emoji: "🐸" },
+    { bpm: "ㄑ", word: "氣球", emoji: "🎈" },
     { bpm: "ㄒ", word: "蝦", emoji: "🦐" },
     { bpm: "ㄒ", word: "西瓜", emoji: "🍉" },
     { bpm: "ㄓ", word: "豬", emoji: "🐷" },
@@ -224,18 +229,9 @@
     { ch: "水", emoji: "💧" },
     { ch: "火", emoji: "🔥" },
     { ch: "人", emoji: "🧑" },
-    { ch: "口", emoji: "👄" },
     { ch: "手", emoji: "✋" },
-    { ch: "大", emoji: "🐘" },
-    { ch: "小", emoji: "🐭" },
     { ch: "上", emoji: "⬆️" },
     { ch: "下", emoji: "⬇️" },
-    { ch: "日", emoji: "☀️" },
-    { ch: "月", emoji: "🌙" },
-    { ch: "木", emoji: "🌳" },
-    { ch: "田", emoji: "🌾" },
-    { ch: "天", emoji: "🌤️" },
-    { ch: "地", emoji: "🌍" },
     { ch: "門", emoji: "🚪" },
     { ch: "車", emoji: "🚗" },
     { ch: "魚", emoji: "🐟" },
@@ -243,6 +239,13 @@
     { ch: "羊", emoji: "🐑" },
     { ch: "草", emoji: "🌿" },
     { ch: "雨", emoji: "🌧️" },
+    { ch: "花", emoji: "🌸" },
+    { ch: "馬", emoji: "🐴" },
+    { ch: "牛", emoji: "🐄" },
+    { ch: "狗", emoji: "🐶" },
+    { ch: "貓", emoji: "🐱" },
+    { ch: "豬", emoji: "🐷" },
+    { ch: "書", emoji: "📖" },
   ];
 
   var audioCtx = null;
@@ -598,13 +601,13 @@
         pair: p,
         text: items[p][leftKey],
         emoji: leftKey === "emoji" ? items[p].emoji : "",
-        word: leftKey === "emoji" ? items[p].word || "" : "",
+        word: leftKey === "emoji" ? items[p].word || items[p].ch || "" : "",
       });
       rightSrc.push({
         pair: p,
         text: items[p][rightKey],
         emoji: rightKey === "emoji" ? items[p].emoji : "",
-        word: rightKey === "emoji" ? items[p].word || "" : "",
+        word: rightKey === "emoji" ? items[p].word || items[p].ch || "" : "",
       });
     }
     if (leftKey !== "emoji") {
@@ -686,6 +689,7 @@
       qs.push({
         mode: "pick",
         emoji: picks[i].emoji,
+        word: picks[i].ch,
         answer: picks[i].ch,
         choices: makeSymbolChoices(picks[i].ch, pool),
       });
@@ -695,7 +699,7 @@
       var items = shuffle(HANZI_WORDS).slice(0, pairCount);
       var board = makePairConnect(items, "emoji", "ch");
       board.mode = "draw";
-      board.prompt = "把圖和字連起來";
+      board.prompt = "看圖上的字，連起來";
       qs.push(board);
     }
     return qs;
@@ -720,7 +724,8 @@
     }
     if (state.levelId === "bpm-draw") return "看圖上的字，連到第一個音";
     if (state.levelId === "hanzi") {
-      return q && q.mode === "draw" ? "把圖和字連起來" : "這是哪個字？";
+      if (q && q.mode === "draw") return "看圖上的字，連起來";
+      return (q && q.word ? q.word : "這個字") + "。這是哪個字？";
     }
     return "選一關開始吧！";
   }
@@ -1476,7 +1481,10 @@
     }
     if (state.levelId === "bpm-draw") body = renderPicConnect(q);
     if (state.levelId === "hanzi") {
-      body = q.mode === "draw" ? renderPicConnect(q) : renderPicChoice(q, "這是哪個字？");
+      body =
+        q.mode === "draw"
+          ? renderPicConnect(q)
+          : renderPicChoice(q, (q.word || "這個字") + "。這是哪個字？");
     }
     return '<div class="shell">' + playChrome() + body + "</div>";
   }
