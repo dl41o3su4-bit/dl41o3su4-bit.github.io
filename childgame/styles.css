@@ -475,6 +475,449 @@ button:focus-visible {
   color: #3d2a1a;
 }
 
+.day-banner {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px 14px;
+  width: 100%;
+  min-height: 132px;
+  padding: 12px 14px;
+  text-align: left;
+  background: linear-gradient(#8ecae6 0 48%, #d8f5a2 48% 100%);
+  border: 3px solid #f0c49a;
+  border-radius: 28px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.day-banner.is-evening {
+  background: linear-gradient(#3d405b 0 50%, #5c4d3a 50% 100%);
+  color: #fff8ee;
+}
+
+.day-banner-scene {
+  position: relative;
+  min-height: 88px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  padding: 8px 6px 4px;
+}
+
+.day-banner-scene .mini-spot {
+  font-size: clamp(22px, 6vmin, 34px);
+  line-height: 1;
+  filter: grayscale(0.35) opacity(0.72);
+}
+
+.day-banner-scene .mini-spot.done {
+  filter: none;
+}
+
+.day-banner-scene .day-fox-wear.mini {
+  position: absolute;
+  left: 10%;
+  bottom: 2px;
+  transform: scale(0.72);
+}
+
+.day-banner-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.day-banner-copy strong {
+  font-size: clamp(22px, 5vmin, 32px);
+  font-weight: 900;
+  line-height: 1.15;
+}
+
+.day-banner-progress {
+  font-size: clamp(16px, 3.6vmin, 22px);
+  font-weight: 800;
+  color: #3d2a1a;
+}
+
+.day-banner.is-evening .day-banner-progress {
+  color: #fff8ee;
+}
+
+.day-banner-bits {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  min-height: 22px;
+}
+
+.day-banner-bits .bit {
+  font-size: 20px;
+  line-height: 1;
+  font-style: normal;
+}
+
+.day-banner-go {
+  display: inline-grid;
+  place-items: center;
+  min-height: 56px;
+  padding: 0 16px;
+  border-radius: 18px;
+  background: #ffe066;
+  border: 2px solid #f0c49a;
+  font-size: clamp(18px, 3.8vmin, 24px);
+  font-weight: 900;
+  color: #2a1c12;
+  box-shadow: 0 5px 12px rgba(180, 120, 70, 0.14);
+}
+
+.shell.is-day {
+  gap: 6px;
+}
+
+.shell.is-day .topbar {
+  justify-content: space-between;
+}
+
+.day-place.is-locked,
+.day-place.is-done {
+  cursor: default;
+}
+
+.day-place.is-locked {
+  cursor: pointer;
+}
+
+.shell.is-day .home-hero {
+  padding-bottom: 0;
+}
+
+.day-world {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  border: 3px solid #f0c49a;
+  border-radius: 28px;
+  box-shadow: var(--shadow);
+  background: #fffdf8;
+}
+
+.day-sky,
+.day-ground,
+.day-path {
+  position: absolute;
+  pointer-events: none;
+}
+
+.day-sky {
+  inset: 0 0 42% 0;
+  background: linear-gradient(#7ec8f5, #c8e7ff);
+}
+
+.day-world.is-evening .day-sky {
+  background: linear-gradient(#1d2b53, #5c4d7a 70%, #c97b4a);
+}
+
+.day-ground {
+  inset: 58% 0 0 0;
+  background: linear-gradient(#b5e48c, #8bc34a);
+}
+
+.day-world.is-evening .day-ground {
+  background: linear-gradient(#3d5a3a, #2b3a28);
+}
+
+.day-path {
+  left: 8%;
+  right: 8%;
+  top: 62%;
+  height: 10px;
+  border-radius: 999px;
+  background: repeating-linear-gradient(90deg, #f4d9b0 0 18px, #fff8ee 18px 28px);
+  box-shadow: 0 3px 0 rgba(180, 120, 70, 0.16);
+}
+
+.day-places {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 6px;
+  padding: 10px 8px 14px;
+}
+
+.day-place {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  min-width: 0;
+  padding: 8px 4px 6px;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  color: inherit;
+}
+
+.day-place.is-next {
+  animation: day-glow 1.6s ease-in-out infinite;
+}
+
+.day-place.is-locked {
+  opacity: 0.72;
+}
+
+.day-spot-art {
+  position: relative;
+  width: 100%;
+  flex: 1 1 auto;
+  min-height: 78px;
+  display: grid;
+  place-items: center;
+  border-radius: 22px;
+  background: rgba(255, 253, 248, 0.55);
+  border: 2px solid rgba(240, 196, 154, 0.7);
+  overflow: hidden;
+}
+
+.day-place.is-done .day-spot-art {
+  background: rgba(255, 253, 248, 0.88);
+  border-color: #8ce99a;
+}
+
+.day-place.is-next .day-spot-art {
+  border-color: #ffd43b;
+  box-shadow: 0 0 0 4px rgba(255, 212, 59, 0.35);
+}
+
+.day-spot-label {
+  font-size: clamp(14px, 3.2vmin, 20px);
+  font-weight: 900;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.day-check {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #40c057;
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.day-spot-art .art-window,
+.day-spot-art .art-bed,
+.day-spot-art .art-shirt,
+.day-spot-art .art-table,
+.day-spot-art .art-light,
+.day-spot-art .art-zebra,
+.day-spot-art .art-lamp,
+.day-spot-art .art-tree,
+.day-spot-art .art-river,
+.day-spot-art .day-utensil,
+.day-spot-art .day-table-empty,
+.day-spot-art .day-critter {
+  position: absolute;
+  font-style: normal;
+  line-height: 1;
+}
+
+.place-room .art-window {
+  top: 10%;
+  left: 12%;
+  width: 28%;
+  height: 28%;
+  border-radius: 6px;
+  background: #74c0fc;
+  box-shadow: inset 0 0 0 3px #fff;
+}
+
+.day-world.is-evening .place-room .art-window {
+  background: #ffe066;
+  box-shadow: inset 0 0 0 3px #fff, 0 0 12px #ffe066;
+}
+
+.place-room .art-bed {
+  bottom: 10%;
+  left: 12%;
+  font-size: clamp(22px, 5vmin, 34px);
+}
+
+.place-room .art-shirt {
+  bottom: 14%;
+  right: 12%;
+  font-size: clamp(18px, 4.4vmin, 28px);
+}
+
+.place-table .art-table {
+  left: 10%;
+  right: 10%;
+  bottom: 12%;
+  min-height: 42%;
+  border-radius: 10px 10px 6px 6px;
+  background: #d4a373;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 4px;
+}
+
+.day-utensil,
+.day-table-empty {
+  position: static !important;
+  font-size: clamp(14px, 3.4vmin, 22px);
+}
+
+.place-road .art-light {
+  top: 8%;
+  left: 12%;
+  font-size: clamp(22px, 5vmin, 32px);
+}
+
+.place-road .art-zebra {
+  left: 18%;
+  right: 18%;
+  bottom: 16%;
+  height: 28%;
+  background: repeating-linear-gradient(#2a1c12 0 5px, #fff8ee 5px 10px);
+  border-radius: 4px;
+}
+
+.place-road .art-lamp {
+  top: 8%;
+  right: 10%;
+  font-size: 22px;
+}
+
+.place-park .art-tree {
+  top: 10%;
+  left: 10%;
+  font-size: clamp(22px, 5.2vmin, 34px);
+}
+
+.place-park .art-river {
+  left: 8%;
+  right: 8%;
+  bottom: 8%;
+  font-size: clamp(18px, 4vmin, 26px);
+  text-align: center;
+}
+
+.day-critter {
+  font-size: clamp(16px, 3.8vmin, 24px);
+}
+
+.day-critter.zone-water {
+  bottom: 10%;
+  left: 38%;
+  animation: hab-bob 1.2s ease-in-out infinite;
+}
+
+.day-critter.zone-tree {
+  top: 14%;
+  right: 16%;
+  animation: hab-hop 0.9s ease-in-out infinite;
+}
+
+.day-critter.zone-grass {
+  bottom: 28%;
+  left: 18%;
+  animation: hab-bounce 0.8s ease-in-out infinite;
+}
+
+.day-critter.zone-desert {
+  bottom: 22%;
+  right: 12%;
+  animation: hab-nod 1.1s ease-in-out infinite;
+}
+
+.day-critter.n1 { transform: translateX(10px); }
+.day-critter.n2 { transform: translateX(-8px); }
+.day-critter.n3 { transform: translateY(-6px); }
+
+.day-marker {
+  position: absolute;
+  z-index: 2;
+  bottom: 18%;
+  width: 25%;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+  transition: left 0.45s ease;
+}
+
+.day-marker.at-room { left: 0; }
+.day-marker.at-table { left: 25%; }
+.day-marker.at-road { left: 50%; }
+.day-marker.at-park,
+.day-marker.crossed.at-park { left: 75%; }
+
+.day-fox-wear {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 54px;
+  height: 64px;
+}
+
+.day-fox-wear .wear {
+  position: absolute;
+  font-style: normal;
+  line-height: 1;
+  filter: drop-shadow(0 2px 0 rgba(180, 120, 70, 0.16));
+}
+
+.day-fox-wear .wear.face {
+  font-size: 34px;
+  bottom: 8px;
+}
+
+.day-fox-wear .wear.head {
+  font-size: 22px;
+  top: 0;
+}
+
+.day-fox-wear .wear.body {
+  font-size: 20px;
+  bottom: 10px;
+}
+
+.day-fox-wear .wear.feet {
+  font-size: 16px;
+  bottom: 0;
+}
+
+.day-endline {
+  margin: 0;
+  text-align: center;
+  font-size: clamp(18px, 4vmin, 26px);
+  font-weight: 900;
+}
+
+.again.day-back {
+  background: #ffe066;
+}
+
+@keyframes day-glow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
 .play-col {
   flex: 1 1 auto;
   min-height: 0;
@@ -3662,10 +4105,44 @@ button:focus-visible {
   animation: pop 0.5s ease;
 }
 
+@media (max-width: 640px) {
+  .day-banner {
+    grid-template-columns: minmax(0, 1fr) auto;
+    min-height: 118px;
+  }
+
+  .day-banner-scene {
+    grid-column: 1 / -1;
+    min-height: 64px;
+  }
+
+  .day-spot-label {
+    font-size: 13px;
+  }
+}
+
 @media (max-height: 520px) {
   .fox-frame {
     width: 80px;
     height: 80px;
+  }
+
+  .day-banner {
+    min-height: 96px;
+    padding: 8px 10px;
+  }
+
+  .day-banner-scene {
+    min-height: 56px;
+  }
+
+  .day-world {
+    border-radius: 20px;
+  }
+
+  .day-spot-art {
+    min-height: 56px;
+    border-radius: 16px;
   }
 
   .home-hero {
@@ -3755,6 +4232,24 @@ button:focus-visible {
 }
 
 @media (orientation: landscape) and (max-height: 500px) {
+  .day-banner {
+    min-height: 88px;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) auto;
+  }
+
+  .day-banner-scene {
+    min-height: 58px;
+    grid-column: auto;
+  }
+
+  .shell.is-day .title {
+    font-size: 28px;
+  }
+
+  .day-endline {
+    font-size: 16px;
+  }
+
   .level-grid {
     gap: 6px;
   }
