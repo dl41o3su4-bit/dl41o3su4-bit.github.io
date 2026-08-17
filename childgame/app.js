@@ -1278,7 +1278,7 @@
     var layouts = [
       {
         layout: "river",
-        ask: "河邊，拖回家",
+        ask: "河邊樹林，拖回家",
         zones: [
           { id: "water", label: "水", prop: "🌊" },
           { id: "tree", label: "樹", prop: "🌳" },
@@ -1292,7 +1292,7 @@
       },
       {
         layout: "beach",
-        ask: "海邊，拖回家",
+        ask: "海邊沙丘，拖回家",
         zones: [
           { id: "water", label: "水", prop: "🌊" },
           { id: "desert", label: "沙丘", prop: "🏜️" },
@@ -1305,7 +1305,7 @@
       },
       {
         layout: "meadow",
-        ask: "山上，拖回家",
+        ask: "山上草原，拖回家",
         zones: [
           { id: "tree", label: "樹", prop: "🌲" },
           { id: "grass", label: "草", prop: "🌿" },
@@ -1318,7 +1318,7 @@
       },
       {
         layout: "oasis",
-        ask: "綠洲，拖回家",
+        ask: "沙漠綠洲，拖回家",
         zones: [
           { id: "tree", label: "樹", prop: "🌴" },
           { id: "desert", label: "沙漠", prop: "🏜️" },
@@ -1332,7 +1332,7 @@
       },
       {
         layout: "woods",
-        ask: "樹林，拖回家",
+        ask: "小河樹林，拖回家",
         zones: [
           { id: "tree", label: "樹", prop: "🌳" },
           { id: "water", label: "水", prop: "🌊" },
@@ -1347,7 +1347,7 @@
       },
       {
         layout: "dunes",
-        ask: "沙漠，拖回家",
+        ask: "沙丘綠洲，拖回家",
         zones: [
           { id: "desert", label: "沙漠", prop: "🏜️" },
           { id: "water", label: "水", prop: "💧" },
@@ -2599,7 +2599,7 @@
       .join("");
   }
 
-  function renderHabitatZone(slotId, label, prop) {
+  function renderHabitatZone(slotId, label) {
     return (
       '<div class="habitat-zone ' +
       slotId +
@@ -2607,13 +2607,37 @@
       slotId +
       '" aria-label="' +
       label +
-      '"><span class="habitat-prop" aria-hidden="true">' +
-      prop +
-      '</span><span class="habitat-tag">' +
+      '"><span class="habitat-tag">' +
       label +
       '</span><div class="habitat-residents">' +
       renderHabitatResidents(slotId) +
       "</div></div>"
+    );
+  }
+
+  function renderHabitatLand() {
+    return (
+      '<div class="habitat-land" aria-hidden="true">' +
+      '<i class="hab-sun"></i>' +
+      '<i class="hab-cloud c1"></i>' +
+      '<i class="hab-cloud c2"></i>' +
+      '<i class="hab-peak"></i>' +
+      '<i class="hab-hill h1"></i>' +
+      '<i class="hab-hill h2"></i>' +
+      '<i class="hab-dune d1"></i>' +
+      '<i class="hab-dune d2"></i>' +
+      '<i class="hab-ground"></i>' +
+      '<i class="hab-water"></i>' +
+      '<i class="hab-pond"></i>' +
+      '<i class="hab-foam"></i>' +
+      '<i class="hab-tree t1">🌳</i>' +
+      '<i class="hab-tree t2">🌲</i>' +
+      '<i class="hab-tree t3">🌳</i>' +
+      '<i class="hab-palm p1">🌴</i>' +
+      '<i class="hab-palm p2">🌴</i>' +
+      '<i class="hab-tuft g1">🌿</i>' +
+      '<i class="hab-tuft g2">🌿</i>' +
+      "</div>"
     );
   }
 
@@ -2626,6 +2650,16 @@
         return renderLifeChip(item, "");
       })
       .join("");
+    var zones = (q.zones || [
+      { id: "water", label: "水" },
+      { id: "tree", label: "樹" },
+      { id: "grass", label: "草" },
+      { id: "desert", label: "沙漠" },
+    ]).slice();
+    var rank = { desert: 0, grass: 1, water: 2, tree: 3 };
+    zones.sort(function (a, b) {
+      return (rank[a.id] || 0) - (rank[b.id] || 0);
+    });
     return (
       '<div class="play-col">' +
       '<div class="prompt">' +
@@ -2635,14 +2669,10 @@
       '<div class="habitat-scene layout-' +
       (q.layout || "river") +
       '">' +
-      (q.zones || [
-        { id: "tree", label: "樹", prop: "🌳" },
-        { id: "desert", label: "沙漠", prop: "🏜️" },
-        { id: "water", label: "水", prop: "🌊" },
-        { id: "grass", label: "草", prop: "🌿" },
-      ])
+      renderHabitatLand() +
+      zones
         .map(function (z) {
-          return renderHabitatZone(z.id, z.label, z.prop);
+          return renderHabitatZone(z.id, z.label);
         })
         .join("") +
       "</div>" +

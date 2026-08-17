@@ -1389,133 +1389,143 @@ button:focus-visible {
 }
 
 .habitat-scene {
+  position: relative;
   flex: 1 1 0;
   min-width: 0;
   min-height: 0;
-  display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
-  grid-template-rows: minmax(0, 1.05fr) minmax(0, 1fr);
+  overflow: hidden;
   border: 3px solid #e8c48a;
   border-radius: 28px;
-  overflow: hidden;
   box-shadow: 0 8px 16px rgba(180, 120, 70, 0.12);
-  background: linear-gradient(#9ad0f5 0 36%, #d8f5a2 36% 100%);
+  container-type: size;
+  background: linear-gradient(#8ecae6 0 46%, #b5e48c 46% 100%);
 }
 
-.habitat-scene.layout-river .water,
-.habitat-scene.layout-oasis .water {
-  grid-column: 1 / -1;
+.habitat-land {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
 }
 
-.habitat-scene.layout-woods .tree {
-  grid-column: 1 / -1;
+.habitat-land i {
+  position: absolute;
+  display: none;
+  font-style: normal;
+  line-height: 1;
 }
 
-.habitat-scene.layout-beach,
-.habitat-scene.layout-meadow {
-  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
-  grid-template-rows: minmax(0, 1fr);
+.hab-sun {
+  width: 12%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #ffe066;
+  box-shadow: 0 0 18px rgba(255, 224, 102, 0.7);
 }
 
-.habitat-scene.layout-beach .water {
-  background: linear-gradient(180deg, #74c0fc 0 20%, #1c7ed6 100%);
+.hab-cloud {
+  width: 18%;
+  height: 8%;
+  border-radius: 40px;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 10px 6px 0 rgba(255, 255, 255, 0.7);
 }
 
-.habitat-scene.layout-meadow {
-  background: linear-gradient(#b2d8f7 0 30%, #c0eb75 30% 100%);
+.hab-peak {
+  width: 42%;
+  height: 46%;
+  background: linear-gradient(180deg, #f8f9fa 0 18%, #adb5bd 18% 100%);
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
 }
 
-.habitat-scene.layout-oasis,
-.habitat-scene.layout-dunes {
-  background: linear-gradient(#ffe8a3 0 40%, #e8b86d 40% 100%);
+.hab-hill,
+.hab-dune,
+.hab-ground,
+.hab-water,
+.hab-pond,
+.hab-foam {
+  border-radius: 50% 50% 0 0;
 }
 
-.habitat-scene.layout-dunes {
-  grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.85fr);
+.hab-hill {
+  background: linear-gradient(180deg, #8ce99a, #51cf66);
 }
 
-.habitat-scene.layout-dunes .desert {
-  grid-row: 1 / -1;
+.hab-dune {
+  background: linear-gradient(180deg, #ffe8a3, #e8b86d);
 }
 
-.habitat-scene.layout-woods {
-  background: linear-gradient(#8ecae6 0 28%, #74c69d 28% 100%);
+.hab-ground {
+  background: linear-gradient(180deg, #c0eb75, #69db7c);
+  border-radius: 40% 60% 0 0 / 30% 40% 0 0;
+}
+
+.hab-water {
+  background: linear-gradient(180deg, #74c0fc, #1c7ed6);
+  border-radius: 45% 55% 0 0 / 70% 40% 0 0;
+}
+
+.hab-pond {
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #74c0fc, #1c7ed6 70%);
+}
+
+.hab-foam {
+  height: 8px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.hab-tree,
+.hab-palm,
+.hab-tuft {
+  font-size: min(16cqw, 20cqh, 58px);
+  filter: drop-shadow(0 3px 0 rgba(0, 0, 0, 0.1));
 }
 
 .habitat-zone {
-  position: relative;
+  position: absolute;
+  z-index: 2;
   min-width: 0;
   min-height: 0;
-  overflow: hidden;
+  background: transparent;
+  border-radius: 42%;
 }
 
-.habitat-zone.tree {
-  background: linear-gradient(180deg, rgba(154, 208, 245, 0.15), rgba(64, 145, 70, 0.28));
-}
-
-.habitat-zone.desert {
-  background: linear-gradient(180deg, #f6d7a8 0 42%, #e8b86d 100%);
+.habitat-zone.desert,
+.habitat-zone.grass {
+  z-index: 2;
 }
 
 .habitat-zone.water {
-  background: linear-gradient(180deg, #74c0fc 0 28%, #1c7ed6 100%);
-}
-
-.habitat-zone.grass {
-  background: linear-gradient(180deg, #c0eb75 0 30%, #69db7c 100%);
-}
-
-.habitat-zone.aim {
-  outline: 4px solid #ff922b;
-  outline-offset: -4px;
   z-index: 3;
 }
 
-.habitat-prop {
-  position: absolute;
-  font-size: min(20cqw, 18cqh, 56px);
-  line-height: 1;
-  pointer-events: none;
-  filter: drop-shadow(0 2px 0 rgba(0, 0, 0, 0.08));
+.habitat-zone.tree {
+  z-index: 4;
 }
 
-.habitat-zone.tree .habitat-prop {
-  left: 10%;
-  top: 8%;
-}
-
-.habitat-zone.desert .habitat-prop {
-  right: 8%;
-  bottom: 18%;
-}
-
-.habitat-zone.water .habitat-prop {
-  left: 12%;
-  bottom: 10%;
-  opacity: 0.85;
-}
-
-.habitat-zone.grass .habitat-prop {
-  right: 12%;
-  bottom: 8%;
+.habitat-zone.aim {
+  outline: 3px solid rgba(255, 146, 43, 0.9);
+  outline-offset: -3px;
+  background: rgba(255, 253, 248, 0.16);
+  z-index: 5;
 }
 
 .habitat-tag {
   position: absolute;
-  left: 6px;
-  bottom: 6px;
   z-index: 2;
-  padding: 0 8px;
-  border-radius: 10px;
-  background: rgba(255, 253, 248, 0.88);
-  font-size: clamp(16px, 3.6vmin, 22px);
+  padding: 0 7px;
+  border-radius: 8px;
+  background: rgba(255, 253, 248, 0.72);
+  font-size: clamp(13px, 2.7vmin, 18px);
   font-weight: 900;
   pointer-events: none;
 }
 
 .habitat-residents {
   position: absolute;
-  inset: 16% 8% 28%;
+  inset: 18% 10% 22%;
   z-index: 2;
   display: flex;
   flex-wrap: wrap;
@@ -1526,25 +1536,656 @@ button:focus-visible {
 }
 
 .habitat-critter {
-  font-size: min(16cqw, 18cqh, 48px);
+  font-size: min(14cqw, 16cqh, 46px);
   line-height: 1;
   filter: drop-shadow(0 2px 0 rgba(0, 0, 0, 0.12));
 }
 
 .habitat-critter.water {
-  animation: hab-bob 1.2s ease-in-out infinite;
+  animation: hab-in 0.4s ease, hab-bob 1.2s ease-in-out 0.4s infinite;
 }
 
 .habitat-critter.tree {
-  animation: hab-hop 0.9s ease-in-out infinite;
+  animation: hab-in 0.4s ease, hab-hop 0.9s ease-in-out 0.4s infinite;
 }
 
 .habitat-critter.grass {
-  animation: hab-bounce 0.8s ease-in-out infinite;
+  animation: hab-in 0.4s ease, hab-bounce 0.8s ease-in-out 0.4s infinite;
 }
 
 .habitat-critter.desert {
-  animation: hab-nod 1.1s ease-in-out infinite;
+  animation: hab-in 0.4s ease, hab-nod 1.1s ease-in-out 0.4s infinite;
+}
+
+.habitat-scene.layout-river {
+  background: linear-gradient(#8ecae6 0 44%, #d8f5a2 44% 100%);
+}
+
+.habitat-scene.layout-river .hab-sun,
+.habitat-scene.layout-river .hab-cloud,
+.habitat-scene.layout-river .hab-hill,
+.habitat-scene.layout-river .hab-ground,
+.habitat-scene.layout-river .hab-water,
+.habitat-scene.layout-river .hab-tree,
+.habitat-scene.layout-river .hab-tuft {
+  display: block;
+}
+
+.habitat-scene.layout-river .hab-sun {
+  left: 8%;
+  top: 8%;
+}
+
+.habitat-scene.layout-river .hab-cloud.c1 {
+  left: 28%;
+  top: 10%;
+}
+
+.habitat-scene.layout-river .hab-cloud.c2 {
+  right: 10%;
+  top: 16%;
+  width: 14%;
+}
+
+.habitat-scene.layout-river .hab-hill.h1 {
+  right: -6%;
+  bottom: 18%;
+  width: 62%;
+  height: 58%;
+}
+
+.habitat-scene.layout-river .hab-hill.h2 {
+  right: 18%;
+  bottom: 22%;
+  width: 36%;
+  height: 36%;
+  background: linear-gradient(180deg, #69db7c, #37b24d);
+}
+
+.habitat-scene.layout-river .hab-ground {
+  left: 28%;
+  bottom: 0;
+  width: 80%;
+  height: 34%;
+}
+
+.habitat-scene.layout-river .hab-water {
+  left: -10%;
+  bottom: 0;
+  width: 58%;
+  height: 40%;
+}
+
+.habitat-scene.layout-river .hab-tree.t1 {
+  right: 18%;
+  top: 22%;
+}
+
+.habitat-scene.layout-river .hab-tree.t2 {
+  right: 32%;
+  top: 28%;
+  font-size: min(13cqw, 16cqh, 48px);
+}
+
+.habitat-scene.layout-river .hab-tree.t3 {
+  right: 8%;
+  top: 34%;
+  font-size: min(12cqw, 14cqh, 42px);
+}
+
+.habitat-scene.layout-river .hab-tuft.g1 {
+  right: 16%;
+  bottom: 10%;
+  font-size: min(10cqw, 12cqh, 32px);
+}
+
+.habitat-scene.layout-river .hab-tuft.g2 {
+  right: 30%;
+  bottom: 6%;
+  font-size: min(9cqw, 11cqh, 28px);
+}
+
+.habitat-scene.layout-river .habitat-zone.water {
+  left: 0;
+  bottom: 0;
+  width: 50%;
+  height: 42%;
+  border-radius: 48% 52% 8% 8% / 70% 40% 8% 8%;
+}
+
+.habitat-scene.layout-river .habitat-zone.tree {
+  right: 4%;
+  top: 12%;
+  width: 48%;
+  height: 52%;
+}
+
+.habitat-scene.layout-river .habitat-zone.grass {
+  right: 0;
+  bottom: 0;
+  width: 52%;
+  height: 36%;
+  border-radius: 40% 20% 8% 8%;
+}
+
+.habitat-scene.layout-river .habitat-zone.water .habitat-tag {
+  left: 14%;
+  bottom: 10%;
+}
+
+.habitat-scene.layout-river .habitat-zone.tree .habitat-tag {
+  right: 18%;
+  top: 8%;
+}
+
+.habitat-scene.layout-river .habitat-zone.grass .habitat-tag {
+  right: 12%;
+  bottom: 8%;
+}
+
+.habitat-scene.layout-beach {
+  background: linear-gradient(#9ad0f5 0 40%, #74c0fc 40% 58%, #f6e1b5 58% 100%);
+}
+
+.habitat-scene.layout-beach .hab-sun,
+.habitat-scene.layout-beach .hab-cloud,
+.habitat-scene.layout-beach .hab-water,
+.habitat-scene.layout-beach .hab-dune,
+.habitat-scene.layout-beach .hab-foam,
+.habitat-scene.layout-beach .hab-tree.t1 {
+  display: block;
+}
+
+.habitat-scene.layout-beach .hab-sun {
+  right: 12%;
+  top: 8%;
+}
+
+.habitat-scene.layout-beach .hab-cloud.c1 {
+  left: 16%;
+  top: 12%;
+}
+
+.habitat-scene.layout-beach .hab-cloud.c2 {
+  left: 40%;
+  top: 8%;
+  width: 12%;
+}
+
+.habitat-scene.layout-beach .hab-water {
+  left: -16%;
+  bottom: 0;
+  width: 78%;
+  height: 62%;
+  border-radius: 0 70% 0 0 / 0 55% 0 0;
+  background: linear-gradient(160deg, #74c0fc 0 28%, #1c7ed6 100%);
+}
+
+.habitat-scene.layout-beach .hab-dune.d1 {
+  right: -8%;
+  bottom: 0;
+  width: 68%;
+  height: 58%;
+  border-radius: 60% 40% 0 0 / 80% 30% 0 0;
+}
+
+.habitat-scene.layout-beach .hab-dune.d2 {
+  right: 8%;
+  bottom: 0;
+  width: 36%;
+  height: 36%;
+  background: linear-gradient(180deg, #ffd8a8, #e8b86d);
+}
+
+.habitat-scene.layout-beach .hab-foam {
+  left: 8%;
+  bottom: 38%;
+  width: 36%;
+  display: block;
+}
+
+.habitat-scene.layout-beach .hab-tree.t1 {
+  right: 16%;
+  top: 28%;
+}
+
+.habitat-scene.layout-beach .habitat-zone.water {
+  left: 0;
+  bottom: 0;
+  width: 56%;
+  height: 64%;
+  border-radius: 0 70% 8% 8% / 0 50% 8% 8%;
+}
+
+.habitat-scene.layout-beach .habitat-zone.desert {
+  right: 0;
+  bottom: 0;
+  width: 54%;
+  height: 58%;
+  border-radius: 55% 20% 8% 8% / 70% 20% 8% 8%;
+}
+
+.habitat-scene.layout-beach .habitat-zone.water .habitat-tag {
+  left: 12%;
+  bottom: 14%;
+}
+
+.habitat-scene.layout-beach .habitat-zone.desert .habitat-tag {
+  right: 14%;
+  bottom: 12%;
+}
+
+.habitat-scene.layout-meadow {
+  background: linear-gradient(#b2d8f7 0 38%, #c0eb75 38% 100%);
+}
+
+.habitat-scene.layout-meadow .hab-sun,
+.habitat-scene.layout-meadow .hab-cloud,
+.habitat-scene.layout-meadow .hab-peak,
+.habitat-scene.layout-meadow .hab-hill,
+.habitat-scene.layout-meadow .hab-ground,
+.habitat-scene.layout-meadow .hab-pond,
+.habitat-scene.layout-meadow .hab-tree.t2,
+.habitat-scene.layout-meadow .hab-tuft {
+  display: block;
+}
+
+.habitat-scene.layout-meadow .hab-sun {
+  left: 10%;
+  top: 8%;
+}
+
+.habitat-scene.layout-meadow .hab-cloud.c1 {
+  right: 18%;
+  top: 10%;
+}
+
+.habitat-scene.layout-meadow .hab-cloud.c2 {
+  left: 28%;
+  top: 14%;
+  width: 12%;
+}
+
+.habitat-scene.layout-meadow .hab-peak {
+  left: 28%;
+  top: 10%;
+  display: block;
+}
+
+.habitat-scene.layout-meadow .hab-hill.h1 {
+  left: -10%;
+  bottom: 8%;
+  width: 70%;
+  height: 52%;
+  background: linear-gradient(180deg, #8ce99a, #37b24d);
+}
+
+.habitat-scene.layout-meadow .hab-hill.h2 {
+  right: -8%;
+  bottom: 0;
+  width: 64%;
+  height: 46%;
+}
+
+.habitat-scene.layout-meadow .hab-ground {
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 28%;
+}
+
+.habitat-scene.layout-meadow .hab-pond {
+  left: 8%;
+  bottom: 8%;
+  width: 26%;
+  height: 22%;
+}
+
+.habitat-scene.layout-meadow .hab-tree.t2 {
+  left: 38%;
+  top: 26%;
+}
+
+.habitat-scene.layout-meadow .hab-tuft.g1 {
+  right: 22%;
+  bottom: 16%;
+  font-size: min(10cqw, 12cqh, 32px);
+}
+
+.habitat-scene.layout-meadow .hab-tuft.g2 {
+  right: 36%;
+  bottom: 10%;
+  font-size: min(9cqw, 11cqh, 28px);
+}
+
+.habitat-scene.layout-meadow .habitat-zone.tree {
+  left: 22%;
+  top: 14%;
+  width: 42%;
+  height: 48%;
+}
+
+.habitat-scene.layout-meadow .habitat-zone.grass {
+  left: 24%;
+  bottom: 0;
+  width: 76%;
+  height: 48%;
+  border-radius: 30% 40% 8% 8%;
+}
+
+.habitat-scene.layout-meadow .habitat-zone.tree .habitat-tag {
+  left: 28%;
+  top: 6%;
+}
+
+.habitat-scene.layout-meadow .habitat-zone.grass .habitat-tag {
+  right: 16%;
+  bottom: 10%;
+}
+
+.habitat-scene.layout-oasis {
+  background: linear-gradient(#ffe8a3 0 42%, #f6d7a8 42% 100%);
+}
+
+.habitat-scene.layout-oasis .hab-sun,
+.habitat-scene.layout-oasis .hab-dune,
+.habitat-scene.layout-oasis .hab-pond,
+.habitat-scene.layout-oasis .hab-palm,
+.habitat-scene.layout-oasis .hab-cloud.c1 {
+  display: block;
+}
+
+.habitat-scene.layout-oasis .hab-sun {
+  right: 14%;
+  top: 8%;
+  background: #ff922b;
+  box-shadow: 0 0 18px rgba(255, 146, 43, 0.55);
+}
+
+.habitat-scene.layout-oasis .hab-cloud.c1 {
+  left: 12%;
+  top: 12%;
+  background: rgba(255, 253, 248, 0.55);
+  box-shadow: none;
+}
+
+.habitat-scene.layout-oasis .hab-dune.d1 {
+  left: -12%;
+  bottom: 0;
+  width: 70%;
+  height: 48%;
+}
+
+.habitat-scene.layout-oasis .hab-dune.d2 {
+  right: -10%;
+  bottom: 0;
+  width: 62%;
+  height: 62%;
+  background: linear-gradient(180deg, #ffd8a8, #d9480f);
+}
+
+.habitat-scene.layout-oasis .hab-pond {
+  left: 18%;
+  bottom: 16%;
+  width: 36%;
+  height: 28%;
+}
+
+.habitat-scene.layout-oasis .hab-palm.p1 {
+  left: 38%;
+  top: 22%;
+}
+
+.habitat-scene.layout-oasis .hab-palm.p2 {
+  left: 50%;
+  top: 30%;
+  font-size: min(13cqw, 16cqh, 48px);
+}
+
+.habitat-scene.layout-oasis .habitat-zone.desert {
+  inset: 28% 0 0;
+  border-radius: 30% 30% 8% 8%;
+}
+
+.habitat-scene.layout-oasis .habitat-zone.water {
+  left: 14%;
+  bottom: 10%;
+  width: 42%;
+  height: 36%;
+  border-radius: 50%;
+}
+
+.habitat-scene.layout-oasis .habitat-zone.tree {
+  left: 34%;
+  top: 14%;
+  width: 38%;
+  height: 48%;
+}
+
+.habitat-scene.layout-oasis .habitat-zone.desert .habitat-tag {
+  right: 10%;
+  bottom: 10%;
+}
+
+.habitat-scene.layout-oasis .habitat-zone.water .habitat-tag {
+  left: 28%;
+  bottom: 18%;
+}
+
+.habitat-scene.layout-oasis .habitat-zone.tree .habitat-tag {
+  right: 8%;
+  top: 6%;
+}
+
+.habitat-scene.layout-woods {
+  background: linear-gradient(#8ecae6 0 32%, #74c69d 32% 100%);
+}
+
+.habitat-scene.layout-woods .hab-sun,
+.habitat-scene.layout-woods .hab-cloud,
+.habitat-scene.layout-woods .hab-hill,
+.habitat-scene.layout-woods .hab-ground,
+.habitat-scene.layout-woods .hab-water,
+.habitat-scene.layout-woods .hab-tree,
+.habitat-scene.layout-woods .hab-tuft {
+  display: block;
+}
+
+.habitat-scene.layout-woods .hab-sun {
+  right: 8%;
+  top: 8%;
+}
+
+.habitat-scene.layout-woods .hab-cloud.c1 {
+  left: 10%;
+  top: 8%;
+}
+
+.habitat-scene.layout-woods .hab-cloud.c2 {
+  left: 36%;
+  top: 12%;
+}
+
+.habitat-scene.layout-woods .hab-hill.h1 {
+  left: -8%;
+  bottom: 22%;
+  width: 58%;
+  height: 56%;
+  background: linear-gradient(180deg, #2f9e44, #2b8a3e);
+}
+
+.habitat-scene.layout-woods .hab-hill.h2 {
+  right: -6%;
+  bottom: 18%;
+  width: 54%;
+  height: 50%;
+}
+
+.habitat-scene.layout-woods .hab-ground {
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 30%;
+}
+
+.habitat-scene.layout-woods .hab-water {
+  left: 18%;
+  bottom: 0;
+  width: 64%;
+  height: 28%;
+  border-radius: 40% 60% 0 0 / 80% 80% 0 0;
+}
+
+.habitat-scene.layout-woods .hab-tree.t1 {
+  left: 8%;
+  top: 16%;
+}
+
+.habitat-scene.layout-woods .hab-tree.t2 {
+  left: 22%;
+  top: 22%;
+}
+
+.habitat-scene.layout-woods .hab-tree.t3 {
+  right: 10%;
+  top: 20%;
+}
+
+.habitat-scene.layout-woods .hab-tuft.g1 {
+  left: 8%;
+  bottom: 8%;
+  font-size: min(10cqw, 12cqh, 32px);
+}
+
+.habitat-scene.layout-woods .hab-tuft.g2 {
+  right: 8%;
+  bottom: 8%;
+  font-size: min(9cqw, 11cqh, 28px);
+}
+
+.habitat-scene.layout-woods .habitat-zone.tree {
+  left: 0;
+  top: 8%;
+  width: 100%;
+  height: 48%;
+  border-radius: 20px;
+}
+
+.habitat-scene.layout-woods .habitat-zone.water {
+  left: 16%;
+  bottom: 0;
+  width: 68%;
+  height: 32%;
+  border-radius: 50% 50% 8% 8%;
+}
+
+.habitat-scene.layout-woods .habitat-zone.grass {
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 22%;
+  border-radius: 12px;
+}
+
+.habitat-scene.layout-woods .habitat-zone.tree .habitat-tag {
+  left: 10%;
+  top: 8%;
+}
+
+.habitat-scene.layout-woods .habitat-zone.water .habitat-tag {
+  left: 42%;
+  bottom: 10%;
+}
+
+.habitat-scene.layout-woods .habitat-zone.grass .habitat-tag {
+  left: 10%;
+  bottom: 8%;
+}
+
+.habitat-scene.layout-dunes {
+  background: linear-gradient(#ffd43b 0 36%, #e8b86d 36% 100%);
+}
+
+.habitat-scene.layout-dunes .hab-sun,
+.habitat-scene.layout-dunes .hab-dune,
+.habitat-scene.layout-dunes .hab-pond,
+.habitat-scene.layout-dunes .hab-palm.p1 {
+  display: block;
+}
+
+.habitat-scene.layout-dunes .hab-sun {
+  left: 10%;
+  top: 8%;
+  background: #ff922b;
+  box-shadow: 0 0 18px rgba(255, 146, 43, 0.55);
+}
+
+.habitat-scene.layout-dunes .hab-dune.d1 {
+  left: -16%;
+  bottom: 0;
+  width: 86%;
+  height: 72%;
+  background: linear-gradient(180deg, #ffe8a3, #e8590c);
+}
+
+.habitat-scene.layout-dunes .hab-dune.d2 {
+  right: -12%;
+  bottom: 0;
+  width: 58%;
+  height: 44%;
+}
+
+.habitat-scene.layout-dunes .hab-pond {
+  right: 18%;
+  bottom: 14%;
+  width: 28%;
+  height: 22%;
+}
+
+.habitat-scene.layout-dunes .hab-palm.p1 {
+  right: 22%;
+  top: 30%;
+}
+
+.habitat-scene.layout-dunes .habitat-zone.desert {
+  inset: 18% 0 0;
+  border-radius: 36% 36% 8% 8%;
+}
+
+.habitat-scene.layout-dunes .habitat-zone.water {
+  right: 12%;
+  bottom: 8%;
+  width: 36%;
+  height: 32%;
+  border-radius: 50%;
+}
+
+.habitat-scene.layout-dunes .habitat-zone.tree {
+  right: 10%;
+  top: 18%;
+  width: 36%;
+  height: 46%;
+}
+
+.habitat-scene.layout-dunes .habitat-zone.desert .habitat-tag {
+  left: 12%;
+  bottom: 12%;
+}
+
+.habitat-scene.layout-dunes .habitat-zone.water .habitat-tag {
+  left: 30%;
+  bottom: 16%;
+}
+
+.habitat-scene.layout-dunes .habitat-zone.tree .habitat-tag {
+  right: 10%;
+  top: 8%;
+}
+
+@keyframes hab-in {
+  0% { transform: scale(0.2); opacity: 0; }
+  70% { transform: scale(1.12); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
 }
 
 @keyframes hab-bob {
