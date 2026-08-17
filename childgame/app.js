@@ -130,6 +130,10 @@
     { id: "table", name: "擺餐桌", hint: "碗筷子杯子放好", emoji: "🍚", cls: "l2" },
     { id: "habitat", name: "誰住哪裡", hint: "魚鳥兔住哪裡", emoji: "🐟", cls: "l3" },
     { id: "light", name: "紅燈停", hint: "紅燈停綠燈行", emoji: "🚦", cls: "l4" },
+    { id: "sort", name: "分一分", hint: "吃的玩的分開", emoji: "🧺", cls: "l5" },
+    { id: "order", name: "先做哪件", hint: "先做哪一件", emoji: "1️⃣", cls: "l6" },
+    { id: "body", name: "身體在哪", hint: "頭手腳肚子", emoji: "🧒", cls: "l7" },
+    { id: "daynight", name: "白天晚上", hint: "白天還是晚上", emoji: "☀️", cls: "l8" },
   ];
 
   var LEVELS = OLD_MATH_LEVELS.concat(NEW_MATH_LEVELS, WORD_LEVELS, ENGLISH_LEVELS, LIFE_LEVELS);
@@ -510,6 +514,8 @@
     matchDone: {},
     placed: {},
     heldItem: null,
+    countTapped: {},
+    countNum: 0,
   };
 
   var matchDraw = {
@@ -633,7 +639,7 @@
     return h >>> 0;
   }
 
-  function scatterIcons(icon, count, sizeClass, extraKey, emptyCount) {
+  function scatterIcons(icon, count, sizeClass, extraKey, emptyCount, tapMap) {
     var rand = scatterRand(scatterSeed(extraKey));
     var pts = [];
     var html = "";
@@ -662,8 +668,17 @@
       pts.push({ left: left, top: top });
       var rot = -20 + rand() * 40;
       var inner = i < count ? icon : '<span class="bond-slot" aria-hidden="true"></span>';
+      var tapOn = tapMap && typeof tapMap === "object";
+      var tapped = tapOn && tapMap[String(i)];
+      var tapAttr = tapOn
+        ? ' data-count-dot="' + i + '" role="button" aria-label="點一點"'
+        : "";
       html +=
-        '<span class="scatter-item" style="left:' +
+        '<span class="scatter-item' +
+        (tapped ? " counted" : "") +
+        '"' +
+        tapAttr +
+        ' style="left:' +
         left.toFixed(1) +
         "%;top:" +
         top.toFixed(1) +
@@ -671,6 +686,7 @@
         rot.toFixed(1) +
         'deg">' +
         inner +
+        (tapped ? '<span class="count-check" aria-hidden="true">✓</span>' : "") +
         "</span>";
     }
     return '<div class="scatter ' + (sizeClass || "scatter-lg") + '">' + html + "</div>";
@@ -1184,9 +1200,128 @@
     });
   }
 
+  function makeSortQuestions() {
+    var foods = [
+      ["apple", "🍎", "蘋果"],
+      ["banana", "🍌", "香蕉"],
+      ["bread", "🍞", "麵包"],
+    ];
+    var toys = [
+      ["ball", "⚽", "球"],
+      ["teddy", "🧸", "娃娃"],
+      ["car", "🚗", "車"],
+    ];
+    var qs = [];
+    for (var i = 0; i < 6; i++) {
+      var eat = shuffle(foods).slice(0, 2).map(function (it) {
+        return lifeItem(it[0], it[1], it[2], "eat");
+      });
+      var play = shuffle(toys).slice(0, 2).map(function (it) {
+        return lifeItem(it[0], it[1], it[2], "play");
+      });
+      qs.push({
+        ask: "吃的、玩的，分開放",
+        multi: true,
+        slots: [
+          { id: "eat", emoji: "🍽️", label: "吃的" },
+          { id: "play", emoji: "🎈", label: "玩的" },
+        ],
+        items: shuffle(eat.concat(play)),
+      });
+    }
+    return qs;
+  }
+
+  function makeOrderQuestions() {
+    var seqs = [
+      [
+        lifeItem("wake", "🛏️", "起床", "1"),
+        lifeItem("brush", "🪥", "刷牙", "2"),
+        lifeItem("out", "🚪", "出門", "3"),
+      ],
+      [
+        lifeItem("wash", "🧼", "洗手", "1"),
+        lifeItem("eat", "🍚", "吃飯", "2"),
+        lifeItem("bowl", "🥣", "收碗", "3"),
+      ],
+      [
+        lifeItem("shoes", "👟", "穿鞋", "1"),
+        lifeItem("leave", "🚪", "出門", "2"),
+        lifeItem("school", "🏫", "上學", "3"),
+      ],
+    ];
+    return shuffle(seqs.concat(seqs)).slice(0, 6).map(function (items) {
+      return {
+        ask: "先做哪件？拖到 1 2 3",
+        slots: [
+          { id: "1", emoji: "1️⃣", label: "1" },
+          { id: "2", emoji: "2️⃣", label: "2" },
+          { id: "3", emoji: "3️⃣", label: "3" },
+        ],
+        items: shuffle(items.slice()),
+      };
+    });
+  }
+
+  function makeBodyQuestions() {
+    var parts = [
+      { id: "head", name: "頭", emoji: "🙂" },
+      { id: "hand", name: "手", emoji: "✋" },
+      { id: "belly", name: "肚子", emoji: "👕" },
+      { id: "foot", name: "腳", emoji: "🦶" },
+    ];
+    var qs = [];
+    var prev = "";
+    for (var i = 0; i < 6; i++) {
+      var p;
+      do {
+        p = pick(parts);
+      } while (p.id === prev);
+      prev = p.id;
+      qs.push({
+        answer: p.id,
+        ask: p.name + "在哪裡？",
+        parts: parts,
+      });
+    }
+    return qs;
+  }
+
+  function makeDayNightQuestions() {
+    var dayPool = [
+      ["sun", "☀️", "太陽"],
+      ["eat", "🍚", "吃飯"],
+      ["school", "🏫", "上學"],
+    ];
+    var nightPool = [
+      ["moon", "🌙", "月亮"],
+      ["sleep", "😴", "睡覺"],
+      ["star", "⭐", "星星"],
+    ];
+    var qs = [];
+    for (var i = 0; i < 6; i++) {
+      var day = shuffle(dayPool).slice(0, 2).map(function (it) {
+        return lifeItem(it[0], it[1], it[2], "day");
+      });
+      var night = shuffle(nightPool).slice(0, 2).map(function (it) {
+        return lifeItem(it[0], it[1], it[2], "night");
+      });
+      qs.push({
+        ask: "白天還是晚上？",
+        multi: true,
+        slots: [
+          { id: "day", emoji: "☀️", label: "白天" },
+          { id: "night", emoji: "🌙", label: "晚上" },
+        ],
+        items: shuffle(day.concat(night)),
+      });
+    }
+    return qs;
+  }
+
   function foxPrompt() {
     var q = state.questions[state.qIndex];
-    if (state.levelId === "count") return "數一數，有幾個？";
+    if (state.levelId === "count") return "一顆一顆點，數一數";
     if (state.levelId === "match") return "哪一群跟上面的數字一樣多？";
     if (state.levelId === "match-draw") return "把一樣多的連起來";
     if (state.levelId === "next") return "下一個數字是誰？";
@@ -1212,23 +1347,41 @@
     }
     if (state.levelId === "abc-case") return "把大寫和小寫連起來";
     if (state.levelId === "abc-draw") return "看圖上的字，連到第一個字母";
-    if (state.levelId === "dress" || state.levelId === "table" || state.levelId === "habitat" || state.levelId === "light") {
+    if (
+      state.levelId === "dress" ||
+      state.levelId === "table" ||
+      state.levelId === "habitat" ||
+      state.levelId === "light" ||
+      state.levelId === "sort" ||
+      state.levelId === "order" ||
+      state.levelId === "body" ||
+      state.levelId === "daynight"
+    ) {
       return (q && q.ask) || "看一看，做一做";
     }
     return "選一關開始吧！";
   }
 
   function isPlaceLevel() {
-    return state.levelId === "dress" || state.levelId === "table" || state.levelId === "habitat";
+    return (
+      state.levelId === "dress" ||
+      state.levelId === "table" ||
+      state.levelId === "habitat" ||
+      state.levelId === "sort" ||
+      state.levelId === "order" ||
+      state.levelId === "daynight"
+    );
   }
 
   function isLifeLevel() {
-    return isPlaceLevel() || state.levelId === "light";
+    return isPlaceLevel() || state.levelId === "light" || state.levelId === "body";
   }
 
   function lifeCheer() {
     if (state.levelId === "dress") return "穿好了";
     if (state.levelId === "table") return "擺好了";
+    if (state.levelId === "sort" || state.levelId === "daynight") return "分類好了";
+    if (state.levelId === "order") return "排好了";
     return "好棒";
   }
 
@@ -1443,6 +1596,18 @@
     if (id === "light") {
       return '<span class="preview-art preview-match" aria-hidden="true"><span>🔴</span><b>停</b></span>';
     }
+    if (id === "sort") {
+      return '<span class="preview-art preview-match" aria-hidden="true"><span>🍎</span><b>吃</b><span>🧸</span></span>';
+    }
+    if (id === "order") {
+      return '<span class="preview-art preview-next" aria-hidden="true"><i>1</i><i>2</i><i>3</i></span>';
+    }
+    if (id === "body") {
+      return '<span class="preview-art preview-match" aria-hidden="true"><span>✋</span><b>手</b></span>';
+    }
+    if (id === "daynight") {
+      return '<span class="preview-art preview-match" aria-hidden="true"><span>☀️</span><b>🌙</b></span>';
+    }
     return "";
   }
 
@@ -1547,29 +1712,20 @@
   }
 
   function renderCount(q) {
-    var buttons = q.choices
-      .map(function (n) {
-        var mark = state.choiceMark && state.choiceMark.value === n ? " " + state.choiceMark.cls : "";
-        return (
-          '<button class="choice' +
-          mark +
-          '" type="button" data-action="answer" data-value="' +
-          n +
-          '">' +
-          n +
-          "</button>"
-        );
-      })
-      .join("");
+    var n = state.countNum || 0;
     return (
       '<div class="play-col">' +
-      '<div class="prompt">有幾個呢？</div>' +
+      '<div class="prompt">一顆一顆點</div>' +
       '<div class="count-stage">' +
-      scatterIcons(q.fruit, q.count, "scatter-lg") +
+      '<div class="count-wrap">' +
+      '<div class="big-num count-num' +
+      (n ? "" : " is-empty") +
+      '">' +
+      (n ? n : "") +
       "</div>" +
-      '<div class="choices">' +
-      buttons +
-      "</div></div>"
+      '<div class="count-board">' +
+      scatterIcons(q.fruit, q.count, "scatter-lg", 0, 0, state.countTapped) +
+      "</div></div></div></div>"
     );
   }
 
@@ -2031,10 +2187,9 @@
       body = renderPicChoice(q, (q.word || "這個字") + "的第一個字母是誰？");
     }
     if (state.levelId === "abc-case" || state.levelId === "abc-draw") body = renderPicConnect(q);
-    if (state.levelId === "dress" || state.levelId === "table" || state.levelId === "habitat") {
-      body = renderLifePlace(q);
-    }
+    if (isPlaceLevel()) body = renderLifePlace(q);
     if (state.levelId === "light") body = renderLight(q);
+    if (state.levelId === "body") body = renderBody(q);
     return '<div class="shell' + (isLifeLevel() ? " is-life" : "") + '">' + playChrome() + body + "</div>";
   }
 
@@ -2047,13 +2202,34 @@
     return null;
   }
 
-  function itemInSlot(slotId) {
+  function itemsInSlot(slotId) {
     var q = state.questions[state.qIndex];
-    if (!q || !q.items) return null;
+    var out = [];
+    if (!q || !q.items) return out;
     for (var i = 0; i < q.items.length; i++) {
-      if (state.placed[q.items[i].id] === slotId) return q.items[i];
+      if (state.placed[q.items[i].id] === slotId) out.push(q.items[i]);
     }
-    return null;
+    return out;
+  }
+
+  function itemInSlot(slotId) {
+    var many = itemsInSlot(slotId);
+    return many.length ? many[0] : null;
+  }
+
+  function slotCapacity(slotId) {
+    var q = state.questions[state.qIndex];
+    if (!q || !q.items) return 1;
+    if (!q.multi) return 1;
+    var n = 0;
+    for (var i = 0; i < q.items.length; i++) {
+      if (q.items[i].slot === slotId) n += 1;
+    }
+    return n || 1;
+  }
+
+  function slotIsFull(slotId) {
+    return itemsInSlot(slotId).length >= slotCapacity(slotId);
   }
 
   function renderLifeChip(item, extraClass) {
@@ -2078,17 +2254,35 @@
   }
 
   function renderLifeSlot(slot) {
-    var filled = itemInSlot(slot.id);
-    var inner = filled
-      ? renderLifeChip(filled, "in-slot")
-      : '<span class="life-slot-empty"><span class="life-emoji">' +
+    var many = itemsInSlot(slot.id);
+    var multi = !!(state.questions[state.qIndex] && state.questions[state.qIndex].multi);
+    var inner;
+    if (multi) {
+      inner =
+        '<span class="life-emoji">' +
         slot.emoji +
         '</span><span class="life-name">' +
         escapeHtml(slot.label) +
-        "</span></span>";
+        '</span><div class="life-slot-items">' +
+        many
+          .map(function (item) {
+            return renderLifeChip(item, "in-slot");
+          })
+          .join("") +
+        "</div>";
+    } else {
+      inner = many[0]
+        ? renderLifeChip(many[0], "in-slot")
+        : '<span class="life-slot-empty"><span class="life-emoji">' +
+          slot.emoji +
+          '</span><span class="life-name">' +
+          escapeHtml(slot.label) +
+          "</span></span>";
+    }
     return (
       '<div class="life-slot' +
-      (filled ? " filled" : "") +
+      (many.length ? " filled" : "") +
+      (multi ? " multi" : "") +
       '" data-life-slot="' +
       slot.id +
       '" aria-label="' +
@@ -2126,6 +2320,10 @@
         "</div>";
     } else if (state.levelId === "table") {
       board = '<div class="life-table">' + slots + "</div>";
+    } else if (state.levelId === "sort" || state.levelId === "daynight") {
+      board = '<div class="life-scene">' + slots + "</div>";
+    } else if (state.levelId === "order") {
+      board = '<div class="life-homes">' + slots + "</div>";
     } else {
       board = '<div class="life-homes">' + slots + "</div>";
     }
@@ -2171,6 +2369,41 @@
       '<button class="light-btn go-btn' +
       goMark +
       '" type="button" data-action="answer" data-value="go"><span class="light-btn-ico">🚶</span>走</button>' +
+      "</div></div></div>"
+    );
+  }
+
+  function renderBody(q) {
+    var parts = q.parts || [
+      { id: "head", name: "頭", emoji: "🙂" },
+      { id: "hand", name: "手", emoji: "✋" },
+      { id: "belly", name: "肚子", emoji: "👕" },
+      { id: "foot", name: "腳", emoji: "🦶" },
+    ];
+    var buttons = parts
+      .map(function (p) {
+        var mark = state.choiceMark && state.choiceMark.value === p.id ? " " + state.choiceMark.cls : "";
+        return (
+          '<button class="body-part' +
+          mark +
+          '" type="button" data-action="answer" data-value="' +
+          p.id +
+          '"><span class="life-emoji">' +
+          p.emoji +
+          '</span><span class="life-name">' +
+          escapeHtml(p.name) +
+          "</span></button>"
+        );
+      })
+      .join("");
+    return (
+      '<div class="play-col">' +
+      '<div class="prompt">' +
+      escapeHtml(q.ask) +
+      "</div>" +
+      '<div class="life-stage body-play">' +
+      '<div class="body-fig">' +
+      buttons +
       "</div></div></div>"
     );
   }
@@ -2351,7 +2584,7 @@
       clearItemDragClass(itemId);
       return;
     }
-    if (itemInSlot(slotId) || !item.slot || item.slot !== slotId) {
+    if (!item.slot || item.slot !== slotId || slotIsFull(slotId)) {
       bouncePlaceItem(itemId);
       return;
     }
@@ -2400,7 +2633,7 @@
     movePlaceGhost(e.clientX, e.clientY);
     clearPlaceAim();
     var over = slotFromPoint(e.clientX, e.clientY);
-    if (over && !over.classList.contains("filled")) over.classList.add("aim");
+    if (over && !slotIsFull(over.getAttribute("data-life-slot"))) over.classList.add("aim");
   }
 
   function onPlacePointerUp(e) {
@@ -2668,6 +2901,8 @@
     state.matchDone = {};
     state.placed = {};
     state.heldItem = null;
+    state.countTapped = {};
+    state.countNum = 0;
     resetMatchDraw();
     resetWriteDraw();
     resetPlaceDrag();
@@ -2693,6 +2928,10 @@
     else if (id === "table") state.questions = makeTableQuestions();
     else if (id === "habitat") state.questions = makeHabitatQuestions();
     else if (id === "light") state.questions = makeLightQuestions();
+    else if (id === "sort") state.questions = makeSortQuestions();
+    else if (id === "order") state.questions = makeOrderQuestions();
+    else if (id === "body") state.questions = makeBodyQuestions();
+    else if (id === "daynight") state.questions = makeDayNightQuestions();
     else return;
     state.foxMsg = foxPrompt();
     state.screen = "play";
@@ -2714,6 +2953,8 @@
     state.matchDone = {};
     state.placed = {};
     state.heldItem = null;
+    state.countTapped = {};
+    state.countNum = 0;
     resetMatchDraw();
     resetWriteDraw();
     resetPlaceDrag();
@@ -2737,6 +2978,8 @@
     state.matchDone = {};
     state.placed = {};
     state.heldItem = null;
+    state.countTapped = {};
+    state.countNum = 0;
     resetMatchDraw();
     resetWriteDraw();
     resetPlaceDrag();
@@ -2780,9 +3023,6 @@
     if (state.locked || state.screen !== "play") return;
     var q = state.questions[state.qIndex];
     if (state.levelId === "count") {
-      var n = parseInt(raw, 10);
-      if (n === q.count) markCorrect(n);
-      else markRetry(n, "再看一次");
       return;
     }
     if (state.levelId === "match") {
@@ -2838,7 +3078,63 @@
       } else {
         markRetry(raw, "再看一次");
       }
+      return;
     }
+    if (state.levelId === "body") {
+      if (raw === q.answer) {
+        state.locked = true;
+        state.choiceMark = { value: raw, cls: "ok" };
+        state.foxMsg = "好棒";
+        state.foxMood = "happy";
+        playCorrect();
+        render();
+        replayFoxHappy();
+        setTimeout(nextQuestion, 1000);
+      } else {
+        state.locked = true;
+        state.choiceMark = { value: raw, cls: "bad" };
+        state.foxMsg = "再看一次";
+        state.foxMood = "think";
+        playWrong();
+        render();
+        setTimeout(function () {
+          if (state.levelId !== "body" || state.screen !== "play") return;
+          state.locked = false;
+          state.choiceMark = null;
+          state.foxMood = "idle";
+          state.foxMsg = foxPrompt();
+          render();
+        }, 850);
+      }
+    }
+  }
+
+  function handleCountDot(raw) {
+    if (state.locked || state.screen !== "play" || state.levelId !== "count") return;
+    var idx = String(raw);
+    if (state.countTapped[idx]) return;
+    var q = state.questions[state.qIndex];
+    if (!q) return;
+    var max = q.count;
+    var n = parseInt(idx, 10);
+    if (!isFinite(n) || n < 0 || n >= max) return;
+    state.countTapped[idx] = true;
+    state.countNum = 0;
+    for (var k in state.countTapped) {
+      if (Object.prototype.hasOwnProperty.call(state.countTapped, k)) state.countNum += 1;
+    }
+    playTap();
+    if (state.countNum >= max) {
+      state.locked = true;
+      state.foxMsg = "好棒";
+      state.foxMood = "happy";
+      playCorrect();
+      render();
+      replayFoxHappy();
+      setTimeout(nextQuestion, 1000);
+      return;
+    }
+    render();
   }
 
   function traceSvg() {
@@ -3105,6 +3401,11 @@
   });
 
   app.addEventListener("click", function (e) {
+    var dot = e.target.closest("[data-count-dot]");
+    if (dot) {
+      handleCountDot(dot.getAttribute("data-count-dot"));
+      return;
+    }
     var t = e.target.closest("[data-action]");
     if (!t) return;
     var action = t.getAttribute("data-action");
