@@ -499,19 +499,65 @@
     return shuffle([correct].concat(wrongs));
   }
 
-  function gridShape(count) {
-    if (count <= 5) return { cols: count, rows: 1 };
-    if (count <= 8) return { cols: Math.ceil(count / 2), rows: 2 };
-    if (count === 9) return { cols: 3, rows: 3 };
-    return { cols: 5, rows: 2 };
+  function scatterRand(seed) {
+    var a = seed >>> 0;
+    return function () {
+      a = (Math.imul(a, 1664525) + 1013904223) >>> 0;
+      return a / 4294967296;
+    };
   }
 
-  function groupShape(count) {
-    if (count <= 2) return { cols: count, rows: 1 };
-    if (count <= 4) return { cols: 2, rows: 2 };
-    if (count <= 6) return { cols: 3, rows: 2 };
-    if (count <= 9) return { cols: 3, rows: 3 };
-    return { cols: 5, rows: 2 };
+  function scatterSeed(extra) {
+    var key = String(state.levelId) + ":" + String(state.qIndex) + ":" + String(extra || 0);
+    var h = 2166136261;
+    for (var i = 0; i < key.length; i++) {
+      h ^= key.charCodeAt(i);
+      h = Math.imul(h, 16777619);
+    }
+    return h >>> 0;
+  }
+
+  function scatterIcons(icon, count, sizeClass, extraKey, emptyCount) {
+    var rand = scatterRand(scatterSeed(extraKey));
+    var pts = [];
+    var html = "";
+    var total = count + (emptyCount || 0);
+    var i;
+    for (i = 0; i < total; i++) {
+      var left = 8 + rand() * 80;
+      var top = 8 + rand() * 80;
+      var tries = 0;
+      while (tries < 20) {
+        var ok = true;
+        var j;
+        for (j = 0; j < pts.length; j++) {
+          var dx = left - pts[j].left;
+          var dy = top - pts[j].top;
+          if (dx * dx + dy * dy < 144) {
+            ok = false;
+            break;
+          }
+        }
+        if (ok) break;
+        left = 8 + rand() * 80;
+        top = 8 + rand() * 80;
+        tries += 1;
+      }
+      pts.push({ left: left, top: top });
+      var rot = -20 + rand() * 40;
+      var inner = i < count ? icon : '<span class="bond-slot" aria-hidden="true"></span>';
+      html +=
+        '<span class="scatter-item" style="left:' +
+        left.toFixed(1) +
+        "%;top:" +
+        top.toFixed(1) +
+        "%;--rot:" +
+        rot.toFixed(1) +
+        'deg">' +
+        inner +
+        "</span>";
+    }
+    return '<div class="scatter ' + (sizeClass || "scatter-lg") + '">' + html + "</div>";
   }
 
   function makeCountQuestions() {
@@ -531,23 +577,6 @@
       });
     }
     return qs;
-  }
-
-  function rowsSharePair(left, right) {
-    for (var i = 0; i < left.length; i++) {
-      if (left[i].pair === right[i].pair) return true;
-    }
-    return false;
-  }
-
-  function derangeRight(rightSrc, left) {
-    var right = rightSrc;
-    var tries = 0;
-    do {
-      right = shuffle(rightSrc);
-      tries += 1;
-    } while (tries < 24 && rowsSharePair(left, right));
-    return right;
   }
 
   function makeMatchQuestions() {
@@ -585,7 +614,7 @@
         rightSrc.push({ pair: p, count: nums[p], animal: animals[p] });
       }
       left = shuffle(left);
-      qs.push({ left: left, right: derangeRight(rightSrc, left) });
+      qs.push({ left: left, right: shuffle(rightSrc) });
     }
     return qs;
   }
@@ -762,7 +791,7 @@
       });
     }
     left = shuffle(left);
-    return { left: left, right: derangeRight(rightSrc, left) };
+    return { left: left, right: shuffle(rightSrc) };
   }
 
   function makeBpmTraceQuestions() {
@@ -1061,10 +1090,28 @@
       .join("");
   }
 
+  function roomDecor(kind) {
+    if (kind === "home") {
+      return (
+        '<div class="sun" aria-hidden="true"></div>' +
+        '<span class="hang cherry c1" aria-hidden="true">🍒</span>' +
+        '<span class="hang cherry c2" aria-hidden="true">🍒</span>' +
+        '<span class="hang cherry c3" aria-hidden="true">🍒</span>' +
+        '<span class="hang star s1" aria-hidden="true">⭐</span>' +
+        '<span class="hang star s2" aria-hidden="true">⭐</span>'
+      );
+    }
+    return (
+      '<div class="sun play-sun" aria-hidden="true"></div>' +
+      '<span class="hang cherry play-c" aria-hidden="true">🍒</span>' +
+      '<span class="hang star play-s" aria-hidden="true">⭐</span>'
+    );
+  }
+
   function renderHome() {
     return (
       '<div class="shell is-home">' +
-      '<div class="sun" aria-hidden="true"></div>' +
+      roomDecor("home") +
       topTools("<span></span>") +
       '<div class="home-hero">' +
       '<p class="kicker">小狐狸老師的數字課</p>' +
@@ -1107,6 +1154,7 @@
 
   function playChrome() {
     return (
+      roomDecor("play") +
       '<div class="topbar">' +
       '<button class="home-btn" type="button" data-action="home" aria-label="回家">🏠</button>' +
       '<div class="progress-chip">' +
@@ -1123,11 +1171,6 @@
   }
 
   function renderCount(q) {
-    var shape = gridShape(q.count);
-    var cells = "";
-    for (var i = 0; i < q.count; i++) {
-      cells += '<span class="count-cell">' + q.fruit + "</span>";
-    }
     var buttons = q.choices
       .map(function (n) {
         var mark = state.choiceMark && state.choiceMark.value === n ? " " + state.choiceMark.cls : "";
@@ -1145,13 +1188,9 @@
     return (
       '<div class="play-col">' +
       '<div class="prompt">有幾個呢？</div>' +
-      '<div class="count-stage"><div class="count-grid" style="--cols:' +
-      shape.cols +
-      ";--rows:" +
-      shape.rows +
-      '">' +
-      cells +
-      "</div></div>" +
+      '<div class="count-stage">' +
+      scatterIcons(q.fruit, q.count, "scatter-lg") +
+      "</div>" +
       '<div class="choices">' +
       buttons +
       "</div></div>"
@@ -1161,11 +1200,6 @@
   function renderMatch(q) {
     var groups = q.groups
       .map(function (g, idx) {
-        var shape = groupShape(g.count);
-        var cells = "";
-        for (var i = 0; i < g.count; i++) {
-          cells += '<span class="group-cell">' + q.animal + "</span>";
-        }
         var mark = state.choiceMark && state.choiceMark.value === idx ? " " + state.choiceMark.cls : "";
         return (
           '<button class="group' +
@@ -1175,13 +1209,8 @@
           '" aria-label="這一群有 ' +
           g.count +
           ' 個">' +
-          '<div class="group-grid" style="--cols:' +
-          shape.cols +
-          ";--rows:" +
-          shape.rows +
-          '">' +
-          cells +
-          "</div></button>"
+          scatterIcons(q.animal, g.count, "scatter-sm", idx + 1) +
+          "</button>"
         );
       })
       .join("");
@@ -1217,11 +1246,6 @@
       .join("");
     var right = q.right
       .map(function (item) {
-        var shape = groupShape(item.count);
-        var cells = "";
-        for (var i = 0; i < item.count; i++) {
-          cells += '<span class="group-cell">' + item.animal + "</span>";
-        }
         var done = state.matchDone[item.pair] ? " done" : "";
         return (
           '<div class="match-group' +
@@ -1231,13 +1255,8 @@
           '" role="button" aria-label="這一群有 ' +
           item.count +
           ' 個">' +
-          '<div class="group-grid" style="--cols:' +
-          shape.cols +
-          ";--rows:" +
-          shape.rows +
-          '">' +
-          cells +
-          "</div></div>"
+          scatterIcons(item.animal, item.count, "scatter-sm", item.pair + 11) +
+          "</div>"
         );
       })
       .join("");
@@ -1385,11 +1404,6 @@
   }
 
   function renderMoreGroup(count, icon, side) {
-    var shape = groupShape(count);
-    var cells = "";
-    for (var i = 0; i < count; i++) {
-      cells += '<span class="group-cell">' + icon + "</span>";
-    }
     var mark = state.choiceMark && state.choiceMark.value === side ? " " + state.choiceMark.cls : "";
     return (
       '<button class="group' +
@@ -1399,13 +1413,8 @@
       '" aria-label="這一邊有 ' +
       count +
       ' 個">' +
-      '<div class="group-grid" style="--cols:' +
-      shape.cols +
-      ";--rows:" +
-      shape.rows +
-      '">' +
-      cells +
-      "</div></button>"
+      scatterIcons(icon, count, "scatter-lg", side === "left" ? 1 : 2) +
+      "</button>"
     );
   }
 
@@ -1490,15 +1499,6 @@
   }
 
   function renderBond(q) {
-    var shape = gridShape(q.target);
-    var cells = "";
-    var i;
-    for (i = 0; i < q.shown; i++) {
-      cells += '<span class="count-cell">' + q.fruit + "</span>";
-    }
-    for (i = q.shown; i < q.target; i++) {
-      cells += '<span class="count-cell"><span class="bond-slot" aria-hidden="true"></span></span>';
-    }
     var buttons = q.choices
       .map(function (n) {
         var mark = state.choiceMark && state.choiceMark.value === n ? " " + state.choiceMark.cls : "";
@@ -1518,13 +1518,9 @@
       '<div class="prompt">再拿幾個變成 <span class="prompt-num">' +
       q.target +
       "</span>？</div>" +
-      '<div class="bond-stage"><div class="count-grid" style="--cols:' +
-      shape.cols +
-      ";--rows:" +
-      shape.rows +
-      '">' +
-      cells +
-      "</div></div>" +
+      '<div class="bond-stage">' +
+      scatterIcons(q.fruit, q.shown, "scatter-lg", 3, q.target - q.shown) +
+      "</div>" +
       '<div class="choices">' +
       buttons +
       "</div></div>"
@@ -1654,6 +1650,7 @@
   function renderClear() {
     return (
       '<div class="shell">' +
+      roomDecor("play") +
       topTools("<span></span>") +
       '<div class="clear">' +
       foxImg() +
@@ -2227,10 +2224,22 @@
     var radius = writeRadius(svg);
     var drawn = writeDraw.points;
     var start = samples[0];
-    var tooShort = polylineLen(drawn) < Math.max(28, pathLength(d) * 0.32);
+    var tooShort = polylineLen(drawn) < Math.max(40, pathLength(d) * 0.55);
     var startFar = !drawn.length || dist2(drawn[0], start) > radius * radius * 1.6;
+    var end = samples[samples.length - 1];
+    var lastDrawn = drawn[drawn.length - 1];
+    var endFar = !lastDrawn || dist2(lastDrawn, end) > radius * radius * 1.8 * 1.8;
     var covered = coverRatio(drawn, samples, radius);
-    if (tooShort || startFar || covered < 0.7 || scribbleFar(drawn, samples, radius)) {
+    var tailFrom = Math.max(0, Math.floor(samples.length * 0.75));
+    var tailCovered = coverRatio(drawn, samples.slice(tailFrom), radius);
+    if (
+      tooShort ||
+      startFar ||
+      endFar ||
+      covered < 0.86 ||
+      tailCovered < 0.72 ||
+      scribbleFar(drawn, samples, radius)
+    ) {
       rejectWrite();
       return;
     }
