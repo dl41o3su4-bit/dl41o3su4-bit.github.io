@@ -228,7 +228,7 @@ button:focus-visible {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding: 4px 6px 20px;
+  padding: 4px 12px 20px;
   scrollbar-width: none;
 }
 
@@ -248,10 +248,12 @@ button:focus-visible {
 .level-grid {
   flex: 0 0 auto;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   grid-auto-rows: minmax(148px, auto);
   gap: 14px;
   padding: 2px 2px 8px;
+  width: 100%;
+  max-width: 100%;
 }
 
 .level-card {
@@ -260,8 +262,11 @@ button:focus-visible {
   align-items: center;
   justify-content: center;
   gap: 8px;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
   min-height: clamp(148px, 26vmin, 196px);
-  padding: 16px 12px 14px;
+  padding: 16px 8px 14px;
   font-weight: 800;
   border-radius: 32px;
   border: 2px solid #f0c49a;
@@ -271,21 +276,24 @@ button:focus-visible {
 
 .preview-art {
   width: 100%;
-  min-height: clamp(72px, 16vmin, 104px);
+  max-width: 100%;
+  min-width: 0;
+  min-height: clamp(64px, 14vmin, 96px);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  flex-wrap: wrap;
+  gap: 4px;
   background: transparent;
   border-radius: 0;
-  font-size: clamp(32px, 8vmin, 48px);
+  font-size: clamp(18px, 4.6vmin, 26px);
   line-height: 1;
   box-shadow: none;
 }
 
 .cherry-ball {
-  width: clamp(26px, 7vmin, 36px);
-  height: clamp(26px, 7vmin, 36px);
+  width: clamp(20px, 5.4vmin, 28px);
+  height: clamp(20px, 5.4vmin, 28px);
   border-radius: 50%;
   background: radial-gradient(circle at 32% 28%, #ff8a8a 0 30%, #e03131 72%, #c22525 100%);
   box-shadow: inset -2px -3px 0 rgba(0, 0, 0, 0.08), 0 3px 0 rgba(180, 80, 60, 0.16);
@@ -306,24 +314,25 @@ button:focus-visible {
 .preview-art b {
   display: inline-grid;
   place-items: center;
-  min-width: 1.35em;
-  min-height: 1.35em;
-  padding: 0 8px;
+  min-width: 1.15em;
+  min-height: 1.15em;
+  padding: 0 4px;
   background: #fff8ee;
   border: 2px solid #f0c49a;
-  border-radius: 14px;
-  font-size: 1.15em;
+  border-radius: 10px;
+  font-size: 1em;
   color: #2a1c12;
 }
 
 .preview-art em {
   display: inline-grid;
   place-items: center;
-  min-width: 1.2em;
-  min-height: 1.2em;
+  min-width: 1.05em;
+  min-height: 1.05em;
+  padding: 0 2px;
   background: #fff3bf;
   border: 2px solid #ffe066;
-  border-radius: 12px;
+  border-radius: 10px;
   font-style: normal;
   color: var(--fox-deep);
 }
@@ -331,12 +340,12 @@ button:focus-visible {
 .preview-art i {
   display: inline-grid;
   place-items: center;
-  min-width: 1.2em;
-  min-height: 1.2em;
-  padding: 0 4px;
+  min-width: 1.05em;
+  min-height: 1.05em;
+  padding: 0 2px;
   background: #fff8ee;
   border: 2px solid #e8d4b0;
-  border-radius: 12px;
+  border-radius: 10px;
   font-style: normal;
   font-weight: 900;
 }
@@ -353,9 +362,10 @@ button:focus-visible {
 }
 
 .preview-trace svg {
-  width: 58px;
-  height: 66px;
+  width: 46px;
+  height: 52px;
   display: block;
+  max-width: 100%;
 }
 
 .preview-trace path {
@@ -380,14 +390,18 @@ button:focus-visible {
 }
 
 .preview-match .draw-line {
-  width: 18px;
+  width: 12px;
   height: 0;
-  border-top: 4px solid #f76707;
+  border-top: 3px solid #f76707;
+  flex: 0 0 auto;
 }
 
 .level-card .name {
-  font-size: clamp(22px, 5vmin, 32px);
+  font-size: clamp(20px, 4.6vmin, 30px);
   color: #2a1c12;
+  max-width: 100%;
+  text-align: center;
+  line-height: 1.2;
 }
 
 .level-card.c1,
