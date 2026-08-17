@@ -132,6 +132,10 @@
     { id: "match", name: "連連看", hint: "找到一樣多的", emoji: "🔢", cls: "c2" },
     { id: "next", name: "下一個是誰", hint: "3 4 5 ？", emoji: "➡️", cls: "c3" },
     { id: "trace", name: "描一描", hint: "跟著點 1～10", emoji: "✏️", cls: "c4" },
+    { id: "more", name: "誰比較多", hint: "哪一邊比較多", emoji: "🍉", cls: "c5" },
+    { id: "ord", name: "第幾個", hint: "從左邊數第幾個", emoji: "5️⃣", cls: "c6" },
+    { id: "missing", name: "缺了誰", hint: "少了哪個數字", emoji: "❓", cls: "c7" },
+    { id: "bond", name: "湊一湊", hint: "再拿幾個才滿", emoji: "🍇", cls: "c8" },
   ];
 
   var audioCtx = null;
@@ -300,6 +304,148 @@
     return qs;
   }
 
+  function makeMoreQuestions() {
+    var qs = [];
+    var equalAt = [randInt(0, 3), randInt(4, 7)];
+    var prevKey = "";
+    for (var i = 0; i < 8; i++) {
+      var isEqual = equalAt.indexOf(i) !== -1;
+      var left = 1;
+      var right = 1;
+      var tries = 0;
+      do {
+        if (isEqual) {
+          left = right = randInt(1, 10);
+        } else {
+          var lo = randInt(1, 10);
+          var diff = randInt(1, 3);
+          var hi = lo + diff;
+          if (hi > 10) {
+            hi = lo;
+            lo = hi - diff;
+            if (lo < 1) {
+              lo = 1;
+              hi = Math.min(10, lo + diff);
+            }
+          }
+          if (lo === hi && hi < 10) hi += 1;
+          if (lo === hi && lo > 1) lo -= 1;
+          if (Math.random() < 0.5) {
+            left = lo;
+            right = hi;
+          } else {
+            left = hi;
+            right = lo;
+          }
+        }
+        tries += 1;
+      } while (left + ":" + right === prevKey && tries < 10);
+      prevKey = left + ":" + right;
+      qs.push({
+        left: left,
+        right: right,
+        equal: left === right,
+        answer: left === right ? "same" : left > right ? "left" : "right",
+        icon: pick(FRUITS.concat(ANIMALS)),
+      });
+    }
+    return qs;
+  }
+
+  function makeOrdQuestions() {
+    var qs = [];
+    var prev = 0;
+    for (var i = 0; i < 8; i++) {
+      var len = i < 5 ? randInt(5, 6) : randInt(6, 7);
+      var maxOrd = i < 5 ? Math.min(5, len) : len;
+      var target;
+      do {
+        target = randInt(1, maxOrd);
+      } while (target === prev && maxOrd > 1);
+      prev = target;
+      qs.push({
+        animals: shuffle(ANIMALS).slice(0, len),
+        target: target,
+      });
+    }
+    return qs;
+  }
+
+  function makeMissingQuestions() {
+    var combos = [];
+    for (var s = 1; s <= 7; s++) {
+      for (var h = 0; h < 4; h++) {
+        combos.push({ start: s, hole: h });
+      }
+    }
+    return shuffle(combos)
+      .slice(0, 8)
+      .map(function (c) {
+        var tiles = [];
+        var answer = 0;
+        for (var i = 0; i < 4; i++) {
+          var n = c.start + i;
+          if (i === c.hole) {
+            tiles.push(null);
+            answer = n;
+          } else {
+            tiles.push(n);
+          }
+        }
+        return {
+          tiles: tiles,
+          answer: answer,
+          choices: makeChoices(answer, 1, 10),
+        };
+      });
+  }
+
+  function makeBondQuestions() {
+    var qs = [];
+    var prev = 0;
+    for (var i = 0; i < 8; i++) {
+      var target = i < 4 ? 5 : 10;
+      var minN = i < 4 ? 1 : 3;
+      var maxN = i < 4 ? 4 : 7;
+      var n;
+      do {
+        n = randInt(minN, maxN);
+      } while (n === prev);
+      prev = n;
+      var more = target - n;
+      qs.push({
+        shown: n,
+        target: target,
+        more: more,
+        fruit: pick(FRUITS),
+        choices: makeChoices(more, 1, target - 1),
+      });
+    }
+    return qs;
+  }
+
+  function foxPrompt() {
+    var q = state.questions[state.qIndex];
+    if (state.levelId === "count") return "數一數，有幾個？";
+    if (state.levelId === "match") return "哪一群跟上面的數字一樣多？";
+    if (state.levelId === "next") return "下一個數字是誰？";
+    if (state.levelId === "trace") return "照著順序點一點";
+    if (state.levelId === "more") {
+      return q && q.equal ? "一樣多還是有一邊比較多？" : "哪一邊比較多？";
+    }
+    if (state.levelId === "ord") return "從左邊數，第幾個？";
+    if (state.levelId === "missing") return "少了哪個數字？";
+    if (state.levelId === "bond") return "還要幾個才滿？";
+    return "選一關開始吧！";
+  }
+
+  function isLevelId(id) {
+    for (var i = 0; i < LEVELS.length; i++) {
+      if (LEVELS[i].id === id) return true;
+    }
+    return false;
+  }
+
   function ensureAudio() {
     if (!state.soundOn) return null;
     var AC = window.AudioContext || window.webkitAudioContext;
@@ -397,7 +543,7 @@
     }).join("");
 
     return (
-      '<div class="shell">' +
+      '<div class="shell is-home">' +
       topTools('<h1 class="title">數字小探險</h1>') +
       '<div class="fox-row">' +
       foxImg() +
@@ -601,6 +747,153 @@
     );
   }
 
+  function renderMoreGroup(count, icon, side) {
+    var shape = groupShape(count);
+    var cells = "";
+    for (var i = 0; i < count; i++) {
+      cells += '<span class="group-cell">' + icon + "</span>";
+    }
+    var mark = state.choiceMark && state.choiceMark.value === side ? " " + state.choiceMark.cls : "";
+    return (
+      '<button class="group' +
+      mark +
+      '" type="button" data-action="answer" data-value="' +
+      side +
+      '" aria-label="這一邊有 ' +
+      count +
+      ' 個">' +
+      '<div class="group-grid" style="--cols:' +
+      shape.cols +
+      ";--rows:" +
+      shape.rows +
+      '">' +
+      cells +
+      "</div></button>"
+    );
+  }
+
+  function renderMore(q) {
+    var sameMark = state.choiceMark && state.choiceMark.value === "same" ? " " + state.choiceMark.cls : "";
+    return (
+      '<div class="play-col">' +
+      '<div class="prompt">' +
+      (q.equal ? "一樣多還是有一邊比較多？" : "哪一邊比較多？") +
+      "</div>" +
+      '<div class="more-stage"><div class="more-wrap">' +
+      '<div class="more-groups">' +
+      renderMoreGroup(q.left, q.icon, "left") +
+      renderMoreGroup(q.right, q.icon, "right") +
+      "</div>" +
+      '<button class="same-btn' +
+      sameMark +
+      '" type="button" data-action="answer" data-value="same">一樣多</button>' +
+      "</div></div></div>"
+    );
+  }
+
+  function renderOrd(q) {
+    var items = q.animals
+      .map(function (em, idx) {
+        var mark = state.choiceMark && state.choiceMark.value === idx ? " " + state.choiceMark.cls : "";
+        return (
+          '<button class="ord-item' +
+          mark +
+          '" type="button" data-action="answer" data-value="' +
+          idx +
+          '" aria-label="第 ' +
+          (idx + 1) +
+          ' 個">' +
+          em +
+          "</button>"
+        );
+      })
+      .join("");
+    return (
+      '<div class="play-col">' +
+      '<div class="prompt">點第 <span class="prompt-num">' +
+      q.target +
+      "</span> 個</div>" +
+      '<div class="ord-stage"><div class="ord-row">' +
+      items +
+      "</div></div></div>"
+    );
+  }
+
+  function renderMissing(q) {
+    var tiles = q.tiles
+      .map(function (n) {
+        if (n == null) return '<div class="seq-tile ask">？</div>';
+        return '<div class="seq-tile">' + n + "</div>";
+      })
+      .join("");
+    var buttons = q.choices
+      .map(function (n) {
+        var mark = state.choiceMark && state.choiceMark.value === n ? " " + state.choiceMark.cls : "";
+        return (
+          '<button class="choice' +
+          mark +
+          '" type="button" data-action="answer" data-value="' +
+          n +
+          '">' +
+          n +
+          "</button>"
+        );
+      })
+      .join("");
+    return (
+      '<div class="play-col">' +
+      '<div class="prompt">少了哪個數字？</div>' +
+      '<div class="missing-stage"><div class="seq">' +
+      tiles +
+      "</div></div>" +
+      '<div class="choices">' +
+      buttons +
+      "</div></div>"
+    );
+  }
+
+  function renderBond(q) {
+    var shape = gridShape(q.target);
+    var cells = "";
+    var i;
+    for (i = 0; i < q.shown; i++) {
+      cells += '<span class="count-cell">' + q.fruit + "</span>";
+    }
+    for (i = q.shown; i < q.target; i++) {
+      cells += '<span class="count-cell"><span class="bond-slot" aria-hidden="true"></span></span>';
+    }
+    var buttons = q.choices
+      .map(function (n) {
+        var mark = state.choiceMark && state.choiceMark.value === n ? " " + state.choiceMark.cls : "";
+        return (
+          '<button class="choice' +
+          mark +
+          '" type="button" data-action="answer" data-value="' +
+          n +
+          '">' +
+          n +
+          "</button>"
+        );
+      })
+      .join("");
+    return (
+      '<div class="play-col">' +
+      '<div class="prompt">再拿幾個變成 <span class="prompt-num">' +
+      q.target +
+      "</span>？</div>" +
+      '<div class="bond-stage"><div class="count-grid" style="--cols:' +
+      shape.cols +
+      ";--rows:" +
+      shape.rows +
+      '">' +
+      cells +
+      "</div></div>" +
+      '<div class="choices">' +
+      buttons +
+      "</div></div>"
+    );
+  }
+
   function renderPlay() {
     var q = state.questions[state.qIndex];
     var body = "";
@@ -608,6 +901,10 @@
     if (state.levelId === "match") body = renderMatch(q);
     if (state.levelId === "next") body = renderNext(q);
     if (state.levelId === "trace") body = renderTrace(q);
+    if (state.levelId === "more") body = renderMore(q);
+    if (state.levelId === "ord") body = renderOrd(q);
+    if (state.levelId === "missing") body = renderMissing(q);
+    if (state.levelId === "bond") body = renderBond(q);
     return '<div class="shell">' + playChrome() + body + "</div>";
   }
 
@@ -652,19 +949,16 @@
     state.choiceMark = null;
     state.traceNext = 0;
     state.foxMood = "idle";
-    if (id === "count") {
-      state.questions = makeCountQuestions();
-      state.foxMsg = "數一數，有幾個？";
-    } else if (id === "match") {
-      state.questions = makeMatchQuestions();
-      state.foxMsg = "哪一群跟上面的數字一樣多？";
-    } else if (id === "next") {
-      state.questions = makeNextQuestions();
-      state.foxMsg = "下一個數字是誰？";
-    } else {
-      state.questions = makeTraceQuestions();
-      state.foxMsg = "照著順序點一點";
-    }
+    if (id === "count") state.questions = makeCountQuestions();
+    else if (id === "match") state.questions = makeMatchQuestions();
+    else if (id === "next") state.questions = makeNextQuestions();
+    else if (id === "trace") state.questions = makeTraceQuestions();
+    else if (id === "more") state.questions = makeMoreQuestions();
+    else if (id === "ord") state.questions = makeOrdQuestions();
+    else if (id === "missing") state.questions = makeMissingQuestions();
+    else if (id === "bond") state.questions = makeBondQuestions();
+    else return;
+    state.foxMsg = foxPrompt();
     state.screen = "play";
     render();
   }
@@ -704,10 +998,7 @@
       return;
     }
     state.qIndex += 1;
-    if (state.levelId === "count") state.foxMsg = "數一數，有幾個？";
-    if (state.levelId === "match") state.foxMsg = "哪一群跟上面的數字一樣多？";
-    if (state.levelId === "next") state.foxMsg = "下一個數字是誰？";
-    if (state.levelId === "trace") state.foxMsg = "照著順序點一點";
+    state.foxMsg = foxPrompt();
     render();
   }
 
@@ -755,6 +1046,29 @@
       var ans = parseInt(raw, 10);
       if (ans === q.answer) markCorrect(ans);
       else markRetry(ans, "再看一次");
+      return;
+    }
+    if (state.levelId === "more") {
+      if (raw === q.answer) markCorrect(raw);
+      else markRetry(raw, "再看一次");
+      return;
+    }
+    if (state.levelId === "ord") {
+      var ord = parseInt(raw, 10);
+      if (ord === q.target - 1) markCorrect(ord);
+      else markRetry(ord, "再看一次");
+      return;
+    }
+    if (state.levelId === "missing") {
+      var miss = parseInt(raw, 10);
+      if (miss === q.answer) markCorrect(miss);
+      else markRetry(miss, "再看一次");
+      return;
+    }
+    if (state.levelId === "bond") {
+      var need = parseInt(raw, 10);
+      if (need === q.more) markCorrect(need);
+      else markRetry(need, "再看一次");
     }
   }
 
@@ -828,9 +1142,7 @@
 
   function bootFromHash() {
     var id = (location.hash || "").replace("#", "");
-    if (id === "count" || id === "match" || id === "next" || id === "trace") {
-      startLevel(id);
-    }
+    if (isLevelId(id)) startLevel(id);
   }
 
   render();
