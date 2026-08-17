@@ -1245,6 +1245,10 @@ button:focus-visible {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.life-table[data-slots="4"] {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+
 .life-weather,
 .life-slot,
 .light-card {
