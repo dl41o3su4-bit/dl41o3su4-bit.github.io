@@ -1102,10 +1102,6 @@
         weather: "☀️",
         label: "大太陽",
         ask: "大太陽，拖上去",
-        slots: [
-          { id: "head", emoji: "🧒", label: "頭上" },
-          { id: "body", emoji: "👕", label: "衣服" },
-        ],
         ok: [lifeItem("cap", "🧢", "帽子", "head"), lifeItem("tee", "👕", "短袖", "body")],
         wrong: [lifeItem("scarf", "🧣", "圍巾"), lifeItem("boot", "👢", "雨靴")],
       },
@@ -1113,21 +1109,13 @@
         weather: "🌧️",
         label: "下雨了",
         ask: "下雨了，拖上去",
-        slots: [
-          { id: "head", emoji: "🧒", label: "頭上" },
-          { id: "body", emoji: "🧥", label: "衣服" },
-        ],
-        ok: [lifeItem("umb", "☂️", "雨傘", "head"), lifeItem("rain", "🧥", "雨衣", "body")],
+        ok: [lifeItem("rain", "🧥", "雨衣", "body"), lifeItem("rainboot", "👢", "雨靴", "feet")],
         wrong: [lifeItem("glass", "🕶️", "太陽眼鏡"), lifeItem("tee2", "👕", "短袖")],
       },
       {
         weather: "❄️",
         label: "好冷",
         ask: "好冷，拖上去",
-        slots: [
-          { id: "head", emoji: "🧒", label: "頭上" },
-          { id: "body", emoji: "🧥", label: "衣服" },
-        ],
         ok: [lifeItem("scarf2", "🧣", "圍巾", "head"), lifeItem("coat", "🧥", "外套", "body")],
         wrong: [lifeItem("tee3", "👕", "短袖"), lifeItem("sandal", "👡", "拖鞋")],
       },
@@ -1135,10 +1123,6 @@
         weather: "☀️",
         label: "好熱",
         ask: "好熱，拖上去",
-        slots: [
-          { id: "head", emoji: "🧒", label: "頭上" },
-          { id: "body", emoji: "👕", label: "衣服" },
-        ],
         ok: [lifeItem("sunglass", "🕶️", "太陽眼鏡", "head"), lifeItem("tee4", "👕", "短袖", "body")],
         wrong: [lifeItem("scarf3", "🧣", "圍巾"), lifeItem("coat2", "🧥", "外套")],
       },
@@ -1146,10 +1130,6 @@
         weather: "💨",
         label: "風好大",
         ask: "風好大，拖上去",
-        slots: [
-          { id: "head", emoji: "🧒", label: "頭上" },
-          { id: "body", emoji: "🧥", label: "衣服" },
-        ],
         ok: [lifeItem("cap2", "🧢", "帽子", "head"), lifeItem("windcoat", "🧥", "外套", "body")],
         wrong: [lifeItem("sandal2", "👡", "拖鞋"), lifeItem("tee5", "👕", "短袖")],
       },
@@ -1157,11 +1137,7 @@
         weather: "🌧️",
         label: "下雨了",
         ask: "下雨了，拖上去",
-        slots: [
-          { id: "head", emoji: "🧒", label: "頭上" },
-          { id: "body", emoji: "👢", label: "腳上" },
-        ],
-        ok: [lifeItem("umb2", "☂️", "雨傘", "head"), lifeItem("rainboot", "👢", "雨靴", "body")],
+        ok: [lifeItem("umb2", "☂️", "雨傘", "head"), lifeItem("rain2", "🧥", "雨衣", "body")],
         wrong: [lifeItem("cap3", "🧢", "帽子"), lifeItem("glass2", "🕶️", "太陽眼鏡")],
       },
     ];
@@ -1170,7 +1146,6 @@
         ask: r.ask,
         sceneEmoji: r.weather,
         sceneLabel: r.label,
-        slots: r.slots,
         items: shuffle(r.ok.concat(r.wrong)),
       };
     });
@@ -1663,7 +1638,7 @@
       return '<span class="preview-art preview-match" aria-hidden="true"><b>A</b><span class="draw-line"></span><span>🍎</span></span>';
     }
     if (id === "dress") {
-      return '<span class="preview-art preview-match" aria-hidden="true"><span>☀️</span><b>👕</b></span>';
+      return '<span class="preview-art preview-match" aria-hidden="true"><span>🧒</span><b>🧢</b></span>';
     }
     if (id === "table") {
       return '<span class="preview-art preview-match" aria-hidden="true"><span>🍚</span><span>🍽️</span><span>🍴</span></span>';
@@ -2282,7 +2257,8 @@
       body = renderPicChoice(q, (q.word || "這個字") + "的第一個字母是誰？");
     }
     if (state.levelId === "abc-case" || state.levelId === "abc-draw") body = renderPicConnect(q);
-    if (isPlaceLevel()) body = renderLifePlace(q);
+    if (state.levelId === "dress") body = renderDress(q);
+    else if (isPlaceLevel()) body = renderLifePlace(q);
     if (state.levelId === "light") body = renderLight(q);
     if (state.levelId === "body") body = renderBody(q);
     return '<div class="shell' + (isLifeLevel() ? " is-life" : "") + '">' + playChrome() + body + "</div>";
@@ -2388,6 +2364,52 @@
     );
   }
 
+  function renderDressWear(slotId) {
+    var item = itemInSlot(slotId);
+    if (!item) return "";
+    return '<span class="dress-wear" aria-hidden="true">' + item.emoji + "</span>";
+  }
+
+  function renderDress(q) {
+    var tray = q.items
+      .filter(function (item) {
+        return !state.placed[item.id];
+      })
+      .map(function (item) {
+        return renderLifeChip(item, "");
+      })
+      .join("");
+    return (
+      '<div class="play-col">' +
+      '<div class="prompt">' +
+      escapeHtml(q.ask) +
+      "</div>" +
+      '<div class="life-stage is-place dress-play">' +
+      '<div class="dress-board">' +
+      '<div class="dress-weather"><span class="life-emoji">' +
+      q.sceneEmoji +
+      '</span><span class="life-name">' +
+      escapeHtml(q.sceneLabel) +
+      "</span></div>" +
+      '<div class="dress-kid" aria-label="小朋友">' +
+      '<div class="dress-zone head" data-life-slot="head" aria-label="頭">' +
+      '<span class="dress-base dress-face">🙂</span>' +
+      renderDressWear("head") +
+      "</div>" +
+      '<div class="dress-zone body" data-life-slot="body" aria-label="衣服">' +
+      '<span class="dress-torso" aria-hidden="true"></span>' +
+      renderDressWear("body") +
+      "</div>" +
+      '<div class="dress-zone feet" data-life-slot="feet" aria-label="腳">' +
+      '<span class="dress-legs" aria-hidden="true"><i></i><i></i></span>' +
+      renderDressWear("feet") +
+      "</div></div></div>" +
+      '<div class="life-tray">' +
+      tray +
+      "</div></div></div>"
+    );
+  }
+
   function renderLifePlace(q) {
     var tray = q.items
       .filter(function (item) {
@@ -2403,17 +2425,7 @@
       })
       .join("");
     var board = "";
-    if (state.levelId === "dress") {
-      board =
-        '<div class="life-scene">' +
-        '<div class="life-weather"><span class="life-emoji">' +
-        q.sceneEmoji +
-        '</span><span class="life-name">' +
-        escapeHtml(q.sceneLabel) +
-        "</span></div>" +
-        slots +
-        "</div>";
-    } else if (state.levelId === "table") {
+    if (state.levelId === "table") {
       board = '<div class="life-table" data-slots="' + q.slots.length + '">' + slots + "</div>";
     } else if (state.levelId === "sort" || state.levelId === "daynight") {
       board = '<div class="life-scene">' + slots + "</div>";
