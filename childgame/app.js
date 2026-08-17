@@ -70,7 +70,7 @@
 
   var WORD_LEVELS = [
     { id: "bpm-trace", name: "描注音", hint: "用手指描聲符", emoji: "ㄅ", cls: "w1" },
-    { id: "bpm-pic", name: "圖配注音", hint: "看字選聲符", emoji: "🥟", cls: "w2" },
+    { id: "bpm-pic", name: "圖配注音", hint: "看字選聲符", emoji: "🍦", cls: "w2" },
     { id: "bpm-draw", name: "注音連連看", hint: "看字連聲符", emoji: "🔗", cls: "w3" },
     { id: "hanzi", name: "看圖認字", hint: "圖配哪個字", emoji: "山", cls: "w4" },
   ];
@@ -871,10 +871,10 @@
       );
     }
     if (id === "bpm-pic") {
-      return '<span class="preview-art preview-match" aria-hidden="true"><span>🥟</span><b>ㄅ</b></span>';
+      return '<span class="preview-art preview-match" aria-hidden="true"><span>🍦</span><b>ㄅ</b></span>';
     }
     if (id === "bpm-draw") {
-      return '<span class="preview-art preview-match" aria-hidden="true"><b>ㄅ</b><span class="draw-line"></span><span>🥟</span></span>';
+      return '<span class="preview-art preview-match" aria-hidden="true"><b>ㄅ</b><span class="draw-line"></span><span>🍦</span></span>';
     }
     if (id === "hanzi") {
       return '<span class="preview-art preview-match" aria-hidden="true"><span>⛰️</span><b>山</b></span>';
