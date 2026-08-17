@@ -986,10 +986,45 @@
   function foxImg() {
     return (
       '<span class="fox-frame">' +
-      '<img class="fox ' +
+      '<svg class="fox ' +
       state.foxMood +
-      '" src="./fox.svg" alt="小狐狸老師" width="108" height="108">' +
-      "</span>"
+      '" viewBox="0 0 200 200" role="img" aria-label="小狐狸老師" width="108" height="108">' +
+      '<ellipse class="fox-ground" cx="100" cy="186" rx="46" ry="8" fill="#1b2a4a" opacity=".12"></ellipse>' +
+      '<g class="fox-idle">' +
+      '<path d="M68 118c-18 22-20 48-8 62 18 8 62 8 80 0 12-14 10-40-8-62z" fill="#f76707"></path>' +
+      '<path d="M86 168h28c2 10-4 18-14 18s-16-8-14-18z" fill="#fff6e8"></path>' +
+      '<path d="M100 128c-22 0-40 14-40 22 8 18 72 18 80 0 0-8-18-22-40-22z" fill="#ff922b"></path>' +
+      '<ellipse cx="100" cy="92" rx="58" ry="54" fill="#f76707"></ellipse>' +
+      '<path d="M36 78 58 12l36 52z" fill="#f76707"></path>' +
+      '<path d="M164 78 142 12l-36 52z" fill="#f76707"></path>' +
+      '<path d="M48 70 60 28l22 40z" fill="#ffd8a8"></path>' +
+      '<path d="M152 70 140 28l-22 40z" fill="#ffd8a8"></path>' +
+      '<ellipse cx="58" cy="104" rx="16" ry="12" fill="#ffa8a8"></ellipse>' +
+      '<ellipse cx="142" cy="104" rx="16" ry="12" fill="#ffa8a8"></ellipse>' +
+      '<ellipse cx="100" cy="122" rx="32" ry="22" fill="#fff8f0"></ellipse>' +
+      '<g class="fox-glasses">' +
+      '<circle cx="74" cy="86" r="18" fill="#fff" stroke="#1b2a4a" stroke-width="3"></circle>' +
+      '<circle cx="126" cy="86" r="18" fill="#fff" stroke="#1b2a4a" stroke-width="3"></circle>' +
+      '<line x1="92" y1="86" x2="108" y2="86" stroke="#1b2a4a" stroke-width="3"></line>' +
+      '<ellipse class="fox-glint" cx="66" cy="78" rx="5.5" ry="2.6" fill="#fff"></ellipse>' +
+      "</g>" +
+      '<g class="fox-pupil">' +
+      '<ellipse cx="74" cy="88" rx="7" ry="8" fill="#1b2a4a">' +
+      '<animate attributeName="ry" values="8;8;0.5;8;8" keyTimes="0;0.86;0.9;0.94;1" dur="2.8s" repeatCount="indefinite"></animate>' +
+      "</ellipse>" +
+      '<circle cx="76" cy="85" r="2.4" fill="#fff"></circle>' +
+      "</g>" +
+      '<g class="fox-pupil">' +
+      '<ellipse cx="126" cy="88" rx="7" ry="8" fill="#1b2a4a">' +
+      '<animate attributeName="ry" values="8;8;0.5;8;8" keyTimes="0;0.86;0.9;0.94;1" dur="2.8s" repeatCount="indefinite"></animate>' +
+      "</ellipse>" +
+      '<circle cx="128" cy="85" r="2.4" fill="#fff"></circle>' +
+      "</g>" +
+      '<ellipse cx="100" cy="116" rx="9" ry="6" fill="#1b2a4a"></ellipse>' +
+      '<path d="M91 128q9 10 18 0" fill="none" stroke="#1b2a4a" stroke-width="3.2" stroke-linecap="round"></path>' +
+      '<circle cx="168" cy="132" r="10" fill="#4dabf7"></circle>' +
+      '<circle cx="168" cy="132" r="5" fill="#fff"></circle>' +
+      "</g></svg></span>"
     );
   }
 
@@ -1098,21 +1133,16 @@
       '<div class="shell is-home">' +
       topTools("<span></span>") +
       '<div class="home-hero">' +
-      '<p class="kicker">小狐狸老師的數字課</p>' +
-      '<h1 class="title">數字小探險</h1></div>' +
+      '<p class="kicker">小狐狸老師的課</p>' +
+      '<h1 class="title">小狐狸學堂</h1></div>' +
       '<div class="fox-row">' +
       foxImg() +
       '<p class="speech" aria-live="polite">' +
       escapeHtml(state.foxMsg) +
       "</p></div>" +
       '<div class="home-scroll">' +
-      '<h2 class="section-title">數字（舊）</h2>' +
       '<div class="level-grid">' +
-      renderLevelCards(OLD_MATH_LEVELS) +
-      "</div>" +
-      '<h2 class="section-title">數字（新）</h2>' +
-      '<div class="level-grid">' +
-      renderLevelCards(NEW_MATH_LEVELS) +
+      renderLevelCards(OLD_MATH_LEVELS.concat(NEW_MATH_LEVELS)) +
       "</div>" +
       '<h2 class="section-title">注音國字</h2>' +
       '<div class="level-grid">' +
@@ -1711,7 +1741,7 @@
     var speech = app.querySelector(".speech");
     var fox = app.querySelector(".fox");
     if (speech) speech.textContent = msg;
-    if (fox && mood) fox.className = "fox " + mood;
+    if (fox && mood) fox.setAttribute("class", "fox " + mood);
   }
 
   function matchNodeFromPoint(x, y) {

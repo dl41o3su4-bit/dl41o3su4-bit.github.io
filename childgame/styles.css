@@ -167,13 +167,28 @@ button:focus-visible {
   display: grid;
   place-items: center;
   overflow: visible;
+  transform-origin: 50% 80%;
+  animation: fox-bob 1.6s ease-in-out infinite;
 }
 
 .fox {
   width: 100%;
   height: 100%;
   display: block;
+  overflow: visible;
   filter: drop-shadow(0 8px 10px rgba(180, 120, 70, 0.18));
+}
+
+.fox-pupil {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: fox-blink 2.8s ease-in-out infinite;
+}
+
+.fox-glint {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: fox-glint 2.8s ease-in-out infinite;
 }
 
 .fox.happy {
@@ -1162,6 +1177,21 @@ button:focus-visible {
   .groups {
     flex: 1;
   }
+}
+
+@keyframes fox-bob {
+  0%, 100% { transform: translateY(0) rotate(-1.4deg); }
+  50% { transform: translateY(-6px) rotate(1.4deg); }
+}
+
+@keyframes fox-blink {
+  0%, 86%, 100% { transform: scaleY(1); }
+  90%, 94% { transform: scaleY(0.08); }
+}
+
+@keyframes fox-glint {
+  0%, 62%, 100% { opacity: 0.2; transform: scale(0.7); }
+  70% { opacity: 0.95; transform: scale(1.2); }
 }
 
 @keyframes hop {
