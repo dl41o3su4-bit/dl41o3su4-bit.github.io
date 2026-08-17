@@ -190,28 +190,24 @@
 
   var BPM_WORDS = [
     { bpm: "ㄅ", word: "包子", emoji: "🥟" },
-    { bpm: "ㄅ", word: "冰", emoji: "🧊" },
-    { bpm: "ㄆ", word: "跑", emoji: "🏃" },
+    { bpm: "ㄅ", word: "冰淇淋", emoji: "🍦" },
     { bpm: "ㄆ", word: "葡萄", emoji: "🍇" },
-    { bpm: "ㄇ", word: "帽子", emoji: "🎩" },
+    { bpm: "ㄆ", word: "蘋果", emoji: "🍎" },
     { bpm: "ㄇ", word: "貓", emoji: "🐱" },
-    { bpm: "ㄈ", word: "飛", emoji: "✈️" },
-    { bpm: "ㄈ", word: "風", emoji: "💨" },
-    { bpm: "ㄉ", word: "刀", emoji: "🔪" },
+    { bpm: "ㄇ", word: "帽子", emoji: "🧢" },
+    { bpm: "ㄈ", word: "飛機", emoji: "✈️" },
     { bpm: "ㄉ", word: "蛋", emoji: "🥚" },
+    { bpm: "ㄉ", word: "大象", emoji: "🐘" },
     { bpm: "ㄊ", word: "太陽", emoji: "☀️" },
     { bpm: "ㄊ", word: "兔子", emoji: "🐰" },
     { bpm: "ㄋ", word: "牛奶", emoji: "🥛" },
     { bpm: "ㄋ", word: "鳥", emoji: "🐦" },
     { bpm: "ㄌ", word: "老虎", emoji: "🐯" },
-    { bpm: "ㄌ", word: "籃球", emoji: "🏀" },
     { bpm: "ㄍ", word: "狗", emoji: "🐶" },
-    { bpm: "ㄍ", word: "瓜", emoji: "🍉" },
     { bpm: "ㄎ", word: "可樂", emoji: "🥤" },
     { bpm: "ㄏ", word: "花", emoji: "🌸" },
     { bpm: "ㄏ", word: "猴子", emoji: "🐵" },
     { bpm: "ㄐ", word: "雞", emoji: "🐔" },
-    { bpm: "ㄐ", word: "家", emoji: "🏠" },
     { bpm: "ㄑ", word: "球", emoji: "⚽" },
     { bpm: "ㄑ", word: "青蛙", emoji: "🐸" },
     { bpm: "ㄒ", word: "蝦", emoji: "🦐" },
@@ -219,10 +215,7 @@
     { bpm: "ㄓ", word: "豬", emoji: "🐷" },
     { bpm: "ㄔ", word: "車", emoji: "🚗" },
     { bpm: "ㄕ", word: "書", emoji: "📖" },
-    { bpm: "ㄖ", word: "日", emoji: "☀️" },
-    { bpm: "ㄗ", word: "字", emoji: "✏️" },
     { bpm: "ㄘ", word: "草", emoji: "🌿" },
-    { bpm: "ㄙ", word: "三", emoji: "3️⃣" },
   ];
 
   var HANZI_WORDS = [
@@ -600,8 +593,18 @@
     var left = [];
     var rightSrc = [];
     for (var p = 0; p < items.length; p++) {
-      left.push({ pair: p, text: items[p][leftKey], emoji: leftKey === "emoji" ? items[p].emoji : "" });
-      rightSrc.push({ pair: p, text: items[p][rightKey], emoji: rightKey === "emoji" ? items[p].emoji : "" });
+      left.push({
+        pair: p,
+        text: items[p][leftKey],
+        emoji: leftKey === "emoji" ? items[p].emoji : "",
+        word: leftKey === "emoji" ? items[p].word || "" : "",
+      });
+      rightSrc.push({
+        pair: p,
+        text: items[p][rightKey],
+        emoji: rightKey === "emoji" ? items[p].emoji : "",
+        word: rightKey === "emoji" ? items[p].word || "" : "",
+      });
     }
     if (leftKey !== "emoji") {
       left.forEach(function (item) {
@@ -649,10 +652,13 @@
     return shuffle(BPM_WORDS)
       .slice(0, 10)
       .map(function (w) {
+        var choices = makeSymbolChoices(w.bpm, pool);
+        if (choices.indexOf(w.bpm) === -1) choices[0] = w.bpm;
         return {
           emoji: w.emoji,
+          word: w.word,
           answer: w.bpm,
-          choices: makeSymbolChoices(w.bpm, pool),
+          choices: choices,
         };
       });
   }
@@ -708,7 +714,9 @@
     if (state.levelId === "missing") return "少了哪個數字？";
     if (state.levelId === "bond") return "還要幾個才滿？";
     if (state.levelId === "bpm-trace") return "從亮點開始，描一描";
-    if (state.levelId === "bpm-pic") return "這是哪個音？";
+    if (state.levelId === "bpm-pic") {
+      return q && q.word ? q.word + " 的第一個音是誰？" : "這是哪個音？";
+    }
     if (state.levelId === "bpm-draw") return "把注音和圖連起來";
     if (state.levelId === "hanzi") {
       return q && q.mode === "draw" ? "把圖和字連起來" : "這是哪個字？";
@@ -1376,7 +1384,10 @@
       prompt +
       "</div>" +
       '<div class="pic-stage"><div class="pic-card">' +
+      '<span class="pic-emoji">' +
       q.emoji +
+      "</span>" +
+      (q.word ? '<span class="pic-word">' + escapeHtml(q.word) + "</span>" : "") +
       "</div></div>" +
       '<div class="choices">' +
       buttons +
@@ -1388,8 +1399,13 @@
     var done = state.matchDone[item.pair] ? " done" : "";
     var isPic = !!item.emoji;
     var cls = isPic ? "match-group match-pic" : "match-num";
-    var inner = isPic ? '<span class="pic-emoji">' + item.emoji + "</span>" : item.text;
-    var aria = isPic ? "圖" : String(item.text);
+    var inner = isPic
+      ? '<span class="pic-emoji">' +
+        item.emoji +
+        "</span>" +
+        (item.word ? '<span class="pic-word">' + escapeHtml(item.word) + "</span>" : "")
+      : item.text;
+    var aria = isPic ? item.word || "圖" : String(item.text);
     return (
       '<div class="' +
       cls +
@@ -1450,7 +1466,9 @@
     if (state.levelId === "missing") body = renderMissing(q);
     if (state.levelId === "bond") body = renderBond(q);
     if (state.levelId === "bpm-trace") body = renderTrace(q);
-    if (state.levelId === "bpm-pic") body = renderPicChoice(q, "這是哪個音？");
+    if (state.levelId === "bpm-pic") {
+      body = renderPicChoice(q, q.word ? q.word + " 的聲符是誰？" : "這是哪個音？");
+    }
     if (state.levelId === "bpm-draw") body = renderPicConnect(q);
     if (state.levelId === "hanzi") {
       body = q.mode === "draw" ? renderPicConnect(q) : renderPicChoice(q, "這是哪個字？");
