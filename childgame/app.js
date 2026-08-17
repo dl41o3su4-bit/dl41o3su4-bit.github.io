@@ -70,8 +70,8 @@
 
   var WORD_LEVELS = [
     { id: "bpm-trace", name: "描注音", hint: "用手指描聲符", emoji: "ㄅ", cls: "w1" },
-    { id: "bpm-pic", name: "圖配注音", hint: "圖配哪個注音", emoji: "🥟", cls: "w2" },
-    { id: "bpm-draw", name: "注音連連看", hint: "畫線連注音", emoji: "🔗", cls: "w3" },
+    { id: "bpm-pic", name: "圖配注音", hint: "看字選聲符", emoji: "🥟", cls: "w2" },
+    { id: "bpm-draw", name: "注音連連看", hint: "看字連聲符", emoji: "🔗", cls: "w3" },
     { id: "hanzi", name: "看圖認字", hint: "圖配哪個字", emoji: "山", cls: "w4" },
   ];
 
@@ -204,8 +204,8 @@
     { bpm: "ㄋ", word: "鳥", emoji: "🐦" },
     { bpm: "ㄌ", word: "老虎", emoji: "🐯" },
     { bpm: "ㄍ", word: "狗", emoji: "🐶" },
-    { bpm: "ㄎ", word: "可樂", emoji: "🥤" },
-    { bpm: "ㄏ", word: "花", emoji: "🌸" },
+    { bpm: "ㄎ", word: "恐龍", emoji: "🦖" },
+    { bpm: "ㄏ", word: "花朵", emoji: "🌸" },
     { bpm: "ㄏ", word: "猴子", emoji: "🐵" },
     { bpm: "ㄐ", word: "雞", emoji: "🐔" },
     { bpm: "ㄑ", word: "球", emoji: "⚽" },
@@ -669,7 +669,7 @@
       var pairCount = i < 5 ? 2 : 3;
       var items = uniqueBpmWords(pairCount);
       var board = makePairConnect(items, "bpm", "emoji");
-      board.prompt = "畫線連連看";
+      board.prompt = "看圖上的字，連到第一個音";
       qs.push(board);
     }
     return qs;
@@ -715,9 +715,9 @@
     if (state.levelId === "bond") return "還要幾個才滿？";
     if (state.levelId === "bpm-trace") return "從亮點開始，描一描";
     if (state.levelId === "bpm-pic") {
-      return q && q.word ? q.word + " 的第一個音是誰？" : "這是哪個音？";
+      return (q && q.word ? q.word : "這個字") + "的第一個音是誰？";
     }
-    if (state.levelId === "bpm-draw") return "把注音和圖連起來";
+    if (state.levelId === "bpm-draw") return "看圖上的字，連到第一個音";
     if (state.levelId === "hanzi") {
       return q && q.mode === "draw" ? "把圖和字連起來" : "這是哪個字？";
     }
@@ -1387,7 +1387,9 @@
       '<span class="pic-emoji">' +
       q.emoji +
       "</span>" +
-      (q.word ? '<span class="pic-word">' + escapeHtml(q.word) + "</span>" : "") +
+      '<span class="pic-word">' +
+      escapeHtml(q.word || "") +
+      "</span>" +
       "</div></div>" +
       '<div class="choices">' +
       buttons +
@@ -1403,7 +1405,9 @@
       ? '<span class="pic-emoji">' +
         item.emoji +
         "</span>" +
-        (item.word ? '<span class="pic-word">' + escapeHtml(item.word) + "</span>" : "")
+        (item.word
+          ? '<span class="pic-word">' + escapeHtml(item.word) + "</span>"
+          : "")
       : item.text;
     var aria = isPic ? item.word || "圖" : String(item.text);
     return (
@@ -1467,7 +1471,7 @@
     if (state.levelId === "bond") body = renderBond(q);
     if (state.levelId === "bpm-trace") body = renderTrace(q);
     if (state.levelId === "bpm-pic") {
-      body = renderPicChoice(q, q.word ? q.word + " 的聲符是誰？" : "這是哪個音？");
+      body = renderPicChoice(q, (q.word || "這個字") + "的第一個音是誰？");
     }
     if (state.levelId === "bpm-draw") body = renderPicConnect(q);
     if (state.levelId === "hanzi") {
