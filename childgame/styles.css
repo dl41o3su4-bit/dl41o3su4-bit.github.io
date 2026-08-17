@@ -149,7 +149,7 @@ button:focus-visible {
 
 .fox-row {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   gap: 12px;
   flex: 0 0 auto;
   min-height: 0;
@@ -157,18 +157,16 @@ button:focus-visible {
 }
 
 .fox-frame {
-  width: clamp(72px, 17vmin, 116px);
-  height: clamp(72px, 17vmin, 116px);
+  width: clamp(80px, 18vmin, 96px);
+  height: clamp(80px, 18vmin, 96px);
   flex: 0 0 auto;
-  border-radius: 50%;
+  border-radius: 0;
   background: transparent;
   border: 0;
   box-shadow: none;
   display: grid;
   place-items: center;
   overflow: visible;
-  transform-origin: 50% 80%;
-  animation: fox-bob 1.6s ease-in-out infinite;
 }
 
 .fox {
@@ -176,54 +174,34 @@ button:focus-visible {
   height: 100%;
   display: block;
   overflow: visible;
-  filter: drop-shadow(0 8px 10px rgba(180, 120, 70, 0.18));
 }
 
-.fox-pupil {
+.fox-bob {
   transform-box: fill-box;
-  transform-origin: center;
-  animation: fox-blink 2.8s ease-in-out infinite;
-}
-
-.fox-glint {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: fox-glint 2.8s ease-in-out infinite;
+  transform-origin: 50% 80%;
+  animation: bob 2.8s ease-in-out infinite;
 }
 
 .fox.happy {
-  animation: hop 0.45s ease;
+  animation: wiggle 0.45s ease;
 }
 
 .fox.think {
-  animation: tilt 0.4s ease;
+  animation: shake 0.4s ease;
 }
 
 .speech {
   flex: 1 1 auto;
   min-width: 0;
-  background: #fff;
+  background: #fffaf1;
   border: 0;
   border-radius: 24px;
   padding: 12px 16px;
   font-size: clamp(18px, 4.2vmin, 26px);
   font-weight: 800;
   line-height: 1.35;
-  box-shadow: 0 6px 16px rgba(180, 120, 70, 0.12);
+  box-shadow: 0 6px 0 #e8c48a;
   position: relative;
-}
-
-.speech::before {
-  content: "";
-  position: absolute;
-  left: -8px;
-  top: 50%;
-  width: 16px;
-  height: 16px;
-  background: #fff;
-  transform: translateY(-50%) rotate(45deg);
-  border-radius: 4px;
-  box-shadow: -3px 3px 8px rgba(180, 120, 70, 0.06);
 }
 
 .star-chip,
@@ -424,7 +402,11 @@ button:focus-visible {
 .level-card.w1,
 .level-card.w2,
 .level-card.w3,
-.level-card.w4 {
+.level-card.w4,
+.level-card.e1,
+.level-card.e2,
+.level-card.e3,
+.level-card.e4 {
   background: #fffdf8;
   border-color: #f0c49a;
 }
@@ -1090,8 +1072,8 @@ button:focus-visible {
 
 @media (max-height: 520px) {
   .fox-frame {
-    width: 56px;
-    height: 56px;
+    width: 80px;
+    height: 80px;
   }
 
   .home-hero {
@@ -1179,29 +1161,15 @@ button:focus-visible {
   }
 }
 
-@keyframes fox-bob {
-  0%, 100% { transform: translateY(0) rotate(-1.4deg); }
-  50% { transform: translateY(-6px) rotate(1.4deg); }
-}
-
-@keyframes fox-blink {
-  0%, 86%, 100% { transform: scaleY(1); }
-  90%, 94% { transform: scaleY(0.08); }
-}
-
-@keyframes fox-glint {
-  0%, 62%, 100% { opacity: 0.2; transform: scale(0.7); }
-  70% { opacity: 0.95; transform: scale(1.2); }
-}
-
-@keyframes hop {
+@keyframes bob {
   0%, 100% { transform: translateY(0); }
-  40% { transform: translateY(-8px); }
+  50% { transform: translateY(-6px); }
 }
 
-@keyframes tilt {
+@keyframes wiggle {
   0%, 100% { transform: rotate(0); }
-  35% { transform: rotate(-8deg); }
+  25% { transform: rotate(-6deg); }
+  75% { transform: rotate(6deg); }
 }
 
 @keyframes shake {

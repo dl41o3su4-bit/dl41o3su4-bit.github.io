@@ -38,6 +38,64 @@
     10: "10 是鉛筆加雞蛋"
   };
 
+  var LETTER_TIPS = {
+    A: "A 像尖尖帳篷",
+    B: "B 像兩個肚子",
+    C: "C 像彎彎月亮",
+    D: "D 像大肚子弓",
+    E: "E 像梳子三根毛",
+    F: "F 像旗子少一橫",
+    G: "G 像 C 加一橫",
+    H: "H 像梯子兩根柱",
+    I: "I 像鉛筆直直的",
+    J: "J 像魚鉤彎一彎",
+    K: "K 像張開的手臂",
+    L: "L 像直角尺",
+    M: "M 像兩座小山",
+    N: "N 像斜斜滑梯",
+    O: "O 像圓圓雞蛋",
+    P: "P 像旗子一面",
+    Q: "Q 像 O 加小尾巴",
+    R: "R 像 P 加一腳",
+    S: "S 像彎彎蛇",
+    T: "T 像傘柄撐開",
+    U: "U 像杯子開口",
+    V: "V 像山谷尖尖",
+    W: "W 像兩個 V",
+    X: "X 像交叉筷子",
+    Y: "Y 像樹杈分叉",
+    Z: "Z 像閃電折一折"
+  };
+
+  var LETTER_TRACE = {
+    A: { viewBox: "0 0 240 280", strokes: ["M 48 236 L 120 44", "M 120 44 L 192 236", "M 78 164 L 162 164"] },
+    B: { viewBox: "0 0 240 280", strokes: ["M 64 40 L 64 240", "M 64 40 C 170 40 170 130 64 140", "M 64 140 C 180 148 180 240 64 240"] },
+    C: { viewBox: "0 0 240 280", strokes: ["M 186 72 C 170 28 54 36 54 140 C 54 244 170 252 186 208"] },
+    D: { viewBox: "0 0 240 280", strokes: ["M 60 40 L 60 240", "M 60 40 C 190 40 200 240 60 240"] },
+    E: { viewBox: "0 0 240 280", strokes: ["M 64 40 L 64 240", "M 64 40 L 186 40", "M 64 140 L 164 140", "M 64 240 L 186 240"] },
+    F: { viewBox: "0 0 240 280", strokes: ["M 64 40 L 64 240", "M 64 40 L 186 40", "M 64 140 L 164 140"] },
+    G: { viewBox: "0 0 240 280", strokes: ["M 186 72 C 170 28 54 36 54 140 C 54 244 176 252 186 188", "M 186 188 L 186 148 L 128 148"] },
+    H: { viewBox: "0 0 240 280", strokes: ["M 60 40 L 60 240", "M 180 40 L 180 240", "M 60 140 L 180 140"] },
+    I: { viewBox: "0 0 240 280", strokes: ["M 70 40 L 170 40", "M 120 40 L 120 240", "M 70 240 L 170 240"] },
+    J: { viewBox: "0 0 240 280", strokes: ["M 160 40 L 160 200 C 160 250 60 250 60 200"] },
+    K: { viewBox: "0 0 240 280", strokes: ["M 64 40 L 64 240", "M 180 40 L 64 140", "M 64 140 L 180 240"] },
+    L: { viewBox: "0 0 240 280", strokes: ["M 64 40 L 64 240", "M 64 240 L 190 240"] },
+    M: { viewBox: "0 0 240 280", strokes: ["M 40 240 L 40 44", "M 40 44 L 120 160", "M 120 160 L 200 44", "M 200 44 L 200 240"] },
+    N: { viewBox: "0 0 240 280", strokes: ["M 56 240 L 56 44", "M 56 44 L 184 240", "M 184 240 L 184 44"] },
+    O: { viewBox: "0 0 240 280", strokes: ["M 120 40 C 200 40 208 240 120 246 C 32 240 40 40 120 40"] },
+    P: { viewBox: "0 0 240 280", strokes: ["M 64 40 L 64 240", "M 64 40 C 180 40 180 150 64 150"] },
+    Q: { viewBox: "0 0 240 280", strokes: ["M 120 40 C 200 40 208 240 120 246 C 32 240 40 40 120 40", "M 140 180 L 196 246"] },
+    R: { viewBox: "0 0 240 280", strokes: ["M 64 40 L 64 240", "M 64 40 C 180 40 180 150 64 150", "M 120 150 L 190 240"] },
+    S: { viewBox: "0 0 240 280", strokes: ["M 176 64 C 176 28 70 28 70 88 C 70 140 176 140 176 192 C 176 252 64 252 64 208"] },
+    T: { viewBox: "0 0 240 280", strokes: ["M 40 40 L 200 40", "M 120 40 L 120 240"] },
+    U: { viewBox: "0 0 240 280", strokes: ["M 56 40 L 56 180 C 56 250 184 250 184 180 L 184 40"] },
+    V: { viewBox: "0 0 240 280", strokes: ["M 40 40 L 120 240", "M 120 240 L 200 40"] },
+    W: { viewBox: "0 0 240 280", strokes: ["M 28 40 L 70 240", "M 70 240 L 120 100", "M 120 100 L 170 240", "M 170 240 L 212 40"] },
+    X: { viewBox: "0 0 240 280", strokes: ["M 48 40 L 192 240", "M 192 40 L 48 240"] },
+    Y: { viewBox: "0 0 240 280", strokes: ["M 44 40 L 120 140", "M 196 40 L 120 140", "M 120 140 L 120 240"] },
+    Z: { viewBox: "0 0 240 280", strokes: ["M 48 40 L 192 40", "M 192 40 L 48 240", "M 48 240 L 192 240"] }
+  };
+
   var OLD_MATH_LEVELS = [
     { id: "count", name: "數一數", hint: "數一數有幾個", emoji: "🍎", cls: "c1" },
     { id: "match", name: "連連看", hint: "找到一樣多的", emoji: "🔢", cls: "c2" },
@@ -60,7 +118,16 @@
     { id: "hanzi", name: "看圖認字", hint: "圖配哪個字", emoji: "山", cls: "w4" },
   ];
 
-  var LEVELS = OLD_MATH_LEVELS.concat(NEW_MATH_LEVELS, WORD_LEVELS);
+  var ENGLISH_LEVELS = [
+    { id: "abc-trace", name: "描字母", hint: "用手指描 A～Z", emoji: "A", cls: "e1" },
+    { id: "abc-pic", name: "圖配字母", hint: "看字選第一個字母", emoji: "🍎", cls: "e2" },
+    { id: "abc-case", name: "大小寫連連看", hint: "大寫連小寫", emoji: "Aa", cls: "e3" },
+    { id: "abc-draw", name: "字母連連看", hint: "字母連圖", emoji: "🔗", cls: "e4" },
+  ];
+
+  var LEVELS = OLD_MATH_LEVELS.concat(NEW_MATH_LEVELS, WORD_LEVELS, ENGLISH_LEVELS);
+
+  var ABC_ORDER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
   var BPM_ORDER = [
     "ㄅ",
@@ -387,6 +454,35 @@
     { ch: "貓", emoji: "🐱" },
     { ch: "豬", emoji: "🐷" },
     { ch: "書", emoji: "📖" },
+  ];
+
+  var ABC_WORDS = [
+    { letter: "A", word: "Apple", emoji: "🍎" },
+    { letter: "B", word: "Banana", emoji: "🍌" },
+    { letter: "C", word: "Cat", emoji: "🐱" },
+    { letter: "D", word: "Dog", emoji: "🐶" },
+    { letter: "E", word: "Egg", emoji: "🥚" },
+    { letter: "F", word: "Fish", emoji: "🐟" },
+    { letter: "G", word: "Grapes", emoji: "🍇" },
+    { letter: "H", word: "Hat", emoji: "🎩" },
+    { letter: "I", word: "Ice cream", emoji: "🍦" },
+    { letter: "J", word: "Juice", emoji: "🧃" },
+    { letter: "K", word: "Kite", emoji: "🪁" },
+    { letter: "L", word: "Lion", emoji: "🦁" },
+    { letter: "M", word: "Moon", emoji: "🌙" },
+    { letter: "N", word: "Nest", emoji: "🪺" },
+    { letter: "O", word: "Orange", emoji: "🍊" },
+    { letter: "P", word: "Pig", emoji: "🐷" },
+    { letter: "Q", word: "Queen", emoji: "👑" },
+    { letter: "R", word: "Rain", emoji: "🌧️" },
+    { letter: "S", word: "Sun", emoji: "☀️" },
+    { letter: "T", word: "Tree", emoji: "🌳" },
+    { letter: "U", word: "Umbrella", emoji: "☂️" },
+    { letter: "V", word: "Van", emoji: "🚐" },
+    { letter: "W", word: "Watermelon", emoji: "🍉" },
+    { letter: "X", word: "Box", emoji: "📦" },
+    { letter: "Y", word: "Yo-yo", emoji: "🪀" },
+    { letter: "Z", word: "Zebra", emoji: "🦓" },
   ];
 
   var audioCtx = null;
@@ -875,6 +971,59 @@
     return qs;
   }
 
+  function makeAbcTraceQuestions() {
+    return ABC_ORDER.map(function (letter) {
+      return { letter: letter };
+    });
+  }
+
+  function uniqueAbcWords(n) {
+    return shuffle(ABC_WORDS).slice(0, n);
+  }
+
+  function makeAbcPicQuestions() {
+    var pool = ABC_WORDS.map(function (w) {
+      return w.letter;
+    });
+    return shuffle(ABC_WORDS)
+      .slice(0, 10)
+      .map(function (w) {
+        return {
+          emoji: w.emoji,
+          word: w.word,
+          answer: w.letter,
+          choices: makeSymbolChoices(w.letter, pool),
+        };
+      });
+  }
+
+  function makeAbcCaseQuestions() {
+    var qs = [];
+    for (var i = 0; i < 10; i++) {
+      var pairCount = i < 5 ? 2 : 3;
+      var letters = shuffle(ABC_ORDER).slice(0, pairCount);
+      var items = letters.map(function (L) {
+        return { upper: L, lower: L.toLowerCase() };
+      });
+      var board = makePairConnect(items, "upper", "lower");
+      board.prompt = "把大寫和小寫連起來";
+      qs.push(board);
+    }
+    return qs;
+  }
+
+  function makeAbcDrawQuestions() {
+    var qs = [];
+    for (var i = 0; i < 10; i++) {
+      var pairCount = i < 5 ? 2 : 3;
+      var items = uniqueAbcWords(pairCount);
+      var board = makePairConnect(items, "letter", "emoji");
+      board.prompt = "看圖上的字，連到第一個字母";
+      qs.push(board);
+    }
+    return qs;
+  }
+
   function foxPrompt() {
     var q = state.questions[state.qIndex];
     if (state.levelId === "count") return "數一數，有幾個？";
@@ -897,11 +1046,17 @@
       if (q && q.mode === "draw") return "看圖上的字，連起來";
       return (q && q.word ? q.word : "這個字") + "。這是哪個字？";
     }
+    if (state.levelId === "abc-trace") return (q && LETTER_TIPS[q.letter]) || "從亮點開始，描一描";
+    if (state.levelId === "abc-pic") {
+      return (q && q.word ? q.word : "這個字") + "的第一個字母是誰？";
+    }
+    if (state.levelId === "abc-case") return "把大寫和小寫連起來";
+    if (state.levelId === "abc-draw") return "看圖上的字，連到第一個字母";
     return "選一關開始吧！";
   }
 
   function isConnectLevel() {
-    if (state.levelId === "match-draw" || state.levelId === "bpm-draw") return true;
+    if (state.levelId === "match-draw" || state.levelId === "bpm-draw" || state.levelId === "abc-case" || state.levelId === "abc-draw") return true;
     if (state.levelId === "hanzi") {
       var q = state.questions[state.qIndex];
       return !!(q && q.mode === "draw");
@@ -910,12 +1065,13 @@
   }
 
   function isTraceLevel() {
-    return state.levelId === "trace" || state.levelId === "bpm-trace";
+    return state.levelId === "trace" || state.levelId === "bpm-trace" || state.levelId === "abc-trace";
   }
 
   function currentTraceSpec() {
     var q = state.questions[state.qIndex];
     if (state.levelId === "bpm-trace") return BPM_TRACE[q.sym];
+    if (state.levelId === "abc-trace") return LETTER_TRACE[q.letter];
     return TRACE[q.n];
   }
 
@@ -988,42 +1144,25 @@
       '<span class="fox-frame">' +
       '<svg class="fox ' +
       state.foxMood +
-      '" viewBox="0 0 200 200" role="img" aria-label="小狐狸老師" width="108" height="108">' +
-      '<ellipse class="fox-ground" cx="100" cy="186" rx="46" ry="8" fill="#1b2a4a" opacity=".12"></ellipse>' +
-      '<g class="fox-idle">' +
-      '<path d="M68 118c-18 22-20 48-8 62 18 8 62 8 80 0 12-14 10-40-8-62z" fill="#f76707"></path>' +
-      '<path d="M86 168h28c2 10-4 18-14 18s-16-8-14-18z" fill="#fff6e8"></path>' +
-      '<path d="M100 128c-22 0-40 14-40 22 8 18 72 18 80 0 0-8-18-22-40-22z" fill="#ff922b"></path>' +
-      '<ellipse cx="100" cy="92" rx="58" ry="54" fill="#f76707"></ellipse>' +
-      '<path d="M36 78 58 12l36 52z" fill="#f76707"></path>' +
-      '<path d="M164 78 142 12l-36 52z" fill="#f76707"></path>' +
-      '<path d="M48 70 60 28l22 40z" fill="#ffd8a8"></path>' +
-      '<path d="M152 70 140 28l-22 40z" fill="#ffd8a8"></path>' +
-      '<ellipse cx="58" cy="104" rx="16" ry="12" fill="#ffa8a8"></ellipse>' +
-      '<ellipse cx="142" cy="104" rx="16" ry="12" fill="#ffa8a8"></ellipse>' +
-      '<ellipse cx="100" cy="122" rx="32" ry="22" fill="#fff8f0"></ellipse>' +
-      '<g class="fox-glasses">' +
-      '<circle cx="74" cy="86" r="18" fill="#fff" stroke="#1b2a4a" stroke-width="3"></circle>' +
-      '<circle cx="126" cy="86" r="18" fill="#fff" stroke="#1b2a4a" stroke-width="3"></circle>' +
-      '<line x1="92" y1="86" x2="108" y2="86" stroke="#1b2a4a" stroke-width="3"></line>' +
-      '<ellipse class="fox-glint" cx="66" cy="78" rx="5.5" ry="2.6" fill="#fff"></ellipse>' +
-      "</g>" +
-      '<g class="fox-pupil">' +
-      '<ellipse cx="74" cy="88" rx="7" ry="8" fill="#1b2a4a">' +
-      '<animate attributeName="ry" values="8;8;0.5;8;8" keyTimes="0;0.86;0.9;0.94;1" dur="2.8s" repeatCount="indefinite"></animate>' +
-      "</ellipse>" +
-      '<circle cx="76" cy="85" r="2.4" fill="#fff"></circle>' +
-      "</g>" +
-      '<g class="fox-pupil">' +
-      '<ellipse cx="126" cy="88" rx="7" ry="8" fill="#1b2a4a">' +
-      '<animate attributeName="ry" values="8;8;0.5;8;8" keyTimes="0;0.86;0.9;0.94;1" dur="2.8s" repeatCount="indefinite"></animate>' +
-      "</ellipse>" +
-      '<circle cx="128" cy="85" r="2.4" fill="#fff"></circle>' +
-      "</g>" +
-      '<ellipse cx="100" cy="116" rx="9" ry="6" fill="#1b2a4a"></ellipse>' +
-      '<path d="M91 128q9 10 18 0" fill="none" stroke="#1b2a4a" stroke-width="3.2" stroke-linecap="round"></path>' +
-      '<circle cx="168" cy="132" r="10" fill="#4dabf7"></circle>' +
-      '<circle cx="168" cy="132" r="5" fill="#fff"></circle>' +
+      '" viewBox="0 0 140 140" role="img" aria-label="小狐狸老師" width="96" height="96">' +
+      '<ellipse cx="70" cy="128" rx="36" ry="8" fill="#e8c48a"></ellipse>' +
+      '<g class="fox-bob">' +
+      '<path d="M34 58 L22 18 L54 40 Z" fill="#e56a2a"></path>' +
+      '<path d="M106 58 L118 18 L86 40 Z" fill="#e56a2a"></path>' +
+      '<path d="M36 56 L28 26 L52 42 Z" fill="#fff1d6"></path>' +
+      '<path d="M104 56 L112 26 L88 42 Z" fill="#fff1d6"></path>' +
+      '<ellipse cx="70" cy="78" rx="46" ry="42" fill="#e56a2a"></ellipse>' +
+      '<ellipse cx="70" cy="90" rx="30" ry="24" fill="#fff1d6"></ellipse>' +
+      '<circle cx="54" cy="70" r="7" fill="#3b2412"></circle>' +
+      '<circle cx="86" cy="70" r="7" fill="#3b2412"></circle>' +
+      '<circle cx="52" cy="68" r="2.2" fill="#fffaf1"></circle>' +
+      '<circle cx="84" cy="68" r="2.2" fill="#fffaf1"></circle>' +
+      '<ellipse cx="54" cy="72.5" rx="11" ry="8" fill="none" stroke="#3b2412" stroke-width="2.2"></ellipse>' +
+      '<ellipse cx="86" cy="72.5" rx="11" ry="8" fill="none" stroke="#3b2412" stroke-width="2.2"></ellipse>' +
+      '<path d="M43 72 H97" stroke="#3b2412" stroke-width="2.2"></path>' +
+      '<ellipse cx="70" cy="84" rx="6" ry="4.5" fill="#3b2412"></ellipse>' +
+      '<path d="M 60 80 Q 70 86 80 80" fill="none" stroke="#3b2412" stroke-width="3" stroke-linecap="round"></path>' +
+      '<path d="M38 108 C38 124 102 124 102 108 C92 118 48 118 38 108Z" fill="#5dae72"></path>' +
       "</g></svg></span>"
     );
   }
@@ -1092,6 +1231,21 @@
     if (id === "hanzi") {
       return '<span class="preview-art preview-match" aria-hidden="true"><span>⛰️</span><b>山</b></span>';
     }
+    if (id === "abc-trace") {
+      return (
+        '<span class="preview-art preview-trace" aria-hidden="true">' +
+        '<svg viewBox="0 0 80 90"><path d="M 12 78 L 40 12"></path><path d="M 40 12 L 68 78"></path></svg></span>'
+      );
+    }
+    if (id === "abc-pic") {
+      return '<span class="preview-art preview-match" aria-hidden="true"><span>🍎</span><b>A</b></span>';
+    }
+    if (id === "abc-case") {
+      return '<span class="preview-art preview-match" aria-hidden="true"><b>A</b><span class="draw-line"></span><b>a</b></span>';
+    }
+    if (id === "abc-draw") {
+      return '<span class="preview-art preview-match" aria-hidden="true"><b>A</b><span class="draw-line"></span><span>🍎</span></span>';
+    }
     return "";
   }
 
@@ -1141,12 +1295,17 @@
       escapeHtml(state.foxMsg) +
       "</p></div>" +
       '<div class="home-scroll">' +
+      '<h2 class="section-title">數字</h2>' +
       '<div class="level-grid">' +
       renderLevelCards(OLD_MATH_LEVELS.concat(NEW_MATH_LEVELS)) +
       "</div>" +
-      '<h2 class="section-title">注音國字</h2>' +
+      '<h2 class="section-title">注音</h2>' +
       '<div class="level-grid">' +
       renderLevelCards(WORD_LEVELS) +
+      "</div>" +
+      '<h2 class="section-title">英文</h2>' +
+      '<div class="level-grid">' +
+      renderLevelCards(ENGLISH_LEVELS) +
       "</div></div>" +
       '<div class="home-foot">' +
       starChip(state.starsTotal) +
@@ -1161,6 +1320,9 @@
     }
     if (state.levelId === "bpm-trace") {
       return q && q.sym ? q.sym : "";
+    }
+    if (state.levelId === "abc-trace") {
+      return q && q.letter ? "字母 " + q.letter : "";
     }
     var total = state.questions.length;
     return state.qIndex + 1 + " / " + total;
@@ -1355,7 +1517,9 @@
 
   function renderTrace(q) {
     var spec = currentTraceSpec();
-    var label = state.levelId === "bpm-trace" ? q.sym : q.n;
+    var label = q.n;
+    if (state.levelId === "bpm-trace") label = q.sym;
+    if (state.levelId === "abc-trace") label = q.letter;
     var paths = "";
     var i;
     var useFill = state.levelId === "bpm-trace" && spec.outlines && spec.outlines.length;
@@ -1396,6 +1560,10 @@
       prompt = NUM_TIPS[q.n];
       promptCls = "prompt trace-tip";
     }
+    if (state.levelId === "abc-trace" && q && LETTER_TIPS[q.letter]) {
+      prompt = LETTER_TIPS[q.letter];
+      promptCls = "prompt trace-tip";
+    }
     return (
       '<div class="play-col">' +
       '<div class="' +
@@ -1406,7 +1574,7 @@
       '<div class="trace-stage is-write"><svg class="trace-svg" viewBox="' +
       spec.viewBox +
       '" role="img" aria-label="' +
-      (state.levelId === "bpm-trace" ? "注音 " : "數字 ") +
+      (state.levelId === "bpm-trace" ? "注音 " : state.levelId === "abc-trace" ? "字母 " : "數字 ") +
       label +
       '">' +
       paths +
@@ -1657,6 +1825,11 @@
           ? renderPicConnect(q)
           : renderPicChoice(q, (q.word || "這個字") + "。這是哪個字？");
     }
+    if (state.levelId === "abc-trace") body = renderTrace(q);
+    if (state.levelId === "abc-pic") {
+      body = renderPicChoice(q, (q.word || "這個字") + "的第一個字母是誰？");
+    }
+    if (state.levelId === "abc-case" || state.levelId === "abc-draw") body = renderPicConnect(q);
     return '<div class="shell">' + playChrome() + body + "</div>";
   }
 
@@ -1952,6 +2125,10 @@
     else if (id === "bpm-pic") state.questions = makeBpmPicQuestions();
     else if (id === "bpm-draw") state.questions = makeBpmDrawQuestions();
     else if (id === "hanzi") state.questions = makeHanziQuestions();
+    else if (id === "abc-trace") state.questions = makeAbcTraceQuestions();
+    else if (id === "abc-pic") state.questions = makeAbcPicQuestions();
+    else if (id === "abc-case") state.questions = makeAbcCaseQuestions();
+    else if (id === "abc-draw") state.questions = makeAbcDrawQuestions();
     else return;
     state.foxMsg = foxPrompt();
     state.screen = "play";
@@ -2072,7 +2249,7 @@
       else markRetry(need, "再看一次");
       return;
     }
-    if (state.levelId === "bpm-pic" || (state.levelId === "hanzi" && q.mode !== "draw")) {
+    if (state.levelId === "bpm-pic" || state.levelId === "abc-pic" || (state.levelId === "hanzi" && q.mode !== "draw")) {
       if (raw === q.answer) markCorrect(raw);
       else markRetry(raw, "再看一次");
     }
