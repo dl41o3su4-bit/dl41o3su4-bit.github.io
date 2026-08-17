@@ -516,6 +516,7 @@
     heldItem: null,
     countTapped: {},
     countNum: 0,
+    moreTapped: { left: {}, right: {} },
   };
 
   var matchDraw = {
@@ -639,7 +640,7 @@
     return h >>> 0;
   }
 
-  function scatterIcons(icon, count, sizeClass, extraKey, emptyCount, tapMap) {
+  function scatterIcons(icon, count, sizeClass, extraKey, emptyCount, tapMap, tapAttr) {
     var rand = scatterRand(scatterSeed(extraKey));
     var pts = [];
     var html = "";
@@ -667,17 +668,34 @@
       }
       pts.push({ left: left, top: top });
       var rot = -20 + rand() * 40;
-      var inner = i < count ? icon : '<span class="bond-slot" aria-hidden="true"></span>';
+      var slotId = "";
+      var filledItem = null;
+      var inner;
+      if (i < count) {
+        inner = icon;
+      } else {
+        slotId = "bond-" + (i - count);
+        filledItem = state.levelId === "bond" ? itemInSlot(slotId) : null;
+        inner =
+          '<span class="bond-slot' +
+          (filledItem ? " filled" : "") +
+          '" aria-hidden="true">' +
+          (filledItem ? filledItem.emoji : "") +
+          "</span>";
+      }
       var tapOn = tapMap && typeof tapMap === "object";
       var tapped = tapOn && tapMap[String(i)];
-      var tapAttr = tapOn
-        ? ' data-count-dot="' + i + '" role="button" aria-label="點一點"'
+      var attrName = tapAttr || "data-count-dot";
+      var tapBits = tapOn
+        ? " " + attrName + '="' + i + '" role="button" aria-label="點一點"'
         : "";
+      var slotBits = slotId ? ' data-life-slot="' + slotId + '"' : "";
       html +=
         '<span class="scatter-item' +
         (tapped ? " counted" : "") +
         '"' +
-        tapAttr +
+        tapBits +
+        slotBits +
         ' style="left:' +
         left.toFixed(1) +
         "%;top:" +
@@ -877,12 +895,26 @@
       } while (n === prev);
       prev = n;
       var more = target - n;
+      var fruit = pick(FRUITS);
+      var extra = pick(
+        FRUITS.filter(function (f) {
+          return f !== fruit;
+        })
+      );
+      var items = [];
+      var k;
+      for (k = 0; k < more; k++) {
+        var ok = lifeItem("ok" + k, fruit, "", "fill");
+        ok.anySlot = true;
+        items.push(ok);
+      }
+      items.push(lifeItem("nope", extra, "", ""));
       qs.push({
         shown: n,
         target: target,
         more: more,
-        fruit: pick(FRUITS),
-        choices: makeChoices(more, 1, target - 1),
+        fruit: fruit,
+        items: shuffle(items),
       });
     }
     return qs;
@@ -1327,11 +1359,14 @@
     if (state.levelId === "next") return "下一個數字是誰？";
     if (state.levelId === "trace") return (q && NUM_TIPS[q.n]) || "從亮點開始，描一描";
     if (state.levelId === "more") {
-      return q && q.equal ? "一樣多還是有一邊比較多？" : "哪一邊比較多？";
+      if (q && moreAllTapped(q)) {
+        return q.equal ? "一樣多還是有一邊比較多？" : "哪一邊比較多？";
+      }
+      return "兩邊都點完，再比";
     }
-    if (state.levelId === "ord") return "從左邊數，第幾個？";
+    if (state.levelId === "ord") return q ? "從左邊數，點第 " + q.target + " 個" : "從左邊數，點那一個";
     if (state.levelId === "missing") return "少了哪個數字？";
-    if (state.levelId === "bond") return "還要幾個才滿？";
+    if (state.levelId === "bond") return "拖進去，湊滿";
     if (state.levelId === "bpm-trace") return "從亮點開始，描一描";
     if (state.levelId === "bpm-pic") {
       return (q && q.word ? q.word : "這個字") + "的第一個音是誰？";
@@ -1371,6 +1406,29 @@
       state.levelId === "order" ||
       state.levelId === "daynight"
     );
+  }
+
+  function isDragPlaceLevel() {
+    return isPlaceLevel() || state.levelId === "bond";
+  }
+
+  function resetMoreTaps() {
+    state.moreTapped = { left: {}, right: {} };
+  }
+
+  function tappedCount(map) {
+    var n = 0;
+    var k;
+    if (!map) return 0;
+    for (k in map) {
+      if (Object.prototype.hasOwnProperty.call(map, k)) n += 1;
+    }
+    return n;
+  }
+
+  function moreAllTapped(q) {
+    if (!q) return false;
+    return tappedCount(state.moreTapped.left) >= q.left && tappedCount(state.moreTapped.right) >= q.right;
   }
 
   function isLifeLevel() {
@@ -1942,26 +2000,43 @@
   }
 
   function renderMoreGroup(count, icon, side) {
+    var ready = moreAllTapped(state.questions[state.qIndex]);
     var mark = state.choiceMark && state.choiceMark.value === side ? " " + state.choiceMark.cls : "";
+    var n = tappedCount(state.moreTapped[side]);
+    var tag = ready ? "button" : "div";
+    var extra = ready
+      ? ' type="button" data-action="answer" data-value="' + side + '"'
+      : "";
     return (
-      '<button class="group' +
+      "<" +
+      tag +
+      ' class="group' +
       mark +
-      '" type="button" data-action="answer" data-value="' +
+      (ready ? "" : " is-count") +
+      '" data-more-side="' +
       side +
-      '" aria-label="這一邊有 ' +
-      count +
-      ' 個">' +
-      scatterIcons(icon, count, "scatter-lg", side === "left" ? 1 : 2) +
-      "</button>"
+      '"' +
+      extra +
+      ' aria-label="這一邊">' +
+      '<span class="more-total' +
+      (n ? "" : " is-empty") +
+      '">' +
+      (n ? n : "") +
+      "</span>" +
+      scatterIcons(icon, count, "scatter-lg", side === "left" ? 1 : 2, 0, state.moreTapped[side], "data-more-dot") +
+      "</" +
+      tag +
+      ">"
     );
   }
 
   function renderMore(q) {
+    var ready = moreAllTapped(q);
     var sameMark = state.choiceMark && state.choiceMark.value === "same" ? " " + state.choiceMark.cls : "";
     return (
       '<div class="play-col">' +
       '<div class="prompt">' +
-      (q.equal ? "一樣多還是有一邊比較多？" : "哪一邊比較多？") +
+      (ready ? (q.equal ? "一樣多還是有一邊比較多？" : "哪一邊比較多？") : "兩邊都點完，再比") +
       "</div>" +
       '<div class="more-stage"><div class="more-wrap">' +
       '<div class="more-groups">' +
@@ -1970,7 +2045,10 @@
       "</div>" +
       '<button class="same-btn' +
       sameMark +
-      '" type="button" data-action="answer" data-value="same">一樣多</button>' +
+      (ready ? "" : " is-locked") +
+      '" type="button"' +
+      (ready ? ' data-action="answer" data-value="same"' : " disabled") +
+      ">一樣多</button>" +
       "</div></div></div>"
     );
   }
@@ -1994,12 +2072,14 @@
       .join("");
     return (
       '<div class="play-col">' +
-      '<div class="prompt">點第 <span class="prompt-num">' +
+      '<div class="prompt">從左邊數，點第 <span class="prompt-num">' +
       q.target +
       "</span> 個</div>" +
-      '<div class="ord-stage"><div class="ord-row">' +
+      '<div class="ord-stage"><div class="ord-wrap">' +
+      '<span class="ord-start" aria-hidden="true">左</span>' +
+      '<div class="ord-row">' +
       items +
-      "</div></div></div>"
+      "</div></div></div></div>"
     );
   }
 
@@ -2037,31 +2117,26 @@
   }
 
   function renderBond(q) {
-    var buttons = q.choices
-      .map(function (n) {
-        var mark = state.choiceMark && state.choiceMark.value === n ? " " + state.choiceMark.cls : "";
-        return (
-          '<button class="choice' +
-          mark +
-          '" type="button" data-action="answer" data-value="' +
-          n +
-          '">' +
-          n +
-          "</button>"
-        );
+    var tray = (q.items || [])
+      .filter(function (item) {
+        return !state.placed[item.id];
+      })
+      .map(function (item) {
+        return renderLifeChip(item, "");
       })
       .join("");
     return (
       '<div class="play-col">' +
-      '<div class="prompt">再拿幾個變成 <span class="prompt-num">' +
+      '<div class="prompt">拖進去，湊成 <span class="prompt-num">' +
       q.target +
-      "</span>？</div>" +
+      "</span></div>" +
+      '<div class="bond-play is-place">' +
       '<div class="bond-stage">' +
       scatterIcons(q.fruit, q.shown, "scatter-lg", 3, q.target - q.shown) +
       "</div>" +
-      '<div class="choices">' +
-      buttons +
-      "</div></div>"
+      '<div class="life-tray">' +
+      tray +
+      "</div></div></div>"
     );
   }
 
@@ -2244,12 +2319,12 @@
       '"' +
       (placed ? ' data-placed="1"' : "") +
       ' role="img" aria-label="' +
-      escapeHtml(item.name) +
+      escapeHtml(item.name || item.emoji) +
       '"><span class="life-emoji">' +
       item.emoji +
-      '</span><span class="life-name">' +
-      escapeHtml(item.name) +
-      "</span></div>"
+      "</span>" +
+      (item.name ? '<span class="life-name">' + escapeHtml(item.name) + "</span>" : "") +
+      "</div>"
     );
   }
 
@@ -2467,7 +2542,7 @@
   }
 
   function clearPlaceAim() {
-    var nodes = app.querySelectorAll(".life-slot.aim");
+    var nodes = app.querySelectorAll("[data-life-slot].aim");
     for (var i = 0; i < nodes.length; i++) nodes[i].classList.remove("aim");
   }
 
@@ -2487,9 +2562,8 @@
     g.innerHTML =
       '<span class="life-emoji">' +
       item.emoji +
-      '</span><span class="life-name">' +
-      escapeHtml(item.name) +
-      "</span>";
+      "</span>" +
+      (item.name ? '<span class="life-name">' + escapeHtml(item.name) + "</span>" : "");
     document.body.appendChild(g);
     return g;
   }
@@ -2513,7 +2587,7 @@
       render();
       replayFoxHappy();
       setTimeout(function () {
-        if (isPlaceLevel() && state.screen === "play" && !state.locked) {
+        if (isDragPlaceLevel() && state.screen === "play" && !state.locked) {
           setFox(foxPrompt(), "idle");
         }
       }, 700);
@@ -2521,7 +2595,7 @@
     }
     state.locked = true;
     state.heldItem = null;
-    state.foxMsg = lifeCheer();
+    state.foxMsg = state.levelId === "bond" ? "好棒" : lifeCheer();
     state.foxMood = "happy";
     render();
     replayFoxHappy();
@@ -2556,7 +2630,7 @@
         }
         setTimeout(function () {
           if (target.parentNode) target.classList.remove("bounce");
-          if (isPlaceLevel() && state.screen === "play" && !state.locked) {
+          if (isDragPlaceLevel() && state.screen === "play" && !state.locked) {
             setFox(foxPrompt(), "idle");
           }
         }, 420);
@@ -2570,21 +2644,27 @@
     }
     setTimeout(function () {
       if (target && target.parentNode) target.classList.remove("bounce");
-      if (isPlaceLevel() && state.screen === "play" && !state.locked) {
+      if (isDragPlaceLevel() && state.screen === "play" && !state.locked) {
         setFox(foxPrompt(), "idle");
       }
     }, 420);
   }
 
+  function itemFitsSlot(item, slotId) {
+    if (!item || !slotId) return false;
+    if (item.anySlot) return !itemInSlot(slotId);
+    return !!(item.slot && item.slot === slotId);
+  }
+
   function tryPlace(itemId, slotId) {
-    if (state.locked || !isPlaceLevel()) return;
+    if (state.locked || !isDragPlaceLevel()) return;
     var item = lifeItemById(itemId);
     if (!item || state.placed[item.id]) {
       hidePlaceGhost();
       clearItemDragClass(itemId);
       return;
     }
-    if (!item.slot || item.slot !== slotId || slotIsFull(slotId)) {
+    if (!itemFitsSlot(item, slotId) || slotIsFull(slotId)) {
       bouncePlaceItem(itemId);
       return;
     }
@@ -2592,13 +2672,15 @@
     clearItemDragClass(itemId);
     state.heldItem = null;
     state.placed[item.id] = slotId;
-    if (allNeededPlaced(state.questions[state.qIndex])) playStar();
-    else playCorrect();
+    if (allNeededPlaced(state.questions[state.qIndex])) {
+      if (state.levelId === "bond") playCorrect();
+      else playStar();
+    } else playCorrect();
     finishPlaceIfDone();
   }
 
   function onPlacePointerDown(e) {
-    if (state.locked || state.screen !== "play" || !isPlaceLevel()) return;
+    if (state.locked || state.screen !== "play" || !isDragPlaceLevel()) return;
     if (placeDrag.active) return;
     var itemEl = e.target.closest("[data-life-item]");
     if (!itemEl || itemEl.getAttribute("data-placed")) return;
@@ -2903,6 +2985,7 @@
     state.heldItem = null;
     state.countTapped = {};
     state.countNum = 0;
+    resetMoreTaps();
     resetMatchDraw();
     resetWriteDraw();
     resetPlaceDrag();
@@ -2955,6 +3038,7 @@
     state.heldItem = null;
     state.countTapped = {};
     state.countNum = 0;
+    resetMoreTaps();
     resetMatchDraw();
     resetWriteDraw();
     resetPlaceDrag();
@@ -2980,6 +3064,7 @@
     state.heldItem = null;
     state.countTapped = {};
     state.countNum = 0;
+    resetMoreTaps();
     resetMatchDraw();
     resetWriteDraw();
     resetPlaceDrag();
@@ -3015,6 +3100,7 @@
       state.locked = false;
       state.choiceMark = null;
       state.foxMood = "idle";
+      if (state.levelId === "more" || state.levelId === "ord") state.foxMsg = foxPrompt();
       render();
     }, 850);
   }
@@ -3038,6 +3124,7 @@
       return;
     }
     if (state.levelId === "more") {
+      if (!moreAllTapped(q)) return;
       if (raw === q.answer) markCorrect(raw);
       else markRetry(raw, "再看一次");
       return;
@@ -3055,9 +3142,6 @@
       return;
     }
     if (state.levelId === "bond") {
-      var need = parseInt(raw, 10);
-      if (need === q.more) markCorrect(need);
-      else markRetry(need, "再看一次");
       return;
     }
     if (state.levelId === "bpm-pic" || state.levelId === "abc-pic" || (state.levelId === "hanzi" && q.mode !== "draw")) {
@@ -3107,6 +3191,27 @@
         }, 850);
       }
     }
+  }
+
+  function handleMoreDot(el) {
+    if (state.locked || state.screen !== "play" || state.levelId !== "more") return;
+    var wrap = el.closest("[data-more-side]");
+    var side = wrap && wrap.getAttribute("data-more-side");
+    var idx = String(el.getAttribute("data-more-dot"));
+    var q = state.questions[state.qIndex];
+    if (!side || !q) return;
+    if (moreAllTapped(q)) {
+      handleAnswer(side);
+      return;
+    }
+    if (state.moreTapped[side][idx]) return;
+    var max = side === "left" ? q.left : q.right;
+    var n = parseInt(idx, 10);
+    if (!isFinite(n) || n < 0 || n >= max) return;
+    state.moreTapped[side][idx] = true;
+    playTap();
+    if (moreAllTapped(q)) state.foxMsg = foxPrompt();
+    render();
   }
 
   function handleCountDot(raw) {
@@ -3401,6 +3506,11 @@
   });
 
   app.addEventListener("click", function (e) {
+    var moreDot = e.target.closest("[data-more-dot]");
+    if (moreDot) {
+      handleMoreDot(moreDot);
+      return;
+    }
     var dot = e.target.closest("[data-count-dot]");
     if (dot) {
       handleCountDot(dot.getAttribute("data-count-dot"));
