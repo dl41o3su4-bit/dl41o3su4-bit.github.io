@@ -127,7 +127,7 @@
 
   var LIFE_LEVELS = [
     { id: "dress", name: "今天穿什麼", hint: "看天氣穿衣服", emoji: "👕", cls: "l1" },
-    { id: "table", name: "擺餐桌", hint: "餐具放到桌上", emoji: "🍚", cls: "l2" },
+    { id: "table", name: "擺餐桌", hint: "誰少了什麼", emoji: "🍚", cls: "l2" },
     { id: "habitat", name: "誰住哪裡", hint: "魚鳥駱駝住哪裡", emoji: "🐟", cls: "l3" },
     { id: "light", name: "紅燈停", hint: "紅燈停黃燈等", emoji: "🚦", cls: "l4" },
     { id: "sort", name: "分一分", hint: "吃的玩的分開", emoji: "🧺", cls: "l5" },
@@ -1152,43 +1152,85 @@
   }
 
   function makeTableQuestions() {
-    var byId = {
-      bowl: { id: "bowl", emoji: "🍚", name: "碗" },
-      sticks: { id: "sticks", emoji: "🥢", name: "筷子" },
-      cup: { id: "cup", emoji: "🥛", name: "杯子" },
-      plate: { id: "plate", emoji: "🍽️", name: "盤子" },
-      spoon: { id: "spoon", emoji: "🥄", name: "湯匙" },
-      fork: { id: "fork", emoji: "🍴", name: "叉子" },
+    var U = {
+      bowl: { key: "bowl", emoji: "🍚", name: "碗" },
+      sticks: { key: "sticks", emoji: "🥢", name: "筷子" },
+      cup: { key: "cup", emoji: "🥛", name: "杯子" },
+      plate: { key: "plate", emoji: "🍽️", name: "盤子" },
+      spoon: { key: "spoon", emoji: "🥄", name: "湯匙" },
+      fork: { key: "fork", emoji: "🍴", name: "叉子" },
     };
     var extras = shuffle([
       ["ball", "⚽", "球"],
       ["shoe", "👟", "鞋子"],
       ["book", "📖", "書"],
     ]);
-    var sets = [
-      ["bowl", "sticks", "cup"],
-      ["plate", "fork", "cup"],
-      ["bowl", "spoon", "plate"],
-      ["sticks", "fork", "spoon", "cup"],
-      ["bowl", "plate", "sticks", "fork"],
-      ["plate", "spoon", "fork", "bowl"],
-    ];
-    return shuffle(sets).map(function (ids, i) {
-      var slots = ids.map(function (id) {
-        var u = byId[id];
-        return { id: u.id, emoji: u.emoji, label: u.name };
+    function seat(id, face, name, have, need) {
+      return { id: id, face: face, name: name, have: have, need: need };
+    }
+    function pack(people, extra) {
+      var items = [];
+      people.forEach(function (p) {
+        p.need.forEach(function (u) {
+          var slot = p.id + "-" + u.key;
+          items.push(lifeItem(slot, u.emoji, u.name, slot));
+        });
       });
-      var goods = ids.map(function (id) {
-        var u = byId[id];
-        return lifeItem(u.id, u.emoji, u.name, u.id);
-      });
-      var extra = extras[i % extras.length];
+      items.push(lifeItem(extra[0], extra[1], extra[2]));
       return {
-        ask: "拖到桌上",
-        slots: slots,
-        items: shuffle(goods.concat([lifeItem(extra[0], extra[1], extra[2])])),
+        ask: "誰少了什麼？拖上去",
+        people: people,
+        items: shuffle(items),
       };
-    });
+    }
+    var rounds = [
+      pack(
+        [
+          seat("dad", "👨", "爸爸", [U.bowl, U.sticks], [U.plate]),
+          seat("kid", "🧒", "小孩", [U.bowl, U.cup], [U.fork]),
+        ],
+        extras[0]
+      ),
+      pack(
+        [
+          seat("mom", "👩", "媽媽", [U.bowl, U.sticks], [U.spoon]),
+          seat("dad2", "👨", "爸爸", [U.plate, U.fork], [U.cup]),
+          seat("kid2", "🧒", "小孩", [U.bowl], [U.plate]),
+        ],
+        extras[1]
+      ),
+      pack(
+        [
+          seat("mom3", "👩", "媽媽", [U.bowl], [U.plate, U.spoon]),
+          seat("kid3", "🧒", "小孩", [U.bowl, U.sticks], [U.fork]),
+        ],
+        extras[2]
+      ),
+      pack(
+        [
+          seat("dad4", "👨", "爸爸", [U.bowl, U.cup], [U.fork]),
+          seat("mom4", "👩", "媽媽", [U.bowl, U.sticks], [U.plate]),
+          seat("kid4", "🧒", "小孩", [U.bowl, U.fork], [U.spoon]),
+        ],
+        extras[0]
+      ),
+      pack(
+        [
+          seat("kid5", "🧒", "小孩", [U.bowl, U.sticks], [U.plate]),
+          seat("dad5", "👨", "爸爸", [U.plate, U.cup], [U.spoon]),
+        ],
+        extras[1]
+      ),
+      pack(
+        [
+          seat("mom6", "👩", "媽媽", [U.bowl, U.sticks, U.cup], [U.fork]),
+          seat("dad6", "👨", "爸爸", [U.bowl, U.fork], [U.plate]),
+          seat("kid6", "🧒", "小孩", [U.sticks], [U.bowl]),
+        ],
+        extras[2]
+      ),
+    ];
+    return shuffle(rounds);
   }
 
   function makeHabitatQuestions() {
@@ -1665,7 +1707,7 @@
       return '<span class="preview-art preview-match" aria-hidden="true"><span>🧒</span><b>🧢</b></span>';
     }
     if (id === "table") {
-      return '<span class="preview-art preview-match" aria-hidden="true"><span>🍚</span><span>🍽️</span><span>🍴</span></span>';
+      return '<span class="preview-art preview-match" aria-hidden="true"><span>👨</span><span>🧒</span><b>🍽️</b></span>';
     }
     if (id === "habitat") {
       return '<span class="preview-art preview-match" aria-hidden="true"><span>🌳</span><span>🐪</span></span>';
@@ -2283,6 +2325,7 @@
     if (state.levelId === "abc-case" || state.levelId === "abc-draw") body = renderPicConnect(q);
     if (state.levelId === "dress") body = renderDress(q);
     else if (state.levelId === "habitat") body = renderHabitat(q);
+    else if (state.levelId === "table") body = renderTable(q);
     else if (isPlaceLevel()) body = renderLifePlace(q);
     if (state.levelId === "light") body = renderLight(q);
     if (state.levelId === "body") body = renderBody(q);
@@ -2488,6 +2531,81 @@
     );
   }
 
+  function renderTableNeed(person, u) {
+    var slot = person.id + "-" + u.key;
+    var filled = itemInSlot(slot);
+    return (
+      '<div class="table-need' +
+      (filled ? " filled" : "") +
+      '" data-life-slot="' +
+      slot +
+      '" aria-label="' +
+      escapeHtml(u.name) +
+      '">' +
+      (filled
+        ? '<span class="table-put">' + filled.emoji + "</span>"
+        : '<span class="table-ghost">' + u.emoji + "</span>") +
+      "</div>"
+    );
+  }
+
+  function renderTableSeat(person) {
+    var have = (person.have || [])
+      .map(function (u) {
+        return '<span class="table-have" title="' + escapeHtml(u.name) + '">' + u.emoji + "</span>";
+      })
+      .join("");
+    var need = (person.need || [])
+      .map(function (u) {
+        return renderTableNeed(person, u);
+      })
+      .join("");
+    return (
+      '<div class="table-seat">' +
+      '<div class="table-who"><span class="table-face">' +
+      person.face +
+      '</span><span class="table-name">' +
+      escapeHtml(person.name) +
+      "</span></div>" +
+      '<div class="table-setting">' +
+      have +
+      need +
+      "</div></div>"
+    );
+  }
+
+  function renderTable(q) {
+    var tray = q.items
+      .filter(function (item) {
+        return !state.placed[item.id];
+      })
+      .map(function (item) {
+        return renderLifeChip(item, "");
+      })
+      .join("");
+    var seats = (q.people || [])
+      .map(function (person) {
+        return renderTableSeat(person);
+      })
+      .join("");
+    return (
+      '<div class="play-col">' +
+      '<div class="prompt">' +
+      escapeHtml(q.ask) +
+      "</div>" +
+      '<div class="life-stage is-place table-play">' +
+      '<div class="table-scene" data-seats="' +
+      (q.people || []).length +
+      '">' +
+      '<div class="table-wood">' +
+      seats +
+      "</div></div>" +
+      '<div class="life-tray">' +
+      tray +
+      "</div></div></div>"
+    );
+  }
+
   function renderLifePlace(q) {
     var tray = q.items
       .filter(function (item) {
@@ -2503,9 +2621,7 @@
       })
       .join("");
     var board = "";
-    if (state.levelId === "table") {
-      board = '<div class="life-table" data-slots="' + q.slots.length + '">' + slots + "</div>";
-    } else if (state.levelId === "sort" || state.levelId === "daynight") {
+    if (state.levelId === "sort" || state.levelId === "daynight") {
       board = '<div class="life-scene">' + slots + "</div>";
     } else if (state.levelId === "order") {
       board = '<div class="life-homes">' + slots + "</div>";
