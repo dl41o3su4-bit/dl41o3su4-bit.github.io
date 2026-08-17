@@ -127,7 +127,7 @@
     },
   };
 
-  var LEVELS = [
+  var MATH_LEVELS = [
     { id: "count", name: "數一數", hint: "數一數有幾個", emoji: "🍎", cls: "c1" },
     { id: "match", name: "連連看", hint: "畫線連起來", emoji: "🔢", cls: "c2" },
     { id: "next", name: "下一個是誰", hint: "3 4 5 ？", emoji: "➡️", cls: "c3" },
@@ -136,6 +136,171 @@
     { id: "ord", name: "第幾個", hint: "從左邊數第幾個", emoji: "5️⃣", cls: "c6" },
     { id: "missing", name: "缺了誰", hint: "少了哪個數字", emoji: "❓", cls: "c7" },
     { id: "bond", name: "湊一湊", hint: "再拿幾個才滿", emoji: "🍇", cls: "c8" },
+  ];
+
+  var WORD_LEVELS = [
+    { id: "bpm-trace", name: "描注音", hint: "跟著點 ㄅㄆㄇ", emoji: "ㄅ", cls: "w1" },
+    { id: "bpm-pic", name: "圖配注音", hint: "圖配哪個注音", emoji: "🥟", cls: "w2" },
+    { id: "bpm-draw", name: "注音連連看", hint: "畫線連注音", emoji: "🔗", cls: "w3" },
+    { id: "hanzi", name: "看圖認字", hint: "圖配哪個字", emoji: "山", cls: "w4" },
+  ];
+
+  var LEVELS = MATH_LEVELS.concat(WORD_LEVELS);
+
+  var BPM_ORDER = ["ㄅ", "ㄆ", "ㄇ", "ㄈ", "ㄉ", "ㄊ", "ㄋ", "ㄌ", "ㄍ", "ㄎ"];
+
+  var BPM_TRACE = {
+    ㄅ: {
+      viewBox: "0 0 240 280",
+      d: "M 78 40 L 78 248 M 78 40 L 172 40 C 214 58 218 128 172 168",
+      dots: [
+        [78, 40],
+        [78, 144],
+        [78, 248],
+        [172, 40],
+        [208, 96],
+        [172, 168],
+      ],
+    },
+    ㄆ: {
+      viewBox: "0 0 240 280",
+      d: "M 48 36 L 128 80 M 88 96 L 88 248 M 88 96 L 178 96 C 216 114 216 176 172 216",
+      dots: [
+        [48, 36],
+        [128, 80],
+        [88, 96],
+        [178, 96],
+        [88, 248],
+        [172, 216],
+      ],
+    },
+    ㄇ: {
+      viewBox: "0 0 240 280",
+      d: "M 56 42 L 56 248 M 56 42 L 184 42 L 184 248",
+      dots: [
+        [56, 42],
+        [56, 145],
+        [56, 248],
+        [120, 42],
+        [184, 42],
+        [184, 248],
+      ],
+    },
+    ㄈ: {
+      viewBox: "0 0 240 280",
+      d: "M 58 44 L 188 44 M 58 44 L 58 198 L 188 246",
+      dots: [
+        [58, 44],
+        [188, 44],
+        [58, 121],
+        [58, 198],
+        [123, 222],
+        [188, 246],
+      ],
+    },
+    ㄉ: {
+      viewBox: "0 0 240 280",
+      d: "M 68 46 L 158 90 M 176 68 C 216 110 206 198 68 236",
+      dots: [
+        [68, 46],
+        [158, 90],
+        [196, 102],
+        [198, 162],
+        [68, 236],
+      ],
+    },
+    ㄊ: {
+      viewBox: "0 0 240 280",
+      d: "M 48 48 L 192 48 M 128 48 L 68 128 L 176 128 M 156 128 L 156 246",
+      dots: [
+        [48, 48],
+        [192, 48],
+        [128, 48],
+        [68, 128],
+        [176, 128],
+        [156, 246],
+      ],
+    },
+    ㄋ: {
+      viewBox: "0 0 240 280",
+      d: "M 70 48 L 166 48 C 206 70 200 138 84 168 M 156 88 L 72 246",
+      dots: [
+        [70, 48],
+        [166, 48],
+        [196, 100],
+        [84, 168],
+        [156, 88],
+        [72, 246],
+      ],
+    },
+    ㄌ: {
+      viewBox: "0 0 240 280",
+      d: "M 78 46 L 168 46 C 208 74 196 158 70 208 M 146 70 L 96 246",
+      dots: [
+        [78, 46],
+        [168, 46],
+        [198, 108],
+        [70, 208],
+        [146, 70],
+        [96, 246],
+      ],
+    },
+    ㄍ: {
+      viewBox: "0 0 240 280",
+      d: "M 70 42 L 128 152 L 66 250 M 128 152 L 206 68",
+      dots: [
+        [70, 42],
+        [128, 152],
+        [66, 250],
+        [167, 110],
+        [206, 68],
+      ],
+    },
+    ㄎ: {
+      viewBox: "0 0 240 280",
+      d: "M 48 48 L 192 48 M 146 48 L 80 156 L 190 240",
+      dots: [
+        [48, 48],
+        [192, 48],
+        [146, 48],
+        [80, 156],
+        [190, 240],
+      ],
+    },
+  };
+
+  var BPM_WORDS = [
+    { bpm: "ㄅ", word: "包子", emoji: "🥟" },
+    { bpm: "ㄆ", word: "跑", emoji: "🏃" },
+    { bpm: "ㄇ", word: "帽子", emoji: "🎩" },
+    { bpm: "ㄈ", word: "飛", emoji: "✈️" },
+    { bpm: "ㄉ", word: "刀", emoji: "🔪" },
+    { bpm: "ㄊ", word: "太陽", emoji: "☀️" },
+    { bpm: "ㄋ", word: "牛奶", emoji: "🥛" },
+    { bpm: "ㄌ", word: "老虎", emoji: "🐯" },
+    { bpm: "ㄍ", word: "狗", emoji: "🐶" },
+    { bpm: "ㄎ", word: "可樂", emoji: "🥤" },
+    { bpm: "ㄏ", word: "花", emoji: "🌸" },
+    { bpm: "ㄐ", word: "雞", emoji: "🐔" },
+    { bpm: "ㄑ", word: "球", emoji: "⚽" },
+    { bpm: "ㄒ", word: "蝦", emoji: "🦐" },
+  ];
+
+  var HANZI_WORDS = [
+    { ch: "山", emoji: "⛰️" },
+    { ch: "水", emoji: "💧" },
+    { ch: "火", emoji: "🔥" },
+    { ch: "人", emoji: "🧑" },
+    { ch: "口", emoji: "👄" },
+    { ch: "手", emoji: "✋" },
+    { ch: "大", emoji: "🐘" },
+    { ch: "小", emoji: "🐭" },
+    { ch: "上", emoji: "⬆️" },
+    { ch: "下", emoji: "⬇️" },
+    { ch: "日", emoji: "☀️" },
+    { ch: "月", emoji: "🌙" },
+    { ch: "木", emoji: "🌳" },
+    { ch: "田", emoji: "🌾" },
   ];
 
   var audioCtx = null;
@@ -446,6 +611,92 @@
     return qs;
   }
 
+  function makeSymbolChoices(correct, pool) {
+    var others = pool.filter(function (x) {
+      return x !== correct;
+    });
+    return shuffle([correct].concat(shuffle(others).slice(0, 2)));
+  }
+
+  function makePairConnect(items, leftKey, rightKey) {
+    var left = [];
+    var rightSrc = [];
+    for (var p = 0; p < items.length; p++) {
+      left.push({ pair: p, text: items[p][leftKey], emoji: leftKey === "emoji" ? items[p].emoji : "" });
+      rightSrc.push({ pair: p, text: items[p][rightKey], emoji: rightKey === "emoji" ? items[p].emoji : "" });
+    }
+    if (leftKey !== "emoji") {
+      left.forEach(function (item) {
+        item.emoji = "";
+      });
+    }
+    if (rightKey !== "emoji") {
+      rightSrc.forEach(function (item) {
+        item.emoji = "";
+      });
+    }
+    left = shuffle(left);
+    return { left: left, right: derangeRight(rightSrc, left) };
+  }
+
+  function makeBpmTraceQuestions() {
+    return BPM_ORDER.map(function (sym) {
+      return { sym: sym };
+    });
+  }
+
+  function makeBpmPicQuestions() {
+    var pool = BPM_WORDS.map(function (w) {
+      return w.bpm;
+    });
+    return shuffle(BPM_WORDS)
+      .slice(0, 8)
+      .map(function (w) {
+        return {
+          emoji: w.emoji,
+          answer: w.bpm,
+          choices: makeSymbolChoices(w.bpm, pool),
+        };
+      });
+  }
+
+  function makeBpmDrawQuestions() {
+    var qs = [];
+    for (var i = 0; i < 8; i++) {
+      var pairCount = i < 4 ? 2 : 3;
+      var items = shuffle(BPM_WORDS).slice(0, pairCount);
+      var board = makePairConnect(items, "bpm", "emoji");
+      board.prompt = "畫線連連看";
+      qs.push(board);
+    }
+    return qs;
+  }
+
+  function makeHanziQuestions() {
+    var qs = [];
+    var pool = HANZI_WORDS.map(function (h) {
+      return h.ch;
+    });
+    var picks = shuffle(HANZI_WORDS).slice(0, 5);
+    for (var i = 0; i < picks.length; i++) {
+      qs.push({
+        mode: "pick",
+        emoji: picks[i].emoji,
+        answer: picks[i].ch,
+        choices: makeSymbolChoices(picks[i].ch, pool),
+      });
+    }
+    for (var j = 0; j < 3; j++) {
+      var pairCount = j < 2 ? 2 : 3;
+      var items = shuffle(HANZI_WORDS).slice(0, pairCount);
+      var board = makePairConnect(items, "emoji", "ch");
+      board.mode = "draw";
+      board.prompt = "把圖和字連起來";
+      qs.push(board);
+    }
+    return qs;
+  }
+
   function foxPrompt() {
     var q = state.questions[state.qIndex];
     if (state.levelId === "count") return "數一數，有幾個？";
@@ -458,7 +709,32 @@
     if (state.levelId === "ord") return "從左邊數，第幾個？";
     if (state.levelId === "missing") return "少了哪個數字？";
     if (state.levelId === "bond") return "還要幾個才滿？";
+    if (state.levelId === "bpm-trace") return "照著順序點一點";
+    if (state.levelId === "bpm-pic") return "這是哪個音？";
+    if (state.levelId === "bpm-draw") return "把注音和圖連起來";
+    if (state.levelId === "hanzi") {
+      return q && q.mode === "draw" ? "把圖和字連起來" : "這是哪個字？";
+    }
     return "選一關開始吧！";
+  }
+
+  function isConnectLevel() {
+    if (state.levelId === "match" || state.levelId === "bpm-draw") return true;
+    if (state.levelId === "hanzi") {
+      var q = state.questions[state.qIndex];
+      return !!(q && q.mode === "draw");
+    }
+    return false;
+  }
+
+  function isTraceLevel() {
+    return state.levelId === "trace" || state.levelId === "bpm-trace";
+  }
+
+  function currentTraceSpec() {
+    var q = state.questions[state.qIndex];
+    if (state.levelId === "bpm-trace") return BPM_TRACE[q.sym];
+    return TRACE[q.n];
   }
 
   function isLevelId(id) {
@@ -544,26 +820,30 @@
     );
   }
 
-  function renderHome() {
-    var cards = LEVELS.map(function (lv) {
-      return (
-        '<button class="level-card ' +
-        lv.cls +
-        '" type="button" data-action="start" data-level="' +
-        lv.id +
-        '">' +
-        '<span class="emoji">' +
-        lv.emoji +
-        "</span>" +
-        '<span class="name">' +
-        lv.name +
-        "</span>" +
-        '<span class="hint">' +
-        lv.hint +
-        "</span></button>"
-      );
-    }).join("");
+  function renderLevelCards(list) {
+    return list
+      .map(function (lv) {
+        return (
+          '<button class="level-card ' +
+          lv.cls +
+          '" type="button" data-action="start" data-level="' +
+          lv.id +
+          '">' +
+          '<span class="emoji">' +
+          lv.emoji +
+          "</span>" +
+          '<span class="name">' +
+          lv.name +
+          "</span>" +
+          '<span class="hint">' +
+          lv.hint +
+          "</span></button>"
+        );
+      })
+      .join("");
+  }
 
+  function renderHome() {
     return (
       '<div class="shell is-home">' +
       topTools('<h1 class="title">數字小探險</h1>') +
@@ -572,9 +852,15 @@
       '<p class="speech" aria-live="polite">' +
       escapeHtml(state.foxMsg) +
       "</p></div>" +
+      '<div class="home-scroll">' +
+      '<h2 class="section-title">數字</h2>' +
       '<div class="level-grid">' +
-      cards +
+      renderLevelCards(MATH_LEVELS) +
       "</div>" +
+      '<h2 class="section-title">注音國字</h2>' +
+      '<div class="level-grid">' +
+      renderLevelCards(WORD_LEVELS) +
+      "</div></div>" +
       '<div class="home-foot">' +
       '<div class="star-chip" aria-label="星星總數">⭐ ' +
       state.starsTotal +
@@ -584,11 +870,15 @@
   }
 
   function progressLabel() {
+    var q = state.questions[state.qIndex];
     if (state.levelId === "trace") {
-      var n = state.questions[state.qIndex] && state.questions[state.qIndex].n;
-      return "數字 " + n;
+      return "數字 " + (q && q.n);
     }
-    return state.qIndex + 1 + " / 8";
+    if (state.levelId === "bpm-trace") {
+      return q && q.sym ? q.sym : "";
+    }
+    var total = state.questions.length;
+    return state.qIndex + 1 + " / " + total;
   }
 
   function playChrome() {
@@ -740,7 +1030,8 @@
   }
 
   function renderTrace(q) {
-    var spec = TRACE[q.n];
+    var spec = currentTraceSpec();
+    var label = state.levelId === "bpm-trace" ? q.sym : q.n;
     var dots = spec.dots
       .map(function (pt, i) {
         var cls = i < state.traceNext ? "done" : i === state.traceNext ? "next" : "wait";
@@ -779,8 +1070,9 @@
       '<div class="prompt">照順序點一點</div>' +
       '<div class="trace-stage"><svg viewBox="' +
       spec.viewBox +
-      '" role="img" aria-label="數字 ' +
-      q.n +
+      '" role="img" aria-label="' +
+      (state.levelId === "bpm-trace" ? "注音 " : "數字 ") +
+      label +
       '">' +
       '<path class="numeral" d="' +
       spec.d +
@@ -937,6 +1229,88 @@
     );
   }
 
+  function renderPicChoice(q, prompt) {
+    var buttons = q.choices
+      .map(function (s) {
+        var mark = state.choiceMark && state.choiceMark.value === s ? " " + state.choiceMark.cls : "";
+        return (
+          '<button class="choice glyph' +
+          mark +
+          '" type="button" data-action="answer" data-value="' +
+          s +
+          '">' +
+          s +
+          "</button>"
+        );
+      })
+      .join("");
+    return (
+      '<div class="play-col">' +
+      '<div class="prompt">' +
+      prompt +
+      "</div>" +
+      '<div class="pic-stage"><div class="pic-card">' +
+      q.emoji +
+      "</div></div>" +
+      '<div class="choices">' +
+      buttons +
+      "</div></div>"
+    );
+  }
+
+  function renderConnectNode(item, side) {
+    var done = state.matchDone[item.pair] ? " done" : "";
+    var isPic = !!item.emoji;
+    var cls = isPic ? "match-group match-pic" : "match-num";
+    var inner = isPic ? '<span class="pic-emoji">' + item.emoji + "</span>" : item.text;
+    var aria = isPic ? "圖" : String(item.text);
+    return (
+      '<div class="' +
+      cls +
+      done +
+      '" data-match-side="' +
+      side +
+      '" data-match-pair="' +
+      item.pair +
+      '" role="button" aria-label="' +
+      aria +
+      '">' +
+      inner +
+      "</div>"
+    );
+  }
+
+  function renderPicConnect(q) {
+    var left = q.left
+      .map(function (item) {
+        return renderConnectNode(item, "left");
+      })
+      .join("");
+    var right = q.right
+      .map(function (item) {
+        return renderConnectNode(item, "right");
+      })
+      .join("");
+    return (
+      '<div class="play-col">' +
+      '<div class="prompt">' +
+      (q.prompt || "畫線連連看") +
+      "</div>" +
+      '<div class="match-stage">' +
+      '<div class="match-board" style="--pairs:' +
+      q.left.length +
+      '">' +
+      '<div class="match-col match-left">' +
+      left +
+      "</div>" +
+      '<div class="match-col match-right">' +
+      right +
+      "</div></div>" +
+      '<svg class="match-lines" aria-hidden="true"></svg>' +
+      "</div></div>"
+    );
+  }
+
   function renderPlay() {
     var q = state.questions[state.qIndex];
     var body = "";
@@ -948,6 +1322,12 @@
     if (state.levelId === "ord") body = renderOrd(q);
     if (state.levelId === "missing") body = renderMissing(q);
     if (state.levelId === "bond") body = renderBond(q);
+    if (state.levelId === "bpm-trace") body = renderTrace(q);
+    if (state.levelId === "bpm-pic") body = renderPicChoice(q, "這是哪個音？");
+    if (state.levelId === "bpm-draw") body = renderPicConnect(q);
+    if (state.levelId === "hanzi") {
+      body = q.mode === "draw" ? renderPicConnect(q) : renderPicChoice(q, "這是哪個字？");
+    }
     return '<div class="shell">' + playChrome() + body + "</div>";
   }
 
@@ -976,7 +1356,7 @@
     if (state.screen === "home") app.innerHTML = renderHome();
     else if (state.screen === "clear") app.innerHTML = renderClear();
     else app.innerHTML = renderPlay();
-    if (state.screen === "play" && state.levelId === "match") {
+    if (state.screen === "play" && isConnectLevel()) {
       requestAnimationFrame(drawDoneLines);
     }
   }
@@ -1129,8 +1509,8 @@
     } else {
       setFox(pick(PRAISE), "happy");
       setTimeout(function () {
-        if (state.levelId === "match" && state.screen === "play" && !state.locked) {
-          setFox("把一樣多的連起來", "idle");
+        if (isConnectLevel() && state.screen === "play" && !state.locked) {
+          setFox(foxPrompt(), "idle");
         }
       }, 700);
     }
@@ -1141,14 +1521,14 @@
     setFox("再看一次", "think");
     fadeLiveStroke();
     setTimeout(function () {
-      if (state.levelId === "match" && state.screen === "play" && state.foxMood === "think") {
+      if (isConnectLevel() && state.screen === "play" && state.foxMood === "think") {
         setFox(state.foxMsg, "idle");
       }
     }, 850);
   }
 
   function onMatchPointerDown(e) {
-    if (state.locked || state.screen !== "play" || state.levelId !== "match") return;
+    if (state.locked || state.screen !== "play" || !isConnectLevel()) return;
     if (matchDraw.active) return;
     var node = e.target.closest("[data-match-pair]");
     if (!node || node.classList.contains("done")) return;
@@ -1231,6 +1611,10 @@
     else if (id === "ord") state.questions = makeOrdQuestions();
     else if (id === "missing") state.questions = makeMissingQuestions();
     else if (id === "bond") state.questions = makeBondQuestions();
+    else if (id === "bpm-trace") state.questions = makeBpmTraceQuestions();
+    else if (id === "bpm-pic") state.questions = makeBpmPicQuestions();
+    else if (id === "bpm-draw") state.questions = makeBpmDrawQuestions();
+    else if (id === "hanzi") state.questions = makeHanziQuestions();
     else return;
     state.foxMsg = foxPrompt();
     state.screen = "play";
@@ -1341,14 +1725,18 @@
       var need = parseInt(raw, 10);
       if (need === q.more) markCorrect(need);
       else markRetry(need, "再看一次");
+      return;
+    }
+    if (state.levelId === "bpm-pic" || (state.levelId === "hanzi" && q.mode !== "draw")) {
+      if (raw === q.answer) markCorrect(raw);
+      else markRetry(raw, "再看一次");
     }
   }
 
   function handleDot(raw) {
-    if (state.locked || state.screen !== "play" || state.levelId !== "trace") return;
+    if (state.locked || state.screen !== "play" || !isTraceLevel()) return;
     var i = parseInt(raw, 10);
-    var q = state.questions[state.qIndex];
-    var spec = TRACE[q.n];
+    var spec = currentTraceSpec();
     if (i !== state.traceNext) {
       markRetry(null, "再看一次，依序點喔");
       return;
@@ -1402,7 +1790,7 @@
     { passive: false }
   );
   window.addEventListener("resize", function () {
-    if (state.levelId === "match" && state.screen === "play") drawDoneLines();
+    if (isConnectLevel()) drawDoneLines();
   });
 
   app.addEventListener("click", function (e) {
