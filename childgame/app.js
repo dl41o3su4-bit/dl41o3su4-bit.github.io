@@ -116,6 +116,8 @@
     { id: "bpm-pic", name: "圖配注音", hint: "看字選聲符", emoji: "🍦", cls: "w2" },
     { id: "bpm-draw", name: "注音連連看", hint: "看字連聲符", emoji: "🔗", cls: "w3" },
     { id: "hanzi", name: "看圖認字", hint: "圖配哪個字", emoji: "山", cls: "w4" },
+    { id: "bpm-listen", name: "聽音尋寶", hint: "聽一聽，找一找", emoji: "👂", cls: "w5" },
+    { id: "bpm-train", name: "注音火車", hint: "拖上對的車廂", emoji: "🚂", cls: "w6" },
   ];
 
   var ENGLISH_LEVELS = [
@@ -123,6 +125,8 @@
     { id: "abc-pic", name: "圖配字母", hint: "看字選第一個字母", emoji: "🍎", cls: "e2" },
     { id: "abc-case", name: "大小寫連連看", hint: "大寫連小寫", emoji: "Aa", cls: "e3" },
     { id: "abc-draw", name: "字母連連看", hint: "字母連圖", emoji: "🔗", cls: "e4" },
+    { id: "abc-pop", name: "字母泡泡", hint: "聽到就點破", emoji: "🫧", cls: "e5" },
+    { id: "abc-path", name: "字母小路", hint: "缺誰拖上去", emoji: "🪨", cls: "e6" },
   ];
 
   var LIFE_LEVELS = [
@@ -130,10 +134,10 @@
     { id: "table", name: "擺餐桌", hint: "誰少了什麼", emoji: "🍚", cls: "l2" },
     { id: "habitat", name: "誰住哪裡", hint: "魚鳥駱駝住哪裡", emoji: "🐟", cls: "l3" },
     { id: "light", name: "紅燈停", hint: "紅燈停黃燈等", emoji: "🚦", cls: "l4" },
-    { id: "sort", name: "分一分", hint: "吃的玩的分開", emoji: "🧺", cls: "l5" },
+    { id: "sort", name: "分一分", hint: "拖進對的地方", emoji: "🧺", cls: "l5" },
     { id: "order", name: "先做哪件", hint: "先做哪一件", emoji: "1️⃣", cls: "l6" },
-    { id: "body", name: "身體在哪", hint: "頭手腳肚子", emoji: "🧒", cls: "l7" },
-    { id: "daynight", name: "白天晚上", hint: "白天還是晚上", emoji: "☀️", cls: "l8" },
+    { id: "body", name: "身體在哪", hint: "摸摸看", emoji: "🧒", cls: "l7" },
+    { id: "daynight", name: "白天晚上", hint: "一天的事情", emoji: "☀️", cls: "l8" },
   ];
 
   var LEVELS = OLD_MATH_LEVELS.concat(NEW_MATH_LEVELS, WORD_LEVELS, ENGLISH_LEVELS, LIFE_LEVELS);
@@ -517,6 +521,9 @@
     countTapped: {},
     countNum: 0,
     moreTapped: { left: {}, right: {} },
+    stepIndex: 0,
+    sceneAnim: "",
+    bodyAnim: "",
   };
 
   var matchDraw = {
@@ -1045,6 +1052,42 @@
     });
   }
 
+  function bpmWordByName(name) {
+    for (var i = 0; i < BPM_WORDS.length; i++) {
+      if (BPM_WORDS[i].word === name) return BPM_WORDS[i];
+    }
+    return null;
+  }
+
+  function wordsForBpms(bpms, count) {
+    var pool = BPM_WORDS.filter(function (w) {
+      return bpms.indexOf(w.bpm) !== -1;
+    });
+    var picked = [];
+    var used = {};
+    bpms.forEach(function (b) {
+      var opts = pool.filter(function (w) {
+        return w.bpm === b && !used[w.word];
+      });
+      if (opts.length) {
+        var w = pick(opts);
+        used[w.word] = true;
+        picked.push(w);
+      }
+    });
+    var extra = shuffle(
+      pool.filter(function (w) {
+        return !used[w.word];
+      })
+    );
+    while (picked.length < count && extra.length) {
+      var more = extra.shift();
+      used[more.word] = true;
+      picked.push(more);
+    }
+    return picked.slice(0, count);
+  }
+
   function uniqueAbcWords(n) {
     return shuffle(ABC_WORDS).slice(0, n);
   }
@@ -1090,6 +1133,169 @@
       qs.push(board);
     }
     return qs;
+  }
+
+  function makeBpmListenQuestions() {
+    var scenes = [
+      { id: "kitchen", name: "廚房", words: ["冰淇淋", "蘋果", "葡萄", "牛奶", "蛋糕", "西瓜"] },
+      { id: "park", name: "公園", words: ["狗", "花朵", "兔子", "太陽", "草", "氣球"] },
+      { id: "room", name: "房間", words: ["貓", "帽子", "書", "氣球", "西瓜", "冰淇淋"] },
+      { id: "street", name: "街上", words: ["車", "狗", "太陽", "帽子", "氣球", "飛機"] },
+    ];
+    var spots = [
+      ["12%", "18%"],
+      ["68%", "16%"],
+      ["8%", "58%"],
+      ["42%", "48%"],
+      ["72%", "62%"],
+      ["38%", "78%"],
+    ];
+    var qs = [];
+    var used = {};
+    var n = 0;
+    while (qs.length < 8 && n < 48) {
+      var scene = scenes[qs.length % scenes.length];
+      var objects = scene.words
+        .map(function (name) {
+          return bpmWordByName(name);
+        })
+        .filter(Boolean);
+      var candidates = objects.filter(function (w) {
+        return !used[scene.id + "-" + w.word];
+      });
+      if (!candidates.length) candidates = objects.slice();
+      var target = pick(candidates);
+      used[scene.id + "-" + target.word] = true;
+      var rot = qs.length % spots.length;
+      var usedSpots = spots.slice(rot).concat(spots.slice(0, rot));
+      var placed = shuffle(objects).map(function (w, i) {
+        var spot = usedSpots[i % usedSpots.length];
+        return {
+          word: w.word,
+          emoji: w.emoji,
+          bpm: w.bpm,
+          x: spot[0],
+          y: spot[1],
+        };
+      });
+      qs.push({
+        scene: scene.id,
+        sceneName: scene.name,
+        word: target.word,
+        bpm: target.bpm,
+        emoji: target.emoji,
+        objects: placed,
+        stones: makeSymbolChoices(target.bpm, uniqueBpmPool()),
+        ask: "找找看，哪一個是" + target.word + "？",
+      });
+      n += 1;
+    }
+    return qs;
+  }
+
+  function makeBpmTrainQuestions() {
+    var groups = [
+      { bpms: ["ㄅ", "ㄆ", "ㄇ"], colors: ["berry", "sky", "grape"] },
+      { bpms: ["ㄉ", "ㄊ", "ㄋ"], colors: ["mint", "sun", "fox"] },
+      { bpms: ["ㄍ", "ㄎ", "ㄏ"], colors: ["sky", "berry", "mint"] },
+      { bpms: ["ㄐ", "ㄑ", "ㄒ"], colors: ["grape", "fox", "sun"] },
+      { bpms: ["ㄓ", "ㄔ", "ㄕ"], colors: ["fox", "mint", "sky"] },
+      { bpms: ["ㄈ", "ㄌ", "ㄘ"], colors: ["sun", "grape", "berry"] },
+    ];
+    return groups.map(function (row, i) {
+      var count = i % 2 === 0 ? 4 : 3;
+      var words = wordsForBpms(row.bpms, count);
+      var cars = row.bpms.map(function (b, c) {
+        return { id: b, bpm: b, color: row.colors[c] };
+      });
+      return {
+        ask: "拖上第一個音的車廂",
+        multi: true,
+        cars: i % 2 ? cars.slice().reverse() : cars,
+        items: shuffle(
+          words.map(function (w, k) {
+            return lifeItem("train-" + i + "-" + k, w.emoji, w.word, w.bpm);
+          })
+        ),
+      };
+    });
+  }
+
+  function makeAbcPopQuestions() {
+    var letters = shuffle(ABC_ORDER).slice(0, 8);
+    return letters.map(function (L, i) {
+      var upper = i % 2 === 0;
+      var shown = upper ? L : L.toLowerCase();
+      var distractors = shuffle(
+        ABC_ORDER.filter(function (x) {
+          return x !== L;
+        })
+      )
+        .slice(0, 5)
+        .map(function (x) {
+          return upper ? x : x.toLowerCase();
+        });
+      var bubbles = shuffle([shown].concat(distractors)).map(function (ch, idx) {
+        return {
+          ch: ch,
+          x: 6 + ((idx * 17 + i * 9 + randInt(0, 6)) % 78),
+          y: 8 + ((idx * 13 + i * 11 + randInt(0, 8)) % 64),
+          delay: ((idx * 0.4 + i * 0.15) % 2.6).toFixed(2),
+        };
+      });
+      return {
+        letter: shown,
+        speak: L,
+        ask: "點點看 " + shown,
+        bubbles: bubbles,
+      };
+    });
+  }
+
+  function makeAbcPathQuestions() {
+    var plans = [
+      { start: 0, miss: 2, len: 4 },
+      { start: 7, miss: 1, len: 3 },
+      { start: 12, miss: 2, len: 4 },
+      { start: 3, miss: 1, len: 3 },
+      { start: 15, miss: 2, len: 4 },
+      { start: 20, miss: 1, len: 3 },
+      { start: 8, miss: 2, len: 4 },
+      { start: 17, miss: 1, len: 3 },
+    ];
+    return plans.map(function (p, i) {
+      var upper = i % 2 === 0;
+      var seq = [];
+      var j;
+      for (j = 0; j < p.len; j++) {
+        var ch = ABC_ORDER[p.start + j];
+        seq.push(upper ? ch : ch.toLowerCase());
+      }
+      var answer = seq[p.miss];
+      var shown = seq.map(function (ch, idx) {
+        return { ch: ch, gap: idx === p.miss };
+      });
+      var others = shuffle(
+        ABC_ORDER.filter(function (x) {
+          return x !== answer.toUpperCase();
+        })
+      )
+        .slice(0, 2)
+        .map(function (x) {
+          return upper ? x : x.toLowerCase();
+        });
+      var items = shuffle(
+        [answer].concat(others).map(function (ch, k) {
+          return lifeItem("path-" + i + "-" + k, ch, ch, ch === answer ? "gap" : "");
+        })
+      );
+      return {
+        ask: "缺誰？拖上去",
+        stones: shown,
+        miss: p.miss,
+        items: items,
+      };
+    });
   }
 
   function lifeItem(id, emoji, name, slot) {
@@ -1397,35 +1603,105 @@
   }
 
   function makeSortQuestions() {
-    var foods = [
-      ["apple", "🍎", "蘋果"],
-      ["banana", "🍌", "香蕉"],
-      ["bread", "🍞", "麵包"],
-    ];
-    var toys = [
-      ["ball", "⚽", "球"],
-      ["teddy", "🧸", "娃娃"],
-      ["car", "🚗", "車"],
-    ];
-    var qs = [];
-    for (var i = 0; i < 6; i++) {
-      var eat = shuffle(foods).slice(0, 2).map(function (it) {
-        return lifeItem(it[0], it[1], it[2], "eat");
-      });
-      var play = shuffle(toys).slice(0, 2).map(function (it) {
-        return lifeItem(it[0], it[1], it[2], "play");
-      });
-      qs.push({
-        ask: "吃的、玩的，分開放",
-        multi: true,
-        slots: [
-          { id: "eat", emoji: "🍽️", label: "吃的" },
-          { id: "play", emoji: "🎈", label: "玩的" },
+    var scenes = [
+      {
+        id: "room",
+        ask: "房間，收好",
+        bins: [
+          { id: "toybox", emoji: "🧰", label: "玩具箱" },
+          { id: "closet", emoji: "🚪", label: "衣櫃" },
         ],
-        items: shuffle(eat.concat(play)),
-      });
-    }
-    return qs;
+        goods: [
+          ["ball-r", "⚽", "球", "toybox"],
+          ["doll-r", "🧸", "娃娃", "toybox"],
+          ["shirt-r", "👕", "衣服", "closet"],
+          ["hat-r", "🧢", "帽子", "closet"],
+        ],
+      },
+      {
+        id: "kitchen",
+        ask: "廚房，放好",
+        bins: [
+          { id: "fridge", emoji: "🧊", label: "冰箱" },
+          { id: "cupboard", emoji: "🗄️", label: "碗櫃" },
+        ],
+        goods: [
+          ["apple-k", "🍎", "蘋果", "fridge"],
+          ["milk-k", "🥛", "牛奶", "fridge"],
+          ["bowl-k", "🥣", "碗", "cupboard"],
+          ["chop-k", "🥢", "筷子", "cupboard"],
+        ],
+      },
+      {
+        id: "park",
+        ask: "公園，撿乾淨",
+        bins: [
+          { id: "trash", emoji: "🗑️", label: "垃圾桶" },
+          { id: "recycle", emoji: "♻️", label: "回收桶" },
+        ],
+        goods: [
+          ["peel-p", "🍌", "香蕉皮", "trash"],
+          ["leaf-p", "🍂", "落葉", "trash"],
+          ["bottle-p", "🍼", "瓶子", "recycle"],
+          ["box-p", "📦", "紙盒", "recycle"],
+        ],
+      },
+      {
+        id: "bath",
+        ask: "洗澡前，收好",
+        bins: [
+          { id: "laundry", emoji: "🧺", label: "洗衣籃" },
+          { id: "toybin", emoji: "📦", label: "收納箱" },
+        ],
+        goods: [
+          ["tee-b", "👕", "衣服", "laundry"],
+          ["sock-b", "🧦", "襪子", "laundry"],
+          ["duck-b", "🦆", "小鴨", "toybin"],
+          ["boat-b", "🚤", "小船", "toybin"],
+        ],
+      },
+      {
+        id: "market",
+        ask: "超市，分開放",
+        bins: [
+          { id: "fruit", emoji: "🧺", label: "水果籃" },
+          { id: "veg", emoji: "🧺", label: "蔬菜籃" },
+        ],
+        goods: [
+          ["apple-m", "🍎", "蘋果", "fruit"],
+          ["banana-m", "🍌", "香蕉", "fruit"],
+          ["carrot-m", "🥕", "紅蘿蔔", "veg"],
+          ["leafy-m", "🥬", "青菜", "veg"],
+        ],
+      },
+      {
+        id: "pet",
+        ask: "照顧動物，放好",
+        bins: [
+          { id: "bowl", emoji: "🥣", label: "食盆" },
+          { id: "toybox", emoji: "🧰", label: "玩具箱" },
+        ],
+        goods: [
+          ["bone-a", "🦴", "骨頭", "bowl"],
+          ["fish-a", "🐟", "魚", "bowl"],
+          ["ball-a", "🎾", "球", "toybox"],
+          ["doll-a", "🧸", "娃娃", "toybox"],
+        ],
+      },
+    ];
+    return scenes.map(function (row) {
+      return {
+        ask: row.ask,
+        scene: row.id,
+        multi: true,
+        bins: row.bins,
+        items: shuffle(
+          row.goods.map(function (it) {
+            return lifeItem(it[0], it[1], it[2], it[3]);
+          })
+        ),
+      };
+    });
   }
 
   function makeOrderQuestions() {
@@ -1460,59 +1736,87 @@
   }
 
   function makeBodyQuestions() {
-    var parts = [
-      { id: "head", name: "頭", emoji: "🙂" },
-      { id: "hand", name: "手", emoji: "✋" },
-      { id: "belly", name: "肚子", emoji: "👕" },
-      { id: "foot", name: "腳", emoji: "🦶" },
+    var singles = [
+      { ask: "摸摸手", steps: ["hand"] },
+      { ask: "點點頭", steps: ["head"] },
+      { ask: "找找腳", steps: ["foot"] },
+      { ask: "肚子在哪？", steps: ["belly"] },
+      { ask: "摸摸頭", steps: ["head"] },
     ];
-    var qs = [];
-    var prev = "";
-    for (var i = 0; i < 6; i++) {
-      var p;
-      do {
-        p = pick(parts);
-      } while (p.id === prev);
-      prev = p.id;
-      qs.push({
-        answer: p.id,
-        ask: p.name + "在哪裡？",
-        parts: parts,
-      });
-    }
-    return qs;
+    var doubles = [
+      { ask: "先摸頭，再摸腳", steps: ["head", "foot"] },
+      { ask: "先摸手，再摸肚子", steps: ["hand", "belly"] },
+      { ask: "先點頭，再摸手", steps: ["head", "hand"] },
+    ];
+    return shuffle(singles).concat(shuffle(doubles)).slice(0, 8);
   }
 
   function makeDayNightQuestions() {
-    var dayPool = [
-      ["sun", "☀️", "太陽"],
-      ["eat", "🍚", "吃飯"],
-      ["school", "🏫", "上學"],
-    ];
-    var nightPool = [
-      ["moon", "🌙", "月亮"],
-      ["sleep", "😴", "睡覺"],
-      ["star", "⭐", "星星"],
-    ];
-    var qs = [];
-    for (var i = 0; i < 6; i++) {
-      var day = shuffle(dayPool).slice(0, 2).map(function (it) {
-        return lifeItem(it[0], it[1], it[2], "day");
-      });
-      var night = shuffle(nightPool).slice(0, 2).map(function (it) {
-        return lifeItem(it[0], it[1], it[2], "night");
-      });
-      qs.push({
-        ask: "白天還是晚上？",
-        multi: true,
-        slots: [
-          { id: "day", emoji: "☀️", label: "白天" },
-          { id: "night", emoji: "🌙", label: "晚上" },
+    var days = [
+      {
+        day: "school",
+        ask: "上學日，照順序放",
+        items: [
+          lifeItem("wake1", "🛏️", "起床", "morning"),
+          lifeItem("school1", "🏫", "上學", "day"),
+          lifeItem("sleep1", "😴", "睡覺", "night"),
         ],
-        items: shuffle(day.concat(night)),
-      });
-    }
-    return qs;
+      },
+      {
+        day: "weekend",
+        ask: "週末，照順序放",
+        items: [
+          lifeItem("wake2", "🛏️", "起床", "morning"),
+          lifeItem("play2", "🧸", "玩玩具", "day"),
+          lifeItem("sleep2", "😴", "睡覺", "night"),
+        ],
+      },
+      {
+        day: "park",
+        ask: "公園日，照順序放",
+        items: [
+          lifeItem("brush3", "🪥", "刷牙", "morning"),
+          lifeItem("park3", "🌳", "去公園", "day"),
+          lifeItem("dinner3", "🍚", "吃晚餐", "night"),
+        ],
+      },
+      {
+        day: "school",
+        ask: "上學日，照順序放",
+        items: [
+          lifeItem("eat4", "🍞", "吃早餐", "morning"),
+          lifeItem("school4", "🏫", "上學", "day"),
+          lifeItem("brush4", "🪥", "刷牙", "night"),
+        ],
+      },
+      {
+        day: "weekend",
+        ask: "週末，照順序放",
+        items: [
+          lifeItem("wake5", "🛏️", "起床", "morning"),
+          lifeItem("book5", "📖", "看書", "day"),
+          lifeItem("bath5", "🛁", "洗澡", "night"),
+        ],
+      },
+      {
+        day: "park",
+        ask: "公園日，照順序放",
+        items: [
+          lifeItem("shoe6", "👟", "穿鞋", "morning"),
+          lifeItem("park6", "🌳", "去公園", "day"),
+          lifeItem("sleep6", "😴", "睡覺", "night"),
+        ],
+      },
+    ];
+    return shuffle(days).map(function (row) {
+      return {
+        ask: row.ask,
+        day: row.day,
+        order: ["morning", "day", "night"],
+        multi: true,
+        items: shuffle(row.items.slice()),
+      };
+    });
   }
 
   function foxPrompt() {
@@ -1546,6 +1850,11 @@
     }
     if (state.levelId === "abc-case") return "把大寫和小寫連起來";
     if (state.levelId === "abc-draw") return "看圖上的字，連到第一個字母";
+    if (state.levelId === "bpm-listen") {
+      if (q && state.stepIndex === 1) return q.word + "的第一個音是誰？";
+      return (q && q.ask) || "找找看";
+    }
+    if (state.levelId === "abc-pop") return (q && q.ask) || "點那個字母";
     if (
       state.levelId === "dress" ||
       state.levelId === "table" ||
@@ -1554,7 +1863,9 @@
       state.levelId === "sort" ||
       state.levelId === "order" ||
       state.levelId === "body" ||
-      state.levelId === "daynight"
+      state.levelId === "daynight" ||
+      state.levelId === "bpm-train" ||
+      state.levelId === "abc-path"
     ) {
       return (q && q.ask) || "看一看，做一做";
     }
@@ -1568,7 +1879,9 @@
       state.levelId === "habitat" ||
       state.levelId === "sort" ||
       state.levelId === "order" ||
-      state.levelId === "daynight"
+      state.levelId === "daynight" ||
+      state.levelId === "bpm-train" ||
+      state.levelId === "abc-path"
     );
   }
 
@@ -1599,11 +1912,74 @@
     return isPlaceLevel() || state.levelId === "light" || state.levelId === "body";
   }
 
+  function isSceneLevel() {
+    return isLifeLevel() || state.levelId === "bpm-listen" || state.levelId === "abc-pop";
+  }
+
+  function isVoiceLevel() {
+    return (
+      state.levelId === "bpm-listen" ||
+      state.levelId === "bpm-train" ||
+      state.levelId === "abc-pop" ||
+      state.levelId === "abc-path" ||
+      state.levelId === "body" ||
+      state.levelId === "daynight" ||
+      state.levelId === "sort"
+    );
+  }
+
+  function speakNow(text, lang) {
+    if (!text || !window.speechSynthesis) return;
+    try {
+      window.speechSynthesis.cancel();
+      var u = new SpeechSynthesisUtterance(text);
+      u.lang = lang || "zh-TW";
+      u.rate = 0.92;
+      var voices = window.speechSynthesis.getVoices() || [];
+      var want = (lang || "zh-TW").toLowerCase();
+      var i;
+      for (i = 0; i < voices.length; i++) {
+        var v = (voices[i].lang || "").toLowerCase();
+        if (v === want || v.indexOf(want.split("-")[0]) === 0) {
+          u.voice = voices[i];
+          break;
+        }
+      }
+      window.speechSynthesis.speak(u);
+    } catch (e) {}
+  }
+
+  function speakPrompt() {
+    var q = state.questions[state.qIndex];
+    var text = state.foxMsg || foxPrompt();
+    var lang = "zh-TW";
+    if (state.levelId === "abc-pop" && q) {
+      lang = "en-US";
+      text = q.speak || String(q.letter || "").toUpperCase();
+    } else if (state.levelId === "abc-path" && q) {
+      lang = "en-US";
+      var letters = (q.stones || [])
+        .map(function (s) {
+          return s.gap ? "" : s.ch;
+        })
+        .filter(Boolean);
+      text = letters.join(" ");
+    } else if (state.levelId === "bpm-listen" && q) {
+      if (state.stepIndex === 0) text = "找找看，哪一個是" + q.word + "？";
+      else text = q.word + "的第一個音是誰？";
+    }
+    speakNow(text, lang);
+  }
+
   function lifeCheer() {
     if (state.levelId === "dress") return "穿好了";
     if (state.levelId === "table") return "擺好了";
-    if (state.levelId === "sort" || state.levelId === "daynight") return "分類好了";
+    if (state.levelId === "sort") return "收好了";
+    if (state.levelId === "daynight") return "一天過完了";
     if (state.levelId === "order") return "排好了";
+    if (state.levelId === "bpm-train") return "上車了";
+    if (state.levelId === "abc-path") return "走過去了";
+    if (state.levelId === "body") return "找到了";
     return "好棒";
   }
 
@@ -1791,6 +2167,12 @@
     if (id === "hanzi") {
       return '<span class="preview-art preview-match" aria-hidden="true"><span>⛰️</span><b>山</b></span>';
     }
+    if (id === "bpm-listen") {
+      return '<span class="preview-art preview-match" aria-hidden="true"><span>👂</span><b>🧢</b></span>';
+    }
+    if (id === "bpm-train") {
+      return '<span class="preview-art preview-match" aria-hidden="true"><span>🚂</span><b>ㄅ</b></span>';
+    }
     if (id === "abc-trace") {
       return (
         '<span class="preview-art preview-trace" aria-hidden="true">' +
@@ -1805,6 +2187,12 @@
     }
     if (id === "abc-draw") {
       return '<span class="preview-art preview-match" aria-hidden="true"><b>A</b><span class="draw-line"></span><span>🍎</span></span>';
+    }
+    if (id === "abc-pop") {
+      return '<span class="preview-art preview-match" aria-hidden="true"><b>A</b><span>🫧</span></span>';
+    }
+    if (id === "abc-path") {
+      return '<span class="preview-art preview-next" aria-hidden="true"><i>A</i><i>B</i><em>?</em></span>';
     }
     if (id === "dress") {
       return '<span class="preview-art preview-match" aria-hidden="true"><span>🧒</span><b>🧢</b></span>';
@@ -1929,7 +2317,8 @@
       foxImg() +
       '<p class="speech" aria-live="polite">' +
       escapeHtml(state.foxMsg) +
-      "</p></div>"
+      "</p>" +
+      '<button class="speak-btn" type="button" data-action="speak" aria-label="再聽一次">🔊</button></div>'
     );
   }
 
@@ -2429,10 +2818,16 @@
     if (state.levelId === "dress") body = renderDress(q);
     else if (state.levelId === "habitat") body = renderHabitat(q);
     else if (state.levelId === "table") body = renderTable(q);
+    else if (state.levelId === "bpm-train") body = renderBpmTrain(q);
+    else if (state.levelId === "abc-path") body = renderAbcPath(q);
+    else if (state.levelId === "sort") body = renderSort(q);
+    else if (state.levelId === "daynight") body = renderDayNight(q);
     else if (isPlaceLevel()) body = renderLifePlace(q);
     if (state.levelId === "light") body = renderLight(q);
     if (state.levelId === "body") body = renderBody(q);
-    return '<div class="shell' + (isLifeLevel() ? " is-life" : "") + '">' + playChrome() + body + "</div>";
+    if (state.levelId === "bpm-listen") body = renderBpmListen(q);
+    if (state.levelId === "abc-pop") body = renderAbcPop(q);
+    return '<div class="shell' + (isSceneLevel() ? " is-life" : "") + '">' + playChrome() + body + "</div>";
   }
 
   function lifeItemById(id) {
@@ -2850,26 +3245,108 @@
     );
   }
 
-  function renderBody(q) {
-    var parts = q.parts || [
-      { id: "head", name: "頭", emoji: "🙂" },
-      { id: "hand", name: "手", emoji: "✋" },
-      { id: "belly", name: "肚子", emoji: "👕" },
-      { id: "foot", name: "腳", emoji: "🦶" },
-    ];
-    var buttons = parts
-      .map(function (p) {
-        var mark = state.choiceMark && state.choiceMark.value === p.id ? " " + state.choiceMark.cls : "";
+  function renderTrayItems(q) {
+    return q.items
+      .filter(function (item) {
+        return !state.placed[item.id];
+      })
+      .map(function (item) {
+        return renderLifeChip(item, "");
+      })
+      .join("");
+  }
+
+  function renderBpmListen(q) {
+    var objs = (q.objects || [])
+      .map(function (obj) {
+        var mark = state.choiceMark && state.choiceMark.value === obj.word ? " " + state.choiceMark.cls : "";
+        var found = obj.word === q.word && (state.stepIndex > 0 || (state.choiceMark && state.choiceMark.cls === "ok"));
         return (
-          '<button class="body-part' +
+          '<button class="listen-obj' +
           mark +
-          '" type="button" data-action="answer" data-value="' +
-          p.id +
+          (found ? " found" : "") +
+          '" type="button" data-action="listen-find" data-value="' +
+          escapeHtml(obj.word) +
+          '" style="left:' +
+          obj.x +
+          ";top:" +
+          obj.y +
           '"><span class="life-emoji">' +
-          p.emoji +
+          obj.emoji +
           '</span><span class="life-name">' +
-          escapeHtml(p.name) +
+          escapeHtml(obj.word) +
           "</span></button>"
+        );
+      })
+      .join("");
+    var stones = "";
+    if (state.stepIndex === 1) {
+      stones =
+        '<div class="listen-stones">' +
+        (q.stones || [])
+          .map(function (s) {
+            var mark = state.choiceMark && state.choiceMark.value === s ? " " + state.choiceMark.cls : "";
+            return (
+              '<button class="listen-stone' +
+              mark +
+              '" type="button" data-action="answer" data-value="' +
+              escapeHtml(s) +
+              '">' +
+              escapeHtml(s) +
+              "</button>"
+            );
+          })
+          .join("") +
+        "</div>";
+    }
+    return (
+      '<div class="play-col">' +
+      '<div class="prompt">' +
+      escapeHtml(state.stepIndex === 1 ? q.word + "的第一個音是誰？" : q.ask) +
+      "</div>" +
+      '<div class="life-stage listen-play">' +
+      '<div class="listen-scene scene-' +
+      (q.scene || "park") +
+      '">' +
+      '<span class="listen-place">' +
+      escapeHtml(q.sceneName || "") +
+      "</span>" +
+      objs +
+      "</div>" +
+      stones +
+      "</div></div>"
+    );
+  }
+
+  function renderBpmTrain(q) {
+    var cars = (q.cars || [])
+      .map(function (car) {
+        var riders = itemsInSlot(car.id)
+          .map(function (item) {
+            return (
+              '<span class="train-rider" title="' +
+              escapeHtml(item.name) +
+              '"><span class="life-emoji">' +
+              item.emoji +
+              '</span><span class="life-name">' +
+              escapeHtml(item.name) +
+              "</span></span>"
+            );
+          })
+          .join("");
+        return (
+          '<div class="train-car color-' +
+          car.color +
+          (riders ? " filled" : "") +
+          '" data-life-slot="' +
+          car.id +
+          '" aria-label="' +
+          car.bpm +
+          '"><span class="car-label">' +
+          car.bpm +
+          '</span><div class="car-riders">' +
+          riders +
+          '</div><i class="wheel w1"></i><i class="wheel w2"></i></div>'
         );
       })
       .join("");
@@ -2878,9 +3355,257 @@
       '<div class="prompt">' +
       escapeHtml(q.ask) +
       "</div>" +
+      '<div class="life-stage is-place train-play">' +
+      '<div class="train-scene' +
+      (state.sceneAnim === "train-go" ? " go" : "") +
+      '"><div class="train-track"></div><div class="train">' +
+      '<div class="train-engine" aria-hidden="true">🚂<i class="wheel w1"></i><i class="wheel w2"></i></div>' +
+      cars +
+      "</div></div>" +
+      '<div class="life-tray">' +
+      renderTrayItems(q) +
+      "</div></div></div>"
+    );
+  }
+
+  function renderAbcPop(q) {
+    var bubbles = (q.bubbles || [])
+      .map(function (b) {
+        var mark = state.choiceMark && state.choiceMark.value === b.ch ? " " + state.choiceMark.cls : "";
+        return (
+          '<button class="abc-bubble' +
+          mark +
+          '" type="button" data-action="answer" data-value="' +
+          escapeHtml(b.ch) +
+          '" style="left:' +
+          b.x +
+          "%;top:" +
+          b.y +
+          "%;animation-delay:" +
+          b.delay +
+          's"><span>' +
+          escapeHtml(b.ch) +
+          "</span>" +
+          (mark.indexOf("ok") !== -1 ? '<i class="pop-bit"></i><i class="pop-bit"></i><i class="pop-bit"></i><i class="pop-bit"></i>' : "") +
+          "</button>"
+        );
+      })
+      .join("");
+    return (
+      '<div class="play-col">' +
+      '<div class="prompt">' +
+      escapeHtml(q.ask) +
+      "</div>" +
+      '<div class="life-stage pop-play"><div class="pop-scene">' +
+      bubbles +
+      "</div></div></div>"
+    );
+  }
+
+  function renderAbcPath(q) {
+    var stones = (q.stones || [])
+      .map(function (s, i) {
+        if (s.gap) {
+          var filled = itemInSlot("gap");
+          return (
+            '<div class="path-stone gap' +
+            (filled ? " filled" : "") +
+            '" data-life-slot="gap" aria-label="缺的字母">' +
+            (filled ? '<span class="path-letter">' + escapeHtml(filled.emoji) + "</span>" : '<span class="path-blank">?</span>') +
+            "</div>"
+          );
+        }
+        return '<div class="path-stone"><span class="path-letter">' + escapeHtml(s.ch) + "</span></div>";
+      })
+      .join("");
+    var walk = state.sceneAnim === "path-walk" ? (q.miss || 0) + 1 : q.miss || 0;
+    return (
+      '<div class="play-col">' +
+      '<div class="prompt">' +
+      escapeHtml(q.ask) +
+      "</div>" +
+      '<div class="life-stage is-place path-play">' +
+      '<div class="path-scene"><div class="path-ground"></div><div class="path-stones" style="--n:' +
+      (q.stones || []).length +
+      '">' +
+      stones +
+      '</div><div class="path-fox" style="--walk:' +
+      walk +
+      ";--n:" +
+      (q.stones || []).length +
+      '">' +
+      foxMini() +
+      "</div></div>" +
+      '<div class="life-tray">' +
+      renderTrayItems(q) +
+      "</div></div></div>"
+    );
+  }
+
+  function foxMini() {
+    return '<span class="fox-mini" aria-hidden="true">🦊</span>';
+  }
+
+  function renderBody(q) {
+    var steps = q.steps || [q.answer];
+    var cur = steps[state.stepIndex] || steps[0];
+    var progress =
+      steps.length > 1
+        ? '<div class="body-steps" aria-label="步驟"><span class="' +
+          (state.stepIndex >= 0 ? "on" : "") +
+          '">1</span><span class="arrow">→</span><span class="' +
+          (state.stepIndex >= 1 ? "on" : "") +
+          '">2</span></div>'
+        : "";
+    var anim = state.bodyAnim || (state.choiceMark && state.choiceMark.cls === "ok" ? state.choiceMark.value : "");
+    function partBtn(id, label) {
+      var mark = state.choiceMark && state.choiceMark.value === id ? " " + state.choiceMark.cls : "";
+      var live = anim === id ? " do-" + id : "";
+      return (
+        '<button class="body-hit ' +
+        id +
+        mark +
+        live +
+        '" type="button" data-action="answer" data-value="' +
+        id +
+        '" aria-label="' +
+        label +
+        '"></button>'
+      );
+    }
+    return (
+      '<div class="play-col">' +
+      '<div class="prompt">' +
+      escapeHtml(q.ask) +
+      "</div>" +
+      progress +
       '<div class="life-stage body-play">' +
-      '<div class="body-fig">' +
-      buttons +
+      '<div class="body-scene" data-need="' +
+      cur +
+      '">' +
+      '<div class="body-kid' +
+      (anim ? " anim-" + anim : "") +
+      '" aria-label="小朋友">' +
+      partBtn("head", "頭") +
+      '<div class="body-face" aria-hidden="true"><i class="eye"></i><i class="eye"></i><i class="smile"></i></div>' +
+      partBtn("hand", "手") +
+      '<span class="body-arm left" aria-hidden="true"></span>' +
+      '<span class="body-arm right" aria-hidden="true"></span>' +
+      partBtn("belly", "肚子") +
+      '<div class="body-torso" aria-hidden="true"></div>' +
+      partBtn("foot", "腳") +
+      '<span class="body-leg left" aria-hidden="true"></span>' +
+      '<span class="body-leg right" aria-hidden="true"></span>' +
+      "</div></div></div></div>"
+    );
+  }
+
+  function renderDayNight(q) {
+    var placedN = 0;
+    ["morning", "day", "night"].forEach(function (id) {
+      if (itemInSlot(id)) placedN += 1;
+    });
+    var sky = placedN === 0 ? "sunrise" : placedN === 1 ? "day" : placedN === 2 ? "sunset" : "night";
+    if (state.sceneAnim === "day-finale") sky = "finale";
+    var kidPose = !itemInSlot("morning") ? "wake" : !itemInSlot("night") ? "play" : "sleep";
+    function timeSpot(id, label, emoji) {
+      var item = itemInSlot(id);
+      return (
+        '<div class="day-spot ' +
+        id +
+        (item ? " filled" : "") +
+        '" data-life-slot="' +
+        id +
+        '" aria-label="' +
+        label +
+        '"><span class="day-tag">' +
+        emoji +
+        " " +
+        label +
+        "</span>" +
+        (item
+          ? '<span class="day-put"><span class="life-emoji">' +
+            item.emoji +
+            '</span><span class="life-name">' +
+            escapeHtml(item.name) +
+            "</span></span>"
+          : "") +
+        "</div>"
+      );
+    }
+    return (
+      '<div class="play-col">' +
+      '<div class="prompt">' +
+      escapeHtml(q.ask) +
+      "</div>" +
+      '<div class="life-stage is-place day-play">' +
+      '<div class="day-scene sky-' +
+      sky +
+      " day-" +
+      (q.day || "school") +
+      '">' +
+      '<i class="day-sun"></i><i class="day-moon"></i><i class="day-star s1"></i><i class="day-star s2"></i>' +
+      '<div class="day-house" aria-hidden="true"><i class="day-roof"></i><i class="day-win w1"></i><i class="day-win w2"></i></div>' +
+      '<div class="day-kid pose-' +
+      kidPose +
+      '" aria-hidden="true">🧒</div>' +
+      '<div class="day-times">' +
+      timeSpot("morning", "早上", "🌅") +
+      timeSpot("day", "白天", "☀️") +
+      timeSpot("night", "晚上", "🌙") +
+      "</div></div>" +
+      '<div class="life-tray">' +
+      renderTrayItems(q) +
+      "</div></div></div>"
+    );
+  }
+
+  function renderSort(q) {
+    var bins = (q.bins || [])
+      .map(function (bin) {
+        var many = itemsInSlot(bin.id);
+        return (
+          '<div class="sort-bin ' +
+          bin.id +
+          (many.length ? " filled" : "") +
+          '" data-life-slot="' +
+          bin.id +
+          '" aria-label="' +
+          escapeHtml(bin.label) +
+          '"><span class="sort-label"><span class="life-emoji">' +
+          bin.emoji +
+          "</span>" +
+          escapeHtml(bin.label) +
+          '</span><div class="sort-holds">' +
+          many
+            .map(function (item) {
+              return (
+                '<span class="sort-put"><span class="life-emoji">' +
+                item.emoji +
+                '</span><span class="life-name">' +
+                escapeHtml(item.name) +
+                "</span></span>"
+              );
+            })
+            .join("") +
+          "</div></div>"
+        );
+      })
+      .join("");
+    return (
+      '<div class="play-col">' +
+      '<div class="prompt">' +
+      escapeHtml(q.ask) +
+      "</div>" +
+      '<div class="life-stage is-place sort-play">' +
+      '<div class="sort-scene scene-' +
+      (q.scene || "room") +
+      (state.sceneAnim === "sort-done" ? " done" : "") +
+      '">' +
+      bins +
+      "</div>" +
+      '<div class="life-tray">' +
+      renderTrayItems(q) +
       "</div></div></div>"
     );
   }
@@ -2888,7 +3613,7 @@
   function renderClear() {
     return (
       '<div class="shell' +
-      (isLifeLevel() ? " is-life" : "") +
+      (isSceneLevel() ? " is-life" : "") +
       '">' +
       topTools("<span></span>") +
       '<div class="clear">' +
@@ -2997,11 +3722,18 @@
     }
     state.locked = true;
     state.heldItem = null;
+    if (state.levelId === "bpm-train") state.sceneAnim = "train-go";
+    if (state.levelId === "daynight") state.sceneAnim = "day-finale";
+    if (state.levelId === "abc-path") state.sceneAnim = "path-walk";
+    if (state.levelId === "sort") state.sceneAnim = "sort-done";
     state.foxMsg = state.levelId === "bond" ? "好棒" : lifeCheer();
     state.foxMood = "happy";
     render();
     replayFoxHappy();
-    setTimeout(nextQuestion, 1000);
+    var wait = 1000;
+    if (state.levelId === "bpm-train" || state.levelId === "daynight") wait = 1450;
+    if (state.levelId === "abc-path") wait = 1150;
+    setTimeout(nextQuestion, wait);
   }
 
   function clearItemDragClass(itemId) {
@@ -3052,9 +3784,21 @@
     }, 420);
   }
 
+  function nextOrderedSlot(q) {
+    if (!q || !q.order) return null;
+    for (var i = 0; i < q.order.length; i++) {
+      if (!itemInSlot(q.order[i])) return q.order[i];
+    }
+    return null;
+  }
+
   function itemFitsSlot(item, slotId) {
     if (!item || !slotId) return false;
     if (item.anySlot) return !itemInSlot(slotId);
+    var q = state.questions[state.qIndex];
+    if (q && q.order && q.order.length) {
+      return !!(item.slot && item.slot === slotId && slotId === nextOrderedSlot(q));
+    }
     return !!(item.slot && item.slot === slotId);
   }
 
@@ -3393,6 +4137,9 @@
     state.heldItem = null;
     state.countTapped = {};
     state.countNum = 0;
+    state.stepIndex = 0;
+    state.sceneAnim = "";
+    state.bodyAnim = "";
     resetMoreTaps();
     resetMatchDraw();
     resetWriteDraw();
@@ -3415,6 +4162,10 @@
     else if (id === "abc-pic") state.questions = makeAbcPicQuestions();
     else if (id === "abc-case") state.questions = makeAbcCaseQuestions();
     else if (id === "abc-draw") state.questions = makeAbcDrawQuestions();
+    else if (id === "bpm-listen") state.questions = makeBpmListenQuestions();
+    else if (id === "bpm-train") state.questions = makeBpmTrainQuestions();
+    else if (id === "abc-pop") state.questions = makeAbcPopQuestions();
+    else if (id === "abc-path") state.questions = makeAbcPathQuestions();
     else if (id === "dress") state.questions = makeDressQuestions();
     else if (id === "table") state.questions = makeTableQuestions();
     else if (id === "habitat") state.questions = makeHabitatQuestions();
@@ -3427,6 +4178,7 @@
     state.foxMsg = foxPrompt();
     state.screen = "play";
     render();
+    if (isVoiceLevel()) speakPrompt();
   }
 
   function goHome() {
@@ -3446,6 +4198,9 @@
     state.heldItem = null;
     state.countTapped = {};
     state.countNum = 0;
+    state.stepIndex = 0;
+    state.sceneAnim = "";
+    state.bodyAnim = "";
     resetMoreTaps();
     resetMatchDraw();
     resetWriteDraw();
@@ -3461,7 +4216,7 @@
     state.foxMood = "happy";
     playStar();
     render();
-    if (isLifeLevel()) replayFoxHappy();
+    if (isSceneLevel()) replayFoxHappy();
   }
 
   function nextQuestion() {
@@ -3472,6 +4227,9 @@
     state.heldItem = null;
     state.countTapped = {};
     state.countNum = 0;
+    state.stepIndex = 0;
+    state.sceneAnim = "";
+    state.bodyAnim = "";
     resetMoreTaps();
     resetMatchDraw();
     resetWriteDraw();
@@ -3485,6 +4243,7 @@
     state.qIndex += 1;
     state.foxMsg = foxPrompt();
     render();
+    if (isVoiceLevel()) speakPrompt();
   }
 
   function markCorrect(value) {
@@ -3508,7 +4267,15 @@
       state.locked = false;
       state.choiceMark = null;
       state.foxMood = "idle";
-      if (state.levelId === "more" || state.levelId === "ord") state.foxMsg = foxPrompt();
+      if (
+        state.levelId === "more" ||
+        state.levelId === "ord" ||
+        state.levelId === "bpm-listen" ||
+        state.levelId === "abc-pop" ||
+        state.levelId === "body"
+      ) {
+        state.foxMsg = foxPrompt();
+      }
       render();
     }, 850);
   }
@@ -3608,6 +4375,27 @@
       else markRetry(raw, "再看一次");
       return;
     }
+    if (state.levelId === "bpm-listen") {
+      if (state.stepIndex !== 1) return;
+      if (raw === q.bpm) markCorrect(raw);
+      else markRetry(raw, "再看一次");
+      return;
+    }
+    if (state.levelId === "abc-pop") {
+      if (raw === q.letter) {
+        state.locked = true;
+        state.choiceMark = { value: raw, cls: "ok" };
+        state.foxMsg = pick(PRAISE);
+        state.foxMood = "happy";
+        playCorrect();
+        render();
+        replayFoxHappy();
+        setTimeout(nextQuestion, 950);
+      } else {
+        markRetry(raw, "再看一次");
+      }
+      return;
+    }
     if (state.levelId === "light") {
       if (raw === q.answer) {
         lightSuccess(raw);
@@ -3617,15 +4405,36 @@
       return;
     }
     if (state.levelId === "body") {
-      if (raw === q.answer) {
+      var steps = q.steps || [q.answer];
+      var need = steps[state.stepIndex] || q.answer;
+      if (raw === need) {
         state.locked = true;
         state.choiceMark = { value: raw, cls: "ok" };
-        state.foxMsg = "好棒";
-        state.foxMood = "happy";
+        state.bodyAnim = raw;
         playCorrect();
-        render();
-        replayFoxHappy();
-        setTimeout(nextQuestion, 1000);
+        if (state.stepIndex + 1 >= steps.length) {
+          state.foxMsg = "好棒";
+          state.foxMood = "happy";
+          render();
+          replayFoxHappy();
+          setTimeout(nextQuestion, 1000);
+        } else {
+          state.foxMsg = "好棒";
+          state.foxMood = "happy";
+          render();
+          replayFoxHappy();
+          setTimeout(function () {
+            if (state.levelId !== "body" || state.screen !== "play") return;
+            state.stepIndex += 1;
+            state.locked = false;
+            state.choiceMark = null;
+            state.bodyAnim = "";
+            state.foxMood = "idle";
+            state.foxMsg = foxPrompt();
+            render();
+            speakPrompt();
+          }, 800);
+        }
       } else {
         state.locked = true;
         state.choiceMark = { value: raw, cls: "bad" };
@@ -3637,11 +4446,52 @@
           if (state.levelId !== "body" || state.screen !== "play") return;
           state.locked = false;
           state.choiceMark = null;
+          state.bodyAnim = "";
           state.foxMood = "idle";
           state.foxMsg = foxPrompt();
           render();
         }, 850);
       }
+    }
+  }
+
+  function handleListenFind(word) {
+    if (state.locked || state.screen !== "play" || state.levelId !== "bpm-listen") return;
+    var q = state.questions[state.qIndex];
+    if (!q || state.stepIndex !== 0) return;
+    if (word === q.word) {
+      state.locked = true;
+      state.choiceMark = { value: word, cls: "ok" };
+      playCorrect();
+      state.foxMsg = q.word + "的第一個音是誰？";
+      state.foxMood = "happy";
+      render();
+      replayFoxHappy();
+      setTimeout(function () {
+        if (state.levelId !== "bpm-listen" || state.screen !== "play") return;
+        state.locked = false;
+        state.stepIndex = 1;
+        state.choiceMark = null;
+        state.foxMood = "idle";
+        state.foxMsg = foxPrompt();
+        render();
+        speakPrompt();
+      }, 900);
+    } else {
+      state.locked = true;
+      state.choiceMark = { value: word, cls: "bad" };
+      state.foxMsg = "再看一次";
+      state.foxMood = "think";
+      playWrong();
+      render();
+      setTimeout(function () {
+        if (state.levelId !== "bpm-listen" || state.screen !== "play") return;
+        state.locked = false;
+        state.choiceMark = null;
+        state.foxMood = "idle";
+        state.foxMsg = foxPrompt();
+        render();
+      }, 850);
     }
   }
 
@@ -3984,6 +4834,10 @@
       toggleFullscreen();
     } else if (action === "answer") {
       handleAnswer(t.getAttribute("data-value"));
+    } else if (action === "listen-find") {
+      handleListenFind(t.getAttribute("data-value"));
+    } else if (action === "speak") {
+      speakPrompt();
     }
   });
 
@@ -3994,6 +4848,15 @@
   }
 
   window.addEventListener("hashchange", bootFromHash);
+
+  if (window.speechSynthesis) {
+    try {
+      window.speechSynthesis.getVoices();
+      window.speechSynthesis.onvoiceschanged = function () {
+        window.speechSynthesis.getVoices();
+      };
+    } catch (e) {}
+  }
 
   render();
   bootFromHash();
