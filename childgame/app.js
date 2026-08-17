@@ -1099,44 +1099,68 @@
   function makeDressQuestions() {
     var rounds = [
       {
+        place: "park",
+        face: "👦",
+        who: "小男孩",
         weather: "☀️",
-        label: "大太陽",
-        ask: "大太陽，拖上去",
+        label: "公園",
+        ask: "公園，拖上去",
+        prop: "🌳",
         ok: [lifeItem("cap", "🧢", "帽子", "head"), lifeItem("tee", "👕", "短袖", "body")],
         wrong: [lifeItem("scarf", "🧣", "圍巾"), lifeItem("boot", "👢", "雨靴")],
       },
       {
-        weather: "🌧️",
-        label: "下雨了",
-        ask: "下雨了，拖上去",
-        ok: [lifeItem("rain", "🧥", "雨衣", "body"), lifeItem("rainboot", "👢", "雨靴", "feet")],
-        wrong: [lifeItem("glass", "🕶️", "太陽眼鏡"), lifeItem("tee2", "👕", "短袖")],
-      },
-      {
-        weather: "❄️",
-        label: "好冷",
-        ask: "好冷，拖上去",
-        ok: [lifeItem("scarf2", "🧣", "圍巾", "head"), lifeItem("coat", "🧥", "外套", "body")],
-        wrong: [lifeItem("tee3", "👕", "短袖"), lifeItem("sandal", "👡", "拖鞋")],
-      },
-      {
+        place: "beach",
+        face: "👧",
+        who: "小女孩",
         weather: "☀️",
-        label: "好熱",
-        ask: "好熱，拖上去",
+        label: "海邊",
+        ask: "海邊，拖上去",
+        prop: "🏖️",
         ok: [lifeItem("sunglass", "🕶️", "太陽眼鏡", "head"), lifeItem("tee4", "👕", "短袖", "body")],
         wrong: [lifeItem("scarf3", "🧣", "圍巾"), lifeItem("coat2", "🧥", "外套")],
       },
       {
+        place: "mountain",
+        face: "🧒",
+        who: "小孩",
+        weather: "❄️",
+        label: "山上",
+        ask: "山上，拖上去",
+        prop: "⛰️",
+        ok: [lifeItem("scarf2", "🧣", "圍巾", "head"), lifeItem("coat", "🧥", "外套", "body")],
+        wrong: [lifeItem("tee3", "👕", "短袖"), lifeItem("sandal", "👡", "拖鞋")],
+      },
+      {
+        place: "street",
+        face: "🧒",
+        who: "小孩",
+        weather: "🌧️",
+        label: "街頭",
+        ask: "街頭，拖上去",
+        prop: "🏙️",
+        ok: [lifeItem("rain", "🧥", "雨衣", "body"), lifeItem("rainboot", "👢", "雨靴", "feet")],
+        wrong: [lifeItem("glass", "🕶️", "太陽眼鏡"), lifeItem("tee2", "👕", "短袖")],
+      },
+      {
+        place: "park",
+        face: "👧",
+        who: "小女孩",
         weather: "💨",
-        label: "風好大",
-        ask: "風好大，拖上去",
+        label: "公園",
+        ask: "公園，拖上去",
+        prop: "🌳",
         ok: [lifeItem("cap2", "🧢", "帽子", "head"), lifeItem("windcoat", "🧥", "外套", "body")],
         wrong: [lifeItem("sandal2", "👡", "拖鞋"), lifeItem("tee5", "👕", "短袖")],
       },
       {
+        place: "street",
+        face: "👦",
+        who: "小男孩",
         weather: "🌧️",
-        label: "下雨了",
-        ask: "下雨了，拖上去",
+        label: "街頭",
+        ask: "街頭，拖上去",
+        prop: "🏘️",
         ok: [lifeItem("umb2", "☂️", "雨傘", "head"), lifeItem("rain2", "🧥", "雨衣", "body")],
         wrong: [lifeItem("cap3", "🧢", "帽子"), lifeItem("glass2", "🕶️", "太陽眼鏡")],
       },
@@ -1144,8 +1168,12 @@
     return shuffle(rounds).map(function (r) {
       return {
         ask: r.ask,
+        place: r.place,
+        face: r.face,
+        who: r.who,
         sceneEmoji: r.weather,
         sceneLabel: r.label,
+        prop: r.prop,
         items: shuffle(r.ok.concat(r.wrong)),
       };
     });
@@ -1168,7 +1196,7 @@
     function seat(id, face, name, have, need) {
       return { id: id, face: face, name: name, have: have, need: need };
     }
-    function pack(people, extra) {
+    function pack(scene, ask, people, extra) {
       var items = [];
       people.forEach(function (p) {
         p.need.forEach(function (u) {
@@ -1178,13 +1206,16 @@
       });
       items.push(lifeItem(extra[0], extra[1], extra[2]));
       return {
-        ask: "誰少了什麼？拖上去",
+        ask: ask,
+        scene: scene,
         people: people,
         items: shuffle(items),
       };
     }
     var rounds = [
       pack(
+        "home",
+        "家裡，誰少了什麼",
         [
           seat("dad", "👨", "爸爸", [U.bowl, U.sticks], [U.plate]),
           seat("kid", "🧒", "小孩", [U.bowl, U.cup], [U.fork]),
@@ -1192,6 +1223,8 @@
         extras[0]
       ),
       pack(
+        "picnic",
+        "野餐，誰少了什麼",
         [
           seat("mom", "👩", "媽媽", [U.bowl, U.sticks], [U.spoon]),
           seat("dad2", "👨", "爸爸", [U.plate, U.fork], [U.cup]),
@@ -1200,6 +1233,8 @@
         extras[1]
       ),
       pack(
+        "sushi",
+        "壽司店，誰少了什麼",
         [
           seat("mom3", "👩", "媽媽", [U.bowl], [U.plate, U.spoon]),
           seat("kid3", "🧒", "小孩", [U.bowl, U.sticks], [U.fork]),
@@ -1207,6 +1242,8 @@
         extras[2]
       ),
       pack(
+        "breakfast",
+        "早餐，誰少了什麼",
         [
           seat("dad4", "👨", "爸爸", [U.bowl, U.cup], [U.fork]),
           seat("mom4", "👩", "媽媽", [U.bowl, U.sticks], [U.plate]),
@@ -1215,6 +1252,8 @@
         extras[0]
       ),
       pack(
+        "night",
+        "夜市，誰少了什麼",
         [
           seat("kid5", "🧒", "小孩", [U.bowl, U.sticks], [U.plate]),
           seat("dad5", "👨", "爸爸", [U.plate, U.cup], [U.spoon]),
@@ -1222,6 +1261,8 @@
         extras[1]
       ),
       pack(
+        "school",
+        "學校，誰少了什麼",
         [
           seat("mom6", "👩", "媽媽", [U.bowl, U.sticks, U.cup], [U.fork]),
           seat("dad6", "👨", "爸爸", [U.bowl, U.fork], [U.plate]),
@@ -1234,45 +1275,99 @@
   }
 
   function makeHabitatQuestions() {
-    var sets = [
-      [
-        lifeItem("fish-a", "🐟", "魚", "water"),
-        lifeItem("bird-a", "🐦", "鳥", "tree"),
-        lifeItem("rabbit-a", "🐰", "兔子", "grass"),
-      ],
-      [
-        lifeItem("duck-b", "🦆", "鴨子", "water"),
-        lifeItem("owl-b", "🦉", "貓頭鷹", "tree"),
-        lifeItem("camel-b", "🐪", "駱駝", "desert"),
-      ],
-      [
-        lifeItem("fish-c", "🐠", "魚", "water"),
-        lifeItem("sheep-c", "🐑", "羊", "grass"),
-        lifeItem("lizard-c", "🦎", "蜥蜴", "desert"),
-      ],
-      [
-        lifeItem("duck-d", "🦆", "鴨子", "water"),
-        lifeItem("bird-d", "🐦", "鳥", "tree"),
-        lifeItem("sheep-d", "🐑", "羊", "grass"),
-        lifeItem("camel-d", "🐪", "駱駝", "desert"),
-      ],
-      [
-        lifeItem("owl-e", "🦉", "貓頭鷹", "tree"),
-        lifeItem("rabbit-e", "🐰", "兔子", "grass"),
-        lifeItem("lizard-e", "🦎", "蜥蜴", "desert"),
-      ],
-      [
-        lifeItem("fish-f", "🐟", "魚", "water"),
-        lifeItem("duck-f", "🦆", "鴨子", "water"),
-        lifeItem("bird-f", "🐦", "鳥", "tree"),
-        lifeItem("camel-f", "🐪", "駱駝", "desert"),
-      ],
+    var layouts = [
+      {
+        layout: "river",
+        ask: "河邊，拖回家",
+        zones: [
+          { id: "water", label: "水", prop: "🌊" },
+          { id: "tree", label: "樹", prop: "🌳" },
+          { id: "grass", label: "草", prop: "🌿" },
+        ],
+        goods: [
+          lifeItem("fish-a", "🐟", "魚", "water"),
+          lifeItem("bird-a", "🐦", "鳥", "tree"),
+          lifeItem("rabbit-a", "🐰", "兔子", "grass"),
+        ],
+      },
+      {
+        layout: "beach",
+        ask: "海邊，拖回家",
+        zones: [
+          { id: "water", label: "水", prop: "🌊" },
+          { id: "desert", label: "沙丘", prop: "🏜️" },
+        ],
+        goods: [
+          lifeItem("duck-b", "🦆", "鴨子", "water"),
+          lifeItem("crab-b", "🦀", "螃蟹", "desert"),
+          lifeItem("shell-b", "🐚", "貝殼", "desert"),
+        ],
+      },
+      {
+        layout: "meadow",
+        ask: "山上，拖回家",
+        zones: [
+          { id: "tree", label: "樹", prop: "🌲" },
+          { id: "grass", label: "草", prop: "🌿" },
+        ],
+        goods: [
+          lifeItem("owl-c", "🦉", "貓頭鷹", "tree"),
+          lifeItem("sheep-c", "🐑", "羊", "grass"),
+          lifeItem("rabbit-c", "🐰", "兔子", "grass"),
+        ],
+      },
+      {
+        layout: "oasis",
+        ask: "綠洲，拖回家",
+        zones: [
+          { id: "tree", label: "樹", prop: "🌴" },
+          { id: "desert", label: "沙漠", prop: "🏜️" },
+          { id: "water", label: "水", prop: "💧" },
+        ],
+        goods: [
+          lifeItem("fish-d", "🐠", "魚", "water"),
+          lifeItem("bird-d", "🐦", "鳥", "tree"),
+          lifeItem("camel-d", "🐪", "駱駝", "desert"),
+        ],
+      },
+      {
+        layout: "woods",
+        ask: "樹林，拖回家",
+        zones: [
+          { id: "tree", label: "樹", prop: "🌳" },
+          { id: "water", label: "水", prop: "🌊" },
+          { id: "grass", label: "草", prop: "🌿" },
+        ],
+        goods: [
+          lifeItem("owl-e", "🦉", "貓頭鷹", "tree"),
+          lifeItem("duck-e", "🦆", "鴨子", "water"),
+          lifeItem("sheep-e", "🐑", "羊", "grass"),
+          lifeItem("bird-e", "🐦", "鳥", "tree"),
+        ],
+      },
+      {
+        layout: "dunes",
+        ask: "沙漠，拖回家",
+        zones: [
+          { id: "desert", label: "沙漠", prop: "🏜️" },
+          { id: "water", label: "水", prop: "💧" },
+          { id: "tree", label: "樹", prop: "🌴" },
+        ],
+        goods: [
+          lifeItem("lizard-f", "🦎", "蜥蜴", "desert"),
+          lifeItem("camel-f", "🐪", "駱駝", "desert"),
+          lifeItem("fish-f", "🐟", "魚", "water"),
+          lifeItem("bird-f", "🐦", "鳥", "tree"),
+        ],
+      },
     ];
-    return shuffle(sets).map(function (goods, i) {
-      var items = goods.slice();
+    return shuffle(layouts).map(function (row, i) {
+      var items = row.goods.slice();
       items.push(lifeItem("car-" + i, "🚗", "車子"));
       return {
-        ask: "拖回家",
+        ask: row.ask,
+        layout: row.layout,
+        zones: row.zones,
         multi: true,
         items: shuffle(items),
       };
@@ -1280,14 +1375,22 @@
   }
 
   function makeLightQuestions() {
+    var places = [
+      { id: "city", label: "市區", prop: "🏢", car: "🚗" },
+      { id: "school", label: "學校", prop: "🏫", car: "🚌" },
+      { id: "alley", label: "小巷", prop: "🏠", car: "🚲" },
+    ];
     var colors = shuffle(["red", "red", "red", "green", "green", "green", "yellow", "yellow"]);
-    return colors.map(function (color) {
-      var ask =
-        color === "red" ? "紅燈，停還是走？" : color === "green" ? "綠燈，拖過去" : "黃燈，等一等";
+    return colors.map(function (color, i) {
+      var place = places[i % places.length];
+      var line = color === "red" ? "紅燈，停還是走？" : color === "green" ? "綠燈，拖過去" : "黃燈，等一等";
       return {
         color: color,
         answer: color === "red" ? "stop" : color === "green" ? "go" : "wait",
-        ask: ask,
+        ask: place.label + "，" + line,
+        place: place.id,
+        placeProp: place.prop,
+        car: place.car,
         items: [lifeItem("kid", "🧒", "小朋友", "far")],
       };
     });
@@ -2453,15 +2556,25 @@
       escapeHtml(q.ask) +
       "</div>" +
       '<div class="life-stage is-place dress-play">' +
-      '<div class="dress-board">' +
+      '<div class="dress-board place-' +
+      (q.place || "park") +
+      '">' +
       '<div class="dress-weather"><span class="life-emoji">' +
       q.sceneEmoji +
+      '</span><span class="dress-place-prop" aria-hidden="true">' +
+      (q.prop || "") +
       '</span><span class="life-name">' +
       escapeHtml(q.sceneLabel) +
       "</span></div>" +
-      '<div class="dress-kid" aria-label="小朋友">' +
+      '<div class="dress-kid face-' +
+      (q.face === "👦" ? "boy" : q.face === "👧" ? "girl" : "child") +
+      '" aria-label="' +
+      escapeHtml(q.who || "小朋友") +
+      '">' +
       '<div class="dress-zone head" data-life-slot="head" aria-label="頭">' +
-      '<span class="dress-base dress-face">🙂</span>' +
+      '<span class="dress-base dress-face">' +
+      (q.face || "🙂") +
+      "</span>" +
       renderDressWear("head") +
       "</div>" +
       '<div class="dress-zone body" data-life-slot="body" aria-label="衣服">' +
@@ -2519,11 +2632,19 @@
       escapeHtml(q.ask) +
       "</div>" +
       '<div class="life-stage is-place habitat-play">' +
-      '<div class="habitat-scene">' +
-      renderHabitatZone("tree", "樹", "🌳") +
-      renderHabitatZone("desert", "沙漠", "🏜️") +
-      renderHabitatZone("water", "水", "🌊") +
-      renderHabitatZone("grass", "草", "🌿") +
+      '<div class="habitat-scene layout-' +
+      (q.layout || "river") +
+      '">' +
+      (q.zones || [
+        { id: "tree", label: "樹", prop: "🌳" },
+        { id: "desert", label: "沙漠", prop: "🏜️" },
+        { id: "water", label: "水", prop: "🌊" },
+        { id: "grass", label: "草", prop: "🌿" },
+      ])
+        .map(function (z) {
+          return renderHabitatZone(z.id, z.label, z.prop);
+        })
+        .join("") +
       "</div>" +
       '<div class="life-tray">' +
       tray +
@@ -2594,7 +2715,9 @@
       escapeHtml(q.ask) +
       "</div>" +
       '<div class="life-stage is-place table-play">' +
-      '<div class="table-scene" data-seats="' +
+      '<div class="table-scene meal-' +
+      (q.scene || "home") +
+      '" data-seats="' +
       (q.people || []).length +
       '">' +
       '<div class="table-wood">' +
@@ -2654,7 +2777,12 @@
       escapeHtml(q.ask) +
       "</div>" +
       '<div class="life-stage light-play is-place">' +
-      '<div class="street-scene light-card">' +
+      '<div class="street-scene light-card place-' +
+      (q.place || "city") +
+      '">' +
+      '<div class="street-landmark" aria-hidden="true">' +
+      (q.placeProp || "🏢") +
+      "</div>" +
       '<div class="light-pole" aria-hidden="true">' +
       '<div class="light-lamp red' +
       (color === "red" ? " on" : "") +
@@ -2668,7 +2796,9 @@
       '<div class="street-road">' +
       '<div class="street-car' +
       carCls +
-      '" aria-hidden="true">🚗</div>' +
+      '" aria-hidden="true">' +
+      (q.car || "🚗") +
+      "</div>" +
       '<div class="street-cross" data-life-slot="cross" aria-label="斑馬線"></div>' +
       '<div class="street-kid" data-life-item="kid" role="img" aria-label="小朋友">🧒</div>' +
       '<div class="street-far" data-life-slot="far" aria-label="對面"></div>' +

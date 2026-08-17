@@ -1255,6 +1255,31 @@ button:focus-visible {
   line-height: 1;
 }
 
+.dress-place-prop {
+  font-size: min(14cqw, 12cqh, 36px);
+  line-height: 1;
+}
+
+.dress-board.place-park {
+  background: linear-gradient(#c8f0c0, #fff8ee);
+  border-radius: 24px;
+}
+
+.dress-board.place-beach {
+  background: linear-gradient(#9ad0f5 0 48%, #f6e1b5 48% 100%);
+  border-radius: 24px;
+}
+
+.dress-board.place-mountain {
+  background: linear-gradient(#c5cae9 0 42%, #e8e0d0 42% 100%);
+  border-radius: 24px;
+}
+
+.dress-board.place-street {
+  background: linear-gradient(#dee2e6 0 52%, #adb5bd 52% 100%);
+  border-radius: 24px;
+}
+
 .dress-kid {
   width: min(100%, 280px);
   height: 100%;
@@ -1310,6 +1335,18 @@ button:focus-visible {
   box-shadow: inset 0 -6px 0 rgba(180, 120, 70, 0.12);
 }
 
+.dress-kid.face-boy .dress-torso,
+.dress-kid.face-boy .dress-legs i {
+  background: #a5d8ff;
+  border-color: #74c0fc;
+}
+
+.dress-kid.face-girl .dress-torso,
+.dress-kid.face-girl .dress-legs i {
+  background: #ffc9c9;
+  border-color: #ffa8a8;
+}
+
 .dress-legs {
   display: flex;
   align-items: flex-end;
@@ -1363,6 +1400,46 @@ button:focus-visible {
   overflow: hidden;
   box-shadow: 0 8px 16px rgba(180, 120, 70, 0.12);
   background: linear-gradient(#9ad0f5 0 36%, #d8f5a2 36% 100%);
+}
+
+.habitat-scene.layout-river .water,
+.habitat-scene.layout-oasis .water {
+  grid-column: 1 / -1;
+}
+
+.habitat-scene.layout-woods .tree {
+  grid-column: 1 / -1;
+}
+
+.habitat-scene.layout-beach,
+.habitat-scene.layout-meadow {
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+}
+
+.habitat-scene.layout-beach .water {
+  background: linear-gradient(180deg, #74c0fc 0 20%, #1c7ed6 100%);
+}
+
+.habitat-scene.layout-meadow {
+  background: linear-gradient(#b2d8f7 0 30%, #c0eb75 30% 100%);
+}
+
+.habitat-scene.layout-oasis,
+.habitat-scene.layout-dunes {
+  background: linear-gradient(#ffe8a3 0 40%, #e8b86d 40% 100%);
+}
+
+.habitat-scene.layout-dunes {
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.85fr);
+}
+
+.habitat-scene.layout-dunes .desert {
+  grid-row: 1 / -1;
+}
+
+.habitat-scene.layout-woods {
+  background: linear-gradient(#8ecae6 0 28%, #74c69d 28% 100%);
 }
 
 .habitat-zone {
@@ -1595,6 +1672,55 @@ button:focus-visible {
   font-size: min(13cqw, 14cqh, 38px);
   line-height: 1;
   animation: pop 0.35s ease;
+}
+
+.table-scene.meal-home .table-wood {
+  border-radius: 40px 40px 18px 18px;
+}
+
+.table-scene.meal-picnic {
+  background: linear-gradient(#b2f2bb 0 40%, #69db7c 40% 48%, #51cf66 48% 100%);
+}
+
+.table-scene.meal-picnic .table-wood {
+  background: repeating-linear-gradient(45deg, #fffdf8 0 10px, #fa5252 10px 20px);
+  border-radius: 10px;
+}
+
+.table-scene.meal-sushi {
+  background: linear-gradient(#2c3e5c, #1b2a4a);
+}
+
+.table-scene.meal-sushi .table-wood {
+  background: #3d2a1a;
+  border-radius: 8px;
+}
+
+.table-scene.meal-breakfast {
+  background: linear-gradient(#fff3bf, #ffe066);
+}
+
+.table-scene.meal-breakfast .table-wood {
+  background: #e8d4b0;
+  border-radius: 6px;
+}
+
+.table-scene.meal-night {
+  background: linear-gradient(#1b2a4a, #3d2a1a);
+}
+
+.table-scene.meal-night .table-wood {
+  background: #6b4f2a;
+  border-radius: 12px;
+}
+
+.table-scene.meal-school {
+  background: linear-gradient(#d0ebff, #a5d8ff);
+}
+
+.table-scene.meal-school .table-wood {
+  background: #e8d4b0;
+  border-radius: 8px;
 }
 
 .life-scene,
@@ -1855,21 +1981,63 @@ button:focus-visible {
 }
 
 .street-scene {
+  position: relative;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   grid-template-rows: minmax(0, 1fr) auto;
   gap: 8px;
   min-height: 0;
   padding: 8px;
+  border-radius: 24px;
+}
+
+.street-landmark {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+  align-self: start;
+  z-index: 4;
+  font-size: min(14cqw, 12cqh, 40px);
+  line-height: 1;
+  pointer-events: none;
+  padding: 4px;
+}
+
+.street-scene.place-city {
+  background: #d0ebff;
+}
+
+.street-scene.place-school {
+  background: #fff3bf;
+}
+
+.street-scene.place-alley {
+  background: #e8d4b0;
+}
+
+.street-scene.place-school .street-road {
+  background: linear-gradient(#adb5bd, #868e96);
+}
+
+.street-scene.place-alley .street-road {
+  background: linear-gradient(#6c6c6c, #4a4a4a);
+}
+
+.street-scene.place-alley .street-cross {
+  left: 34%;
+  right: 34%;
 }
 
 .street-scene .light-pole {
+  grid-column: 1;
   grid-row: 1;
   align-self: center;
 }
 
 .street-road {
   position: relative;
+  grid-column: 2;
+  grid-row: 1;
   min-width: 0;
   min-height: 88px;
   background: linear-gradient(#9a9a9a, #7a7a7a);
