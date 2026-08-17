@@ -3,8 +3,8 @@
 
   var STAR_KEY = "childgame-stars";
   var SOUND_KEY = "childgame-sound";
-  var FRUITS = ["🍎", "🍊", "🍋", "🍇", "🍓", "🍑", "🍒", "🍌", "🍉", "🥝", "⭐", "🍐"];
-  var ANIMALS = ["🐶", "🐱", "🐰", "🐻", "🐼", "🐸", "🐵", "🐥", "🐧", "🦊"];
+  var FRUITS = ["🍎", "🍊", "🍋", "🍇", "🍓", "🍑", "🍒", "🍌", "🍉", "🥝", "⭐", "🍐", "🍍", "🥭", "🍈"];
+  var ANIMALS = ["🐶", "🐱", "🐰", "🐻", "🐼", "🐸", "🐵", "🐥", "🐧", "🦊", "🦁", "🐯", "🐷", "🐮", "🐨"];
   var PRAISE = ["好棒！", "答對了！"];
 
   var TRACE = {
@@ -127,27 +127,53 @@
     },
   };
 
-  var MATH_LEVELS = [
+  var OLD_MATH_LEVELS = [
     { id: "count", name: "數一數", hint: "數一數有幾個", emoji: "🍎", cls: "c1" },
-    { id: "match", name: "連連看", hint: "畫線連起來", emoji: "🔢", cls: "c2" },
+    { id: "match", name: "連連看", hint: "找到一樣多的", emoji: "🔢", cls: "c2" },
     { id: "next", name: "下一個是誰", hint: "3 4 5 ？", emoji: "➡️", cls: "c3" },
     { id: "trace", name: "描一描", hint: "跟著點 1～10", emoji: "✏️", cls: "c4" },
+  ];
+
+  var NEW_MATH_LEVELS = [
     { id: "more", name: "誰比較多", hint: "哪一邊比較多", emoji: "🍉", cls: "c5" },
     { id: "ord", name: "第幾個", hint: "從左邊數第幾個", emoji: "5️⃣", cls: "c6" },
     { id: "missing", name: "缺了誰", hint: "少了哪個數字", emoji: "❓", cls: "c7" },
     { id: "bond", name: "湊一湊", hint: "再拿幾個才滿", emoji: "🍇", cls: "c8" },
+    { id: "match-draw", name: "畫線連連看", hint: "畫線連起來", emoji: "🖍️", cls: "c9" },
   ];
 
   var WORD_LEVELS = [
-    { id: "bpm-trace", name: "描注音", hint: "跟著點 ㄅㄆㄇ", emoji: "ㄅ", cls: "w1" },
+    { id: "bpm-trace", name: "描注音", hint: "跟著點聲符", emoji: "ㄅ", cls: "w1" },
     { id: "bpm-pic", name: "圖配注音", hint: "圖配哪個注音", emoji: "🥟", cls: "w2" },
     { id: "bpm-draw", name: "注音連連看", hint: "畫線連注音", emoji: "🔗", cls: "w3" },
     { id: "hanzi", name: "看圖認字", hint: "圖配哪個字", emoji: "山", cls: "w4" },
   ];
 
-  var LEVELS = MATH_LEVELS.concat(WORD_LEVELS);
+  var LEVELS = OLD_MATH_LEVELS.concat(NEW_MATH_LEVELS, WORD_LEVELS);
 
-  var BPM_ORDER = ["ㄅ", "ㄆ", "ㄇ", "ㄈ", "ㄉ", "ㄊ", "ㄋ", "ㄌ", "ㄍ", "ㄎ"];
+  var BPM_ORDER = [
+    "ㄅ",
+    "ㄆ",
+    "ㄇ",
+    "ㄈ",
+    "ㄉ",
+    "ㄊ",
+    "ㄋ",
+    "ㄌ",
+    "ㄍ",
+    "ㄎ",
+    "ㄏ",
+    "ㄐ",
+    "ㄑ",
+    "ㄒ",
+    "ㄓ",
+    "ㄔ",
+    "ㄕ",
+    "ㄖ",
+    "ㄗ",
+    "ㄘ",
+    "ㄙ",
+  ];
 
   var BPM_TRACE = {
     ㄅ: {
@@ -267,23 +293,166 @@
         [190, 240],
       ],
     },
+    ㄏ: {
+      viewBox: "0 0 240 280",
+      d: "M 52 46 L 196 46 M 72 46 L 72 248 M 72 150 L 196 236",
+      dots: [
+        [52, 46],
+        [196, 46],
+        [72, 46],
+        [72, 150],
+        [72, 248],
+        [196, 236],
+      ],
+    },
+    ㄐ: {
+      viewBox: "0 0 240 280",
+      d: "M 90 40 L 90 190 C 90 242 176 246 180 188 M 90 108 L 186 42",
+      dots: [
+        [90, 40],
+        [90, 108],
+        [90, 190],
+        [180, 188],
+        [186, 42],
+      ],
+    },
+    ㄑ: {
+      viewBox: "0 0 240 280",
+      d: "M 188 48 C 48 70 42 210 188 242",
+      dots: [
+        [188, 48],
+        [90, 80],
+        [52, 140],
+        [96, 210],
+        [188, 242],
+      ],
+    },
+    ㄒ: {
+      viewBox: "0 0 240 280",
+      d: "M 48 46 L 192 46 M 120 46 L 68 246 M 120 46 L 192 246",
+      dots: [
+        [48, 46],
+        [192, 46],
+        [120, 46],
+        [68, 246],
+        [192, 246],
+      ],
+    },
+    ㄓ: {
+      viewBox: "0 0 240 280",
+      d: "M 56 50 L 184 50 M 170 50 L 80 130 L 170 130 M 120 130 L 90 246",
+      dots: [
+        [56, 50],
+        [184, 50],
+        [80, 130],
+        [170, 130],
+        [120, 130],
+        [90, 246],
+      ],
+    },
+    ㄔ: {
+      viewBox: "0 0 240 280",
+      d: "M 70 44 L 168 86 M 92 96 L 92 246 M 92 150 L 186 118",
+      dots: [
+        [70, 44],
+        [168, 86],
+        [92, 96],
+        [92, 246],
+        [186, 118],
+      ],
+    },
+    ㄕ: {
+      viewBox: "0 0 240 280",
+      d: "M 70 44 L 180 44 L 180 112 L 70 112 L 70 246",
+      dots: [
+        [70, 44],
+        [180, 44],
+        [180, 112],
+        [70, 112],
+        [70, 246],
+      ],
+    },
+    ㄖ: {
+      viewBox: "0 0 240 280",
+      d: "M 70 48 L 170 48 L 170 232 L 70 232 Z M 70 140 L 170 140",
+      dots: [
+        [70, 48],
+        [170, 48],
+        [170, 232],
+        [70, 232],
+        [70, 140],
+        [170, 140],
+      ],
+    },
+    ㄗ: {
+      viewBox: "0 0 240 280",
+      d: "M 60 48 L 180 48 L 80 140 L 170 140 M 125 140 L 125 246",
+      dots: [
+        [60, 48],
+        [180, 48],
+        [80, 140],
+        [170, 140],
+        [125, 246],
+      ],
+    },
+    ㄘ: {
+      viewBox: "0 0 240 280",
+      d: "M 55 50 L 185 50 M 80 50 L 80 246 M 80 140 L 180 140",
+      dots: [
+        [55, 50],
+        [185, 50],
+        [80, 50],
+        [80, 246],
+        [180, 140],
+      ],
+    },
+    ㄙ: {
+      viewBox: "0 0 240 280",
+      d: "M 120 44 L 50 236 L 190 236 Z",
+      dots: [
+        [120, 44],
+        [50, 236],
+        [190, 236],
+        [120, 140],
+      ],
+    },
   };
 
   var BPM_WORDS = [
     { bpm: "ㄅ", word: "包子", emoji: "🥟" },
+    { bpm: "ㄅ", word: "冰", emoji: "🧊" },
     { bpm: "ㄆ", word: "跑", emoji: "🏃" },
+    { bpm: "ㄆ", word: "葡萄", emoji: "🍇" },
     { bpm: "ㄇ", word: "帽子", emoji: "🎩" },
+    { bpm: "ㄇ", word: "貓", emoji: "🐱" },
     { bpm: "ㄈ", word: "飛", emoji: "✈️" },
+    { bpm: "ㄈ", word: "風", emoji: "💨" },
     { bpm: "ㄉ", word: "刀", emoji: "🔪" },
+    { bpm: "ㄉ", word: "蛋", emoji: "🥚" },
     { bpm: "ㄊ", word: "太陽", emoji: "☀️" },
+    { bpm: "ㄊ", word: "兔子", emoji: "🐰" },
     { bpm: "ㄋ", word: "牛奶", emoji: "🥛" },
+    { bpm: "ㄋ", word: "鳥", emoji: "🐦" },
     { bpm: "ㄌ", word: "老虎", emoji: "🐯" },
+    { bpm: "ㄌ", word: "籃球", emoji: "🏀" },
     { bpm: "ㄍ", word: "狗", emoji: "🐶" },
+    { bpm: "ㄍ", word: "瓜", emoji: "🍉" },
     { bpm: "ㄎ", word: "可樂", emoji: "🥤" },
     { bpm: "ㄏ", word: "花", emoji: "🌸" },
+    { bpm: "ㄏ", word: "猴子", emoji: "🐵" },
     { bpm: "ㄐ", word: "雞", emoji: "🐔" },
+    { bpm: "ㄐ", word: "家", emoji: "🏠" },
     { bpm: "ㄑ", word: "球", emoji: "⚽" },
+    { bpm: "ㄑ", word: "青蛙", emoji: "🐸" },
     { bpm: "ㄒ", word: "蝦", emoji: "🦐" },
+    { bpm: "ㄒ", word: "西瓜", emoji: "🍉" },
+    { bpm: "ㄓ", word: "豬", emoji: "🐷" },
+    { bpm: "ㄔ", word: "車", emoji: "🚗" },
+    { bpm: "ㄕ", word: "書", emoji: "📖" },
+    { bpm: "ㄖ", word: "日", emoji: "☀️" },
+    { bpm: "ㄗ", word: "字", emoji: "✏️" },
+    { bpm: "ㄘ", word: "草", emoji: "🌿" },
+    { bpm: "ㄙ", word: "三", emoji: "3️⃣" },
   ];
 
   var HANZI_WORDS = [
@@ -301,6 +470,15 @@
     { ch: "月", emoji: "🌙" },
     { ch: "木", emoji: "🌳" },
     { ch: "田", emoji: "🌾" },
+    { ch: "天", emoji: "🌤️" },
+    { ch: "地", emoji: "🌍" },
+    { ch: "門", emoji: "🚪" },
+    { ch: "車", emoji: "🚗" },
+    { ch: "魚", emoji: "🐟" },
+    { ch: "鳥", emoji: "🐦" },
+    { ch: "羊", emoji: "🐑" },
+    { ch: "草", emoji: "🌿" },
+    { ch: "雨", emoji: "🌧️" },
   ];
 
   var audioCtx = null;
@@ -458,8 +636,30 @@
 
   function makeMatchQuestions() {
     var qs = [];
+    var prev = 0;
     for (var i = 0; i < 8; i++) {
-      var pairCount = i < 4 ? 2 : 3;
+      var n;
+      do {
+        n = randInt(1, 10);
+      } while (n === prev);
+      prev = n;
+      var wrongs = makeChoices(n, 1, 10).filter(function (x) {
+        return x !== n;
+      });
+      var groups = shuffle([
+        { count: n, ok: true },
+        { count: wrongs[0], ok: false },
+        { count: wrongs[1], ok: false },
+      ]);
+      qs.push({ n: n, animal: pick(ANIMALS), groups: groups });
+    }
+    return qs;
+  }
+
+  function makeMatchDrawQuestions() {
+    var qs = [];
+    for (var i = 0; i < 10; i++) {
+      var pairCount = i < 5 ? 2 : 3;
       var nums = shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]).slice(0, pairCount);
       var animals = shuffle(ANIMALS).slice(0, pairCount);
       var left = [];
@@ -493,9 +693,9 @@
 
   function makeMoreQuestions() {
     var qs = [];
-    var equalAt = [randInt(0, 3), randInt(4, 7)];
+    var equalAt = [randInt(0, 3), randInt(4, 6), randInt(7, 9)];
     var prevKey = "";
-    for (var i = 0; i < 8; i++) {
+    for (var i = 0; i < 10; i++) {
       var isEqual = equalAt.indexOf(i) !== -1;
       var left = 1;
       var right = 1;
@@ -542,9 +742,9 @@
   function makeOrdQuestions() {
     var qs = [];
     var prev = 0;
-    for (var i = 0; i < 8; i++) {
-      var len = i < 5 ? randInt(5, 6) : randInt(6, 7);
-      var maxOrd = i < 5 ? Math.min(5, len) : len;
+    for (var i = 0; i < 10; i++) {
+      var len = i < 6 ? randInt(5, 6) : randInt(6, 7);
+      var maxOrd = i < 6 ? Math.min(5, len) : len;
       var target;
       do {
         target = randInt(1, maxOrd);
@@ -566,7 +766,7 @@
       }
     }
     return shuffle(combos)
-      .slice(0, 8)
+      .slice(0, 10)
       .map(function (c) {
         var tiles = [];
         var answer = 0;
@@ -590,10 +790,10 @@
   function makeBondQuestions() {
     var qs = [];
     var prev = 0;
-    for (var i = 0; i < 8; i++) {
-      var target = i < 4 ? 5 : 10;
-      var minN = i < 4 ? 1 : 3;
-      var maxN = i < 4 ? 4 : 7;
+    for (var i = 0; i < 10; i++) {
+      var target = i < 5 ? 5 : 10;
+      var minN = i < 5 ? 1 : 3;
+      var maxN = i < 5 ? 4 : 7;
       var n;
       do {
         n = randInt(minN, maxN);
@@ -645,12 +845,31 @@
     });
   }
 
-  function makeBpmPicQuestions() {
-    var pool = BPM_WORDS.map(function (w) {
-      return w.bpm;
+  function uniqueBpmPool() {
+    var pool = [];
+    BPM_WORDS.forEach(function (w) {
+      if (pool.indexOf(w.bpm) === -1) pool.push(w.bpm);
     });
+    return pool;
+  }
+
+  function uniqueBpmWords(n) {
+    var map = {};
+    BPM_WORDS.forEach(function (w) {
+      if (!map[w.bpm]) map[w.bpm] = [];
+      map[w.bpm].push(w);
+    });
+    return shuffle(Object.keys(map))
+      .slice(0, n)
+      .map(function (k) {
+        return pick(map[k]);
+      });
+  }
+
+  function makeBpmPicQuestions() {
+    var pool = uniqueBpmPool();
     return shuffle(BPM_WORDS)
-      .slice(0, 8)
+      .slice(0, 10)
       .map(function (w) {
         return {
           emoji: w.emoji,
@@ -662,9 +881,9 @@
 
   function makeBpmDrawQuestions() {
     var qs = [];
-    for (var i = 0; i < 8; i++) {
-      var pairCount = i < 4 ? 2 : 3;
-      var items = shuffle(BPM_WORDS).slice(0, pairCount);
+    for (var i = 0; i < 10; i++) {
+      var pairCount = i < 5 ? 2 : 3;
+      var items = uniqueBpmWords(pairCount);
       var board = makePairConnect(items, "bpm", "emoji");
       board.prompt = "畫線連連看";
       qs.push(board);
@@ -677,7 +896,7 @@
     var pool = HANZI_WORDS.map(function (h) {
       return h.ch;
     });
-    var picks = shuffle(HANZI_WORDS).slice(0, 5);
+    var picks = shuffle(HANZI_WORDS).slice(0, 6);
     for (var i = 0; i < picks.length; i++) {
       qs.push({
         mode: "pick",
@@ -686,7 +905,7 @@
         choices: makeSymbolChoices(picks[i].ch, pool),
       });
     }
-    for (var j = 0; j < 3; j++) {
+    for (var j = 0; j < 4; j++) {
       var pairCount = j < 2 ? 2 : 3;
       var items = shuffle(HANZI_WORDS).slice(0, pairCount);
       var board = makePairConnect(items, "emoji", "ch");
@@ -700,7 +919,8 @@
   function foxPrompt() {
     var q = state.questions[state.qIndex];
     if (state.levelId === "count") return "數一數，有幾個？";
-    if (state.levelId === "match") return "把一樣多的連起來";
+    if (state.levelId === "match") return "哪一群跟上面的數字一樣多？";
+    if (state.levelId === "match-draw") return "把一樣多的連起來";
     if (state.levelId === "next") return "下一個數字是誰？";
     if (state.levelId === "trace") return "照著順序點一點";
     if (state.levelId === "more") {
@@ -719,7 +939,7 @@
   }
 
   function isConnectLevel() {
-    if (state.levelId === "match" || state.levelId === "bpm-draw") return true;
+    if (state.levelId === "match-draw" || state.levelId === "bpm-draw") return true;
     if (state.levelId === "hanzi") {
       var q = state.questions[state.qIndex];
       return !!(q && q.mode === "draw");
@@ -853,9 +1073,13 @@
       escapeHtml(state.foxMsg) +
       "</p></div>" +
       '<div class="home-scroll">' +
-      '<h2 class="section-title">數字</h2>' +
+      '<h2 class="section-title">數字（舊）</h2>' +
       '<div class="level-grid">' +
-      renderLevelCards(MATH_LEVELS) +
+      renderLevelCards(OLD_MATH_LEVELS) +
+      "</div>" +
+      '<h2 class="section-title">數字（新）</h2>' +
+      '<div class="level-grid">' +
+      renderLevelCards(NEW_MATH_LEVELS) +
       "</div>" +
       '<h2 class="section-title">注音國字</h2>' +
       '<div class="level-grid">' +
@@ -936,6 +1160,46 @@
   }
 
   function renderMatch(q) {
+    var groups = q.groups
+      .map(function (g, idx) {
+        var shape = groupShape(g.count);
+        var cells = "";
+        for (var i = 0; i < g.count; i++) {
+          cells += '<span class="group-cell">' + q.animal + "</span>";
+        }
+        var mark = state.choiceMark && state.choiceMark.value === idx ? " " + state.choiceMark.cls : "";
+        return (
+          '<button class="group' +
+          mark +
+          '" type="button" data-action="answer" data-value="' +
+          idx +
+          '" aria-label="這一群有 ' +
+          g.count +
+          ' 個">' +
+          '<div class="group-grid" style="--cols:' +
+          shape.cols +
+          ";--rows:" +
+          shape.rows +
+          '">' +
+          cells +
+          "</div></button>"
+        );
+      })
+      .join("");
+    return (
+      '<div class="play-col">' +
+      '<div class="prompt">哪一群一樣多？</div>' +
+      '<div class="match-stage"><div class="match-wrap">' +
+      '<div class="big-num">' +
+      q.n +
+      "</div>" +
+      '<div class="groups">' +
+      groups +
+      "</div></div></div></div>"
+    );
+  }
+
+  function renderMatchDraw(q) {
     var left = q.left
       .map(function (item) {
         var done = state.matchDone[item.pair] ? " done" : "";
@@ -981,7 +1245,7 @@
     return (
       '<div class="play-col">' +
       '<div class="prompt">畫線連連看</div>' +
-      '<div class="match-stage">' +
+      '<div class="match-stage is-draw">' +
       '<div class="match-board" style="--pairs:' +
       q.left.length +
       '">' +
@@ -1296,7 +1560,7 @@
       '<div class="prompt">' +
       (q.prompt || "畫線連連看") +
       "</div>" +
-      '<div class="match-stage">' +
+      '<div class="match-stage is-draw">' +
       '<div class="match-board" style="--pairs:' +
       q.left.length +
       '">' +
@@ -1316,6 +1580,7 @@
     var body = "";
     if (state.levelId === "count") body = renderCount(q);
     if (state.levelId === "match") body = renderMatch(q);
+    if (state.levelId === "match-draw") body = renderMatchDraw(q);
     if (state.levelId === "next") body = renderNext(q);
     if (state.levelId === "trace") body = renderTrace(q);
     if (state.levelId === "more") body = renderMore(q);
@@ -1605,6 +1870,7 @@
     state.foxMood = "idle";
     if (id === "count") state.questions = makeCountQuestions();
     else if (id === "match") state.questions = makeMatchQuestions();
+    else if (id === "match-draw") state.questions = makeMatchDrawQuestions();
     else if (id === "next") state.questions = makeNextQuestions();
     else if (id === "trace") state.questions = makeTraceQuestions();
     else if (id === "more") state.questions = makeMoreQuestions();
@@ -1696,6 +1962,12 @@
       var n = parseInt(raw, 10);
       if (n === q.count) markCorrect(n);
       else markRetry(n, "再看一次");
+      return;
+    }
+    if (state.levelId === "match") {
+      var idx = parseInt(raw, 10);
+      if (q.groups[idx] && q.groups[idx].ok) markCorrect(idx);
+      else markRetry(idx, "再看一次");
       return;
     }
     if (state.levelId === "next") {

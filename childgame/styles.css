@@ -233,6 +233,7 @@ button:focus-visible {
 .level-card.c6 { background: #c5f6fa; }
 .level-card.c7 { background: #ffe0c2; }
 .level-card.c8 { background: #f3d9fa; }
+.level-card.c9 { background: #ffd8a8; }
 .level-card.w1 { background: #ffd6e7; }
 .level-card.w2 { background: #d0f4de; }
 .level-card.w3 { background: #cce3fd; }
@@ -465,8 +466,24 @@ button:focus-visible {
 
 .match-stage {
   position: relative;
+}
+
+.match-stage.is-draw {
   touch-action: none;
   overscroll-behavior: none;
+}
+
+.match-wrap {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+}
+
+.match-wrap .big-num {
+  flex: 0 0 auto;
+  height: clamp(72px, 16vmin, 120px);
 }
 
 .match-board,
@@ -784,6 +801,19 @@ button:focus-visible {
 
   .match-board {
     gap: 6px 12px;
+  }
+
+  .match-wrap {
+    flex-direction: row;
+  }
+
+  .match-wrap .big-num {
+    width: 22%;
+    height: 100%;
+  }
+
+  .groups {
+    flex: 1;
   }
 }
 
