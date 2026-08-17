@@ -129,7 +129,7 @@
 
   var LEVELS = [
     { id: "count", name: "數一數", hint: "數一數有幾個", emoji: "🍎", cls: "c1" },
-    { id: "match", name: "連連看", hint: "找到一樣多的", emoji: "🔢", cls: "c2" },
+    { id: "match", name: "連連看", hint: "畫線連起來", emoji: "🔢", cls: "c2" },
     { id: "next", name: "下一個是誰", hint: "3 4 5 ？", emoji: "➡️", cls: "c3" },
     { id: "trace", name: "描一描", hint: "跟著點 1～10", emoji: "✏️", cls: "c4" },
     { id: "more", name: "誰比較多", hint: "哪一邊比較多", emoji: "🍉", cls: "c5" },
@@ -153,6 +153,15 @@
     locked: false,
     traceNext: 0,
     choiceMark: null,
+    matchDone: {},
+  };
+
+  var matchDraw = {
+    active: false,
+    pointerId: null,
+    startSide: null,
+    startPair: -1,
+    points: [],
   };
 
   var app = document.getElementById("app");
@@ -265,24 +274,37 @@
     return qs;
   }
 
+  function rowsSharePair(left, right) {
+    for (var i = 0; i < left.length; i++) {
+      if (left[i].pair === right[i].pair) return true;
+    }
+    return false;
+  }
+
+  function derangeRight(rightSrc, left) {
+    var right = rightSrc;
+    var tries = 0;
+    do {
+      right = shuffle(rightSrc);
+      tries += 1;
+    } while (tries < 24 && rowsSharePair(left, right));
+    return right;
+  }
+
   function makeMatchQuestions() {
     var qs = [];
-    var prev = 0;
     for (var i = 0; i < 8; i++) {
-      var n;
-      do {
-        n = randInt(1, 10);
-      } while (n === prev);
-      prev = n;
-      var wrongs = makeChoices(n, 1, 10).filter(function (x) {
-        return x !== n;
-      });
-      var groups = shuffle([
-        { count: n, ok: true },
-        { count: wrongs[0], ok: false },
-        { count: wrongs[1], ok: false },
-      ]);
-      qs.push({ n: n, animal: pick(ANIMALS), groups: groups });
+      var pairCount = i < 4 ? 2 : 3;
+      var nums = shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]).slice(0, pairCount);
+      var animals = shuffle(ANIMALS).slice(0, pairCount);
+      var left = [];
+      var rightSrc = [];
+      for (var p = 0; p < pairCount; p++) {
+        left.push({ pair: p, n: nums[p] });
+        rightSrc.push({ pair: p, count: nums[p], animal: animals[p] });
+      }
+      left = shuffle(left);
+      qs.push({ left: left, right: derangeRight(rightSrc, left) });
     }
     return qs;
   }
@@ -427,7 +449,7 @@
   function foxPrompt() {
     var q = state.questions[state.qIndex];
     if (state.levelId === "count") return "數一數，有幾個？";
-    if (state.levelId === "match") return "哪一群跟上面的數字一樣多？";
+    if (state.levelId === "match") return "把一樣多的連起來";
     if (state.levelId === "next") return "下一個數字是誰？";
     if (state.levelId === "trace") return "照著順序點一點";
     if (state.levelId === "more") {
@@ -624,21 +646,37 @@
   }
 
   function renderMatch(q) {
-    var groups = q.groups
-      .map(function (g, idx) {
-        var shape = groupShape(g.count);
-        var cells = "";
-        for (var i = 0; i < g.count; i++) {
-          cells += '<span class="group-cell">' + q.animal + "</span>";
-        }
-        var mark = state.choiceMark && state.choiceMark.value === idx ? " " + state.choiceMark.cls : "";
+    var left = q.left
+      .map(function (item) {
+        var done = state.matchDone[item.pair] ? " done" : "";
         return (
-          '<button class="group' +
-          mark +
-          '" type="button" data-action="answer" data-value="' +
-          idx +
-          '" aria-label="這一群有 ' +
-          g.count +
+          '<div class="match-num' +
+          done +
+          '" data-match-side="left" data-match-pair="' +
+          item.pair +
+          '" role="button" aria-label="數字 ' +
+          item.n +
+          '">' +
+          item.n +
+          "</div>"
+        );
+      })
+      .join("");
+    var right = q.right
+      .map(function (item) {
+        var shape = groupShape(item.count);
+        var cells = "";
+        for (var i = 0; i < item.count; i++) {
+          cells += '<span class="group-cell">' + item.animal + "</span>";
+        }
+        var done = state.matchDone[item.pair] ? " done" : "";
+        return (
+          '<div class="match-group' +
+          done +
+          '" data-match-side="right" data-match-pair="' +
+          item.pair +
+          '" role="button" aria-label="這一群有 ' +
+          item.count +
           ' 個">' +
           '<div class="group-grid" style="--cols:' +
           shape.cols +
@@ -646,20 +684,25 @@
           shape.rows +
           '">' +
           cells +
-          "</div></button>"
+          "</div></div>"
         );
       })
       .join("");
     return (
       '<div class="play-col">' +
-      '<div class="prompt">哪一群一樣多？</div>' +
-      '<div class="match-stage"><div class="match-wrap">' +
-      '<div class="big-num">' +
-      q.n +
+      '<div class="prompt">畫線連連看</div>' +
+      '<div class="match-stage">' +
+      '<div class="match-board" style="--pairs:' +
+      q.left.length +
+      '">' +
+      '<div class="match-col match-left">' +
+      left +
       "</div>" +
-      '<div class="groups">' +
-      groups +
-      "</div></div></div></div>"
+      '<div class="match-col match-right">' +
+      right +
+      "</div></div>" +
+      '<svg class="match-lines" aria-hidden="true"></svg>' +
+      "</div></div>"
     );
   }
 
@@ -933,6 +976,235 @@
     if (state.screen === "home") app.innerHTML = renderHome();
     else if (state.screen === "clear") app.innerHTML = renderClear();
     else app.innerHTML = renderPlay();
+    if (state.screen === "play" && state.levelId === "match") {
+      requestAnimationFrame(drawDoneLines);
+    }
+  }
+
+  function resetMatchDraw() {
+    matchDraw.active = false;
+    matchDraw.pointerId = null;
+    matchDraw.startSide = null;
+    matchDraw.startPair = -1;
+    matchDraw.points = [];
+  }
+
+  function matchStage() {
+    return app.querySelector(".match-stage");
+  }
+
+  function stagePoint(e) {
+    var stage = matchStage();
+    if (!stage) return { x: 0, y: 0 };
+    var r = stage.getBoundingClientRect();
+    return { x: e.clientX - r.left, y: e.clientY - r.top };
+  }
+
+  function nodeCenter(el) {
+    var stage = matchStage();
+    if (!stage || !el) return { x: 0, y: 0 };
+    var sr = stage.getBoundingClientRect();
+    var r = el.getBoundingClientRect();
+    return {
+      x: r.left + r.width / 2 - sr.left,
+      y: r.top + r.height / 2 - sr.top,
+    };
+  }
+
+  function pathFromPoints(pts) {
+    if (!pts.length) return "";
+    var d = "M " + pts[0].x + " " + pts[0].y;
+    for (var i = 1; i < pts.length; i++) {
+      d += " L " + pts[i].x + " " + pts[i].y;
+    }
+    return d;
+  }
+
+  function setFox(msg, mood) {
+    state.foxMsg = msg;
+    if (mood) state.foxMood = mood;
+    var speech = app.querySelector(".speech");
+    var fox = app.querySelector(".fox");
+    if (speech) speech.textContent = msg;
+    if (fox && mood) fox.className = "fox " + mood;
+  }
+
+  function matchNodeFromPoint(x, y) {
+    var el = document.elementFromPoint(x, y);
+    return el ? el.closest("[data-match-pair]") : null;
+  }
+
+  function clearMatchAim() {
+    var nodes = app.querySelectorAll("[data-match-pair].aim");
+    for (var i = 0; i < nodes.length; i++) nodes[i].classList.remove("aim");
+  }
+
+  function syncMatchSvg() {
+    var stage = matchStage();
+    var svg = stage && stage.querySelector(".match-lines");
+    if (!stage || !svg) return null;
+    var r = stage.getBoundingClientRect();
+    svg.setAttribute("viewBox", "0 0 " + Math.max(1, r.width) + " " + Math.max(1, r.height));
+    return svg;
+  }
+
+  function drawDoneLines() {
+    var svg = syncMatchSvg();
+    if (!svg || !state.questions[state.qIndex]) return;
+    var q = state.questions[state.qIndex];
+    var html = "";
+    q.left.forEach(function (item) {
+      if (!state.matchDone[item.pair]) return;
+      var a = app.querySelector('[data-match-side="left"][data-match-pair="' + item.pair + '"]');
+      var b = app.querySelector('[data-match-side="right"][data-match-pair="' + item.pair + '"]');
+      if (!a || !b) return;
+      var p1 = nodeCenter(a);
+      var p2 = nodeCenter(b);
+      html +=
+        '<path class="match-stroke done" d="M ' +
+        p1.x +
+        " " +
+        p1.y +
+        " L " +
+        p2.x +
+        " " +
+        p2.y +
+        '"></path>';
+    });
+    svg.innerHTML = html;
+    if (matchDraw.active && matchDraw.points.length) {
+      var live = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      live.setAttribute("class", "match-stroke live");
+      live.setAttribute("d", pathFromPoints(matchDraw.points));
+      svg.appendChild(live);
+    }
+  }
+
+  function updateLiveStroke() {
+    var svg = syncMatchSvg();
+    if (!svg) return;
+    var live = svg.querySelector(".match-stroke.live");
+    if (!live) {
+      live = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      live.setAttribute("class", "match-stroke live");
+      svg.appendChild(live);
+    }
+    live.setAttribute("d", pathFromPoints(matchDraw.points));
+  }
+
+  function fadeLiveStroke() {
+    var svg = app.querySelector(".match-lines");
+    var live = svg && svg.querySelector(".match-stroke.live");
+    resetMatchDraw();
+    clearMatchAim();
+    var hold = app.querySelector("[data-match-pair].hold");
+    if (hold) hold.classList.remove("hold");
+    if (!live) return;
+    live.classList.add("fade");
+    setTimeout(function () {
+      if (live.parentNode) live.parentNode.removeChild(live);
+    }, 420);
+  }
+
+  function matchCorrectPair(pair) {
+    state.matchDone[pair] = true;
+    playCorrect();
+    resetMatchDraw();
+    clearMatchAim();
+    var nodes = app.querySelectorAll('[data-match-pair="' + pair + '"]');
+    for (var i = 0; i < nodes.length; i++) {
+      nodes[i].classList.add("done");
+      nodes[i].classList.remove("hold");
+    }
+    drawDoneLines();
+    var q = state.questions[state.qIndex];
+    var all = true;
+    for (var p = 0; p < q.left.length; p++) {
+      if (!state.matchDone[q.left[p].pair]) all = false;
+    }
+    if (all) {
+      state.locked = true;
+      setFox(pick(PRAISE), "happy");
+      setTimeout(nextQuestion, 900);
+    } else {
+      setFox(pick(PRAISE), "happy");
+      setTimeout(function () {
+        if (state.levelId === "match" && state.screen === "play" && !state.locked) {
+          setFox("把一樣多的連起來", "idle");
+        }
+      }, 700);
+    }
+  }
+
+  function matchWrongPair() {
+    playWrong();
+    setFox("再看一次", "think");
+    fadeLiveStroke();
+    setTimeout(function () {
+      if (state.levelId === "match" && state.screen === "play" && state.foxMood === "think") {
+        setFox(state.foxMsg, "idle");
+      }
+    }, 850);
+  }
+
+  function onMatchPointerDown(e) {
+    if (state.locked || state.screen !== "play" || state.levelId !== "match") return;
+    if (matchDraw.active) return;
+    var node = e.target.closest("[data-match-pair]");
+    if (!node || node.classList.contains("done")) return;
+    e.preventDefault();
+    try {
+      node.setPointerCapture(e.pointerId);
+    } catch (err) {}
+    matchDraw.active = true;
+    matchDraw.pointerId = e.pointerId;
+    matchDraw.startSide = node.getAttribute("data-match-side");
+    matchDraw.startPair = parseInt(node.getAttribute("data-match-pair"), 10);
+    matchDraw.points = [nodeCenter(node), stagePoint(e)];
+    node.classList.add("hold");
+    updateLiveStroke();
+  }
+
+  function onMatchPointerMove(e) {
+    if (!matchDraw.active || matchDraw.pointerId !== e.pointerId) return;
+    e.preventDefault();
+    var pt = stagePoint(e);
+    var last = matchDraw.points[matchDraw.points.length - 1];
+    if (!last || Math.abs(pt.x - last.x) + Math.abs(pt.y - last.y) >= 2) {
+      matchDraw.points.push(pt);
+    }
+    updateLiveStroke();
+    clearMatchAim();
+    var over = matchNodeFromPoint(e.clientX, e.clientY);
+    if (
+      over &&
+      !over.classList.contains("done") &&
+      over.getAttribute("data-match-side") !== matchDraw.startSide
+    ) {
+      over.classList.add("aim");
+    }
+  }
+
+  function onMatchPointerUp(e) {
+    if (!matchDraw.active || matchDraw.pointerId !== e.pointerId) return;
+    e.preventDefault();
+    var over = matchNodeFromPoint(e.clientX, e.clientY);
+    var startPair = matchDraw.startPair;
+    var startSide = matchDraw.startSide;
+    var hold = app.querySelector("[data-match-pair].hold");
+    if (hold) hold.classList.remove("hold");
+    if (
+      over &&
+      !over.classList.contains("done") &&
+      over.getAttribute("data-match-side") &&
+      over.getAttribute("data-match-side") !== startSide
+    ) {
+      var endPair = parseInt(over.getAttribute("data-match-pair"), 10);
+      if (endPair === startPair) matchCorrectPair(startPair);
+      else matchWrongPair();
+      return;
+    }
+    fadeLiveStroke();
   }
 
   function startLevel(id) {
@@ -948,6 +1220,8 @@
     state.locked = false;
     state.choiceMark = null;
     state.traceNext = 0;
+    state.matchDone = {};
+    resetMatchDraw();
     state.foxMood = "idle";
     if (id === "count") state.questions = makeCountQuestions();
     else if (id === "match") state.questions = makeMatchQuestions();
@@ -975,6 +1249,8 @@
     state.foxMood = "idle";
     state.locked = false;
     state.choiceMark = null;
+    state.matchDone = {};
+    resetMatchDraw();
     render();
   }
 
@@ -991,6 +1267,8 @@
   function nextQuestion() {
     state.choiceMark = null;
     state.traceNext = 0;
+    state.matchDone = {};
+    resetMatchDraw();
     state.locked = false;
     state.foxMood = "idle";
     if (state.qIndex + 1 >= state.questions.length) {
@@ -1034,12 +1312,6 @@
       var n = parseInt(raw, 10);
       if (n === q.count) markCorrect(n);
       else markRetry(n, "再看一次");
-      return;
-    }
-    if (state.levelId === "match") {
-      var idx = parseInt(raw, 10);
-      if (q.groups[idx] && q.groups[idx].ok) markCorrect(idx);
-      else markRetry(idx, "再看一次");
       return;
     }
     if (state.levelId === "next") {
@@ -1117,6 +1389,21 @@
       }
     } catch (e) {}
   }
+
+  app.addEventListener("pointerdown", onMatchPointerDown);
+  app.addEventListener("pointermove", onMatchPointerMove);
+  app.addEventListener("pointerup", onMatchPointerUp);
+  app.addEventListener("pointercancel", onMatchPointerUp);
+  document.addEventListener(
+    "touchmove",
+    function (e) {
+      if (matchDraw.active) e.preventDefault();
+    },
+    { passive: false }
+  );
+  window.addEventListener("resize", function () {
+    if (state.levelId === "match" && state.screen === "play") drawDoneLines();
+  });
 
   app.addEventListener("click", function (e) {
     var t = e.target.closest("[data-action]");
