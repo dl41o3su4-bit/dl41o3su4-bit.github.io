@@ -128,7 +128,7 @@
   var LIFE_LEVELS = [
     { id: "dress", name: "今天穿什麼", hint: "看天氣穿衣服", emoji: "👕", cls: "l1" },
     { id: "table", name: "擺餐桌", hint: "餐具放到桌上", emoji: "🍚", cls: "l2" },
-    { id: "habitat", name: "誰住哪裡", hint: "魚鳥兔住哪裡", emoji: "🐟", cls: "l3" },
+    { id: "habitat", name: "誰住哪裡", hint: "魚鳥駱駝住哪裡", emoji: "🐟", cls: "l3" },
     { id: "light", name: "紅燈停", hint: "紅燈停黃燈等", emoji: "🚦", cls: "l4" },
     { id: "sort", name: "分一分", hint: "吃的玩的分開", emoji: "🧺", cls: "l5" },
     { id: "order", name: "先做哪件", hint: "先做哪一件", emoji: "1️⃣", cls: "l6" },
@@ -1193,21 +1193,45 @@
 
   function makeHabitatQuestions() {
     var sets = [
-      [lifeItem("fish", "🐟", "魚", "water"), lifeItem("bird", "🐦", "鳥", "tree"), lifeItem("rabbit", "🐰", "兔子", "grass")],
-      [lifeItem("fish2", "🐠", "魚", "water"), lifeItem("owl", "🦉", "貓頭鷹", "tree"), lifeItem("sheep", "🐑", "羊", "grass")],
-      [lifeItem("duck", "🦆", "鴨子", "water"), lifeItem("parrot", "🦜", "鸚鵡", "tree"), lifeItem("cow", "🐄", "牛", "grass")],
-      [lifeItem("whale", "🐳", "鯨魚", "water"), lifeItem("bird2", "🐦", "鳥", "tree"), lifeItem("rabbit2", "🐰", "兔子", "grass")],
-      [lifeItem("blow", "🐡", "魚", "water"), lifeItem("owl2", "🦉", "貓頭鷹", "tree"), lifeItem("deer", "🦌", "鹿", "grass")],
-      [lifeItem("fish3", "🐟", "魚", "water"), lifeItem("parrot2", "🦜", "鸚鵡", "tree"), lifeItem("sheep2", "🐑", "羊", "grass")],
+      [
+        lifeItem("fish-a", "🐟", "魚", "water"),
+        lifeItem("bird-a", "🐦", "鳥", "tree"),
+        lifeItem("rabbit-a", "🐰", "兔子", "grass"),
+      ],
+      [
+        lifeItem("duck-b", "🦆", "鴨子", "water"),
+        lifeItem("owl-b", "🦉", "貓頭鷹", "tree"),
+        lifeItem("camel-b", "🐪", "駱駝", "desert"),
+      ],
+      [
+        lifeItem("fish-c", "🐠", "魚", "water"),
+        lifeItem("sheep-c", "🐑", "羊", "grass"),
+        lifeItem("lizard-c", "🦎", "蜥蜴", "desert"),
+      ],
+      [
+        lifeItem("duck-d", "🦆", "鴨子", "water"),
+        lifeItem("bird-d", "🐦", "鳥", "tree"),
+        lifeItem("sheep-d", "🐑", "羊", "grass"),
+        lifeItem("camel-d", "🐪", "駱駝", "desert"),
+      ],
+      [
+        lifeItem("owl-e", "🦉", "貓頭鷹", "tree"),
+        lifeItem("rabbit-e", "🐰", "兔子", "grass"),
+        lifeItem("lizard-e", "🦎", "蜥蜴", "desert"),
+      ],
+      [
+        lifeItem("fish-f", "🐟", "魚", "water"),
+        lifeItem("duck-f", "🦆", "鴨子", "water"),
+        lifeItem("bird-f", "🐦", "鳥", "tree"),
+        lifeItem("camel-f", "🐪", "駱駝", "desert"),
+      ],
     ];
-    return shuffle(sets).map(function (items) {
+    return shuffle(sets).map(function (goods, i) {
+      var items = goods.slice();
+      items.push(lifeItem("car-" + i, "🚗", "車子"));
       return {
         ask: "拖回家",
-        slots: [
-          { id: "water", emoji: "🌊", label: "水" },
-          { id: "tree", emoji: "🌳", label: "樹" },
-          { id: "grass", emoji: "🌿", label: "草" },
-        ],
+        multi: true,
         items: shuffle(items),
       };
     });
@@ -1644,7 +1668,7 @@
       return '<span class="preview-art preview-match" aria-hidden="true"><span>🍚</span><span>🍽️</span><span>🍴</span></span>';
     }
     if (id === "habitat") {
-      return '<span class="preview-art preview-match" aria-hidden="true"><span>🐟</span><b>🌊</b></span>';
+      return '<span class="preview-art preview-match" aria-hidden="true"><span>🌳</span><span>🐪</span></span>';
     }
     if (id === "light") {
       return '<span class="preview-art preview-match" aria-hidden="true"><span>🔴</span><span>🧒</span><b>停</b></span>';
@@ -2258,6 +2282,7 @@
     }
     if (state.levelId === "abc-case" || state.levelId === "abc-draw") body = renderPicConnect(q);
     if (state.levelId === "dress") body = renderDress(q);
+    else if (state.levelId === "habitat") body = renderHabitat(q);
     else if (isPlaceLevel()) body = renderLifePlace(q);
     if (state.levelId === "light") body = renderLight(q);
     if (state.levelId === "body") body = renderBody(q);
@@ -2404,6 +2429,59 @@
       '<span class="dress-legs" aria-hidden="true"><i></i><i></i></span>' +
       renderDressWear("feet") +
       "</div></div></div>" +
+      '<div class="life-tray">' +
+      tray +
+      "</div></div></div>"
+    );
+  }
+
+  function renderHabitatResidents(slotId) {
+    return itemsInSlot(slotId)
+      .map(function (item) {
+        return '<span class="habitat-critter ' + slotId + '">' + item.emoji + "</span>";
+      })
+      .join("");
+  }
+
+  function renderHabitatZone(slotId, label, prop) {
+    return (
+      '<div class="habitat-zone ' +
+      slotId +
+      '" data-life-slot="' +
+      slotId +
+      '" aria-label="' +
+      label +
+      '"><span class="habitat-prop" aria-hidden="true">' +
+      prop +
+      '</span><span class="habitat-tag">' +
+      label +
+      '</span><div class="habitat-residents">' +
+      renderHabitatResidents(slotId) +
+      "</div></div>"
+    );
+  }
+
+  function renderHabitat(q) {
+    var tray = q.items
+      .filter(function (item) {
+        return !state.placed[item.id];
+      })
+      .map(function (item) {
+        return renderLifeChip(item, "");
+      })
+      .join("");
+    return (
+      '<div class="play-col">' +
+      '<div class="prompt">' +
+      escapeHtml(q.ask) +
+      "</div>" +
+      '<div class="life-stage is-place habitat-play">' +
+      '<div class="habitat-scene">' +
+      renderHabitatZone("tree", "樹", "🌳") +
+      renderHabitatZone("desert", "沙漠", "🏜️") +
+      renderHabitatZone("water", "水", "🌊") +
+      renderHabitatZone("grass", "草", "🌿") +
+      "</div>" +
       '<div class="life-tray">' +
       tray +
       "</div></div></div>"
