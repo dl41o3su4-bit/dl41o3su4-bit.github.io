@@ -330,6 +330,12 @@ button:focus-visible {
   stroke-dasharray: 5 5;
 }
 
+.preview-trace.preview-bpm path {
+  fill: #1b2a4a;
+  stroke: none;
+  stroke-dasharray: none;
+}
+
 .preview-match .draw-line {
   width: 18px;
   height: 0;
@@ -382,6 +388,13 @@ button:focus-visible {
   text-align: center;
   font-size: clamp(18px, 4vmin, 26px);
   font-weight: 800;
+}
+
+.prompt.trace-tip {
+  font-size: clamp(22px, 5.4vmin, 34px);
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  line-height: 1.3;
 }
 
 .count-stage,
@@ -819,6 +832,37 @@ button:focus-visible {
   fill: none;
   stroke-linecap: round;
   stroke-linejoin: round;
+}
+
+.glyph-fill.glyph-wait,
+.glyph-fill.glyph-now,
+.glyph-fill.glyph-done {
+  stroke: none;
+}
+
+.glyph-fill.glyph-wait {
+  fill: #1b2a4a;
+  opacity: 0.14;
+}
+
+.glyph-fill.glyph-now {
+  fill: #ff922b;
+  opacity: 0.95;
+}
+
+.glyph-fill.glyph-done {
+  fill: #1b2a4a;
+  opacity: 1;
+}
+
+.glyph-track {
+  fill: none;
+  stroke: #4c6ef5;
+  stroke-width: 3.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.55;
+  pointer-events: none;
 }
 
 .glyph-wait {
