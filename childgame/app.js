@@ -6,6 +6,7 @@
   var FOX_WORLD_KEY = "foxWorldV1";
   var FOX_WORLD_VERSION = 1;
   var DAY_ROUTE = ["dress", "table", "light", "habitat"];
+  var DAY_TASK_IDS = ["friends", "dress", "table", "light", "retry", "habitat"];
   var MEMORY_CAP = 12;
   var FRUITS = ["🍎", "🍊", "🍋", "🍇", "🍓", "🍑", "🍒", "🍌", "🍉", "🥝", "⭐", "🍐", "🍍", "🥭", "🍈"];
   var ANIMALS = ["🐶", "🐱", "🐰", "🐻", "🐼", "🐸", "🐵", "🐥", "🐧", "🦊", "🦁", "🐯", "🐷", "🐮", "🐨"];
@@ -530,6 +531,9 @@
     bodyAnim: "",
     dayMode: false,
     dayAutoTimer: null,
+    dayTaskId: "",
+    dayVisit: false,
+    dayLightExtra: false,
   };
 
   var foxWorldSession = { rolled: false, greeted: false };
@@ -611,7 +615,41 @@
   }
 
   function emptyTodayCompleted() {
-    return { dress: false, table: false, light: false, habitat: false };
+    return { dress: false, table: false, light: false, habitat: false, retry: false };
+  }
+
+  function isDayTaskId(id) {
+    return DAY_TASK_IDS.indexOf(id) >= 0;
+  }
+
+  function sanitizeWeather(v) {
+    return v === "sun" || v === "rain" || v === "cold" || v === "wind" ? v : "";
+  }
+
+  function sanitizeTodayPlan(list) {
+    if (!Array.isArray(list)) return [];
+    var out = [];
+    var seen = {};
+    var i;
+    for (i = 0; i < list.length && out.length < 6; i++) {
+      var id = sanitizeText(list[i], 12);
+      if (!isDayTaskId(id) || seen[id]) continue;
+      seen[id] = 1;
+      out.push(id);
+    }
+    return out;
+  }
+
+  function sanitizeTodayHints(raw) {
+    var out = {};
+    if (!isPlainObject(raw)) return out;
+    var i;
+    for (i = 0; i < DAY_TASK_IDS.length; i++) {
+      var id = DAY_TASK_IDS[i];
+      var line = sanitizeText(raw[id], 36);
+      if (line) out[id] = line;
+    }
+    return out;
   }
 
   function defaultFoxWorld() {
@@ -629,6 +667,12 @@
       tableItems: [],
       residentAnimals: [],
       memories: [],
+      lastWeather: "",
+      lastPlace: "",
+      lightMistakes: 0,
+      todayPlan: [],
+      todayHints: {},
+      visitedFriends: false,
     };
   }
 
@@ -730,13 +774,21 @@
       table: tc.table === true,
       light: tc.light === true,
       habitat: tc.habitat === true,
+      retry: tc.retry === true,
     };
     var last = sanitizeText(raw.lastTask, 12);
-    d.lastTask = DAY_ROUTE.indexOf(last) >= 0 ? last : "";
+    d.lastTask = isDayTaskId(last) ? last : "";
     d.outfit = sanitizeOutfit(raw.outfit);
     d.tableItems = sanitizeTableItems(raw.tableItems);
     d.residentAnimals = sanitizeAnimals(raw.residentAnimals);
     d.memories = sanitizeMemories(raw.memories);
+    d.lastWeather = sanitizeWeather(raw.lastWeather);
+    d.lastPlace = sanitizeText(raw.lastPlace, 12);
+    var misses = parseInt(raw.lightMistakes, 10);
+    d.lightMistakes = isFinite(misses) && misses > 0 ? Math.min(Math.floor(misses), 99) : 0;
+    d.todayPlan = sanitizeTodayPlan(raw.todayPlan);
+    d.todayHints = sanitizeTodayHints(raw.todayHints);
+    d.visitedFriends = raw.visitedFriends === true;
     return d;
   }
 
@@ -757,21 +809,143 @@
     return world;
   }
 
+  function isTaskDone(world, id) {
+    if (!world || !id) return false;
+    if (id === "friends") return world.visitedFriends === true;
+    return !!(world.todayCompleted && world.todayCompleted[id]);
+  }
+
+  function todayPlanOf(world) {
+    return (world && world.todayPlan && world.todayPlan.length ? world.todayPlan : ["dress"]).slice();
+  }
+
   function todayDoneCount(world) {
+    var plan = todayPlanOf(world);
     var n = 0;
     var i;
-    for (i = 0; i < DAY_ROUTE.length; i++) {
-      if (world && world.todayCompleted && world.todayCompleted[DAY_ROUTE[i]]) n += 1;
+    for (i = 0; i < plan.length; i++) {
+      if (isTaskDone(world, plan[i])) n += 1;
     }
     return n;
   }
 
   function nextDayTask(world) {
+    var plan = todayPlanOf(world);
     var i;
-    for (i = 0; i < DAY_ROUTE.length; i++) {
-      if (!world.todayCompleted[DAY_ROUTE[i]]) return DAY_ROUTE[i];
+    for (i = 0; i < plan.length; i++) {
+      if (!isTaskDone(world, plan[i])) return plan[i];
     }
     return "";
+  }
+
+  function dayIsFinished(world) {
+    var plan = todayPlanOf(world);
+    return plan.length > 0 && todayDoneCount(world) >= plan.length;
+  }
+
+  function peekLastWeather() {
+    var raw = loadFoxWorldRaw();
+    if (!isPlainObject(raw)) return "";
+    return sanitizeWeather(raw.lastWeather);
+  }
+
+  function habitatPreferForWeather(weather) {
+    if (weather === "cold") return "meadow";
+    if (weather === "rain") return "river";
+    if (weather === "sun") return "beach";
+    if (weather === "wind") return "woods";
+    return "";
+  }
+
+  function weatherFromDressQuestion(q) {
+    if (!q) return "";
+    var blob = [q.sceneEmoji, q.place, q.sceneLabel, q.ask, q.prop].join(" ");
+    if (/雨|🌧️/.test(blob)) return "rain";
+    if (/風|💨/.test(blob)) return "wind";
+    if (/冷|山|❄️|⛰️/.test(blob)) return "cold";
+    if (/太陽|熱|☀️|海邊|beach/.test(blob)) return "sun";
+    return "sun";
+  }
+
+  function planHas(world, id) {
+    return todayPlanOf(world).indexOf(id) >= 0;
+  }
+
+  function appendPlan(world, id) {
+    if (!world.todayPlan) world.todayPlan = [];
+    if (!planHas(world, id) && isDayTaskId(id)) world.todayPlan.push(id);
+  }
+
+  function setHint(world, id, line) {
+    if (!world.todayHints) world.todayHints = {};
+    world.todayHints[id] = sanitizeText(line, 36);
+  }
+
+  function seedTodayPlan(world) {
+    if (world.todayPlan && world.todayPlan.length) return world;
+    var done = world.todayCompleted || {};
+    var hints = world.todayHints || {};
+    if (done.habitat || done.light || done.table || done.dress || done.retry || world.visitedFriends) {
+      var plan = [];
+      if (world.visitedFriends) plan.push("friends");
+      plan.push("dress");
+      if (done.dress) plan.push("table");
+      if (done.table) plan.push("light");
+      if (done.light) {
+        if (done.retry || (world.lightMistakes || 0) >= 1) plan.push("retry");
+        plan.push("habitat");
+      }
+      world.todayPlan = sanitizeTodayPlan(plan);
+      world.todayHints = hints;
+      return world;
+    }
+    if ((world.residentAnimals || []).length >= 1) {
+      world.todayPlan = ["friends", "dress"];
+      if (!hints.friends) hints.friends = "魚還在河邊，要不要先去看看？";
+      world.todayHints = hints;
+      return world;
+    }
+    world.todayPlan = ["dress"];
+    world.todayHints = hints;
+    return world;
+  }
+
+  function growTodayPlan(world, justFinished) {
+    var weather = world.lastWeather || "";
+    if (justFinished === "friends") {
+      appendPlan(world, "dress");
+      return;
+    }
+    if (justFinished === "dress") {
+      appendPlan(world, "table");
+      if (weather === "rain") setHint(world, "table", "下雨了，在家吃早餐");
+      else if (weather === "cold") setHint(world, "table", "好冷，先吃熱的");
+      else setHint(world, "table", "太陽出來了，去野餐");
+      return;
+    }
+    if (justFinished === "table") {
+      appendPlan(world, "light");
+      if (weather === "rain") setHint(world, "light", "穿好雨衣，過馬路要更小心");
+      else if (weather === "cold") setHint(world, "light", "穿暖和，過馬路看燈");
+      else if (weather === "wind") setHint(world, "light", "風有點大，過馬路看燈");
+      else setHint(world, "light", "過馬路，看燈燈");
+      return;
+    }
+    if (justFinished === "light") {
+      if ((world.lightMistakes || 0) >= 1) {
+        appendPlan(world, "retry");
+        setHint(world, "retry", "再過一次，看清楚燈");
+        appendPlan(world, "habitat");
+      } else {
+        appendPlan(world, "habitat");
+        setHint(world, "habitat", "過得很好，去公園");
+      }
+      return;
+    }
+    if (justFinished === "retry") {
+      appendPlan(world, "habitat");
+      if (!world.todayHints || !world.todayHints.habitat) setHint(world, "habitat", "過得很好，去公園");
+    }
   }
 
   function pushMemory(world, line) {
@@ -793,6 +967,7 @@
       var live = m.match(/^(.+)住進/);
       if (live) return "昨天我們幫" + live[1] + "找到家";
       if (m.indexOf("過馬路") >= 0) return "昨天我們一起過馬路";
+      if (m.indexOf("來作客") >= 0 || m.indexOf("看朋友") >= 0) return "昨天我們去看朋友";
       if (m.indexOf("早餐") >= 0 || m.indexOf("擺好") >= 0) return "昨天我們擺好早餐";
       var wear = m.match(/穿上(.+)$/);
       if (wear) return "昨天你幫我穿上" + wear[1];
@@ -818,6 +993,11 @@
     world.currentDate = today;
     world.todayCompleted = emptyTodayCompleted();
     world.lastTask = "";
+    world.todayPlan = [];
+    world.todayHints = {};
+    world.visitedFriends = false;
+    world.lightMistakes = 0;
+    seedTodayPlan(world);
     return world;
   }
 
@@ -834,6 +1014,7 @@
       foxWorldSession.rolled = true;
       foxWorldSession.greeted = false;
     }
+    seedTodayPlan(world);
     world.lastVisitISO = nowISO();
     world.version = FOX_WORLD_VERSION;
     return saveFoxWorld(world);
@@ -848,34 +1029,60 @@
   }
 
   function dayLockLine(id) {
+    if (id === "dress") return "先去看朋友";
     if (id === "table") return "先穿好衣服";
     if (id === "light") return "先吃完早餐";
+    if (id === "retry") return "先過馬路";
     if (id === "habitat") return "先過馬路";
-    return "先穿好衣服";
+    return "先做好前面的";
   }
 
   function dayFoxGreeting(world) {
     if (isFirstDayVisit(world)) return "今天要一起去哪裡？";
     if (foxWorldSession.rolled && !foxWorldSession.greeted) {
+      if (world.todayPlan && world.todayPlan[0] === "friends") {
+        return (world.todayHints && world.todayHints.friends) || "魚還在河邊，要不要先去看看？";
+      }
       var mem = world.memories.length ? world.memories[world.memories.length - 1] : "";
       if (mem.indexOf("昨天") === 0) return "你回來了！" + mem + "。";
       if (mem) return "你回來了！昨天" + mem + "。";
       return "你回來了！今天要一起去哪裡？";
     }
-    if (todayDoneCount(world) >= 4) return "今天過得真好";
+    if (dayIsFinished(world)) return "今天過得真好";
     var next = nextDayTask(world);
+    if (next && world.todayHints && world.todayHints[next]) return world.todayHints[next];
+    if (next === "friends") return "魚還在河邊，要不要先去看看？";
     if (next === "dress") return "先穿好衣服";
     if (next === "table") return "衣服好了，去擺早餐";
     if (next === "light") return "吃飽了，過馬路";
+    if (next === "retry") return "再過一次，看清楚燈";
     if (next === "habitat") return "過了馬路，帶動物回家";
     return "今天要一起去哪裡？";
   }
 
-  function markerPlace(world) {
-    if (world.todayCompleted.habitat || world.todayCompleted.light) return "park";
-    if (world.todayCompleted.table) return "road";
-    if (world.todayCompleted.dress) return "table";
-    return "room";
+  function markerIndex(world) {
+    var plan = todayPlanOf(world);
+    var next = nextDayTask(world);
+    if (!next) return Math.max(0, plan.length - 1);
+    var idx = plan.indexOf(next);
+    return idx >= 0 ? idx : 0;
+  }
+
+  function dayTaskMeta(id, world) {
+    var weather = (world && world.lastWeather) || "";
+    if (id === "friends") return { spot: "friends", label: "去看朋友", emoji: "🐾" };
+    if (id === "dress") return { spot: "room", label: "換衣服", emoji: "🏠" };
+    if (id === "table") {
+      return {
+        spot: "table",
+        label: weather === "sun" || weather === "wind" ? "去野餐" : "擺早餐",
+        emoji: "🍽️",
+      };
+    }
+    if (id === "light") return { spot: "road", label: "過馬路", emoji: "🚦" };
+    if (id === "retry") return { spot: "retry", label: "再過一次", emoji: "🚦" };
+    if (id === "habitat") return { spot: "park", label: "帶動物回家", emoji: "🌳" };
+    return { spot: "room", label: id || "", emoji: "⭐" };
   }
 
   function outfitBySlot(world, slot) {
@@ -921,6 +1128,8 @@
     }
     if (worn.length) world.outfit = sanitizeOutfit(worn);
     if (worn.length) pushMemory(world, "你幫我穿上" + worn[worn.length - 1].name);
+    world.lastWeather = weatherFromDressQuestion(q);
+    world.lastPlace = sanitizeText((q && (q.sceneLabel || q.place)) || "", 12);
   }
 
   function captureDayTable(world) {
@@ -962,16 +1171,47 @@
     }
   }
 
+  function captureFriendsVisit(world) {
+    var q = state.questions[state.qIndex];
+    var i;
+    if (q && q.items) {
+      for (i = 0; i < q.items.length; i++) {
+        var item = q.items[i];
+        if (
+          item.slot &&
+          !item.feed &&
+          state.placed[item.id] &&
+          item.name !== "車子" &&
+          item.name !== "點心"
+        ) {
+          var animals = (world.residentAnimals || []).slice();
+          animals.push({ emoji: item.emoji, name: item.name, zone: item.slot });
+          world.residentAnimals = sanitizeAnimals(animals);
+          pushMemory(world, item.name + "來作客");
+          return;
+        }
+      }
+    }
+    pushMemory(world, "我們去看朋友");
+  }
+
   function completeDayTask(id) {
+    var taskId = state.dayTaskId || id;
     var world = ensureFoxWorld();
-    if (DAY_ROUTE.indexOf(id) < 0) return world;
-    if (world.todayCompleted[id]) return world;
-    world.todayCompleted[id] = true;
-    world.lastTask = id;
-    if (id === "dress") captureDayDress(world);
-    else if (id === "table") captureDayTable(world);
-    else if (id === "light") pushMemory(world, "我們一起過馬路");
-    else if (id === "habitat") captureDayHabitat(world);
+    if (!isDayTaskId(taskId)) return world;
+    if (isTaskDone(world, taskId)) return world;
+    if (taskId === "friends") world.visitedFriends = true;
+    else world.todayCompleted[taskId] = true;
+    world.lastTask = taskId;
+    if (taskId === "dress") captureDayDress(world);
+    else if (taskId === "table") captureDayTable(world);
+    else if (taskId === "light") pushMemory(world, "我們一起過馬路");
+    else if (taskId === "retry") pushMemory(world, "我們再過一次馬路");
+    else if (taskId === "habitat") captureDayHabitat(world);
+    else if (taskId === "friends") captureFriendsVisit(world);
+    growTodayPlan(world, taskId);
+    world.todayPlan = sanitizeTodayPlan(world.todayPlan);
+    world.todayHints = sanitizeTodayHints(world.todayHints);
     return saveFoxWorld(world);
   }
 
@@ -1779,7 +2019,13 @@
         items: shuffle(r.ok.concat(r.wrong)),
       };
     });
-    return shortDay ? list.slice(0, 1) : list;
+    if (!shortDay) return list;
+    var one = list[0];
+    if (one.sceneEmoji === "🌧️") one.ask = "下雨了，" + one.sceneLabel + "，拖上去";
+    else if (one.sceneEmoji === "💨") one.ask = "風好大，" + one.sceneLabel + "，拖上去";
+    else if (one.place === "mountain" || one.sceneEmoji === "❄️") one.ask = "好冷，山上，拖上去";
+    else one.ask = "大太陽，" + one.sceneLabel + "，拖上去";
+    return [one];
   }
 
   function makeTableQuestions(shortDay) {
@@ -1875,11 +2121,20 @@
       ),
     ];
     if (shortDay) {
+      var weather = peekLastWeather();
+      var want = "breakfast";
+      if (weather === "rain") want = "home";
+      else if (weather === "sun" || weather === "wind") want = "picnic";
+      else if (weather === "cold") want = "breakfast";
       var meal = [];
       for (var ti = 0; ti < rounds.length; ti++) {
-        if (rounds[ti].scene === "breakfast") meal.push(rounds[ti]);
+        if (rounds[ti].scene === want) meal.push(rounds[ti]);
       }
-      return meal.length ? meal.slice(0, 1) : rounds.slice(0, 1);
+      var picked = meal.length ? meal.slice(0, 1) : rounds.slice(0, 1);
+      if (weather === "cold" && picked[0]) picked[0].ask = "熱熱的早餐，誰少了什麼";
+      else if (weather === "rain" && picked[0]) picked[0].ask = "下雨了，在家，誰少了什麼";
+      else if ((weather === "sun" || weather === "wind") && picked[0]) picked[0].ask = "野餐，誰少了什麼";
+      return picked;
     }
     return shuffle(rounds);
   }
@@ -1983,6 +2238,12 @@
       };
     });
     if (shortDay) {
+      var prefer = habitatPreferForWeather(peekLastWeather());
+      if (prefer) {
+        packed.sort(function (a, b) {
+          return (b.layout === prefer ? 1 : 0) - (a.layout === prefer ? 1 : 0);
+        });
+      }
       var one = packed[0];
       var goods = [];
       var junk = [];
@@ -1992,31 +2253,101 @@
         else junk.push(one.items[hi]);
       }
       one.items = shuffle(goods.slice(0, 3).concat(junk.slice(0, 1)));
-      one.ask = "帶動物回家";
+      one.ask = peekLastWeather() === "cold" ? "山上，帶動物回家" : "帶動物回家";
       return [one];
     }
     return packed;
   }
 
-  function makeLightQuestions(shortDay) {
+  function makeFriendsVisitQuestion(world) {
+    var sample = makeHabitatQuestions(true)[0] || {};
+    var residents = sanitizeAnimals((world && world.residentAnimals) || []);
+    var zones = (sample.zones || []).slice();
+    var have = {};
+    var zi;
+    for (zi = 0; zi < zones.length; zi++) have[zones[zi].id] = 1;
+    var extras = {
+      water: { id: "water", label: "水", prop: "🌊" },
+      tree: { id: "tree", label: "樹", prop: "🌳" },
+      grass: { id: "grass", label: "草", prop: "🌿" },
+      desert: { id: "desert", label: "沙丘", prop: "🏜️" },
+    };
+    for (zi = 0; zi < residents.length; zi++) {
+      var zid = residents[zi].zone;
+      if (zid && !have[zid] && extras[zid]) {
+        zones.push(extras[zid]);
+        have[zid] = 1;
+      }
+    }
+    var used = {};
+    for (zi = 0; zi < residents.length; zi++) used[residents[zi].name] = 1;
+    var pool = [
+      { emoji: "🐟", name: "魚", zone: "water" },
+      { emoji: "🦆", name: "鴨子", zone: "water" },
+      { emoji: "🐦", name: "鳥", zone: "tree" },
+      { emoji: "🦉", name: "貓頭鷹", zone: "tree" },
+      { emoji: "🐰", name: "兔子", zone: "grass" },
+      { emoji: "🐑", name: "羊", zone: "grass" },
+      { emoji: "🐪", name: "駱駝", zone: "desert" },
+      { emoji: "🦀", name: "螃蟹", zone: "desert" },
+    ];
+    var cand = [];
+    for (zi = 0; zi < pool.length; zi++) {
+      if (!used[pool[zi].name] && have[pool[zi].zone]) cand.push(pool[zi]);
+    }
+    if (!cand.length) {
+      for (zi = 0; zi < pool.length; zi++) {
+        if (!used[pool[zi].name]) cand.push(pool[zi]);
+      }
+    }
+    var buddy = cand.length ? pick(cand) : { emoji: "🐦", name: "鳥", zone: "tree" };
+    if (buddy.zone && !have[buddy.zone] && extras[buddy.zone]) zones.push(extras[buddy.zone]);
+    var friendItem = lifeItem("friend-new", buddy.emoji, buddy.name, buddy.zone);
+    var food = lifeItem("snack-visit", "🍎", "點心");
+    food.feed = true;
+    return {
+      ask: "去看朋友，帶一個新朋友或餵一餵",
+      visit: true,
+      layout: sample.layout || "river",
+      zones: zones,
+      residents: residents,
+      multi: true,
+      needAny: [friendItem.id, food.id],
+      items: shuffle([friendItem, food, lifeItem("car-visit", "🚗", "車子")]),
+    };
+  }
+
+  function makeLightQuestions(shortDay, extraRetry) {
     var places = [
       { id: "city", label: "市區", prop: "🏢", car: "🚗" },
       { id: "school", label: "學校", prop: "🏫", car: "🚌" },
       { id: "alley", label: "小巷", prop: "🏠", car: "🚲" },
     ];
-    var colors = shortDay
-      ? shuffle(["red", "green", Math.random() < 0.55 ? "yellow" : pick(["red", "green"])])
-      : shuffle(["red", "red", "red", "green", "green", "green", "yellow", "yellow"]);
+    var weather = shortDay ? peekLastWeather() : "";
+    var colors;
+    if (extraRetry) {
+      var other = weather === "rain" ? "yellow" : pick(["green", "yellow"]);
+      colors = Math.random() < 0.5 ? ["red", other] : [other, "red"];
+    } else if (shortDay) {
+      if (weather === "rain") colors = shuffle(["red", "yellow", "green"]);
+      else if (weather === "cold") colors = shuffle(["red", "green", "green"]);
+      else colors = shuffle(["red", "green", Math.random() < 0.55 ? "yellow" : pick(["red", "green"])]);
+    } else {
+      colors = shuffle(["red", "red", "red", "green", "green", "green", "yellow", "yellow"]);
+    }
     return colors.map(function (color, i) {
       var place = places[i % places.length];
       var line = color === "red" ? "紅燈，停還是走？" : color === "green" ? "綠燈，拖過去" : "黃燈，等一等";
+      var ask = place.label + "，" + line;
+      if (shortDay && weather === "rain") ask = "下雨了，" + line;
       return {
         color: color,
         answer: color === "red" ? "stop" : color === "green" ? "go" : "wait",
-        ask: place.label + "，" + line,
+        ask: ask,
         place: place.id,
         placeProp: place.prop,
         car: place.car,
+        extra: !!extraRetry,
         items: [lifeItem("kid", "🧒", "小朋友", "far")],
       };
     });
@@ -2400,6 +2731,7 @@
     if (state.levelId === "bpm-train") return "上車了";
     if (state.levelId === "abc-path") return "走過去了";
     if (state.levelId === "body") return "找到了";
+    if (state.dayVisit) return "見到朋友了";
     return "好棒";
   }
 
@@ -2686,31 +3018,37 @@
 
   function renderDayBanner(world) {
     var done = todayDoneCount(world);
-    var evening = done >= 4;
+    var plan = todayPlanOf(world);
+    var evening = dayIsFinished(world);
+    var spots = plan
+      .map(function (id) {
+        var meta = dayTaskMeta(id, world);
+        return (
+          '<span class="mini-spot ' +
+          meta.spot +
+          (isTaskDone(world, id) ? " done" : "") +
+          '">' +
+          meta.emoji +
+          "</span>"
+        );
+      })
+      .join("");
     return (
       '<button class="day-banner' +
       (evening ? " is-evening" : "") +
+      (world.lastWeather ? " wx-" + world.lastWeather : "") +
       '" type="button" data-action="open-day" aria-label="小狐狸的一天">' +
       '<div class="day-banner-scene" aria-hidden="true">' +
-      '<span class="mini-spot room' +
-      (world.todayCompleted.dress ? " done" : "") +
-      '">🏠</span>' +
-      '<span class="mini-spot table' +
-      (world.todayCompleted.table ? " done" : "") +
-      '">🍽️</span>' +
-      '<span class="mini-spot road' +
-      (world.todayCompleted.light ? " done" : "") +
-      '">🚦</span>' +
-      '<span class="mini-spot park' +
-      (world.todayCompleted.habitat ? " done" : "") +
-      '">🌳</span>' +
+      spots +
       renderFoxWear(world, "mini") +
       "</div>" +
       '<div class="day-banner-copy">' +
       "<strong>小狐狸的一天</strong>" +
       '<span class="day-banner-progress">今天 ' +
       done +
-      " / 4</span>" +
+      " / " +
+      plan.length +
+      "</span>" +
       '<span class="day-banner-bits">' +
       renderMiniIcons(world.outfit, "bit") +
       renderMiniIcons(world.residentAnimals, "bit") +
@@ -2754,7 +3092,7 @@
 
   function renderDayPlace(world, spec) {
     var id = spec.id;
-    var done = !!world.todayCompleted[id];
+    var done = isTaskDone(world, id);
     var next = nextDayTask(world) === id;
     var locked = !done && !next;
     var tag = next ? "button" : "div";
@@ -2789,21 +3127,40 @@
     );
   }
 
+  function dayPlaceArt(id, world, evening) {
+    if (id === "dress") {
+      return '<span class="art-window"></span><span class="art-bed">🛏️</span><span class="art-shirt">👕</span>';
+    }
+    if (id === "table") {
+      return '<span class="art-table">' + renderDayTableBits(world) + "</span>";
+    }
+    if (id === "light" || id === "retry") {
+      return (
+        '<span class="art-light">🚦</span><span class="art-zebra"></span>' +
+        (evening ? '<span class="art-lamp">🏮</span>' : "")
+      );
+    }
+    return (
+      '<span class="art-tree">🌳</span><span class="art-river">🌊</span>' + renderDayAnimals(world)
+    );
+  }
+
   function renderDayWorld() {
     var world = ensureFoxWorld();
-    var done = todayDoneCount(world);
-    var evening = done >= 4;
-    var mark = markerPlace(world);
-    var roomArt =
-      '<span class="art-window"></span><span class="art-bed">🛏️</span><span class="art-shirt">👕</span>';
-    var tableArt =
-      '<span class="art-table">' + renderDayTableBits(world) + "</span>";
-    var roadArt =
-      '<span class="art-light">🚦</span><span class="art-zebra"></span>' +
-      (evening ? '<span class="art-lamp">🏮</span>' : "");
-    var parkArt =
-      '<span class="art-tree">🌳</span><span class="art-river">🌊</span>' +
-      renderDayAnimals(world);
+    var plan = todayPlanOf(world);
+    var evening = dayIsFinished(world);
+    var mark = markerIndex(world);
+    var places = plan
+      .map(function (id) {
+        var meta = dayTaskMeta(id, world);
+        return renderDayPlace(world, {
+          id: id,
+          spot: meta.spot,
+          label: meta.label,
+          art: dayPlaceArt(id, world, evening),
+        });
+      })
+      .join("");
     return (
       '<div class="shell is-home is-day' +
       (evening ? " is-evening" : "") +
@@ -2819,20 +3176,19 @@
       "</p></div>" +
       '<div class="day-world' +
       (evening ? " is-evening" : "") +
+      (world.lastWeather ? " wx-" + world.lastWeather : "") +
+      '" style="--day-n:' +
+      plan.length +
+      ";--day-at:" +
+      mark +
       '">' +
       '<div class="day-sky" aria-hidden="true"></div>' +
       '<div class="day-ground" aria-hidden="true"></div>' +
       '<div class="day-path" aria-hidden="true"></div>' +
       '<div class="day-places">' +
-      renderDayPlace(world, { id: "dress", spot: "room", label: "換衣服", art: roomArt }) +
-      renderDayPlace(world, { id: "table", spot: "table", label: "擺早餐", art: tableArt }) +
-      renderDayPlace(world, { id: "light", spot: "road", label: "過馬路", art: roadArt }) +
-      renderDayPlace(world, { id: "habitat", spot: "park", label: "帶動物回家", art: parkArt }) +
+      places +
       "</div>" +
-      '<div class="day-marker at-' +
-      mark +
-      (world.todayCompleted.light ? " crossed" : "") +
-      '" aria-hidden="true">' +
+      '<div class="day-marker" aria-hidden="true">' +
       renderFoxWear(world, "map") +
       "</div></div>" +
       (evening ? '<p class="day-endline">今天過得真好</p>' : "") +
@@ -3575,11 +3931,20 @@
   }
 
   function renderHabitatResidents(slotId) {
-    return itemsInSlot(slotId)
+    var q = state.questions[state.qIndex];
+    var html = itemsInSlot(slotId)
       .map(function (item) {
         return '<span class="habitat-critter ' + slotId + '">' + item.emoji + "</span>";
       })
       .join("");
+    var residents = (q && q.residents) || [];
+    var i;
+    for (i = 0; i < residents.length; i++) {
+      if (residents[i].zone === slotId) {
+        html += '<span class="habitat-critter home ' + slotId + '">' + residents[i].emoji + "</span>";
+      }
+    }
+    return html;
   }
 
   function renderHabitatZone(slotId, label) {
@@ -4293,7 +4658,14 @@
   }
 
   function allNeededPlaced(q) {
-    for (var i = 0; i < q.items.length; i++) {
+    var i;
+    if (q.needAny && q.needAny.length) {
+      for (i = 0; i < q.needAny.length; i++) {
+        if (state.placed[q.needAny[i]]) return true;
+      }
+      return false;
+    }
+    for (i = 0; i < q.items.length; i++) {
       if (q.items[i].slot && !state.placed[q.items[i].id]) return false;
     }
     return true;
@@ -4384,8 +4756,19 @@
     return null;
   }
 
+  function zoneHasResident(slotId) {
+    var q = state.questions[state.qIndex];
+    var list = (q && q.residents) || [];
+    var i;
+    for (i = 0; i < list.length; i++) {
+      if (list[i].zone === slotId) return true;
+    }
+    return false;
+  }
+
   function itemFitsSlot(item, slotId) {
     if (!item || !slotId) return false;
+    if (item.feed) return zoneHasResident(slotId);
     if (item.anySlot) return !itemInSlot(slotId);
     var q = state.questions[state.qIndex];
     if (q && q.order && q.order.length) {
@@ -4713,6 +5096,15 @@
 
   function startLevel(id, fromDay) {
     state.dayMode = !!fromDay;
+    if (!fromDay) {
+      state.dayTaskId = "";
+      state.dayVisit = false;
+      state.dayLightExtra = false;
+    } else if (!state.dayTaskId) {
+      state.dayTaskId = id;
+      state.dayVisit = false;
+      state.dayLightExtra = false;
+    }
     if (fromDay) {
       if (location.hash !== "#day") {
         try {
@@ -4767,8 +5159,11 @@
     else if (id === "abc-path") state.questions = makeAbcPathQuestions();
     else if (id === "dress") state.questions = makeDressQuestions(state.dayMode);
     else if (id === "table") state.questions = makeTableQuestions(state.dayMode);
-    else if (id === "habitat") state.questions = makeHabitatQuestions(state.dayMode);
-    else if (id === "light") state.questions = makeLightQuestions(state.dayMode);
+    else if (id === "habitat") {
+      state.questions = state.dayVisit
+        ? [makeFriendsVisitQuestion(ensureFoxWorld())]
+        : makeHabitatQuestions(state.dayMode);
+    } else if (id === "light") state.questions = makeLightQuestions(state.dayMode, state.dayLightExtra);
     else if (id === "sort") state.questions = makeSortQuestions();
     else if (id === "order") state.questions = makeOrderQuestions();
     else if (id === "body") state.questions = makeBodyQuestions();
@@ -4788,7 +5183,7 @@
     state.levelId = null;
     state.locked = false;
     state.foxMsg = dayFoxGreeting(world);
-    state.foxMood = todayDoneCount(world) >= 4 ? "happy" : "idle";
+    state.foxMood = dayIsFinished(world) ? "happy" : "idle";
     foxWorldSession.greeted = true;
     if (location.hash !== "#day") {
       try {
@@ -4801,17 +5196,24 @@
   function leaveDayWorld() {
     clearDayAuto();
     state.dayMode = false;
+    state.dayTaskId = "";
+    state.dayVisit = false;
+    state.dayLightExtra = false;
     goHome();
   }
 
   function startDayTask(id) {
     var world = ensureFoxWorld();
-    if (world.todayCompleted[id]) return;
+    if (isTaskDone(world, id)) return;
     if (nextDayTask(world) !== id) {
       setFox(dayLockLine(id), "think");
       return;
     }
-    startLevel(id, true);
+    state.dayTaskId = id;
+    state.dayVisit = id === "friends";
+    state.dayLightExtra = id === "retry";
+    var playId = id === "friends" ? "habitat" : id === "retry" ? "light" : id;
+    startLevel(playId, true);
   }
 
   function goHome() {
@@ -4866,7 +5268,7 @@
 
   function nextQuestion() {
     var finishing = state.qIndex + 1 >= state.questions.length;
-    if (finishing && state.dayMode) completeDayTask(state.levelId);
+    if (finishing && state.dayMode) completeDayTask(state.dayTaskId || state.levelId);
     state.choiceMark = null;
     state.traceNext = 0;
     state.matchDone = {};
@@ -4970,12 +5372,24 @@
     setTimeout(nextQuestion, value === "go" ? 1100 : 950);
   }
 
+  function noteDayLightGoMistake(q, raw) {
+    if (!state.dayMode || !q) return;
+    if (raw !== "go") return;
+    if (q.color !== "red" && q.color !== "yellow") return;
+    var world = ensureFoxWorld();
+    world.lightMistakes = Math.min((world.lightMistakes || 0) + 1, 99);
+    saveFoxWorld(world);
+  }
+
   function handleLightCross() {
     if (state.locked || state.levelId !== "light") return;
     var q = state.questions[state.qIndex];
     if (!q) return;
     if (q.color === "green") lightSuccess("go");
-    else lightRetry("go", lightWrongMsg(q.color, "go"));
+    else {
+      noteDayLightGoMistake(q, "go");
+      lightRetry("go", lightWrongMsg(q.color, "go"));
+    }
   }
 
   function handleAnswer(raw) {
@@ -5047,6 +5461,7 @@
       if (raw === q.answer) {
         lightSuccess(raw);
       } else {
+        noteDayLightGoMistake(q, raw);
         lightRetry(raw, lightWrongMsg(q.color, raw));
       }
       return;
@@ -5542,11 +5957,13 @@
         var table = makeTableQuestions(true);
         var habitat = makeHabitatQuestions(true);
         var light = makeLightQuestions(true);
+        var retry = makeLightQuestions(true, true);
         return {
           dress: dress.length,
           table: table.length,
           tableScene: table[0] && table[0].scene,
           habitat: habitat.length,
+          habitatLayout: habitat[0] && habitat[0].layout,
           habitatAnimals: habitat[0]
             ? habitat[0].items.filter(function (it) {
                 return !!it.slot;
@@ -5555,6 +5972,10 @@
           light: light.length,
           lightColors: light.map(function (q) {
             return q.color;
+          }),
+          retry: retry.length,
+          retryHasRed: retry.some(function (q) {
+            return q.color === "red";
           }),
           schoolDress: makeDressQuestions().length,
           schoolTable: makeTableQuestions().length,
