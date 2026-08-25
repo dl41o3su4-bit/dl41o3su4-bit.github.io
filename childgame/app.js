@@ -3128,7 +3128,7 @@
         bits.push('<i class="wx-flake" style="--x:' + (10 + i * 12) + "%;--d:" + (i * 0.2).toFixed(2) + 's"></i>');
       }
     } else if (wx === "sun") {
-      bits.push('<i class="wx-sun">☀️</i>');
+      bits.push('<i class="wx-sun-icon">☀️</i>');
     }
     return bits.join("");
   }
@@ -6061,7 +6061,7 @@
           hasParkFriends: html.indexOf("day-park-friends") >= 0,
           hasRain: html.indexOf("wx-drop") >= 0,
           hasSnow: html.indexOf("wx-flake") >= 0,
-          hasSun: html.indexOf('class="wx-sun"') >= 0,
+          hasSun: html.indexOf("wx-sun-icon") >= 0,
           weatherClass: (html.match(/day-world[^"]*/) || [""])[0],
           isEvening: html.indexOf("day-world is-evening") >= 0 || html.indexOf("is-evening wx-") >= 0,
           endline: html.indexOf("今天過得真好") >= 0,
