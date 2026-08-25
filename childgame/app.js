@@ -1060,18 +1060,27 @@
     return "今天要一起去哪裡？";
   }
 
+  function visibleDayPath(world) {
+    var path = [];
+    if (planHas(world, "friends") || isTaskDone(world, "friends")) path.push("friends");
+    path.push("dress", "table", "light");
+    if (planHas(world, "retry") || isTaskDone(world, "retry")) path.push("retry");
+    path.push("habitat");
+    return path;
+  }
+
   function markerIndex(world) {
-    var plan = todayPlanOf(world);
+    var path = visibleDayPath(world);
     var next = nextDayTask(world);
-    if (!next) return Math.max(0, plan.length - 1);
-    var idx = plan.indexOf(next);
+    if (!next) return Math.max(0, path.length - 1);
+    var idx = path.indexOf(next);
     return idx >= 0 ? idx : 0;
   }
 
   function dayTaskMeta(id, world) {
     var weather = (world && world.lastWeather) || "";
     if (id === "friends") return { spot: "friends", label: "去看朋友", emoji: "🐾" };
-    if (id === "dress") return { spot: "room", label: "換衣服", emoji: "🏠" };
+    if (id === "dress") return { spot: "room", label: "換衣服", emoji: "👕" };
     if (id === "table") {
       return {
         spot: "table",
@@ -1081,7 +1090,7 @@
     }
     if (id === "light") return { spot: "road", label: "過馬路", emoji: "🚦" };
     if (id === "retry") return { spot: "retry", label: "再過一次", emoji: "🚦" };
-    if (id === "habitat") return { spot: "park", label: "帶動物回家", emoji: "🌳" };
+    if (id === "habitat") return { spot: "park", label: "去公園", emoji: "🌳" };
     return { spot: "room", label: id || "", emoji: "⭐" };
   }
 
@@ -1098,14 +1107,30 @@
     var head = outfitBySlot(world, "head");
     var body = outfitBySlot(world, "body");
     var feet = outfitBySlot(world, "feet");
+    var worn = !!(head || body || feet);
     return (
       '<span class="day-fox-wear' +
       (extraClass ? " " + extraClass : "") +
+      (worn ? " has-outfit" : "") +
       '" aria-hidden="true">' +
       (head ? '<i class="wear head">' + head.emoji + "</i>" : "") +
       '<i class="wear face">🦊</i>' +
       (body ? '<i class="wear body">' + body.emoji + "</i>" : "") +
       (feet ? '<i class="wear feet">' + feet.emoji + "</i>" : "") +
+      "</span>"
+    );
+  }
+
+  function renderMapOutfitBits(world) {
+    var list = (world && world.outfit) || [];
+    if (!list.length) return "";
+    return (
+      '<span class="day-marker-gear" aria-hidden="true">' +
+      list
+        .map(function (it) {
+          return "<i>" + (it.emoji || "") + "</i>";
+        })
+        .join("") +
       "</span>"
     );
   }
@@ -3076,16 +3101,9 @@
     var list = world.residentAnimals || [];
     if (!list.length) return "";
     return list
-      .map(function (it, i) {
-        return (
-          '<i class="day-critter zone-' +
-          it.zone +
-          " n" +
-          (i % 4) +
-          '">' +
-          it.emoji +
-          "</i>"
-        );
+      .slice(0, 2)
+      .map(function (it) {
+        return '<i class="day-critter inline">' + it.emoji + "</i>";
       })
       .join("");
   }
@@ -3095,6 +3113,7 @@
     var done = isTaskDone(world, id);
     var next = nextDayTask(world) === id;
     var locked = !done && !next;
+    var preview = locked && !planHas(world, id);
     var tag = next ? "button" : "div";
     var action = next
       ? ' data-action="day-task" data-level="' + id + '"'
@@ -3106,7 +3125,8 @@
       spec.spot +
       (done ? " is-done" : "") +
       (next ? " is-next" : "") +
-      (locked ? " is-locked" : "");
+      (locked ? " is-locked" : "") +
+      (preview ? " is-preview" : "");
     return (
       "<" +
       tag +
@@ -3129,28 +3149,31 @@
 
   function dayPlaceArt(id, world, evening) {
     if (id === "dress") {
-      return '<span class="art-window"></span><span class="art-bed">🛏️</span><span class="art-shirt">👕</span>';
+      if (isTaskDone(world, "dress")) {
+        var kept = renderMiniIcons(world.outfit, "day-kept");
+        return kept || '<span class="art-shirt">👕</span>';
+      }
+      return '<span class="art-bed">🛏️</span>';
     }
     if (id === "table") {
-      return '<span class="art-table">' + renderDayTableBits(world) + "</span>";
+      if (isTaskDone(world, "table") && (world.tableItems || []).length) {
+        return renderDayTableBits(world);
+      }
+      return '<span class="art-meal">🍽️</span>';
     }
     if (id === "light" || id === "retry") {
-      return (
-        '<span class="art-light">🚦</span><span class="art-zebra"></span>' +
-        (evening ? '<span class="art-lamp">🏮</span>' : "")
-      );
+      return '<span class="art-light">🚦</span>' + (evening ? '<span class="art-lamp">🏮</span>' : "");
     }
-    return (
-      '<span class="art-tree">🌳</span><span class="art-river">🌊</span>' + renderDayAnimals(world)
-    );
+    if (id === "friends") return '<span class="art-paw">🐾</span>';
+    return '<span class="art-tree">🌳</span>' + renderDayAnimals(world);
   }
 
   function renderDayWorld() {
     var world = ensureFoxWorld();
-    var plan = todayPlanOf(world);
+    var path = visibleDayPath(world);
     var evening = dayIsFinished(world);
     var mark = markerIndex(world);
-    var places = plan
+    var places = path
       .map(function (id) {
         var meta = dayTaskMeta(id, world);
         return renderDayPlace(world, {
@@ -3178,7 +3201,7 @@
       (evening ? " is-evening" : "") +
       (world.lastWeather ? " wx-" + world.lastWeather : "") +
       '" style="--day-n:' +
-      plan.length +
+      path.length +
       ";--day-at:" +
       mark +
       '">' +
@@ -3190,6 +3213,7 @@
       "</div>" +
       '<div class="day-marker" aria-hidden="true">' +
       renderFoxWear(world, "map") +
+      renderMapOutfitBits(world) +
       "</div></div>" +
       (evening ? '<p class="day-endline">今天過得真好</p>' : "") +
       "</div>"
@@ -5951,6 +5975,50 @@
         foxWorldSession.rolled = false;
         foxWorldSession.greeted = false;
         return saveFoxWorld(w);
+      },
+      visiblePath: function (w) {
+        return visibleDayPath(w || ensureFoxWorld());
+      },
+      mapProbe: function () {
+        var world = ensureFoxWorld();
+        var html = renderDayWorld();
+        return {
+          path: visibleDayPath(world),
+          plan: todayPlanOf(world),
+          next: nextDayTask(world),
+          mark: markerIndex(world),
+          done: todayDoneCount(world),
+          planLen: todayPlanOf(world).length,
+          greeting: dayFoxGreeting(world),
+          hasWindow: html.indexOf("art-window") >= 0,
+          hasZebra: html.indexOf("art-zebra") >= 0,
+          hasEmptyBoxClass: /art-window|art-zebra|art-table/.test(html),
+          labels: ["換衣服", "擺早餐", "去野餐", "過馬路", "去公園", "去看朋友", "再過一次"].filter(function (s) {
+            return html.indexOf(s) >= 0;
+          }),
+          hasOutfitWear: html.indexOf("has-outfit") >= 0,
+          hasPreview: html.indexOf("is-preview") >= 0,
+          hasNext: html.indexOf("place-table is-next") >= 0 || html.indexOf("is-next") >= 0,
+          dressDone: html.indexOf("place-room is-done") >= 0,
+          tableNext: html.indexOf("place-table is-next") >= 0,
+        };
+      },
+      finishDressForTest: function (opts) {
+        opts = opts || {};
+        var world = ensureFoxWorld();
+        world.outfit = sanitizeOutfit(
+          opts.outfit || [
+            { id: "tee", emoji: "👕", name: "短袖", slot: "body" },
+            { id: "cap", emoji: "🧢", name: "帽子", slot: "head" },
+          ]
+        );
+        world.lastWeather = sanitizeWeather(opts.weather || "sun");
+        world.todayCompleted.dress = true;
+        world.lastTask = "dress";
+        growTodayPlan(world, "dress");
+        world.todayPlan = sanitizeTodayPlan(world.todayPlan);
+        world.todayHints = sanitizeTodayHints(world.todayHints);
+        return saveFoxWorld(world);
       },
       shortMissions: function () {
         var dress = makeDressQuestions(true);
