@@ -118,7 +118,7 @@
   ];
 
   var NEW_MATH_LEVELS = [
-    { id: "more", name: "誰比較多", hint: "哪一邊比較多", emoji: "🍉", cls: "c5" },
+    { id: "more", name: "誰比較多", hint: "哪一盤比較多", emoji: "🍉", cls: "c5" },
     { id: "ord", name: "第幾個", hint: "請第幾個", emoji: "5️⃣", cls: "c6" },
     { id: "missing", name: "缺了誰", hint: "缺誰拖上去", emoji: "❓", cls: "c7" },
     { id: "bond", name: "湊一湊", hint: "再拿幾個才滿", emoji: "🍇", cls: "c8" },
@@ -1635,47 +1635,54 @@
 
   function makeMoreQuestions() {
     var qs = [];
-    var equalAt = [randInt(0, 3), randInt(4, 6), randInt(7, 9)];
+    var plans = shuffle(["left", "right", "same", "left", "right", "same", "left"]);
+    var scenes = shuffle(["kitchen", "picnic", "kitchen", "picnic", "kitchen", "picnic", "picnic"]);
+    var prizes = shuffle(["⭐", "👑", "⭐", "👑", "⭐", "👑", "⭐"]);
+    var icons = FRUITS.concat(ANIMALS).filter(function (em) {
+      return em !== "⭐";
+    });
     var prevKey = "";
-    for (var i = 0; i < 10; i++) {
-      var isEqual = equalAt.indexOf(i) !== -1;
+    for (var i = 0; i < 7; i++) {
+      var kind = plans[i];
       var left = 1;
       var right = 1;
       var tries = 0;
+      var maxN = i < 3 ? 5 : 10;
       do {
-        if (isEqual) {
-          left = right = randInt(1, 10);
+        if (kind === "same") {
+          left = right = randInt(1, Math.min(8, maxN));
         } else {
-          var lo = randInt(1, 10);
+          var lo = randInt(1, maxN);
           var diff = randInt(1, 3);
           var hi = lo + diff;
           if (hi > 10) {
-            hi = lo;
-            lo = hi - diff;
-            if (lo < 1) {
-              lo = 1;
-              hi = Math.min(10, lo + diff);
-            }
+            hi = 10;
+            lo = Math.max(1, hi - diff);
           }
           if (lo === hi && hi < 10) hi += 1;
           if (lo === hi && lo > 1) lo -= 1;
-          if (Math.random() < 0.5) {
-            left = lo;
-            right = hi;
-          } else {
+          if (kind === "left") {
             left = hi;
             right = lo;
+          } else {
+            left = lo;
+            right = hi;
           }
         }
         tries += 1;
       } while (left + ":" + right === prevKey && tries < 10);
       prevKey = left + ":" + right;
+      var prize = prizes[i];
+      var answer = left === right ? "same" : left > right ? "left" : "right";
       qs.push({
         left: left,
         right: right,
         equal: left === right,
-        answer: left === right ? "same" : left > right ? "left" : "right",
-        icon: pick(FRUITS.concat(ANIMALS)),
+        answer: answer,
+        icon: pick(icons),
+        scene: scenes[i] === "picnic" ? "picnic" : "kitchen",
+        prize: prize,
+        items: [lifeItem("more-prize-" + i, prize, prize === "👑" ? "皇冠" : "星星", answer)],
       });
     }
     return qs;
@@ -3047,7 +3054,8 @@
     if (state.levelId === "trace") return (q && NUM_TIPS[q.n]) || "從亮點開始，描一描";
     if (state.levelId === "more") {
       if (q && moreAllTapped(q)) {
-        return q.equal ? "一樣多還是有一邊比較多？" : "哪一邊比較多？";
+        var prizeName = q.prize === "👑" ? "皇冠" : "星星";
+        return q.equal ? "一樣多，把" + prizeName + "放到中間" : "把" + prizeName + "放到比較多的那一盤";
       }
       return "兩邊都點完，再比";
     }
@@ -3162,6 +3170,7 @@
     return (
       isPlaceLevel() ||
       state.levelId === "bond" ||
+      state.levelId === "more" ||
       state.levelId === "light" ||
       isStickerLevel() ||
       isCubbyLevel() ||
@@ -3426,7 +3435,7 @@
       );
     }
     if (id === "more") {
-      return '<span class="preview-art preview-more" aria-hidden="true"><span>🍉🍉🍉</span><span class="vs">:</span><span>🍉🍉</span></span>';
+      return '<span class="preview-art preview-more" aria-hidden="true"><span class="mini-scale"><b>🍉🍉🍉</b><i></i><b>🍉🍉</b></span></span>';
     }
     if (id === "ord") {
       return '<span class="preview-art preview-ord" aria-hidden="true"><b>左</b>🐶🐱🐰<em>3</em></span>';
@@ -4102,56 +4111,87 @@
     );
   }
 
-  function renderMoreGroup(count, icon, side) {
-    var ready = moreAllTapped(state.questions[state.qIndex]);
-    var mark = state.choiceMark && state.choiceMark.value === side ? " " + state.choiceMark.cls : "";
+  function renderMoreGroup(count, icon, side, ready) {
     var n = tappedCount(state.moreTapped[side]);
-    var tag = ready ? "button" : "div";
-    var extra = ready
-      ? ' type="button" data-action="answer" data-value="' + side + '"'
-      : "";
+    var guest = ready ? itemInSlot(side) : null;
+    var slotBits = ready ? ' data-life-slot="' + side + '"' : "";
     return (
-      "<" +
-      tag +
-      ' class="group' +
-      mark +
-      (ready ? "" : " is-count") +
+      '<div class="more-pan more-pan-' +
+      side +
+      (guest ? " filled" : "") +
+      (ready ? " is-drop" : " is-count") +
       '" data-more-side="' +
       side +
       '"' +
-      extra +
-      ' aria-label="這一邊">' +
+      slotBits +
+      ' aria-label="' +
+      (side === "left" ? "左邊" : "右邊") +
+      '">' +
       '<span class="more-total' +
       (n ? "" : " is-empty") +
       '">' +
       (n ? n : "") +
       "</span>" +
       scatterIcons(icon, count, "scatter-lg", side === "left" ? 1 : 2, 0, state.moreTapped[side], "data-more-dot") +
-      "</" +
-      tag +
-      ">"
+      (guest ? '<span class="more-prize" aria-hidden="true">' + guest.emoji + "</span>" : "") +
+      "</div>"
     );
   }
 
   function renderMore(q) {
     var ready = moreAllTapped(q);
-    var sameMark = state.choiceMark && state.choiceMark.value === "same" ? " " + state.choiceMark.cls : "";
+    var tip = !ready ? "is-weigh" : q.equal ? "tip-same" : q.answer === "left" ? "tip-left" : "tip-right";
+    var bounce = state.sceneAnim === "scale-bounce" ? " is-bounce" : "";
+    var nestGuest = ready ? itemInSlot("same") : null;
+    var scene = q.scene === "picnic" ? "picnic" : "kitchen";
+    var prompt = ready ? (q.equal ? "一樣多，放到中間" : "哪一盤比較多") : "兩邊都點完，再比";
+    var tray = ready ? renderTrayItems(q) : '<div class="more-tray-wait" aria-hidden="true">兩邊都點完</div>';
+    var kidL = scene === "picnic" ? '<span class="more-kid" aria-hidden="true">🧒</span>' : "";
+    var kidR = scene === "picnic" ? '<span class="more-kid" aria-hidden="true">👧</span>' : "";
+    var deco =
+      scene === "picnic"
+        ? '<i class="more-sun"></i><i class="more-tree left"></i><i class="more-tree right"></i>'
+        : '<i class="more-window"></i><i class="more-jar"></i><i class="more-jar two"></i>';
     return (
       '<div class="play-col">' +
       '<div class="prompt">' +
-      (ready ? (q.equal ? "一樣多還是有一邊比較多？" : "哪一邊比較多？") : "兩邊都點完，再比") +
+      prompt +
       "</div>" +
-      '<div class="more-stage"><div class="more-wrap">' +
-      '<div class="more-groups">' +
-      renderMoreGroup(q.left, q.icon, "left") +
-      renderMoreGroup(q.right, q.icon, "right") +
+      '<div class="more-play is-place">' +
+      '<div class="more-stage">' +
+      '<div class="more-scene scene-' +
+      scene +
+      bounce +
+      '">' +
+      '<div class="more-deco" aria-hidden="true">' +
+      deco +
       "</div>" +
-      '<button class="same-btn' +
-      sameMark +
-      (ready ? "" : " is-locked") +
-      '" type="button"' +
-      (ready ? ' data-action="answer" data-value="same"' : " disabled") +
-      ">一樣多</button>" +
+      '<div class="more-scale ' +
+      tip +
+      bounce +
+      '">' +
+      '<div class="more-beam">' +
+      '<div class="more-seat">' +
+      kidL +
+      renderMoreGroup(q.left, q.icon, "left", ready) +
+      "</div>" +
+      '<div class="more-seat">' +
+      kidR +
+      renderMoreGroup(q.right, q.icon, "right", ready) +
+      "</div></div>" +
+      '<div class="more-stand">' +
+      '<div class="more-fulcrum' +
+      (ready ? " is-drop" : "") +
+      (nestGuest ? " filled" : "") +
+      '"' +
+      (ready ? ' data-life-slot="same"' : "") +
+      ' aria-label="一樣多">' +
+      (nestGuest
+        ? '<span class="more-prize" aria-hidden="true">' + nestGuest.emoji + "</span>"
+        : '<span class="more-nest-lab">一樣多</span>') +
+      "</div></div></div></div></div>" +
+      '<div class="life-tray more-tray">' +
+      tray +
       "</div></div></div>"
     );
   }
@@ -5694,11 +5734,15 @@
     if (state.levelId === "daynight") state.sceneAnim = "day-finale";
     if (isPathLevel()) state.sceneAnim = "path-walk";
     if (state.levelId === "ord") state.sceneAnim = "ord-step";
+    if (state.levelId === "more") state.sceneAnim = "scale-bounce";
     if (state.levelId === "sort") state.sceneAnim = "sort-done";
     if (isStickerLevel()) state.sceneAnim = "sticker-pop";
     if (isCubbyLevel()) state.sceneAnim = "cubby-home";
     if (isShareLevel()) state.sceneAnim = "share-done";
-    state.foxMsg = state.levelId === "bond" || isNumberHomeLevel() || isShareLevel() ? "好棒" : lifeCheer();
+    state.foxMsg =
+      state.levelId === "bond" || state.levelId === "more" || isNumberHomeLevel() || isShareLevel()
+        ? "好棒"
+        : lifeCheer();
     state.foxMood = "happy";
     render();
     replayFoxHappy();
@@ -5718,6 +5762,7 @@
     if (isStickerLevel()) wait = 1100;
     if (isCubbyLevel()) wait = 1100;
     if (isShareLevel()) wait = 1000;
+    if (state.levelId === "more") wait = 1100;
     setTimeout(nextQuestion, wait);
   }
 
@@ -6583,10 +6628,7 @@
     var idx = String(el.getAttribute("data-more-dot"));
     var q = state.questions[state.qIndex];
     if (!side || !q) return;
-    if (moreAllTapped(q)) {
-      handleAnswer(side);
-      return;
-    }
+    if (moreAllTapped(q)) return;
     if (state.moreTapped[side][idx]) return;
     var max = side === "left" ? q.left : q.right;
     var n = parseInt(idx, 10);
