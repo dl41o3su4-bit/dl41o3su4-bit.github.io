@@ -118,16 +118,16 @@
 
   var WORD_LEVELS = [
     { id: "bpm-trace", name: "描注音", hint: "用手指描聲符", emoji: "ㄅ", cls: "w1" },
-    { id: "bpm-pic", name: "圖配注音", hint: "看字選聲符", emoji: "🍦", cls: "w2" },
+    { id: "bpm-pic", name: "圖配注音", hint: "把第一個音貼上去", emoji: "🍦", cls: "w2" },
     { id: "bpm-draw", name: "注音連連看", hint: "看字連聲符", emoji: "🔗", cls: "w3" },
-    { id: "hanzi", name: "看圖認字", hint: "圖配哪個字", emoji: "山", cls: "w4" },
+    { id: "hanzi", name: "看圖認字", hint: "把字貼上去", emoji: "山", cls: "w4" },
     { id: "bpm-listen", name: "聽音尋寶", hint: "聽一聽，找一找", emoji: "👂", cls: "w5" },
     { id: "bpm-train", name: "注音火車", hint: "拖上對的車廂", emoji: "🚂", cls: "w6" },
   ];
 
   var ENGLISH_LEVELS = [
     { id: "abc-trace", name: "描字母", hint: "用手指描 A～Z", emoji: "A", cls: "e1" },
-    { id: "abc-pic", name: "圖配字母", hint: "看字選第一個字母", emoji: "🍎", cls: "e2" },
+    { id: "abc-pic", name: "圖配字母", hint: "把第一個字母貼上去", emoji: "🍎", cls: "e2" },
     { id: "abc-case", name: "大小寫連連看", hint: "大寫連小寫", emoji: "Aa", cls: "e3" },
     { id: "abc-draw", name: "字母連連看", hint: "字母連圖", emoji: "🔗", cls: "e4" },
     { id: "abc-pop", name: "字母泡泡", hint: "聽到就點破", emoji: "🫧", cls: "e5" },
@@ -1650,20 +1650,128 @@
       });
   }
 
-  function makeBpmPicQuestions() {
-    var pool = uniqueBpmPool();
-    return shuffle(BPM_WORDS)
-      .slice(0, 10)
-      .map(function (w) {
-        var choices = makeSymbolChoices(w.bpm, pool);
-        if (choices.indexOf(w.bpm) === -1) choices[0] = w.bpm;
+  function stickerAsk(kind, word) {
+    if (kind === "bpm") return word + "的第一個音貼上去";
+    if (kind === "abc") return word + " 的第一個字母貼上去";
+    return "哪個是" + word + "？把字貼上去";
+  }
+
+  function pickStickerDecoys(list, target, getWord, getSym, need) {
+    var usedWord = {};
+    var usedSym = {};
+    var usedEmoji = {};
+    usedWord[getWord(target)] = true;
+    usedSym[getSym(target)] = true;
+    usedEmoji[target.emoji] = true;
+    var strict = shuffle(
+      list.filter(function (w) {
+        return !usedWord[getWord(w)] && !usedSym[getSym(w)] && !usedEmoji[w.emoji];
+      })
+    );
+    var out = [];
+    var i;
+    for (i = 0; i < strict.length && out.length < need; i++) {
+      out.push(strict[i]);
+      usedWord[getWord(strict[i])] = true;
+      usedSym[getSym(strict[i])] = true;
+      usedEmoji[strict[i].emoji] = true;
+    }
+    if (out.length < need) {
+      var loose = shuffle(
+        list.filter(function (w) {
+          return !usedWord[getWord(w)] && !usedEmoji[w.emoji];
+        })
+      );
+      for (i = 0; i < loose.length && out.length < need; i++) {
+        out.push(loose[i]);
+        usedWord[getWord(loose[i])] = true;
+      }
+    }
+    return out;
+  }
+
+  function makeStickerQuestions(kind) {
+    var list;
+    var getSym;
+    var getWord;
+    var pool;
+    var scenes = ["kitchen", "park", "room", "table"];
+    if (kind === "bpm") {
+      list = BPM_WORDS;
+      getSym = function (w) {
+        return w.bpm;
+      };
+      getWord = function (w) {
+        return w.word;
+      };
+      pool = uniqueBpmPool();
+    } else if (kind === "abc") {
+      list = ABC_WORDS;
+      getSym = function (w) {
+        return w.letter;
+      };
+      getWord = function (w) {
+        return w.word;
+      };
+      pool = ABC_WORDS.map(function (w) {
+        return w.letter;
+      });
+    } else {
+      list = HANZI_WORDS;
+      getSym = function (w) {
+        return w.ch;
+      };
+      getWord = function (w) {
+        return w.ch;
+      };
+      pool = HANZI_WORDS.map(function (w) {
+        return w.ch;
+      });
+    }
+    return shuffle(list.slice())
+      .slice(0, 7)
+      .map(function (target, i) {
+        var decoys = pickStickerDecoys(list, target, getWord, getSym, 2 + (i % 2));
+        var objects = shuffle([target].concat(decoys)).map(function (w, j) {
+          return {
+            id: "obj-" + i + "-" + j,
+            emoji: w.emoji,
+            word: getWord(w),
+            target: getWord(w) === getWord(target),
+          };
+        });
+        var targetObj = null;
+        var o;
+        for (o = 0; o < objects.length; o++) {
+          if (objects[o].target) {
+            targetObj = objects[o];
+            break;
+          }
+        }
+        var choices = makeSymbolChoices(getSym(target), pool);
+        if (choices.indexOf(getSym(target)) === -1) choices[0] = getSym(target);
         return {
-          emoji: w.emoji,
-          word: w.word,
-          answer: w.bpm,
-          choices: choices,
+          scene: scenes[i % scenes.length],
+          word: getWord(target),
+          emoji: target.emoji,
+          answer: getSym(target),
+          ask: stickerAsk(kind, getWord(target)),
+          objects: objects,
+          items: choices.map(function (s, k) {
+            return {
+              id: "sticker-" + i + "-" + k,
+              emoji: s,
+              name: s,
+              slot: s === getSym(target) && targetObj ? targetObj.id : "",
+              kind: "sticker",
+            };
+          }),
         };
       });
+  }
+
+  function makeBpmPicQuestions() {
+    return makeStickerQuestions("bpm");
   }
 
   function makeBpmDrawQuestions() {
@@ -1679,29 +1787,7 @@
   }
 
   function makeHanziQuestions() {
-    var qs = [];
-    var pool = HANZI_WORDS.map(function (h) {
-      return h.ch;
-    });
-    var picks = shuffle(HANZI_WORDS).slice(0, 6);
-    for (var i = 0; i < picks.length; i++) {
-      qs.push({
-        mode: "pick",
-        emoji: picks[i].emoji,
-        word: picks[i].ch,
-        answer: picks[i].ch,
-        choices: makeSymbolChoices(picks[i].ch, pool),
-      });
-    }
-    for (var j = 0; j < 4; j++) {
-      var pairCount = j < 2 ? 2 : 3;
-      var items = shuffle(HANZI_WORDS).slice(0, pairCount);
-      var board = makePairConnect(items, "emoji", "ch");
-      board.mode = "draw";
-      board.prompt = "看圖上的字，連起來";
-      qs.push(board);
-    }
-    return qs;
+    return makeStickerQuestions("hanzi");
   }
 
   function makeAbcTraceQuestions() {
@@ -1751,19 +1837,7 @@
   }
 
   function makeAbcPicQuestions() {
-    var pool = ABC_WORDS.map(function (w) {
-      return w.letter;
-    });
-    return shuffle(ABC_WORDS)
-      .slice(0, 10)
-      .map(function (w) {
-        return {
-          emoji: w.emoji,
-          word: w.word,
-          answer: w.letter,
-          choices: makeSymbolChoices(w.letter, pool),
-        };
-      });
+    return makeStickerQuestions("abc");
   }
 
   function makeAbcCaseQuestions() {
@@ -2658,16 +2732,15 @@
     if (state.levelId === "bond") return "拖進去，湊滿";
     if (state.levelId === "bpm-trace") return "從亮點開始，描一描";
     if (state.levelId === "bpm-pic") {
-      return (q && q.word ? q.word : "這個字") + "的第一個音是誰？";
+      return (q && q.ask) || ((q && q.word ? q.word : "這個字") + "的第一個音貼上去");
     }
     if (state.levelId === "bpm-draw") return "看圖上的字，連到第一個音";
     if (state.levelId === "hanzi") {
-      if (q && q.mode === "draw") return "看圖上的字，連起來";
-      return (q && q.word ? q.word : "這個字") + "。這是哪個字？";
+      return (q && q.ask) || ("哪個是" + ((q && q.word) || "這個字") + "？把字貼上去");
     }
     if (state.levelId === "abc-trace") return (q && LETTER_TIPS[q.letter]) || "從亮點開始，描一描";
     if (state.levelId === "abc-pic") {
-      return (q && q.word ? q.word : "這個字") + "的第一個字母是誰？";
+      return (q && q.ask) || ((q && q.word ? q.word : "這個字") + " 的第一個字母貼上去");
     }
     if (state.levelId === "abc-case") return "把大寫和小寫連起來";
     if (state.levelId === "abc-draw") return "看圖上的字，連到第一個字母";
@@ -2693,6 +2766,10 @@
     return "選一關開始吧！";
   }
 
+  function isStickerLevel() {
+    return state.levelId === "bpm-pic" || state.levelId === "abc-pic" || state.levelId === "hanzi";
+  }
+
   function isPlaceLevel() {
     return (
       state.levelId === "dress" ||
@@ -2707,7 +2784,7 @@
   }
 
   function isDragPlaceLevel() {
-    return isPlaceLevel() || state.levelId === "bond" || state.levelId === "light";
+    return isPlaceLevel() || state.levelId === "bond" || state.levelId === "light" || isStickerLevel();
   }
 
   function resetMoreTaps() {
@@ -2734,7 +2811,7 @@
   }
 
   function isSceneLevel() {
-    return isLifeLevel() || state.levelId === "bpm-listen" || state.levelId === "abc-pop";
+    return isLifeLevel() || state.levelId === "bpm-listen" || state.levelId === "abc-pop" || isStickerLevel();
   }
 
   function isVoiceLevel() {
@@ -2745,7 +2822,8 @@
       state.levelId === "abc-path" ||
       state.levelId === "body" ||
       state.levelId === "daynight" ||
-      state.levelId === "sort"
+      state.levelId === "sort" ||
+      isStickerLevel()
     );
   }
 
@@ -2815,10 +2893,6 @@
 
   function isConnectLevel() {
     if (state.levelId === "match-draw" || state.levelId === "bpm-draw" || state.levelId === "abc-case" || state.levelId === "abc-draw") return true;
-    if (state.levelId === "hanzi") {
-      var q = state.questions[state.qIndex];
-      return !!(q && q.mode === "draw");
-    }
     return false;
   }
 
@@ -3768,6 +3842,98 @@
     );
   }
 
+  function renderStickerChip(item, extraClass) {
+    var mark = extraClass ? " " + extraClass : "";
+    var placed = extraClass === "in-slot";
+    return (
+      '<div class="life-item sticker-chip' +
+      mark +
+      '" data-life-item="' +
+      item.id +
+      '"' +
+      (placed ? ' data-placed="1"' : "") +
+      ' role="img" aria-label="' +
+      escapeHtml(item.name || item.emoji) +
+      '"><span class="sticker-glyph">' +
+      escapeHtml(item.emoji) +
+      "</span></div>"
+    );
+  }
+
+  function renderStickerTray(q) {
+    return (q.items || [])
+      .filter(function (item) {
+        return !state.placed[item.id];
+      })
+      .map(function (item) {
+        return renderStickerChip(item, "");
+      })
+      .join("");
+  }
+
+  function renderStickerLand(scene) {
+    if (scene === "kitchen") {
+      return '<div class="sticker-land" aria-hidden="true"><i class="sk-window"></i><i class="sk-counter"></i></div>';
+    }
+    if (scene === "park") {
+      return '<div class="sticker-land" aria-hidden="true"><i class="sp-hill"></i><i class="sp-cloth"></i></div>';
+    }
+    if (scene === "room") {
+      return '<div class="sticker-land" aria-hidden="true"><i class="sr-window"></i><i class="sr-rug"></i></div>';
+    }
+    return '<div class="sticker-land" aria-hidden="true"><i class="st-top"></i><i class="st-leg a"></i><i class="st-leg b"></i></div>';
+  }
+
+  function renderStickerPlay(q) {
+    var popping = state.sceneAnim === "sticker-pop";
+    var objects = (q.objects || [])
+      .map(function (obj) {
+        var stuck = itemsInSlot(obj.id);
+        var hold = stuck
+          .map(function (item) {
+            return renderStickerChip(item, "in-slot");
+          })
+          .join("");
+        return (
+          '<div class="sticker-obj' +
+          (stuck.length ? " stuck" : "") +
+          (popping && obj.target ? " pop" : "") +
+          '" data-life-slot="' +
+          obj.id +
+          '" aria-label="' +
+          escapeHtml(obj.word) +
+          '"><span class="sticker-pic">' +
+          obj.emoji +
+          '</span><span class="sticker-word">' +
+          escapeHtml(obj.word) +
+          '</span><div class="sticker-hold">' +
+          hold +
+          "</div></div>"
+        );
+      })
+      .join("");
+    return (
+      '<div class="play-col">' +
+      '<div class="prompt">' +
+      escapeHtml(q.ask || foxPrompt()) +
+      "</div>" +
+      '<div class="life-stage is-place sticker-play">' +
+      '<div class="sticker-scene scene-' +
+      (q.scene || "table") +
+      (popping ? " done" : "") +
+      '">' +
+      renderStickerLand(q.scene || "table") +
+      '<div class="sticker-table n' +
+      (q.objects || []).length +
+      '">' +
+      objects +
+      "</div></div>" +
+      '<div class="life-tray sticker-tray">' +
+      renderStickerTray(q) +
+      "</div></div></div>"
+    );
+  }
+
   function renderConnectNode(item, side) {
     var done = state.matchDone[item.pair] ? " done" : "";
     var isPic = !!item.emoji;
@@ -3841,20 +4007,11 @@
     if (state.levelId === "missing") body = renderMissing(q);
     if (state.levelId === "bond") body = renderBond(q);
     if (state.levelId === "bpm-trace") body = renderTrace(q);
-    if (state.levelId === "bpm-pic") {
-      body = renderPicChoice(q, (q.word || "這個字") + "的第一個音是誰？");
-    }
+    if (state.levelId === "bpm-pic") body = renderStickerPlay(q);
     if (state.levelId === "bpm-draw") body = renderPicConnect(q);
-    if (state.levelId === "hanzi") {
-      body =
-        q.mode === "draw"
-          ? renderPicConnect(q)
-          : renderPicChoice(q, (q.word || "這個字") + "。這是哪個字？");
-    }
+    if (state.levelId === "hanzi") body = renderStickerPlay(q);
     if (state.levelId === "abc-trace") body = renderTrace(q);
-    if (state.levelId === "abc-pic") {
-      body = renderPicChoice(q, (q.word || "這個字") + "的第一個字母是誰？");
-    }
+    if (state.levelId === "abc-pic") body = renderStickerPlay(q);
     if (state.levelId === "abc-case" || state.levelId === "abc-draw") body = renderPicConnect(q);
     if (state.levelId === "dress") body = renderDress(q);
     else if (state.levelId === "habitat") body = renderHabitat(q);
@@ -4893,11 +5050,16 @@
     g.className = "life-ghost";
     g.style.transition = "none";
     g.setAttribute("aria-hidden", "true");
-    g.innerHTML =
-      '<span class="life-emoji">' +
-      item.emoji +
-      "</span>" +
-      (item.name ? '<span class="life-name">' + escapeHtml(item.name) + "</span>" : "");
+    if (item.kind === "sticker") {
+      g.className = "life-ghost sticker-chip";
+      g.innerHTML = '<span class="sticker-glyph">' + escapeHtml(item.emoji) + "</span>";
+    } else {
+      g.innerHTML =
+        '<span class="life-emoji">' +
+        item.emoji +
+        "</span>" +
+        (item.name ? '<span class="life-name">' + escapeHtml(item.name) + "</span>" : "");
+    }
     document.body.appendChild(g);
     return g;
   }
@@ -4940,6 +5102,7 @@
     if (state.levelId === "daynight") state.sceneAnim = "day-finale";
     if (state.levelId === "abc-path") state.sceneAnim = "path-walk";
     if (state.levelId === "sort") state.sceneAnim = "sort-done";
+    if (isStickerLevel()) state.sceneAnim = "sticker-pop";
     state.foxMsg = state.levelId === "bond" ? "好棒" : lifeCheer();
     state.foxMood = "happy";
     render();
@@ -4948,6 +5111,7 @@
     if (state.levelId === "daynight") wait = 1450;
     if (state.levelId === "bpm-train") wait = 1700;
     if (state.levelId === "abc-path") wait = 1450;
+    if (isStickerLevel()) wait = 1100;
     setTimeout(nextQuestion, wait);
   }
 
@@ -5682,9 +5846,7 @@
     if (state.levelId === "bond") {
       return;
     }
-    if (state.levelId === "bpm-pic" || state.levelId === "abc-pic" || (state.levelId === "hanzi" && q.mode !== "draw")) {
-      if (raw === q.answer) markCorrect(raw);
-      else markRetry(raw, "再看一次");
+    if (isStickerLevel()) {
       return;
     }
     if (state.levelId === "bpm-listen") {
