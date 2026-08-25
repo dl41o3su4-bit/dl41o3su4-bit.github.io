@@ -1690,6 +1690,61 @@
     return out;
   }
 
+  function stickerSceneSpots(scene) {
+    if (scene === "kitchen") return ["fridge", "counter", "table", "bowl"];
+    if (scene === "park") return ["sky", "tree", "bench", "grass"];
+    if (scene === "room") return ["shelf", "bed"];
+    return ["window", "side", "table"];
+  }
+
+  function stickerSceneName(scene) {
+    if (scene === "kitchen") return "廚房";
+    if (scene === "park") return "公園";
+    if (scene === "room") return "房間";
+    return "餐桌";
+  }
+
+  function stickerSpotHint(scene, word) {
+    var w = String(word || "");
+    if (scene === "kitchen") {
+      if (/冰淇淋|牛奶|西瓜|Ice cream|Juice|Watermelon/i.test(w)) return "fridge";
+      if (/蘋果|葡萄|橙|Apple|Grapes|Orange|Banana/i.test(w)) return "bowl";
+      if (/蛋糕|蝦|蛋|Egg|Cake/i.test(w)) return "counter";
+      return "table";
+    }
+    if (scene === "park") {
+      if (/太陽|飛機|氣球|雨|上|Sun|Moon|Rain|Kite|Umbrella/i.test(w)) return "sky";
+      if (/花朵|花|鳥|樹|Tree|Nest|Bird/i.test(w)) return "tree";
+      if (/帽子|人|書|Hat|Queen/i.test(w)) return "bench";
+      return "grass";
+    }
+    if (scene === "room") {
+      if (/帽子|書|門|Hat|Box|Book|Crown|Yo-yo/i.test(w)) return "shelf";
+      return "bed";
+    }
+    if (/太陽|雨|鳥|上|Sun|Moon|Rain|Bird/i.test(w)) return "window";
+    if (/帽子|書|門|Hat|Box|Book|Crown/i.test(w)) return "side";
+    return "table";
+  }
+
+  function assignStickerSpots(scene, objects) {
+    var spots = stickerSceneSpots(scene);
+    var used = {};
+    var i;
+    for (i = 0; i < spots.length; i++) used[spots[i]] = 0;
+    for (i = 0; i < objects.length; i++) {
+      var prefer = stickerSpotHint(scene, objects[i].word);
+      if (spots.indexOf(prefer) === -1) prefer = spots[0];
+      var empties = spots.filter(function (s) {
+        return used[s] === 0;
+      });
+      var spot = prefer;
+      if (used[prefer] >= 1 && empties.length) spot = empties[0];
+      objects[i].spot = spot;
+      used[spot] += 1;
+    }
+  }
+
   function makeStickerQuestions(kind) {
     var list;
     var getSym;
@@ -1731,7 +1786,7 @@
     return shuffle(list.slice())
       .slice(0, 7)
       .map(function (target, i) {
-        var decoys = pickStickerDecoys(list, target, getWord, getSym, 2 + (i % 2));
+        var decoys = pickStickerDecoys(list, target, getWord, getSym, 2);
         var objects = shuffle([target].concat(decoys)).map(function (w, j) {
           return {
             id: "obj-" + i + "-" + j,
@@ -1740,6 +1795,7 @@
             target: getWord(w) === getWord(target),
           };
         });
+        assignStickerSpots(scenes[i % scenes.length], objects);
         var targetObj = null;
         var o;
         for (o = 0; o < objects.length; o++) {
@@ -3871,63 +3927,120 @@
       .join("");
   }
 
-  function renderStickerLand(scene) {
+  function renderStickerObj(obj, popping) {
+    var stuck = itemsInSlot(obj.id);
+    var hold = stuck
+      .map(function (item) {
+        return renderStickerChip(item, "in-slot");
+      })
+      .join("");
+    return (
+      '<div class="sticker-obj' +
+      (stuck.length ? " stuck" : "") +
+      (popping && obj.target ? " pop" : "") +
+      '" data-life-slot="' +
+      obj.id +
+      '" aria-label="' +
+      escapeHtml(obj.word) +
+      '"><span class="sticker-pic">' +
+      obj.emoji +
+      '</span><span class="sticker-word">' +
+      escapeHtml(obj.word) +
+      '</span><div class="sticker-hold">' +
+      hold +
+      "</div></div>"
+    );
+  }
+
+  function stickerObjsOn(q, spot, popping) {
+    return (q.objects || [])
+      .filter(function (obj) {
+        return obj.spot === spot;
+      })
+      .map(function (obj) {
+        return renderStickerObj(obj, popping);
+      })
+      .join("");
+  }
+
+  function renderStickerFurniture(q, popping) {
+    var scene = q.scene || "table";
     if (scene === "kitchen") {
-      return '<div class="sticker-land" aria-hidden="true"><i class="sk-window"><b></b><b></b></i></div>';
+      return (
+        '<div class="listen-land" aria-hidden="true"><i class="lk-window"></i><i class="lk-floor"></i></div>' +
+        '<div class="listen-furn fridge"><span class="furn-name">冰箱</span><div class="furn-hold on-top">' +
+        stickerObjsOn(q, "fridge", popping) +
+        '</div><div class="furn-body"><i class="lk-freezer"></i><i class="lk-handle"></i></div></div>' +
+        '<div class="listen-furn counter"><span class="furn-name">流理台</span><div class="furn-body"><i class="lk-door a"></i><i class="lk-door b"></i><i class="lk-top"></i></div><div class="furn-hold">' +
+        stickerObjsOn(q, "counter", popping) +
+        "</div></div>" +
+        '<div class="listen-furn table"><span class="furn-name">桌子</span><div class="furn-body"><i class="lk-leg a"></i><i class="lk-leg b"></i></div><div class="furn-hold">' +
+        stickerObjsOn(q, "table", popping) +
+        '<div class="listen-bowl">' +
+        stickerObjsOn(q, "bowl", popping) +
+        "</div></div></div>"
+      );
     }
     if (scene === "park") {
-      return '<div class="sticker-land" aria-hidden="true"><i class="sp-hill"></i><i class="sp-sun"></i></div>';
+      return (
+        '<div class="listen-land" aria-hidden="true"><i class="lp-hill"></i><i class="lp-path"></i></div>' +
+        '<div class="listen-furn sky"><div class="furn-hold">' +
+        stickerObjsOn(q, "sky", popping) +
+        "</div></div>" +
+        '<div class="listen-furn tree"><span class="furn-name">樹</span><i class="lp-tree" aria-hidden="true">🌳</i><div class="furn-hold hang">' +
+        stickerObjsOn(q, "tree", popping) +
+        "</div></div>" +
+        '<div class="listen-furn bench"><span class="furn-name">長椅</span><div class="furn-body"><i class="lp-seat"></i><i class="lp-leg a"></i><i class="lp-leg b"></i></div><div class="furn-hold">' +
+        stickerObjsOn(q, "bench", popping) +
+        "</div></div>" +
+        '<div class="listen-furn grass"><span class="furn-name">草地</span><div class="furn-hold">' +
+        stickerObjsOn(q, "grass", popping) +
+        "</div></div>"
+      );
     }
     if (scene === "room") {
-      return '<div class="sticker-land" aria-hidden="true"><i class="sr-window"><b></b><b></b></i></div>';
+      return (
+        '<div class="listen-land" aria-hidden="true"><i class="lr-window"></i><i class="lr-rug"></i></div>' +
+        '<div class="listen-furn shelf"><span class="furn-name">架子</span><div class="furn-body"><i class="lr-board a"></i><i class="lr-board b"></i></div><div class="furn-hold">' +
+        stickerObjsOn(q, "shelf", popping) +
+        "</div></div>" +
+        '<div class="listen-furn bed"><span class="furn-name">床</span><div class="furn-body"><i class="lr-pillow"></i><i class="lr-blanket"></i></div><div class="furn-hold">' +
+        stickerObjsOn(q, "bed", popping) +
+        "</div></div>"
+      );
     }
-    return '<div class="sticker-land" aria-hidden="true"></div>';
+    return (
+      '<div class="listen-land" aria-hidden="true"><i class="st-floor"></i></div>' +
+      '<div class="listen-furn window"><span class="furn-name">窗</span><div class="furn-body"><i class="st-pane"></i></div><div class="furn-hold">' +
+      stickerObjsOn(q, "window", popping) +
+      "</div></div>" +
+      '<div class="listen-furn side"><span class="furn-name">櫃子</span><div class="furn-body"><i class="st-board"></i></div><div class="furn-hold">' +
+      stickerObjsOn(q, "side", popping) +
+      "</div></div>" +
+      '<div class="listen-furn family"><span class="furn-name">桌子</span><div class="furn-body"><i class="st-top"></i><i class="st-leg a"></i><i class="st-leg b"></i><i class="st-chair a"></i><i class="st-chair b"></i></div><div class="furn-hold">' +
+      stickerObjsOn(q, "table", popping) +
+      "</div></div>"
+    );
   }
 
   function renderStickerPlay(q) {
     var popping = state.sceneAnim === "sticker-pop";
-    var objects = (q.objects || [])
-      .map(function (obj) {
-        var stuck = itemsInSlot(obj.id);
-        var hold = stuck
-          .map(function (item) {
-            return renderStickerChip(item, "in-slot");
-          })
-          .join("");
-        return (
-          '<div class="sticker-obj' +
-          (stuck.length ? " stuck" : "") +
-          (popping && obj.target ? " pop" : "") +
-          '" data-life-slot="' +
-          obj.id +
-          '" aria-label="' +
-          escapeHtml(obj.word) +
-          '"><span class="sticker-pic">' +
-          obj.emoji +
-          '</span><span class="sticker-word">' +
-          escapeHtml(obj.word) +
-          '</span><div class="sticker-hold">' +
-          hold +
-          "</div></div>"
-        );
-      })
-      .join("");
+    var scene = q.scene || "table";
     return (
       '<div class="play-col">' +
       '<div class="prompt">' +
       escapeHtml(q.ask || foxPrompt()) +
       "</div>" +
       '<div class="life-stage is-place sticker-play">' +
-      '<div class="sticker-scene scene-' +
-      (q.scene || "table") +
+      '<div class="listen-scene sticker-scene scene-' +
+      scene +
       (popping ? " done" : "") +
       '">' +
-      renderStickerLand(q.scene || "table") +
-      '<div class="sticker-table n' +
-      (q.objects || []).length +
-      '">' +
-      objects +
-      "</div></div>" +
+      '<span class="listen-place">' +
+      escapeHtml(stickerSceneName(scene)) +
+      "</span>" +
+      renderStickerFurniture(q, popping) +
+      "</div>" +
       '<div class="life-tray sticker-tray">' +
       renderStickerTray(q) +
       "</div></div></div>"
