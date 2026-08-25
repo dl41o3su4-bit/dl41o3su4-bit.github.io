@@ -119,7 +119,7 @@
   var WORD_LEVELS = [
     { id: "bpm-trace", name: "描注音", hint: "用手指描聲符", emoji: "ㄅ", cls: "w1" },
     { id: "bpm-pic", name: "圖配注音", hint: "把第一個音貼上去", emoji: "🍦", cls: "w2" },
-    { id: "bpm-draw", name: "注音連連看", hint: "看字連聲符", emoji: "🔗", cls: "w3" },
+    { id: "bpm-draw", name: "注音連連看", hint: "送玩具回家", emoji: "🧺", cls: "w3" },
     { id: "hanzi", name: "看圖認字", hint: "把字貼上去", emoji: "山", cls: "w4" },
     { id: "bpm-listen", name: "聽音尋寶", hint: "聽一聽，找一找", emoji: "👂", cls: "w5" },
     { id: "bpm-train", name: "注音火車", hint: "拖上對的車廂", emoji: "🚂", cls: "w6" },
@@ -128,8 +128,8 @@
   var ENGLISH_LEVELS = [
     { id: "abc-trace", name: "描字母", hint: "用手指描 A～Z", emoji: "A", cls: "e1" },
     { id: "abc-pic", name: "圖配字母", hint: "把第一個字母貼上去", emoji: "🍎", cls: "e2" },
-    { id: "abc-case", name: "大小寫連連看", hint: "大寫連小寫", emoji: "Aa", cls: "e3" },
-    { id: "abc-draw", name: "字母連連看", hint: "字母連圖", emoji: "🔗", cls: "e4" },
+    { id: "abc-case", name: "大小寫連連看", hint: "小寫送回大寫的家", emoji: "Aa", cls: "e3" },
+    { id: "abc-draw", name: "字母連連看", hint: "圖送回字母的家", emoji: "🧺", cls: "e4" },
     { id: "abc-pop", name: "字母泡泡", hint: "聽到就點破", emoji: "🫧", cls: "e5" },
     { id: "abc-path", name: "字母小路", hint: "缺誰拖上去", emoji: "🪨", cls: "e6" },
   ];
@@ -1851,14 +1851,69 @@
     return makeStickerQuestions("bpm");
   }
 
+  function toyScatterSpots(n) {
+    var spots =
+      n <= 3
+        ? [
+            { x: 8, y: 8, r: -8 },
+            { x: 52, y: 6, r: 7 },
+            { x: 26, y: 42, r: -5 },
+          ]
+        : [
+            { x: 6, y: 6, r: -7 },
+            { x: 50, y: 4, r: 9 },
+            { x: 8, y: 40, r: 5 },
+            { x: 52, y: 38, r: -6 },
+          ];
+    return shuffle(spots).slice(0, n);
+  }
+
+  function makeCubbyQuestion(toys, homes, prompt) {
+    var spots = toyScatterSpots(toys.length);
+    var items = toys.map(function (toy, i) {
+      var copy = {};
+      var k;
+      for (k in toy) {
+        if (Object.prototype.hasOwnProperty.call(toy, k)) copy[k] = toy[k];
+      }
+      copy.x = spots[i].x;
+      copy.y = spots[i].y;
+      copy.r = spots[i].r;
+      return copy;
+    });
+    var shelf = shuffle(homes).map(function (home, i) {
+      var h = {};
+      var key;
+      for (key in home) {
+        if (Object.prototype.hasOwnProperty.call(home, key)) h[key] = home[key];
+      }
+      h.tone = i % 4;
+      return h;
+    });
+    return {
+      items: shuffle(items),
+      homes: shelf,
+      prompt: prompt,
+    };
+  }
+
   function makeBpmDrawQuestions() {
     var qs = [];
     for (var i = 0; i < 10; i++) {
-      var pairCount = i < 5 ? 2 : 3;
-      var items = uniqueBpmWords(pairCount);
-      var board = makePairConnect(items, "bpm", "emoji");
-      board.prompt = "看圖上的字，連到第一個音";
-      qs.push(board);
+      var pairCount = i < 5 ? 3 : 4;
+      var words = uniqueBpmWords(pairCount);
+      var toys = words.map(function (w, n) {
+        return {
+          id: "bpm-toy-" + i + "-" + n,
+          emoji: w.emoji,
+          name: w.word,
+          slot: w.bpm,
+        };
+      });
+      var homes = words.map(function (w) {
+        return { id: w.bpm, label: w.bpm };
+      });
+      qs.push(makeCubbyQuestion(toys, homes, "送玩具回家"));
     }
     return qs;
   }
@@ -1920,14 +1975,24 @@
   function makeAbcCaseQuestions() {
     var qs = [];
     for (var i = 0; i < 10; i++) {
-      var pairCount = i < 5 ? 2 : 3;
+      var pairCount = i < 5 ? 3 : 4;
       var letters = shuffle(ABC_ORDER).slice(0, pairCount);
-      var items = letters.map(function (L) {
-        return { upper: L, lower: L.toLowerCase() };
+      var toys = letters.map(function (L, n) {
+        var low = L.toLowerCase();
+        return {
+          id: "case-toy-" + i + "-" + n,
+          emoji: low,
+          name: "小 " + low,
+          slot: L,
+          lower: low,
+          upper: L,
+          kind: "letter",
+        };
       });
-      var board = makePairConnect(items, "upper", "lower");
-      board.prompt = "把大寫和小寫連起來";
-      qs.push(board);
+      var homes = letters.map(function (L) {
+        return { id: L, label: L };
+      });
+      qs.push(makeCubbyQuestion(toys, homes, "小寫送回大寫的家"));
     }
     return qs;
   }
@@ -1935,11 +2000,20 @@
   function makeAbcDrawQuestions() {
     var qs = [];
     for (var i = 0; i < 10; i++) {
-      var pairCount = i < 5 ? 2 : 3;
-      var items = uniqueAbcWords(pairCount);
-      var board = makePairConnect(items, "letter", "emoji");
-      board.prompt = "看圖上的字，連到第一個字母";
-      qs.push(board);
+      var pairCount = i < 5 ? 3 : 4;
+      var words = uniqueAbcWords(pairCount);
+      var toys = words.map(function (w, n) {
+        return {
+          id: "abc-toy-" + i + "-" + n,
+          emoji: w.emoji,
+          name: w.word,
+          slot: w.letter,
+        };
+      });
+      var homes = words.map(function (w) {
+        return { id: w.letter, label: w.letter };
+      });
+      qs.push(makeCubbyQuestion(toys, homes, "圖送回字母的家"));
     }
     return qs;
   }
@@ -2811,7 +2885,9 @@
     if (state.levelId === "bpm-pic") {
       return (q && q.ask) || ((q && q.word ? q.word : "這個字") + "的第一個音貼上去");
     }
-    if (state.levelId === "bpm-draw") return "看圖上的字，連到第一個音";
+    if (state.levelId === "bpm-draw") {
+      return cubbyFoxAsk("bpm");
+    }
     if (state.levelId === "hanzi") {
       return (q && q.ask) || ("哪個是" + ((q && q.word) || "這個字") + "？把字貼上去");
     }
@@ -2819,8 +2895,8 @@
     if (state.levelId === "abc-pic") {
       return (q && q.ask) || ((q && q.word ? q.word : "這個字") + " 的第一個字母貼上去");
     }
-    if (state.levelId === "abc-case") return "把大寫和小寫連起來";
-    if (state.levelId === "abc-draw") return "看圖上的字，連到第一個字母";
+    if (state.levelId === "abc-case") return cubbyFoxAsk("case");
+    if (state.levelId === "abc-draw") return cubbyFoxAsk("abc");
     if (state.levelId === "bpm-listen") {
       if (q && state.stepIndex === 1) return q.word + "的第一個音是誰？";
       return (q && q.ask) || "找找看";
@@ -2847,6 +2923,35 @@
     return state.levelId === "bpm-pic" || state.levelId === "abc-pic" || state.levelId === "hanzi";
   }
 
+  function isCubbyLevel() {
+    return state.levelId === "bpm-draw" || state.levelId === "abc-case" || state.levelId === "abc-draw";
+  }
+
+  function firstUnplacedCubbyItem() {
+    var q = state.questions[state.qIndex];
+    if (!q || !q.items) return null;
+    var i;
+    for (i = 0; i < q.items.length; i++) {
+      if (q.items[i].slot && !state.placed[q.items[i].id]) return q.items[i];
+    }
+    return null;
+  }
+
+  function cubbyFoxAsk(kind) {
+    var toy = firstUnplacedCubbyItem();
+    if (kind === "bpm") {
+      return toy ? toy.name + "要回家，第一個音是誰的家？" : "送玩具回家";
+    }
+    if (kind === "case") {
+      return toy ? "小 " + toy.lower + " 要回大 " + toy.upper + " 的家" : "小寫送回大寫的家";
+    }
+    if (!toy) return "圖送回字母的家";
+    if (toy.slot === "X" || (toy.name && toy.name.charAt(0).toUpperCase() !== toy.slot)) {
+      return toy.name + " 要回家，是誰的家？";
+    }
+    return toy.name + " 要回家，第一個字母是誰的家？";
+  }
+
   function isPlaceLevel() {
     return (
       state.levelId === "dress" ||
@@ -2861,7 +2966,7 @@
   }
 
   function isDragPlaceLevel() {
-    return isPlaceLevel() || state.levelId === "bond" || state.levelId === "light" || isStickerLevel();
+    return isPlaceLevel() || state.levelId === "bond" || state.levelId === "light" || isStickerLevel() || isCubbyLevel();
   }
 
   function resetMoreTaps() {
@@ -2888,7 +2993,7 @@
   }
 
   function isSceneLevel() {
-    return isLifeLevel() || state.levelId === "bpm-listen" || state.levelId === "abc-pop" || isStickerLevel();
+    return isLifeLevel() || state.levelId === "bpm-listen" || state.levelId === "abc-pop" || isStickerLevel() || isCubbyLevel();
   }
 
   function isVoiceLevel() {
@@ -2900,7 +3005,8 @@
       state.levelId === "body" ||
       state.levelId === "daynight" ||
       state.levelId === "sort" ||
-      isStickerLevel()
+      isStickerLevel() ||
+      isCubbyLevel()
     );
   }
 
@@ -2969,8 +3075,7 @@
   }
 
   function isConnectLevel() {
-    if (state.levelId === "match-draw" || state.levelId === "bpm-draw" || state.levelId === "abc-case" || state.levelId === "abc-draw") return true;
-    return false;
+    return state.levelId === "match-draw";
   }
 
   function isTraceLevel() {
@@ -3135,7 +3240,7 @@
       return '<span class="preview-art preview-match" aria-hidden="true"><span>🍦</span><b>ㄅ</b></span>';
     }
     if (id === "bpm-draw") {
-      return '<span class="preview-art preview-match" aria-hidden="true"><b>ㄅ</b><span class="draw-line"></span><span>🍦</span></span>';
+      return '<span class="preview-art preview-match preview-cubby" aria-hidden="true"><span>🍦</span><b>ㄅ</b></span>';
     }
     if (id === "hanzi") {
       return '<span class="preview-art preview-match" aria-hidden="true"><span>⛰️</span><b>山</b></span>';
@@ -3156,10 +3261,10 @@
       return '<span class="preview-art preview-match" aria-hidden="true"><span>🍎</span><b>A</b></span>';
     }
     if (id === "abc-case") {
-      return '<span class="preview-art preview-match" aria-hidden="true"><b>A</b><span class="draw-line"></span><b>a</b></span>';
+      return '<span class="preview-art preview-match preview-cubby" aria-hidden="true"><b>a</b><b>A</b></span>';
     }
     if (id === "abc-draw") {
-      return '<span class="preview-art preview-match" aria-hidden="true"><b>A</b><span class="draw-line"></span><span>🍎</span></span>';
+      return '<span class="preview-art preview-match preview-cubby" aria-hidden="true"><span>🎩</span><b>H</b></span>';
     }
     if (id === "abc-pop") {
       return '<span class="preview-art preview-match" aria-hidden="true"><b>A</b><span>🫧</span></span>';
@@ -4097,6 +4202,92 @@
     );
   }
 
+  function renderCubbyToy(item, extraClass) {
+    var mark = extraClass ? " " + extraClass : "";
+    var placed = extraClass === "in-slot";
+    var letter = item.kind === "letter" ? " is-letter" : "";
+    var style = "";
+    if (!placed && item.x != null) {
+      style =
+        ' style="--tx:' +
+        item.x +
+        "%;--ty:" +
+        item.y +
+        "%;--tr:" +
+        (item.r || 0) +
+        'deg"';
+    }
+    return (
+      '<div class="life-item cubby-toy' +
+      letter +
+      mark +
+      '" data-life-item="' +
+      item.id +
+      '"' +
+      (placed ? ' data-placed="1"' : "") +
+      style +
+      ' role="img" aria-label="' +
+      escapeHtml(item.name || item.emoji) +
+      '"><span class="life-emoji">' +
+      escapeHtml(item.emoji) +
+      "</span>" +
+      (item.kind === "letter"
+        ? ""
+        : '<span class="life-name">' + escapeHtml(item.name || "") + "</span>") +
+      "</div>"
+    );
+  }
+
+  function renderCubbyPlay(q) {
+    var popping = state.sceneAnim === "cubby-home";
+    var homes = (q.homes || [])
+      .map(function (home) {
+        var guest = itemInSlot(home.id);
+        return (
+          '<div class="cubby tone-' +
+          (home.tone || 0) +
+          (guest ? " filled" : "") +
+          (popping && guest ? " pop" : "") +
+          '" data-life-slot="' +
+          escapeHtml(home.id) +
+          '" aria-label="' +
+          escapeHtml(home.label) +
+          ' 的家"><span class="cubby-tag"><span class="cubby-label">' +
+          escapeHtml(home.label) +
+          '</span></span><div class="cubby-box"><div class="cubby-hold">' +
+          (guest ? renderCubbyToy(guest, "in-slot") : "") +
+          "</div></div></div>"
+        );
+      })
+      .join("");
+    var toys = (q.items || [])
+      .filter(function (item) {
+        return !state.placed[item.id];
+      })
+      .map(function (item) {
+        return renderCubbyToy(item, "");
+      })
+      .join("");
+    return (
+      '<div class="play-col">' +
+      '<div class="prompt">' +
+      escapeHtml(q.prompt || foxPrompt()) +
+      "</div>" +
+      '<div class="life-stage is-place cubby-play">' +
+      '<div class="playroom homes-' +
+      ((q.homes && q.homes.length) || 3) +
+      (popping ? " done" : "") +
+      '">' +
+      '<div class="playroom-land" aria-hidden="true"><i class="pr-window"></i><i class="pr-wall"></i><i class="pr-floor"></i></div>' +
+      '<div class="cubby-shelf" aria-label="玩具的家">' +
+      homes +
+      "</div>" +
+      '<div class="toy-mat" aria-label="遊戲墊">' +
+      toys +
+      "</div></div></div></div>"
+    );
+  }
+
   function renderPicConnect(q) {
     var left = q.left
       .map(function (item) {
@@ -4142,11 +4333,11 @@
     if (state.levelId === "bond") body = renderBond(q);
     if (state.levelId === "bpm-trace") body = renderTrace(q);
     if (state.levelId === "bpm-pic") body = renderStickerPlay(q);
-    if (state.levelId === "bpm-draw") body = renderPicConnect(q);
+    if (state.levelId === "bpm-draw") body = renderCubbyPlay(q);
     if (state.levelId === "hanzi") body = renderStickerPlay(q);
     if (state.levelId === "abc-trace") body = renderTrace(q);
     if (state.levelId === "abc-pic") body = renderStickerPlay(q);
-    if (state.levelId === "abc-case" || state.levelId === "abc-draw") body = renderPicConnect(q);
+    if (state.levelId === "abc-case" || state.levelId === "abc-draw") body = renderCubbyPlay(q);
     if (state.levelId === "dress") body = renderDress(q);
     else if (state.levelId === "habitat") body = renderHabitat(q);
     else if (state.levelId === "table") body = renderTable(q);
@@ -5184,6 +5375,16 @@
     if (item.kind === "sticker") {
       g.className = "life-ghost sticker-chip";
       g.innerHTML = '<span class="sticker-glyph">' + escapeHtml(item.emoji) + "</span>";
+    } else if (item.kind === "letter") {
+      g.className = "life-ghost cubby-toy is-letter";
+      g.innerHTML = '<span class="life-emoji">' + escapeHtml(item.emoji) + "</span>";
+    } else if (isCubbyLevel()) {
+      g.className = "life-ghost cubby-toy";
+      g.innerHTML =
+        '<span class="life-emoji">' +
+        item.emoji +
+        "</span>" +
+        (item.name ? '<span class="life-name">' + escapeHtml(item.name) + "</span>" : "");
     } else {
       g.innerHTML =
         '<span class="life-emoji">' +
@@ -5234,6 +5435,7 @@
     if (state.levelId === "abc-path") state.sceneAnim = "path-walk";
     if (state.levelId === "sort") state.sceneAnim = "sort-done";
     if (isStickerLevel()) state.sceneAnim = "sticker-pop";
+    if (isCubbyLevel()) state.sceneAnim = "cubby-home";
     state.foxMsg = state.levelId === "bond" ? "好棒" : lifeCheer();
     state.foxMood = "happy";
     render();
@@ -5251,6 +5453,7 @@
     if (state.levelId === "bpm-train") wait = 1700;
     if (state.levelId === "abc-path") wait = 1500;
     if (isStickerLevel()) wait = 1100;
+    if (isCubbyLevel()) wait = 1100;
     setTimeout(nextQuestion, wait);
   }
 

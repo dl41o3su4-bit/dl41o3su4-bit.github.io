@@ -3404,7 +3404,8 @@ button.day-place:active {
 .path-play,
 .body-play,
 .day-play,
-.sort-play {
+.sort-play,
+.cubby-play {
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -3416,7 +3417,8 @@ button.day-place:active {
 .path-scene,
 .body-scene,
 .day-scene,
-.sort-scene {
+.sort-scene,
+.playroom {
   position: relative;
   flex: 1 1 0;
   min-width: 0;
@@ -5507,6 +5509,223 @@ button.day-place:active {
   filter: drop-shadow(0 0 8px rgba(43, 138, 62, 0.4));
 }
 
+.preview-cubby b {
+  background: linear-gradient(#ffe8cc, #e8c48a);
+  border-color: #c1864a;
+  border-radius: 6px 6px 10px 10px;
+  min-width: 1.35em;
+  min-height: 1.25em;
+}
+
+.cubby-play {
+  flex: 1 1 0;
+  min-height: 0;
+}
+
+.playroom {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+  container-type: size;
+  background: linear-gradient(#fff4e0 0 42%, #e8d4b0 42%);
+}
+
+.playroom-land {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.playroom-land i {
+  position: absolute;
+  display: block;
+  font-style: normal;
+}
+
+.pr-window {
+  top: 6%;
+  left: 8%;
+  width: 12%;
+  height: 14%;
+  background: linear-gradient(#a5d8ff, #d0ebff);
+  border: 3px solid #e8c48a;
+  border-radius: 6px;
+  box-shadow: inset 0 0 0 3px rgba(255, 253, 248, 0.35);
+}
+
+.pr-wall {
+  display: none;
+}
+
+.pr-floor {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 58%;
+  background: repeating-linear-gradient(90deg, #e8d4b0 0 22px, #d4b48a 22px 26px);
+}
+
+.cubby-shelf {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 8px;
+  flex: 0 0 auto;
+  min-height: min(34%, 168px);
+  padding: 8px 8px 10px;
+  background: linear-gradient(#d4a574, #c1864a);
+  border: 3px solid #8d5a2b;
+  border-radius: 16px;
+  box-shadow: inset 0 8px 0 rgba(255, 253, 248, 0.18), 0 8px 0 rgba(141, 90, 43, 0.22);
+}
+
+.cubby {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 88px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+}
+
+.cubby-tag {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  min-height: 44px;
+  padding: 2px 4px;
+  background: #fffdf8;
+  border: 3px solid #c1864a;
+  border-radius: 10px;
+  box-shadow: 0 3px 0 rgba(141, 90, 43, 0.18);
+}
+
+.cubby-label {
+  font-family: Nunito, "Noto Sans TC", sans-serif;
+  font-size: clamp(32px, 8vmin, 56px);
+  font-weight: 900;
+  line-height: 1;
+  color: #2a1c12;
+}
+
+.cubby-box {
+  flex: 1 1 auto;
+  min-height: 56px;
+  display: grid;
+  place-items: center;
+  padding: 4px;
+  border: 3px solid #c1864a;
+  border-radius: 10px 10px 14px 14px;
+  box-shadow: inset 0 -10px 0 rgba(141, 90, 43, 0.16);
+}
+
+.cubby.tone-0 .cubby-box { background: linear-gradient(#fff4e0, #ffd8a8); }
+.cubby.tone-1 .cubby-box { background: linear-gradient(#d3f9d8, #8ce99a); }
+.cubby.tone-2 .cubby-box { background: linear-gradient(#d0ebff, #74c0fc); }
+.cubby.tone-3 .cubby-box { background: linear-gradient(#e5dbff, #b197fc); }
+
+.cubby-hold {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-height: 0;
+}
+
+.cubby.aim {
+  outline: 4px solid #ff922b;
+  outline-offset: 2px;
+  border-radius: 12px;
+}
+
+.cubby.filled .cubby-box {
+  background: linear-gradient(#d3f9d8, #8ce99a);
+  border-color: #2b8a3e;
+}
+
+.cubby.pop,
+.playroom.done .cubby.filled {
+  animation: pop 0.4s ease;
+}
+
+.toy-mat {
+  position: relative;
+  z-index: 2;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 140px;
+  margin: 0 4%;
+  background:
+    radial-gradient(circle at 18% 28%, rgba(255, 253, 248, 0.55) 0 7%, transparent 8%),
+    radial-gradient(circle at 78% 22%, rgba(255, 253, 248, 0.4) 0 6%, transparent 7%),
+    radial-gradient(circle at 62% 72%, rgba(255, 146, 43, 0.18) 0 8%, transparent 9%),
+    radial-gradient(ellipse at 50% 50%, #ffe8cc 0 64%, #ffc078 65%);
+  border: 4px solid #f08c00;
+  border-radius: 42% 40% 44% 38%;
+  box-shadow: inset 0 0 0 8px rgba(255, 224, 102, 0.35), 0 8px 16px rgba(180, 120, 70, 0.12);
+}
+
+.toy-mat .cubby-toy {
+  position: absolute;
+  left: var(--tx);
+  top: var(--ty);
+  transform: rotate(var(--tr, 0deg));
+  width: min(34%, 132px);
+  min-width: 88px;
+  min-height: 88px;
+  z-index: 2;
+}
+
+.cubby-toy .life-emoji {
+  font-size: clamp(40px, 9vmin, 64px);
+}
+
+.cubby-toy .life-name {
+  font-size: clamp(16px, 3.6vmin, 22px);
+}
+
+.cubby-toy.is-letter .life-emoji {
+  font-family: Nunito, "Noto Sans TC", sans-serif;
+  font-size: clamp(44px, 10vmin, 72px);
+}
+
+.cubby .cubby-toy.in-slot {
+  position: static;
+  left: auto;
+  top: auto;
+  transform: none;
+  width: auto;
+  min-width: 0;
+  min-height: 0;
+  padding: 2px 4px;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  animation: pop 0.35s ease;
+}
+
+.cubby .cubby-toy.in-slot .life-emoji {
+  font-size: clamp(32px, 7vmin, 52px);
+}
+
+.cubby .cubby-toy.in-slot .life-name {
+  font-size: clamp(14px, 3vmin, 18px);
+}
+
+.life-ghost.cubby-toy {
+  min-width: 88px;
+  min-height: 88px;
+}
+
+.life-ghost.cubby-toy .life-emoji {
+  font-size: clamp(40px, 9vmin, 64px);
+}
+
 .sticker-play {
   flex: 1 1 0;
   min-height: 0;
@@ -6136,8 +6355,13 @@ button.day-place:active {
   .body-scene,
   .day-scene,
   .sort-scene,
-  .sticker-scene {
+  .sticker-scene,
+  .playroom {
     flex: 1 1 auto;
+  }
+
+  .cubby-play {
+    flex-direction: column;
   }
 
   .life-tray,
@@ -6220,7 +6444,8 @@ button.day-place:active {
   .shell.is-life .body-scene,
   .shell.is-life .day-scene,
   .shell.is-life .sort-scene,
-  .shell.is-life .sticker-scene {
+  .shell.is-life .sticker-scene,
+  .shell.is-life .playroom {
     flex: 1 1 auto;
     min-width: 0;
   }
@@ -6235,6 +6460,60 @@ button.day-place:active {
   .shell.is-life .sticker-play {
     flex-direction: row;
     align-items: stretch;
+  }
+
+  .shell.is-life .cubby-play {
+    flex-direction: column;
+  }
+
+  .playroom {
+    flex-direction: row;
+    gap: 12px;
+    background: linear-gradient(90deg, #fff4e0 0 58%, #f4d9b0 58%);
+  }
+
+  .pr-floor {
+    height: 100%;
+    width: 62%;
+    right: auto;
+    background: repeating-linear-gradient(90deg, #e8d4b0 0 22px, #d4b48a 22px 26px);
+  }
+
+  .pr-window {
+    right: 6%;
+    top: 10%;
+    width: 10%;
+    height: 18%;
+  }
+
+  .toy-mat {
+    order: 1;
+    flex: 1 1 auto;
+    min-height: 0;
+    margin: 2% 2% 2% 3%;
+  }
+
+  .cubby-shelf {
+    order: 2;
+    flex: 0 0 min(32%, 260px);
+    flex-direction: column;
+    min-height: 0;
+    height: auto;
+    padding: 10px 8px;
+  }
+
+  .cubby {
+    min-height: 0;
+  }
+
+  .cubby-label {
+    font-size: clamp(36px, 8.4vmin, 60px);
+  }
+
+  .toy-mat .cubby-toy {
+    width: min(32%, 140px);
+    min-width: 96px;
+    min-height: 96px;
   }
 
   .shell.is-life .sticker-pic {
