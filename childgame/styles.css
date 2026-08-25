@@ -558,6 +558,12 @@ button:focus-visible {
   font-style: normal;
 }
 
+.day-banner:focus,
+.day-banner:focus-visible {
+  outline: 4px solid #ffd43b;
+  outline-offset: 3px;
+}
+
 .day-banner-go {
   display: inline-grid;
   place-items: center;
@@ -650,9 +656,9 @@ button:focus-visible {
 }
 
 .day-path {
-  left: 8%;
-  right: 8%;
-  top: 62%;
+  left: 6%;
+  right: 6%;
+  top: 64%;
   height: 10px;
   border-radius: 999px;
   background: repeating-linear-gradient(90deg, #f4d9b0 0 18px, #fff8ee 18px 28px);
@@ -664,29 +670,49 @@ button:focus-visible {
   z-index: 1;
   left: 2%;
   right: 2%;
-  top: 46%;
-  bottom: 4%;
+  top: 52%;
+  height: 42%;
   display: grid;
   grid-template-columns: repeat(var(--day-n, 4), minmax(0, 1fr));
-  align-items: end;
+  align-items: start;
   gap: 4px;
   overflow: visible;
 }
 
-.day-place {
+.day-place,
+button.day-place {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: flex-start;
+  align-self: start;
   gap: 4px;
+  width: auto;
+  height: auto;
   min-width: 0;
-  padding: 0 2px 2px;
+  min-height: 0;
+  margin: 0 auto;
+  padding: 0 2px;
   background: transparent;
   border: 0;
   box-shadow: none;
   color: inherit;
   overflow: visible;
+  -webkit-appearance: none;
+  appearance: none;
+  outline: none;
+}
+
+button.day-place:focus,
+button.day-place:focus-visible {
+  outline: none;
+  filter: drop-shadow(0 0 8px rgba(255, 212, 59, 0.9));
+}
+
+button.day-place:active {
+  transform: none;
+  box-shadow: none;
 }
 
 .day-place.is-next {
@@ -695,7 +721,7 @@ button:focus-visible {
 
 .day-place.is-locked,
 .day-place.is-preview {
-  opacity: 0.42;
+  opacity: 0.58;
 }
 
 .day-place.is-locked .day-spot-label,
@@ -786,8 +812,8 @@ button:focus-visible {
 .day-marker {
   position: absolute;
   z-index: 2;
-  top: 34%;
-  bottom: auto;
+  top: 46%;
+  height: 22%;
   width: calc(100% / var(--day-n, 4));
   left: calc((100% / var(--day-n, 4)) * var(--day-at, 0));
   display: flex;
@@ -799,32 +825,21 @@ button:focus-visible {
   overflow: visible;
 }
 
-.day-marker-gear {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1px;
-  margin-top: -4px;
-}
-
-.day-marker-gear i {
-  font-style: normal;
-  line-height: 1;
-  font-size: 16px;
-}
-
 .day-fox-wear {
   position: relative;
   display: inline-grid;
   place-items: center;
-  width: 54px;
-  height: 64px;
+  width: 48px;
+  height: 48px;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
   overflow: visible;
 }
 
 .day-fox-wear.map {
-  width: 72px;
-  height: 84px;
+  width: 52px;
+  height: 52px;
 }
 
 .day-fox-wear .wear {
@@ -836,45 +851,45 @@ button:focus-visible {
 
 .day-fox-wear .wear.face {
   font-size: 34px;
-  bottom: 8px;
+  bottom: -2px;
 }
 
 .day-fox-wear.map .wear.face {
-  font-size: 42px;
-  bottom: 10px;
+  font-size: 38px;
+  bottom: -2px;
 }
 
 .day-fox-wear .wear.head {
-  font-size: 22px;
-  top: 0;
+  font-size: 18px;
+  top: -8px;
   z-index: 3;
 }
 
 .day-fox-wear.map .wear.head {
-  font-size: 26px;
-  top: -2px;
+  font-size: 20px;
+  top: -10px;
 }
 
 .day-fox-wear .wear.body {
-  font-size: 20px;
-  bottom: 10px;
+  font-size: 18px;
+  bottom: -2px;
   z-index: 2;
 }
 
 .day-fox-wear.map .wear.body {
-  font-size: 26px;
-  bottom: 8px;
+  font-size: 20px;
+  bottom: -2px;
 }
 
 .day-fox-wear .wear.feet {
-  font-size: 16px;
-  bottom: 0;
+  font-size: 14px;
+  bottom: -10px;
   z-index: 1;
 }
 
 .day-fox-wear.map .wear.feet {
-  font-size: 20px;
-  bottom: -2px;
+  font-size: 16px;
+  bottom: -10px;
 }
 
 .day-endline {
@@ -4083,7 +4098,8 @@ button:focus-visible {
 @media (max-width: 640px) {
   .day-banner {
     grid-template-columns: minmax(0, 1fr) auto;
-    min-height: 118px;
+    min-height: 176px;
+    align-items: end;
   }
 
   .day-banner-scene {
@@ -4224,12 +4240,13 @@ button:focus-visible {
   }
 
   .day-places {
-    top: 40%;
-    bottom: 2%;
+    top: 48%;
+    height: 46%;
   }
 
   .day-marker {
-    top: 26%;
+    top: 38%;
+    height: 26%;
   }
 
   .day-fox-wear.map {

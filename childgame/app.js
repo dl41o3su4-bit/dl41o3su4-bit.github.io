@@ -1121,20 +1121,6 @@
     );
   }
 
-  function renderMapOutfitBits(world) {
-    var list = (world && world.outfit) || [];
-    if (!list.length) return "";
-    return (
-      '<span class="day-marker-gear" aria-hidden="true">' +
-      list
-        .map(function (it) {
-          return "<i>" + (it.emoji || "") + "</i>";
-        })
-        .join("") +
-      "</span>"
-    );
-  }
-
   function captureDayDress(world) {
     var q = state.questions[state.qIndex];
     var worn = [];
@@ -3213,7 +3199,6 @@
       "</div>" +
       '<div class="day-marker" aria-hidden="true">' +
       renderFoxWear(world, "map") +
-      renderMapOutfitBits(world) +
       "</div></div>" +
       (evening ? '<p class="day-endline">今天過得真好</p>' : "") +
       "</div>"
@@ -5975,6 +5960,35 @@
         foxWorldSession.rolled = false;
         foxWorldSession.greeted = false;
         return saveFoxWorld(w);
+      },
+      open: openDayWorld,
+      playNextDayTask: function () {
+        var id = nextDayTask(ensureFoxWorld());
+        if (id) startDayTask(id);
+        return id;
+      },
+      placeAllNeeded: function () {
+        var q = state.questions[state.qIndex];
+        var i;
+        if (!q || !q.items) return 0;
+        var n = 0;
+        for (i = 0; i < q.items.length; i++) {
+          if (q.items[i].slot) {
+            state.placed[q.items[i].id] = q.items[i].slot;
+            n += 1;
+          }
+        }
+        return n;
+      },
+      advance: nextQuestion,
+      home: function () {
+        clearDayAuto();
+        state.dayMode = false;
+        state.screen = "home";
+        state.levelId = null;
+        state.foxMsg = "選一關開始吧！";
+        state.foxMood = "idle";
+        render();
       },
       visiblePath: function (w) {
         return visibleDayPath(w || ensureFoxWorld());
