@@ -1795,18 +1795,54 @@
 
   function makeBpmListenQuestions() {
     var scenes = [
-      { id: "kitchen", name: "廚房", words: ["冰淇淋", "蘋果", "葡萄", "牛奶", "蛋糕", "西瓜"] },
-      { id: "park", name: "公園", words: ["狗", "花朵", "兔子", "太陽", "草", "氣球"] },
-      { id: "room", name: "房間", words: ["貓", "帽子", "書", "氣球", "西瓜", "冰淇淋"] },
-      { id: "street", name: "街上", words: ["車", "狗", "太陽", "帽子", "氣球", "飛機"] },
-    ];
-    var spots = [
-      ["12%", "18%"],
-      ["68%", "16%"],
-      ["8%", "58%"],
-      ["42%", "48%"],
-      ["72%", "62%"],
-      ["38%", "78%"],
+      {
+        id: "kitchen",
+        name: "廚房",
+        words: [
+          { word: "冰淇淋", spot: "counter" },
+          { word: "蘋果", spot: "bowl" },
+          { word: "葡萄", spot: "bowl" },
+          { word: "牛奶", spot: "table" },
+          { word: "蛋糕", spot: "counter" },
+          { word: "西瓜", spot: "fridge" },
+        ],
+      },
+      {
+        id: "park",
+        name: "公園",
+        words: [
+          { word: "狗", spot: "bench" },
+          { word: "花朵", spot: "grass" },
+          { word: "兔子", spot: "grass" },
+          { word: "太陽", spot: "sky" },
+          { word: "草", spot: "grass" },
+          { word: "氣球", spot: "tree" },
+        ],
+      },
+      {
+        id: "room",
+        name: "房間",
+        words: [
+          { word: "貓", spot: "bed" },
+          { word: "帽子", spot: "shelf" },
+          { word: "書", spot: "shelf" },
+          { word: "氣球", spot: "bed" },
+          { word: "西瓜", spot: "shelf" },
+          { word: "冰淇淋", spot: "shelf" },
+        ],
+      },
+      {
+        id: "street",
+        name: "街上",
+        words: [
+          { word: "車", spot: "sidewalk" },
+          { word: "狗", spot: "sidewalk" },
+          { word: "太陽", spot: "sky" },
+          { word: "帽子", spot: "window" },
+          { word: "氣球", spot: "stand" },
+          { word: "飛機", spot: "sky" },
+        ],
+      },
     ];
     var qs = [];
     var used = {};
@@ -1814,8 +1850,10 @@
     while (qs.length < 8 && n < 48) {
       var scene = scenes[qs.length % scenes.length];
       var objects = scene.words
-        .map(function (name) {
-          return bpmWordByName(name);
+        .map(function (row) {
+          var w = bpmWordByName(row.word);
+          if (!w) return null;
+          return { word: w.word, emoji: w.emoji, bpm: w.bpm, spot: row.spot };
         })
         .filter(Boolean);
       var candidates = objects.filter(function (w) {
@@ -1824,25 +1862,13 @@
       if (!candidates.length) candidates = objects.slice();
       var target = pick(candidates);
       used[scene.id + "-" + target.word] = true;
-      var rot = qs.length % spots.length;
-      var usedSpots = spots.slice(rot).concat(spots.slice(0, rot));
-      var placed = shuffle(objects).map(function (w, i) {
-        var spot = usedSpots[i % usedSpots.length];
-        return {
-          word: w.word,
-          emoji: w.emoji,
-          bpm: w.bpm,
-          x: spot[0],
-          y: spot[1],
-        };
-      });
       qs.push({
         scene: scene.id,
         sceneName: scene.name,
         word: target.word,
         bpm: target.bpm,
         emoji: target.emoji,
-        objects: placed,
+        objects: objects,
         stones: makeSymbolChoices(target.bpm, uniqueBpmPool()),
         ask: "找找看，哪一個是" + target.word + "？",
       });
@@ -4258,29 +4284,98 @@
       .join("");
   }
 
-  function renderBpmListen(q) {
-    var objs = (q.objects || [])
+  function listenObjHtml(q, obj) {
+    var mark = state.choiceMark && state.choiceMark.value === obj.word ? " " + state.choiceMark.cls : "";
+    var found = obj.word === q.word && (state.stepIndex > 0 || (state.choiceMark && state.choiceMark.cls === "ok"));
+    return (
+      '<button class="listen-obj' +
+      mark +
+      (found ? " found" : "") +
+      '" type="button" data-action="listen-find" data-value="' +
+      escapeHtml(obj.word) +
+      '"><span class="life-emoji">' +
+      obj.emoji +
+      '</span><span class="life-name">' +
+      escapeHtml(obj.word) +
+      "</span></button>"
+    );
+  }
+
+  function listenObjsOn(q, spot) {
+    return (q.objects || [])
+      .filter(function (obj) {
+        return obj.spot === spot;
+      })
       .map(function (obj) {
-        var mark = state.choiceMark && state.choiceMark.value === obj.word ? " " + state.choiceMark.cls : "";
-        var found = obj.word === q.word && (state.stepIndex > 0 || (state.choiceMark && state.choiceMark.cls === "ok"));
-        return (
-          '<button class="listen-obj' +
-          mark +
-          (found ? " found" : "") +
-          '" type="button" data-action="listen-find" data-value="' +
-          escapeHtml(obj.word) +
-          '" style="left:' +
-          obj.x +
-          ";top:" +
-          obj.y +
-          '"><span class="life-emoji">' +
-          obj.emoji +
-          '</span><span class="life-name">' +
-          escapeHtml(obj.word) +
-          "</span></button>"
-        );
+        return listenObjHtml(q, obj);
       })
       .join("");
+  }
+
+  function renderListenFurniture(q) {
+    var scene = q.scene || "park";
+    if (scene === "kitchen") {
+      return (
+        '<div class="listen-land" aria-hidden="true"><i class="lk-window"></i><i class="lk-cabinet"></i><i class="lk-floor"></i></div>' +
+        '<div class="listen-furn fridge"><span class="furn-name">冰箱</span><div class="furn-hold on-top">' +
+        listenObjsOn(q, "fridge") +
+        '</div><div class="furn-body"><i class="lk-handle"></i><i class="lk-stripe"></i></div></div>' +
+        '<div class="listen-furn counter"><span class="furn-name">流理台</span><div class="furn-hold">' +
+        listenObjsOn(q, "counter") +
+        "</div></div>" +
+        '<div class="listen-furn table"><span class="furn-name">桌子</span><div class="furn-hold">' +
+        listenObjsOn(q, "table") +
+        '<div class="listen-bowl">' +
+        listenObjsOn(q, "bowl") +
+        "</div></div></div>"
+      );
+    }
+    if (scene === "park") {
+      return (
+        '<div class="listen-land" aria-hidden="true"><i class="lp-hill"></i><i class="lp-path"></i></div>' +
+        '<div class="listen-furn sky"><div class="furn-hold">' +
+        listenObjsOn(q, "sky") +
+        "</div></div>" +
+        '<div class="listen-furn tree"><span class="furn-name">樹</span><i class="lp-tree" aria-hidden="true">🌳</i><div class="furn-hold hang">' +
+        listenObjsOn(q, "tree") +
+        "</div></div>" +
+        '<div class="listen-furn bench"><span class="furn-name">長椅</span><div class="furn-hold">' +
+        listenObjsOn(q, "bench") +
+        '</div><div class="furn-body"><i class="lp-seat"></i><i class="lp-leg a"></i><i class="lp-leg b"></i></div></div>' +
+        '<div class="listen-furn grass"><span class="furn-name">草地</span><div class="furn-hold">' +
+        listenObjsOn(q, "grass") +
+        "</div></div>"
+      );
+    }
+    if (scene === "room") {
+      return (
+        '<div class="listen-land" aria-hidden="true"><i class="lr-window"></i><i class="lr-rug"></i></div>' +
+        '<div class="listen-furn shelf"><span class="furn-name">架子</span><div class="furn-hold">' +
+        listenObjsOn(q, "shelf") +
+        "</div></div>" +
+        '<div class="listen-furn bed"><span class="furn-name">床</span><div class="furn-hold">' +
+        listenObjsOn(q, "bed") +
+        '</div><div class="furn-body"><i class="lr-pillow"></i><i class="lr-blanket"></i></div></div>'
+      );
+    }
+    return (
+      '<div class="listen-land" aria-hidden="true"><i class="ls-road"></i></div>' +
+      '<div class="listen-furn sky"><div class="furn-hold">' +
+      listenObjsOn(q, "sky") +
+      "</div></div>" +
+      '<div class="listen-furn shop"><span class="furn-name">店</span><i class="ls-awning" aria-hidden="true"></i><div class="furn-hold window">' +
+      listenObjsOn(q, "window") +
+      "</div></div>" +
+      '<div class="listen-furn stand"><span class="furn-name">攤子</span><div class="furn-hold">' +
+      listenObjsOn(q, "stand") +
+      "</div></div>" +
+      '<div class="listen-furn sidewalk"><span class="furn-name">人行道</span><div class="furn-hold">' +
+      listenObjsOn(q, "sidewalk") +
+      "</div></div>"
+    );
+  }
+
+  function renderBpmListen(q) {
     var stones = "";
     if (state.stepIndex === 1) {
       stones =
@@ -4313,7 +4408,7 @@
       '<span class="listen-place">' +
       escapeHtml(q.sceneName || "") +
       "</span>" +
-      objs +
+      renderListenFurniture(q) +
       "</div>" +
       stones +
       "</div></div>"
@@ -4562,7 +4657,27 @@
     );
   }
 
+  function renderSortLand(scene) {
+    if (scene === "kitchen") {
+      return '<div class="sort-land" aria-hidden="true"><i class="sk-window"></i><i class="sk-floor"></i></div>';
+    }
+    if (scene === "room") {
+      return '<div class="sort-land" aria-hidden="true"><i class="sr-window"></i><i class="sr-rug"></i></div>';
+    }
+    if (scene === "park") {
+      return '<div class="sort-land" aria-hidden="true"><i class="sp-tree a">🌳</i><i class="sp-tree b">🌳</i><i class="sp-path"></i></div>';
+    }
+    if (scene === "bath") {
+      return '<div class="sort-land" aria-hidden="true"><i class="sb-tub"></i></div>';
+    }
+    if (scene === "market") {
+      return '<div class="sort-land" aria-hidden="true"><i class="sm-awning"></i></div>';
+    }
+    return '<div class="sort-land" aria-hidden="true"><i class="sa-mat"></i></div>';
+  }
+
   function renderSort(q) {
+    var scene = q.scene || "room";
     var bins = (q.bins || [])
       .map(function (bin) {
         var many = itemsInSlot(bin.id);
@@ -4601,9 +4716,10 @@
       "</div>" +
       '<div class="life-stage is-place sort-play">' +
       '<div class="sort-scene scene-' +
-      (q.scene || "room") +
+      scene +
       (state.sceneAnim === "sort-done" ? " done" : "") +
       '">' +
+      renderSortLand(scene) +
       bins +
       "</div>" +
       '<div class="life-tray">' +
