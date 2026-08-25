@@ -113,14 +113,14 @@
   var OLD_MATH_LEVELS = [
     { id: "count", name: "數一數", hint: "數一數有幾個", emoji: "🍎", cls: "c1" },
     { id: "match", name: "連連看", hint: "送回數字的家", emoji: "🔢", cls: "c2" },
-    { id: "next", name: "下一個是誰", hint: "3 4 5 ？", emoji: "➡️", cls: "c3" },
+    { id: "next", name: "下一個是誰", hint: "下一個拖上去", emoji: "➡️", cls: "c3" },
     { id: "trace", name: "描一描", hint: "用手指描 0～10", emoji: "✏️", cls: "c4" },
   ];
 
   var NEW_MATH_LEVELS = [
     { id: "more", name: "誰比較多", hint: "哪一邊比較多", emoji: "🍉", cls: "c5" },
-    { id: "ord", name: "第幾個", hint: "從左邊數第幾個", emoji: "5️⃣", cls: "c6" },
-    { id: "missing", name: "缺了誰", hint: "少了哪個數字", emoji: "❓", cls: "c7" },
+    { id: "ord", name: "第幾個", hint: "請第幾個", emoji: "5️⃣", cls: "c6" },
+    { id: "missing", name: "缺了誰", hint: "缺誰拖上去", emoji: "❓", cls: "c7" },
     { id: "bond", name: "湊一湊", hint: "再拿幾個才滿", emoji: "🍇", cls: "c8" },
     { id: "match-draw", name: "畫線連連看", hint: "一人一顆", emoji: "🖍️", cls: "c9" },
   ];
@@ -1598,14 +1598,32 @@
     });
   }
 
-  function makeNextQuestions() {
-    var three = shuffle([1, 2, 3, 4, 5, 6, 7]).slice(0, 7).map(function (s) {
-      return { shown: [s, s + 1, s + 2], answer: s + 3 };
+  function makeNumPathItems(round, answer, forbid) {
+    return makeChoices(answer, 1, 10, forbid).map(function (n, k) {
+      return lifeItem("num-" + round + "-" + k, String(n), "", n === answer ? "gap" : "");
     });
-    var two = { shown: [8, 9], answer: 10 };
-    return shuffle(three.concat([two])).map(function (q) {
-      q.choices = makeChoices(q.answer, 1, 10, q.shown);
-      return q;
+  }
+
+  function makeNumPathQuestion(round, start, miss, ask) {
+    var seq = [start, start + 1, start + 2, start + 3];
+    var answer = seq[miss];
+    var stones = seq.map(function (n, idx) {
+      return { ch: String(n), gap: idx === miss };
+    });
+    var forbid = seq.filter(function (n, idx) {
+      return idx !== miss;
+    });
+    return {
+      ask: ask,
+      stones: stones,
+      miss: miss,
+      items: makeNumPathItems(round, answer, forbid),
+    };
+  }
+
+  function makeNextQuestions() {
+    return shuffle([1, 2, 3, 4, 5, 6, 7]).map(function (s, i) {
+      return makeNumPathQuestion(i, s, 3, "下一個是誰？拖上去");
     });
   }
 
@@ -1666,49 +1684,38 @@
   function makeOrdQuestions() {
     var qs = [];
     var prev = 0;
-    for (var i = 0; i < 10; i++) {
-      var len = i < 6 ? randInt(5, 6) : randInt(6, 7);
-      var maxOrd = i < 6 ? Math.min(5, len) : len;
+    var faces = ANIMALS.concat(["👧", "👦", "🧒"]);
+    for (var i = 0; i < 7; i++) {
+      var len = i < 4 ? 5 : randInt(5, 6);
       var target;
       do {
-        target = randInt(1, maxOrd);
-      } while (target === prev && maxOrd > 1);
+        target = randInt(1, Math.min(5, len));
+      } while (target === prev && len > 1);
       prev = target;
       qs.push({
-        animals: shuffle(ANIMALS).slice(0, len),
+        ask: "從左邊數，請第 " + target + " 個",
+        animals: shuffle(faces).slice(0, len),
         target: target,
+        scene: i % 2 === 0 ? "ice" : "train",
+        items: [lifeItem("flag-" + i, String(target), "小旗", "p" + (target - 1))],
       });
     }
     return qs;
   }
 
   function makeMissingQuestions() {
-    var combos = [];
-    for (var s = 1; s <= 7; s++) {
-      for (var h = 0; h < 4; h++) {
-        combos.push({ start: s, hole: h });
-      }
-    }
-    return shuffle(combos)
-      .slice(0, 10)
-      .map(function (c) {
-        var tiles = [];
-        var answer = 0;
-        for (var i = 0; i < 4; i++) {
-          var n = c.start + i;
-          if (i === c.hole) {
-            tiles.push(null);
-            answer = n;
-          } else {
-            tiles.push(n);
-          }
-        }
-        return {
-          tiles: tiles,
-          answer: answer,
-          choices: makeChoices(answer, 1, 10),
-        };
-      });
+    var plans = shuffle([
+      { start: 1, miss: 1 },
+      { start: 2, miss: 2 },
+      { start: 3, miss: 1 },
+      { start: 4, miss: 2 },
+      { start: 5, miss: 1 },
+      { start: 6, miss: 2 },
+      { start: 7, miss: 1 },
+    ]);
+    return plans.map(function (p, i) {
+      return makeNumPathQuestion(i, p.start, p.miss, "少了誰？拖上去");
+    });
   }
 
   function makeBondQuestions() {
@@ -3036,7 +3043,7 @@
     if (state.levelId === "match-draw") {
       return q && q.n ? "有" + q.n + "個人，一人一顆" : "一人一顆";
     }
-    if (state.levelId === "next") return "下一個數字是誰？";
+    if (state.levelId === "next") return (q && q.ask) || "下一個是誰？拖上去";
     if (state.levelId === "trace") return (q && NUM_TIPS[q.n]) || "從亮點開始，描一描";
     if (state.levelId === "more") {
       if (q && moreAllTapped(q)) {
@@ -3044,8 +3051,8 @@
       }
       return "兩邊都點完，再比";
     }
-    if (state.levelId === "ord") return q ? "從左邊數，點第 " + q.target + " 個" : "從左邊數，點那一個";
-    if (state.levelId === "missing") return "少了哪個數字？";
+    if (state.levelId === "ord") return (q && q.ask) || "從左邊數，請第幾個";
+    if (state.levelId === "missing") return (q && q.ask) || "少了誰？拖上去";
     if (state.levelId === "bond") return "拖進去，湊滿";
     if (state.levelId === "bpm-trace") return "從亮點開始，描一描";
     if (state.levelId === "bpm-pic") {
@@ -3131,6 +3138,10 @@
     return toy.name + " 要回家，第一個字母是誰的家？";
   }
 
+  function isPathLevel() {
+    return state.levelId === "abc-path" || state.levelId === "next" || state.levelId === "missing";
+  }
+
   function isPlaceLevel() {
     return (
       state.levelId === "dress" ||
@@ -3140,7 +3151,10 @@
       state.levelId === "order" ||
       state.levelId === "daynight" ||
       state.levelId === "bpm-train" ||
-      state.levelId === "abc-path"
+      state.levelId === "abc-path" ||
+      state.levelId === "next" ||
+      state.levelId === "missing" ||
+      state.levelId === "ord"
     );
   }
 
@@ -3195,6 +3209,9 @@
       state.levelId === "bpm-train" ||
       state.levelId === "abc-pop" ||
       state.levelId === "abc-path" ||
+      state.levelId === "next" ||
+      state.levelId === "missing" ||
+      state.levelId === "ord" ||
       state.levelId === "body" ||
       state.levelId === "daynight" ||
       state.levelId === "sort" ||
@@ -3255,7 +3272,7 @@
     if (state.levelId === "daynight") return "一天過完了";
     if (state.levelId === "order") return "排好了";
     if (state.levelId === "bpm-train") return "上車了";
-    if (state.levelId === "abc-path") return "走過去了";
+    if (isPathLevel()) return "走過去了";
     if (state.levelId === "body") return "找到了";
     if (state.dayVisit) return "見到朋友了";
     return "好棒";
@@ -3397,7 +3414,7 @@
       return '<span class="preview-art preview-match preview-cubby" aria-hidden="true"><span>🍎🍎</span><b>2</b></span>';
     }
     if (id === "next") {
-      return '<span class="preview-art preview-next" aria-hidden="true"><i>3</i><i>4</i><i>5</i><em>?</em></span>';
+      return '<span class="preview-art preview-path" aria-hidden="true"><i>3</i><i>4</i><i>5</i><em>□</em></span>';
     }
     if (id === "trace") {
       return (
@@ -3412,10 +3429,10 @@
       return '<span class="preview-art preview-more" aria-hidden="true"><span>🍉🍉🍉</span><span class="vs">:</span><span>🍉🍉</span></span>';
     }
     if (id === "ord") {
-      return '<span class="preview-art preview-ord" aria-hidden="true">🐶🐱🐰<b>5</b></span>';
+      return '<span class="preview-art preview-ord" aria-hidden="true"><b>左</b>🐶🐱🐰<em>3</em></span>';
     }
     if (id === "missing") {
-      return '<span class="preview-art preview-next" aria-hidden="true"><i>3</i><i>4</i><em>?</em><i>6</i></span>';
+      return '<span class="preview-art preview-path" aria-hidden="true"><i>3</i><em>□</em><i>5</i><i>6</i></span>';
     }
     if (id === "bond") {
       return '<span class="preview-art preview-count" aria-hidden="true"><span>🍇</span><span>🍇</span><span class="slot">+</span></span>';
@@ -3521,7 +3538,11 @@
           levelPreview(lv.id) +
           '<span class="name">' +
           lv.name +
-          "</span></button>"
+          "</span>" +
+          (lv.id === "next" || lv.id === "missing" || lv.id === "ord"
+            ? '<span class="hint">' + escapeHtml(lv.hint) + "</span>"
+            : "") +
+          "</button>"
         );
       })
       .join("");
@@ -3980,36 +4001,7 @@
   }
 
   function renderNext(q) {
-    var tiles = q.shown
-      .map(function (n) {
-        return '<div class="seq-tile">' + n + "</div>";
-      })
-      .join("");
-    tiles += '<div class="seq-tile ask">？</div>';
-    var buttons = q.choices
-      .map(function (n) {
-        var mark = state.choiceMark && state.choiceMark.value === n ? " " + state.choiceMark.cls : "";
-        return (
-          '<button class="choice' +
-          mark +
-          '" type="button" data-action="answer" data-value="' +
-          n +
-          '">' +
-          n +
-          "</button>"
-        );
-      })
-      .join("");
-    return (
-      '<div class="play-col">' +
-      '<div class="prompt">下一個數字是誰？</div>' +
-      '<div class="next-stage"><div class="seq">' +
-      tiles +
-      "</div></div>" +
-      '<div class="choices">' +
-      buttons +
-      "</div></div>"
-    );
+    return renderAbcPath(q);
   }
 
   function pathLength(d) {
@@ -4165,66 +4157,54 @@
   }
 
   function renderOrd(q) {
-    var items = q.animals
+    var scene = q.scene === "train" ? "train" : "ice";
+    var people = (q.animals || [])
       .map(function (em, idx) {
-        var mark = state.choiceMark && state.choiceMark.value === idx ? " " + state.choiceMark.cls : "";
+        var slot = "p" + idx;
+        var filled = itemInSlot(slot);
         return (
-          '<button class="ord-item' +
-          mark +
-          '" type="button" data-action="answer" data-value="' +
-          idx +
+          '<div class="ord-person' +
+          (filled ? " filled" : "") +
+          '" data-life-slot="' +
+          slot +
           '" aria-label="第 ' +
           (idx + 1) +
-          ' 個">' +
+          ' 個"><span class="ord-who">' +
           em +
-          "</button>"
+          "</span>" +
+          (filled ? '<span class="ord-got">' + escapeHtml(filled.emoji) + "</span>" : "") +
+          "</div>"
         );
       })
       .join("");
+    var shop =
+      scene === "train"
+        ? '<div class="ord-shop" aria-hidden="true"><i class="ord-window"></i><span class="ord-shop-ico">🎫</span><span class="ord-shop-word">買票</span></div>'
+        : '<div class="ord-shop" aria-hidden="true"><i class="ord-awning"></i><span class="ord-shop-ico">🍦</span><span class="ord-shop-word">冰淇淋</span></div>';
     return (
       '<div class="play-col">' +
-      '<div class="prompt">從左邊數，點第 <span class="prompt-num">' +
+      '<div class="prompt">從左邊數，請第 <span class="prompt-num">' +
       q.target +
       "</span> 個</div>" +
-      '<div class="ord-stage"><div class="ord-wrap">' +
+      '<div class="life-stage is-place ord-play">' +
+      '<div class="ord-scene scene-' +
+      scene +
+      (state.sceneAnim === "ord-step" ? " is-step" : "") +
+      '">' +
+      shop +
+      '<div class="ord-line">' +
       '<span class="ord-start" aria-hidden="true">左</span>' +
       '<div class="ord-row">' +
-      items +
-      "</div></div></div></div>"
+      people +
+      "</div></div></div>" +
+      '<div class="life-tray">' +
+      renderTrayItems(q) +
+      "</div></div></div>"
     );
   }
 
   function renderMissing(q) {
-    var tiles = q.tiles
-      .map(function (n) {
-        if (n == null) return '<div class="seq-tile ask">？</div>';
-        return '<div class="seq-tile">' + n + "</div>";
-      })
-      .join("");
-    var buttons = q.choices
-      .map(function (n) {
-        var mark = state.choiceMark && state.choiceMark.value === n ? " " + state.choiceMark.cls : "";
-        return (
-          '<button class="choice' +
-          mark +
-          '" type="button" data-action="answer" data-value="' +
-          n +
-          '">' +
-          n +
-          "</button>"
-        );
-      })
-      .join("");
-    return (
-      '<div class="play-col">' +
-      '<div class="prompt">少了哪個數字？</div>' +
-      '<div class="missing-stage"><div class="seq">' +
-      tiles +
-      "</div></div>" +
-      '<div class="choices">' +
-      buttons +
-      "</div></div>"
-    );
+    return renderAbcPath(q);
   }
 
   function renderBond(q) {
@@ -4606,6 +4586,9 @@
     else if (state.levelId === "table") body = renderTable(q);
     else if (state.levelId === "bpm-train") body = renderBpmTrain(q);
     else if (state.levelId === "abc-path") body = renderAbcPath(q);
+    else if (state.levelId === "next") body = renderNext(q);
+    else if (state.levelId === "missing") body = renderMissing(q);
+    else if (state.levelId === "ord") body = renderOrd(q);
     else if (state.levelId === "sort") body = renderSort(q);
     else if (state.levelId === "daynight") body = renderDayNight(q);
     else if (isPlaceLevel()) body = renderLifePlace(q);
@@ -5289,7 +5272,9 @@
           return (
             '<div class="path-stone gap' +
             (filled ? " filled" : "") +
-            '" data-life-slot="gap" aria-label="缺的字母" style="' +
+            '" data-life-slot="gap" aria-label="' +
+            (state.levelId === "abc-path" ? "缺的字母" : "缺的數字") +
+            '" style="' +
             style +
             '">' +
             (filled ? '<span class="path-letter">' + escapeHtml(filled.emoji) + "</span>" : '<span class="path-blank">?</span>') +
@@ -5664,6 +5649,7 @@
         "</span>" +
         (item.name ? '<span class="life-name">' + escapeHtml(item.name) + "</span>" : "");
     }
+    if (state.levelId === "ord") g.classList.add("ord-flag");
     document.body.appendChild(g);
     return g;
   }
@@ -5704,7 +5690,8 @@
     state.heldItem = null;
     if (state.levelId === "bpm-train") state.sceneAnim = "train-go";
     if (state.levelId === "daynight") state.sceneAnim = "day-finale";
-    if (state.levelId === "abc-path") state.sceneAnim = "path-walk";
+    if (isPathLevel()) state.sceneAnim = "path-walk";
+    if (state.levelId === "ord") state.sceneAnim = "ord-step";
     if (state.levelId === "sort") state.sceneAnim = "sort-done";
     if (isStickerLevel()) state.sceneAnim = "sticker-pop";
     if (isCubbyLevel()) state.sceneAnim = "cubby-home";
@@ -5713,7 +5700,7 @@
     state.foxMood = "happy";
     render();
     replayFoxHappy();
-    if (state.levelId === "abc-path") {
+    if (isPathLevel()) {
       requestAnimationFrame(function () {
         requestAnimationFrame(function () {
           var fox = app.querySelector(".path-fox");
@@ -5724,7 +5711,8 @@
     var wait = 1000;
     if (state.levelId === "daynight") wait = 1450;
     if (state.levelId === "bpm-train") wait = 1700;
-    if (state.levelId === "abc-path") wait = 1500;
+    if (isPathLevel()) wait = 1500;
+    if (state.levelId === "ord") wait = 1100;
     if (isStickerLevel()) wait = 1100;
     if (isCubbyLevel()) wait = 1100;
     if (isShareLevel()) wait = 1000;

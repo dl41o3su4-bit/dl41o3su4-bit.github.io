@@ -431,6 +431,14 @@ button:focus-visible {
   line-height: 1.2;
 }
 
+.level-card .hint {
+  font-size: clamp(13px, 3vmin, 16px);
+  font-weight: 800;
+  color: var(--ink-soft);
+  text-align: center;
+  line-height: 1.2;
+}
+
 .level-card.c1,
 .level-card.c2,
 .level-card.c3,
@@ -3403,6 +3411,7 @@ button.day-place:active {
 .train-play,
 .pop-play,
 .path-play,
+.ord-play,
 .body-play,
 .day-play,
 .sort-play,
@@ -3417,6 +3426,7 @@ button.day-place:active {
 .train-scene,
 .pop-scene,
 .path-scene,
+.ord-scene,
 .body-scene,
 .day-scene,
 .sort-scene,
@@ -4765,6 +4775,205 @@ button.day-place:active {
 
 .path-play .life-item .life-emoji {
   font-size: clamp(32px, 8vmin, 48px);
+}
+
+.ord-scene {
+  container-type: size;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.ord-scene.scene-ice {
+  background:
+    linear-gradient(#ffd6e7 0 38%, #fff0f6 38% 52%, #ffe8cc 52%);
+}
+
+.ord-scene.scene-train {
+  background:
+    linear-gradient(#74c0fc 0 38%, #d0ebff 38% 52%, #e8d4b0 52%);
+}
+
+.ord-shop {
+  position: relative;
+  flex: 0 0 28%;
+  min-height: 56px;
+  margin: 6px 10px 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 12px 8px;
+  background: #fffdf8;
+  border: 3px solid #e8c48a;
+  border-radius: 22px 22px 10px 10px;
+  box-shadow: 0 6px 0 rgba(180, 120, 70, 0.12);
+}
+
+.ord-scene.scene-ice .ord-shop {
+  background: #fff5f8;
+  border-color: #ffa8c5;
+}
+
+.ord-scene.scene-train .ord-shop {
+  background: #e7f5ff;
+  border-color: #4dabf7;
+}
+
+.ord-awning,
+.ord-window {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  top: -8px;
+  height: 14px;
+  border-radius: 10px 10px 0 0;
+}
+
+.ord-awning {
+  background: repeating-linear-gradient(90deg, #ff6b6b 0 14px, #fff5f8 14px 28px);
+}
+
+.ord-window {
+  background: repeating-linear-gradient(90deg, #1c7ed6 0 14px, #a5d8ff 14px 28px);
+}
+
+.ord-shop-ico {
+  font-size: min(12cqw, 18cqh, 52px);
+  line-height: 1;
+}
+
+.ord-shop-word {
+  font-size: clamp(18px, 4.2vmin, 26px);
+  font-weight: 900;
+  color: var(--ink);
+}
+
+.ord-line {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding: 8px 10px 12px;
+}
+
+.ord-scene .ord-start {
+  flex: 0 0 auto;
+  align-self: center;
+  display: grid;
+  place-items: center;
+  min-width: 48px;
+  min-height: 56px;
+  padding: 6px 8px;
+  background: #ffe066;
+  border: 3px solid #f59f00;
+  border-radius: 16px;
+  font-size: clamp(22px, 5vmin, 32px);
+  font-weight: 900;
+  color: #3d2a1a;
+  line-height: 1.1;
+  box-shadow: 0 6px 0 rgba(245, 159, 0, 0.2);
+}
+
+.ord-scene .ord-start::after {
+  content: "→";
+  display: block;
+  font-size: 0.72em;
+  color: var(--fox-deep);
+}
+
+.ord-scene .ord-row {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 100%;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 8px;
+  align-items: end;
+}
+
+.ord-person {
+  position: relative;
+  min-width: 0;
+  min-height: 88px;
+  height: 86%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  padding: 8px 4px 10px;
+  background: transparent;
+  border: 3px dashed transparent;
+  border-radius: 22px;
+}
+
+.ord-person::after {
+  content: "";
+  width: 56%;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(80, 50, 20, 0.16);
+}
+
+.ord-person.aim {
+  border-color: #ff922b;
+  background: rgba(255, 243, 191, 0.6);
+}
+
+.ord-person.filled {
+  border-style: solid;
+  border-color: #2b8a3e;
+  background: rgba(178, 242, 187, 0.55);
+}
+
+.ord-who {
+  font-size: min(16cqw, 34cqh, 84px);
+  line-height: 1;
+}
+
+.ord-got {
+  position: absolute;
+  top: 6px;
+  right: 4px;
+  min-width: 1.2em;
+  padding: 2px 6px;
+  background: #fa5252;
+  border-radius: 8px 14px 14px 8px;
+  color: #fff;
+  font-family: Nunito, "Noto Sans TC", sans-serif;
+  font-size: clamp(18px, 4.4vmin, 26px);
+  font-weight: 900;
+  line-height: 1.15;
+  box-shadow: 2px 3px 0 rgba(166, 37, 37, 0.28);
+}
+
+.ord-scene.is-step .ord-person.filled {
+  animation: ordPop 0.7s ease forwards;
+}
+
+.ord-play .life-item,
+.life-ghost.ord-flag {
+  background: #fa5252;
+  border-color: #c92a2a;
+  border-radius: 12px 22px 22px 12px;
+  color: #fff8ee;
+  clip-path: polygon(0 0, 86% 0, 100% 50%, 86% 100%, 0 100%);
+  padding-right: 16px;
+}
+
+.ord-play .life-item .life-emoji,
+.life-ghost.ord-flag .life-emoji {
+  font-size: clamp(36px, 9vmin, 56px);
+  font-family: Nunito, "Noto Sans TC", sans-serif;
+}
+
+.ord-play .life-item .life-name,
+.life-ghost.ord-flag .life-name {
+  color: #fff8ee;
+  font-size: clamp(16px, 3.6vmin, 22px);
 }
 
 .body-steps {
@@ -6253,6 +6462,12 @@ button.day-place:active {
   50% { transform: translateY(-5px); }
 }
 
+@keyframes ordPop {
+  0% { transform: translateY(0) scale(1); }
+  40% { transform: translateY(-16%) scale(1.16); }
+  100% { transform: translateY(-8%) scale(1.08); }
+}
+
 @keyframes nodHead {
   0%, 100% { transform: rotate(0); }
   25% { transform: rotate(18deg); }
@@ -6568,6 +6783,7 @@ button.day-place:active {
   .train-scene,
   .pop-scene,
   .path-scene,
+  .ord-scene,
   .body-scene,
   .day-scene,
   .sort-scene,
@@ -6658,6 +6874,7 @@ button.day-place:active {
   .shell.is-life .train-scene,
   .shell.is-life .pop-scene,
   .shell.is-life .path-scene,
+  .shell.is-life .ord-scene,
   .shell.is-life .body-scene,
   .shell.is-life .day-scene,
   .shell.is-life .sort-scene,
@@ -6671,6 +6888,7 @@ button.day-place:active {
   .shell.is-life .train-play,
   .shell.is-life .pop-play,
   .shell.is-life .path-play,
+  .shell.is-life .ord-play,
   .shell.is-life .body-play,
   .shell.is-life .day-play,
   .shell.is-life .sort-play,
@@ -6810,6 +7028,23 @@ button.day-place:active {
 
   .shell.is-life .path-fox {
     width: min(14cqw, 22cqh, 60px);
+  }
+
+  .shell.is-life .ord-scene {
+    flex-direction: row;
+    align-items: stretch;
+  }
+
+  .shell.is-life .ord-shop {
+    flex: 0 0 18%;
+    margin: 8px 0 8px 8px;
+    flex-direction: column;
+    justify-content: center;
+    border-radius: 18px;
+  }
+
+  .shell.is-life .ord-who {
+    font-size: min(12cqw, 38cqh, 88px);
   }
 
   .shell.is-life .speak-btn {
