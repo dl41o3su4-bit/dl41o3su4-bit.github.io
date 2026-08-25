@@ -4777,6 +4777,12 @@ button.day-place:active {
   font-size: clamp(32px, 8vmin, 48px);
 }
 
+.num-path .path-stone {
+  width: min(22cqw, 32cqh, 96px);
+  height: min(16cqw, 24cqh, 72px);
+  font-size: clamp(28px, 7.4vmin, 44px);
+}
+
 .ord-scene {
   container-type: size;
   display: flex;
@@ -7024,6 +7030,11 @@ button.day-place:active {
   .shell.is-life .path-stone {
     width: min(18cqw, 28cqh, 80px);
     height: min(14cqw, 20cqh, 58px);
+  }
+
+  .shell.is-life .num-path .path-stone {
+    width: min(20cqw, 30cqh, 92px);
+    height: min(15cqw, 22cqh, 70px);
   }
 
   .shell.is-life .path-fox {

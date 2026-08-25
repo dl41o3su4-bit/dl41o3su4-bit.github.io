@@ -5305,7 +5305,9 @@
       '<div class="prompt">' +
       escapeHtml(q.ask) +
       "</div>" +
-      '<div class="life-stage is-place path-play">' +
+      '<div class="life-stage is-place path-play' +
+      (state.levelId === "abc-path" ? "" : " num-path") +
+      '">' +
       '<div class="path-scene">' +
       '<div class="path-land" aria-hidden="true"><i class="ph-sun"></i><i class="ph-cloud c1"></i><i class="ph-cloud c2"></i><i class="ph-hill h1"></i><i class="ph-hill h2"></i><i class="ph-tree t1"></i><i class="ph-tree t2"></i><i class="ph-flower f1"></i><i class="ph-flower f2"></i><i class="ph-grass"></i><i class="ph-trail"></i></div>' +
       '<div class="path-stones" style="--n:' +
