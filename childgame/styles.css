@@ -4090,54 +4090,297 @@ button.day-place:active {
 }
 
 .train-scene {
-  background: linear-gradient(#d0ebff 0 58%, #b2f2bb 58% 68%, #e8d4b0 68%);
-  display: flex;
-  align-items: flex-end;
-  padding: 10px 8px 18px;
+  container-type: size;
+  background: linear-gradient(#9ad0f5 0 42%, #c8e6a0 42% 58%, #8fd18a 58% 72%, #e8d4b0 72%);
+}
+
+.train-land {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.train-land i {
+  position: absolute;
+  display: block;
+  font-style: normal;
+}
+
+.tr-sun {
+  top: 6%;
+  right: 8%;
+  width: min(14cqw, 18cqh, 52px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #ffe066;
+  box-shadow: 0 0 16px rgba(255, 224, 102, 0.7);
+}
+
+.tr-cloud {
+  height: 8%;
+  border-radius: 40px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 10px 5px 0 rgba(255, 255, 255, 0.65);
+}
+
+.tr-cloud.c1 {
+  top: 10%;
+  left: 10%;
+  width: 18%;
+}
+
+.tr-cloud.c2 {
+  top: 16%;
+  left: 36%;
+  width: 14%;
+}
+
+.tr-hill {
+  bottom: 28%;
+  height: 28%;
+  border-radius: 50% 50% 0 0;
+}
+
+.tr-hill.h1 {
+  left: -8%;
+  width: 48%;
+  background: linear-gradient(#8ce99a, #51cf66);
+}
+
+.tr-hill.h2 {
+  right: -6%;
+  width: 42%;
+  height: 24%;
+  background: linear-gradient(#69db7c, #37b24d);
+}
+
+.tr-tree {
+  bottom: 30%;
+  width: 10%;
+  height: 22%;
+  background:
+    radial-gradient(circle at 50% 32%, #69db7c 0 42%, transparent 43%),
+    linear-gradient(#8d6e63, #8d6e63) 50% 100% / 18% 38% no-repeat;
+}
+
+.tr-tree.t1 { left: 14%; }
+.tr-tree.t2 { right: 18%; width: 8%; height: 18%; }
+
+.tr-ground {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 22%;
+  background: linear-gradient(#d8b78a, #c9a06a);
+}
+
+.tr-ties {
+  left: 0;
+  right: 0;
+  bottom: 14%;
+  height: 10px;
+  background: repeating-linear-gradient(
+    90deg,
+    #8d6e63 0 16px,
+    #e8d4b0 16px 22px
+  );
+}
+
+.tr-rail {
+  left: 0;
+  right: 0;
+  bottom: 16%;
+  height: 5px;
+  background: #6d4c41;
+  box-shadow: 0 7px 0 #5c4033;
 }
 
 .train-scene.go .train {
-  animation: trainGo 1.2s ease forwards;
+  animation: trainGo 1.55s ease-in forwards;
 }
 
-.train-scene.go .wheel,
-.train-car.filled .wheel,
-.train-scene.go .train-engine .wheel {
-  animation: wheelSpin 0.4s linear infinite;
+.train-scene.go .wheel {
+  animation: wheelSpin 0.32s linear infinite;
+}
+
+.train-scene.go .eng-smoke {
+  animation: trainSmoke 0.7s ease-out infinite;
+}
+
+.train-scene.go .eng-fox {
+  animation: wiggle 0.45s ease;
 }
 
 .train {
-  position: relative;
+  position: absolute;
   z-index: 2;
+  left: 3%;
+  bottom: 15%;
   display: flex;
   align-items: flex-end;
-  gap: 4px;
-  width: 100%;
+  gap: 0;
+  width: 88%;
   min-height: 0;
-  transition: transform 1.1s ease;
 }
 
-.train-engine,
+.train-engine {
+  position: relative;
+  flex: 0 0 22%;
+  min-width: 0;
+  height: min(38cqh, 132px);
+}
+
+.eng-chimney {
+  position: absolute;
+  left: 16%;
+  bottom: 62%;
+  width: 16%;
+  height: 22%;
+  background: #495057;
+  border: 3px solid #3d2a1a;
+  border-radius: 4px 4px 0 0;
+  z-index: 3;
+}
+
+.eng-chimney::after {
+  content: "";
+  position: absolute;
+  left: -18%;
+  top: -6px;
+  right: -18%;
+  height: 8px;
+  background: #343a40;
+  border: 3px solid #3d2a1a;
+  border-radius: 4px;
+}
+
+.eng-smoke {
+  position: absolute;
+  left: 14%;
+  bottom: 84%;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.75);
+  opacity: 0.55;
+}
+
+.eng-smoke.s2 {
+  left: 22%;
+  bottom: 92%;
+  width: 9px;
+  height: 9px;
+  opacity: 0.4;
+}
+
+.eng-dome {
+  position: absolute;
+  left: 38%;
+  bottom: 58%;
+  width: 12%;
+  height: 10%;
+  background: #fa5252;
+  border: 3px solid #3d2a1a;
+  border-radius: 10px 10px 0 0;
+  z-index: 3;
+}
+
+.eng-boiler {
+  position: absolute;
+  left: 6%;
+  right: 30%;
+  bottom: 22%;
+  height: 38%;
+  background: linear-gradient(#ff6b6b, #fa5252);
+  border: 3px solid #3d2a1a;
+  border-radius: 40px 8px 8px 16px;
+  z-index: 2;
+}
+
+.eng-cab {
+  position: absolute;
+  right: 2%;
+  bottom: 22%;
+  width: 34%;
+  height: 54%;
+  background: #e03131;
+  border: 3px solid #3d2a1a;
+  border-radius: 8px 8px 4px 4px;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+}
+
+.eng-cab::before {
+  content: "";
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  top: 12%;
+  height: 36%;
+  background: #d0ebff;
+  border: 2px solid #3d2a1a;
+  border-radius: 4px;
+}
+
+.eng-fox {
+  position: relative;
+  z-index: 1;
+  margin-top: 18%;
+  font-size: clamp(16px, 5cqh, 22px);
+  line-height: 1;
+}
+
+.eng-cow {
+  position: absolute;
+  left: 0;
+  bottom: 18%;
+  width: 14%;
+  height: 16%;
+  background: #ffd43b;
+  border: 3px solid #3d2a1a;
+  clip-path: polygon(0 100%, 100% 0, 100% 100%);
+  z-index: 1;
+}
+
 .train-car {
   position: relative;
   flex: 1 1 0;
   min-width: 0;
-  min-height: 110px;
+  min-height: min(34cqh, 118px);
+  height: min(34cqh, 118px);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  gap: 4px;
-  padding: 8px 6px 18px;
-  border-radius: 18px 18px 10px 10px;
+  gap: 2px;
+  padding: 10px 6px 16px;
+  border-radius: 12px 12px 8px 8px;
   border: 3px solid #3d2a1a;
+  margin-left: 3px;
 }
 
-.train-engine {
-  flex: 0 0 18%;
-  background: #fa5252;
-  font-size: clamp(28px, 7vmin, 40px);
-  justify-content: center;
+.car-roof {
+  position: absolute;
+  top: -7px;
+  left: -5%;
+  right: -5%;
+  height: 12px;
+  background: #3d2a1a;
+  border-radius: 8px;
+  z-index: 2;
+}
+
+.car-coupler {
+  position: absolute;
+  left: -7px;
+  bottom: 28%;
+  width: 8px;
+  height: 6px;
+  background: #868e96;
+  border: 2px solid #3d2a1a;
+  border-radius: 2px;
 }
 
 .train-car.color-berry { background: #ffa8a8; }
@@ -4153,47 +4396,87 @@ button.day-place:active {
 }
 
 .car-label {
-  font-size: clamp(28px, 7vmin, 40px);
+  position: relative;
+  z-index: 2;
+  min-width: 1.4em;
+  padding: 1px 8px;
+  border-radius: 10px;
+  border: 2px solid #3d2a1a;
+  background: #fffaf1;
+  font-size: clamp(22px, 6vmin, 34px);
   font-weight: 900;
-  line-height: 1;
+  line-height: 1.1;
 }
 
-.car-riders {
+.car-seat {
+  position: relative;
+  z-index: 1;
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   justify-content: center;
+  align-items: flex-end;
   gap: 2px;
   width: 100%;
+  flex: 1 1 auto;
   min-height: 0;
+  padding: 2px 3px 0;
+  background: rgba(255, 253, 248, 0.42);
+  border: 2px solid rgba(61, 42, 26, 0.18);
+  border-radius: 10px;
+}
+
+.car-empty {
+  display: block;
+  width: 100%;
+  height: 8px;
+  border-radius: 8px;
+  background: rgba(255, 250, 241, 0.35);
 }
 
 .train-rider {
+  flex: 1 1 0;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: flex-end;
   animation: pop 0.35s ease;
 }
 
 .train-rider .life-emoji {
-  font-size: clamp(20px, 5vmin, 28px);
+  font-size: clamp(22px, 7cqh, 36px);
+  line-height: 1;
 }
 
 .train-rider .life-name {
-  font-size: 12px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: clamp(10px, 2.4vmin, 13px);
+  font-weight: 900;
+  line-height: 1.1;
 }
 
 .wheel {
   position: absolute;
-  bottom: -10px;
-  width: 16px;
-  height: 16px;
+  bottom: -11px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
-  background: #3d2a1a;
-  box-shadow: inset 0 0 0 3px #868e96;
+  background:
+    radial-gradient(circle at 50% 50%, #868e96 0 22%, transparent 23%),
+    conic-gradient(#3d2a1a 0 20%, #868e96 0 25%, #3d2a1a 0 45%, #868e96 0 50%, #3d2a1a 0 70%, #868e96 0 75%, #3d2a1a 0 95%, #868e96 0 100%);
+  border: 3px solid #3d2a1a;
+  box-shadow: inset 0 0 0 2px #adb5bd;
+  z-index: 4;
 }
 
-.wheel.w1 { left: 10px; }
-.wheel.w2 { right: 10px; }
+.train-engine .wheel.w1 { left: 10%; }
+.train-engine .wheel.w2 { left: 38%; }
+.train-engine .wheel.w3 { right: 10%; }
+.train-car .wheel.w1 { left: 12%; }
+.train-car .wheel.w2 { right: 12%; }
 
 .pop-scene {
   background: linear-gradient(#d0ebff, #fff4d6);
@@ -4201,13 +4484,15 @@ button.day-place:active {
 
 .abc-bubble {
   position: absolute;
-  width: clamp(64px, 16vmin, 88px);
-  height: clamp(64px, 16vmin, 88px);
+  width: clamp(58px, 15vmin, 84px);
+  height: clamp(58px, 15vmin, 84px);
+  max-width: 26%;
+  max-height: 26%;
   border-radius: 50%;
   border: 3px solid #a5d8ff;
   background: radial-gradient(circle at 30% 30%, #fff, #a5d8ff 70%);
   box-shadow: 0 8px 16px rgba(77, 171, 247, 0.25);
-  font-size: clamp(28px, 7vmin, 40px);
+  font-size: clamp(26px, 6.4vmin, 38px);
   font-weight: 900;
   display: grid;
   place-items: center;
@@ -4215,7 +4500,7 @@ button.day-place:active {
 }
 
 .abc-bubble.ok {
-  animation: bubbleBurst 0.45s ease forwards;
+  animation: bubbleBurst 0.55s ease forwards;
   background: #b2f2bb;
 }
 
@@ -4226,17 +4511,17 @@ button.day-place:active {
 
 .pop-bit {
   position: absolute;
-  width: 8px;
-  height: 8px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
   background: #4dabf7;
-  animation: popBit 0.45s ease forwards;
+  animation: popBit 0.55s ease forwards;
 }
 
-.pop-bit:nth-child(2) { left: 8%; top: 18%; }
-.pop-bit:nth-child(3) { right: 10%; top: 12%; }
-.pop-bit:nth-child(4) { left: 16%; bottom: 12%; }
-.pop-bit:nth-child(5) { right: 14%; bottom: 16%; }
+.pop-bit:nth-child(2) { left: 2%; top: 12%; }
+.pop-bit:nth-child(3) { right: 4%; top: 6%; }
+.pop-bit:nth-child(4) { left: 10%; bottom: 6%; }
+.pop-bit:nth-child(5) { right: 8%; bottom: 10%; }
 
 .path-scene {
   background: linear-gradient(#d0ebff 0 55%, #b2f2bb 55%);
@@ -4875,8 +5160,17 @@ button.day-place:active {
 }
 
 @keyframes trainGo {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(16%); }
+  0% { transform: translateX(0) translateY(0); }
+  18% { transform: translateX(8%) translateY(-3px); }
+  36% { transform: translateX(18%) translateY(0); }
+  54% { transform: translateX(28%) translateY(-3px); }
+  72% { transform: translateX(38%) translateY(0); }
+  100% { transform: translateX(52%) translateY(0); }
+}
+
+@keyframes trainSmoke {
+  0% { transform: translate(0, 0) scale(0.7); opacity: 0.7; }
+  100% { transform: translate(8px, -16px) scale(1.3); opacity: 0; }
 }
 
 @keyframes wheelSpin {
@@ -4891,12 +5185,13 @@ button.day-place:active {
 
 @keyframes bubbleBurst {
   0% { transform: scale(1); opacity: 1; }
-  100% { transform: scale(1.35); opacity: 0.15; }
+  35% { transform: scale(1.72); opacity: 1; }
+  100% { transform: scale(2.1); opacity: 0; }
 }
 
 @keyframes popBit {
   0% { transform: scale(0.4); opacity: 1; }
-  100% { transform: scale(1.6) translateY(-12px); opacity: 0; }
+  100% { transform: scale(2.1) translateY(-22px); opacity: 0; }
 }
 
 @keyframes nodHead {
@@ -5103,9 +5398,17 @@ button.day-place:active {
     font-size: 12px;
   }
 
-  .train-engine,
+  .train-engine {
+    height: min(42cqh, 96px);
+  }
+
   .train-car {
-    min-height: 88px;
+    min-height: 78px;
+    height: min(36cqh, 96px);
+  }
+
+  .train-rider .life-emoji {
+    font-size: clamp(18px, 6cqh, 26px);
   }
 }
 
@@ -5300,6 +5603,15 @@ button.day-place:active {
   .shell.is-life .sort-play {
     flex-direction: row;
     align-items: stretch;
+  }
+
+  .shell.is-life .train-engine {
+    height: min(52cqh, 120px);
+  }
+
+  .shell.is-life .train-car {
+    min-height: 72px;
+    height: min(48cqh, 110px);
   }
 
   .shell.is-life .listen-stones {

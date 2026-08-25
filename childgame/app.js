@@ -1905,6 +1905,36 @@
     });
   }
 
+  function layoutAbcBubbles(letters) {
+    var n = letters.length;
+    var cols = n <= 4 ? 2 : 3;
+    var rows = Math.ceil(n / cols);
+    var cellW = 92 / cols;
+    var cellH = 84 / rows;
+    var slots = [];
+    var i;
+    for (i = 0; i < n; i++) {
+      var r = Math.floor(i / cols);
+      var c = i % cols;
+      var jx = randInt(0, Math.max(0, Math.floor(cellW - 26)));
+      var jy = randInt(0, Math.max(0, Math.floor(cellH - 30)));
+      slots.push({
+        x: 4 + c * cellW + jx,
+        y: 6 + r * cellH + jy,
+      });
+    }
+    slots = shuffle(slots);
+    return letters.map(function (ch, idx) {
+      var slot = slots[idx] || { x: 8 + idx * 12, y: 10 };
+      return {
+        ch: ch,
+        x: Math.max(4, Math.min(68, slot.x)),
+        y: Math.max(6, Math.min(60, slot.y)),
+        delay: ((idx * 0.38) % 2.4).toFixed(2),
+      };
+    });
+  }
+
   function makeAbcPopQuestions() {
     var letters = shuffle(ABC_ORDER).slice(0, 8);
     return letters.map(function (L, i) {
@@ -1919,19 +1949,11 @@
         .map(function (x) {
           return upper ? x : x.toLowerCase();
         });
-      var bubbles = shuffle([shown].concat(distractors)).map(function (ch, idx) {
-        return {
-          ch: ch,
-          x: 6 + ((idx * 17 + i * 9 + randInt(0, 6)) % 78),
-          y: 8 + ((idx * 13 + i * 11 + randInt(0, 8)) % 64),
-          delay: ((idx * 0.4 + i * 0.15) % 2.6).toFixed(2),
-        };
-      });
       return {
         letter: shown,
         speak: L,
         ask: "點點看 " + shown,
-        bubbles: bubbles,
+        bubbles: layoutAbcBubbles(shuffle([shown].concat(distractors))),
       };
     });
   }
@@ -4416,9 +4438,11 @@
   }
 
   function renderBpmTrain(q) {
+    var going = state.sceneAnim === "train-go";
     var cars = (q.cars || [])
       .map(function (car) {
-        var riders = itemsInSlot(car.id)
+        var riders = itemsInSlot(car.id);
+        var riderHtml = riders
           .map(function (item) {
             return (
               '<span class="train-rider" title="' +
@@ -4434,15 +4458,15 @@
         return (
           '<div class="train-car color-' +
           car.color +
-          (riders ? " filled" : "") +
+          (riders.length ? " filled" : "") +
           '" data-life-slot="' +
           car.id +
           '" aria-label="' +
           car.bpm +
-          '"><span class="car-label">' +
+          '"><i class="car-roof"></i><i class="car-coupler"></i><span class="car-label">' +
           car.bpm +
-          '</span><div class="car-riders">' +
-          riders +
+          '</span><div class="car-seat">' +
+          (riderHtml || '<span class="car-empty" aria-hidden="true"></span>') +
           '</div><i class="wheel w1"></i><i class="wheel w2"></i></div>'
         );
       })
@@ -4454,9 +4478,9 @@
       "</div>" +
       '<div class="life-stage is-place train-play">' +
       '<div class="train-scene' +
-      (state.sceneAnim === "train-go" ? " go" : "") +
-      '"><div class="train-track"></div><div class="train">' +
-      '<div class="train-engine" aria-hidden="true">🚂<i class="wheel w1"></i><i class="wheel w2"></i></div>' +
+      (going ? " go" : "") +
+      '"><div class="train-land" aria-hidden="true"><i class="tr-sun"></i><i class="tr-cloud c1"></i><i class="tr-cloud c2"></i><i class="tr-hill h1"></i><i class="tr-hill h2"></i><i class="tr-tree t1"></i><i class="tr-tree t2"></i><i class="tr-ground"></i><i class="tr-ties"></i><i class="tr-rail"></i></div><div class="train">' +
+      '<div class="train-engine" aria-hidden="true"><i class="eng-smoke s1"></i><i class="eng-smoke s2"></i><i class="eng-chimney"></i><i class="eng-dome"></i><i class="eng-boiler"></i><i class="eng-cab"><span class="eng-fox">🦊</span></i><i class="eng-cow"></i><i class="wheel w1"></i><i class="wheel w2"></i><i class="wheel w3"></i></div>' +
       cars +
       "</div></div>" +
       '<div class="life-tray">' +
@@ -4860,7 +4884,8 @@
     render();
     replayFoxHappy();
     var wait = 1000;
-    if (state.levelId === "bpm-train" || state.levelId === "daynight") wait = 1450;
+    if (state.levelId === "daynight") wait = 1450;
+    if (state.levelId === "bpm-train") wait = 1700;
     if (state.levelId === "abc-path") wait = 1150;
     setTimeout(nextQuestion, wait);
   }
