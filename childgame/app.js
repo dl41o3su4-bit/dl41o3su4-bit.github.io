@@ -1697,6 +1697,21 @@
     return ["window", "side", "table"];
   }
 
+  function stickerFallbackSpots(scene) {
+    if (scene === "kitchen") return ["table", "counter", "bowl", "fridge"];
+    if (scene === "park") return ["grass", "bench", "tree"];
+    if (scene === "room") return ["bed", "shelf"];
+    return ["table", "side"];
+  }
+
+  function stickerSpotCap(scene, spot) {
+    if (scene === "table" && spot === "table") return 3;
+    if (scene === "park" && (spot === "grass" || spot === "bench")) return 2;
+    if (scene === "room") return 2;
+    if (scene === "kitchen" && (spot === "table" || spot === "counter")) return 2;
+    return 1;
+  }
+
   function stickerSceneName(scene) {
     if (scene === "kitchen") return "廚房";
     if (scene === "park") return "公園";
@@ -1734,12 +1749,18 @@
     for (i = 0; i < spots.length; i++) used[spots[i]] = 0;
     for (i = 0; i < objects.length; i++) {
       var prefer = stickerSpotHint(scene, objects[i].word);
-      if (spots.indexOf(prefer) === -1) prefer = spots[0];
-      var empties = spots.filter(function (s) {
-        return used[s] === 0;
-      });
+      if (spots.indexOf(prefer) === -1) prefer = stickerFallbackSpots(scene)[0];
       var spot = prefer;
-      if (used[prefer] >= 1 && empties.length) spot = empties[0];
+      if (used[prefer] >= stickerSpotCap(scene, prefer)) {
+        var fallbacks = stickerFallbackSpots(scene);
+        var f;
+        for (f = 0; f < fallbacks.length; f++) {
+          if (used[fallbacks[f]] < stickerSpotCap(scene, fallbacks[f])) {
+            spot = fallbacks[f];
+            break;
+          }
+        }
+      }
       objects[i].spot = spot;
       used[spot] += 1;
     }

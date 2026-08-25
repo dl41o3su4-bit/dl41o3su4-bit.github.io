@@ -5528,10 +5528,10 @@ button.day-place:active {
 }
 
 .listen-scene.scene-table .listen-furn.window {
-  top: 6%;
-  right: 6%;
-  width: 28%;
-  height: 36%;
+  top: 5%;
+  right: 5%;
+  width: 30%;
+  height: 38%;
 }
 
 .listen-scene.scene-table .listen-furn.window .furn-name {
@@ -5567,10 +5567,10 @@ button.day-place:active {
 }
 
 .listen-scene.scene-table .listen-furn.side {
-  top: 10%;
-  left: 4%;
-  width: 26%;
-  bottom: 10%;
+  top: 8%;
+  left: 3%;
+  width: 24%;
+  bottom: 8%;
 }
 
 .listen-scene.scene-table .listen-furn.side .furn-name {
@@ -5592,9 +5592,10 @@ button.day-place:active {
 .st-board {
   left: 8%;
   right: 8%;
-  top: 48%;
+  top: 36%;
   height: 6px;
   background: #c1864a;
+  box-shadow: 0 28px 0 #c1864a;
 }
 
 .listen-scene.scene-table .listen-furn.side .furn-hold {
@@ -5608,10 +5609,10 @@ button.day-place:active {
 }
 
 .listen-scene.scene-table .listen-furn.family {
-  left: 28%;
-  right: 8%;
-  bottom: 6%;
-  height: 42%;
+  left: 24%;
+  right: 5%;
+  bottom: 4%;
+  height: 50%;
 }
 
 .listen-scene.scene-table .listen-furn.family .furn-name {
@@ -5648,16 +5649,18 @@ button.day-place:active {
 .st-leg.b { right: 14%; }
 
 .st-chair {
-  bottom: -8%;
-  width: 18%;
-  height: 70%;
-  background: #e8c48a;
-  border: 2px solid #c1864a;
-  border-radius: 6px 6px 2px 2px;
+  bottom: -18%;
+  width: 20%;
+  height: 92%;
+  background:
+    linear-gradient(#d4a574, #d4a574) 50% 0 / 100% 40% no-repeat,
+    #e8c48a;
+  border: 3px solid #c1864a;
+  border-radius: 10px 10px 4px 4px;
 }
 
-.st-chair.a { left: -10%; }
-.st-chair.b { right: -10%; }
+.st-chair.a { left: -12%; }
+.st-chair.b { right: -12%; }
 
 .listen-scene.scene-table .listen-furn.family .furn-hold {
   position: absolute;
