@@ -1992,7 +1992,7 @@
         });
       var items = shuffle(
         [answer].concat(others).map(function (ch, k) {
-          return lifeItem("path-" + i + "-" + k, ch, ch, ch === answer ? "gap" : "");
+          return lifeItem("path-" + i + "-" + k, ch, "", ch === answer ? "gap" : "");
         })
       );
       return {
@@ -3014,7 +3014,7 @@
       return '<span class="preview-art preview-match" aria-hidden="true"><b>A</b><span>🫧</span></span>';
     }
     if (id === "abc-path") {
-      return '<span class="preview-art preview-next" aria-hidden="true"><i>A</i><i>B</i><em>?</em></span>';
+      return '<span class="preview-art preview-path" aria-hidden="true"><i>A</i><i>B</i><em>_</em><i>D</i></span>';
     }
     if (id === "dress") {
       return '<span class="preview-art preview-match" aria-hidden="true"><span>🧒</span><b>🧢</b></span>';
@@ -4523,39 +4523,73 @@
     );
   }
 
+  function pathStoneSpot(i, n) {
+    var max = Math.max(n - 1, 1);
+    return {
+      left: (10 + (i / max) * 72).toFixed(1),
+      rise: i % 2 === 0 ? 12 : 28,
+    };
+  }
+
   function renderAbcPath(q) {
+    var n = (q.stones || []).length;
+    var walking = state.sceneAnim === "path-walk";
+    var dest = pathStoneSpot(q.miss || 0, n);
+    var start = { left: "2", rise: 18 };
     var stones = (q.stones || [])
       .map(function (s, i) {
+        var spot = pathStoneSpot(i, n);
+        var style = "--x:" + spot.left + "%;--y:" + spot.rise + "%";
         if (s.gap) {
           var filled = itemInSlot("gap");
           return (
             '<div class="path-stone gap' +
             (filled ? " filled" : "") +
-            '" data-life-slot="gap" aria-label="缺的字母">' +
+            '" data-life-slot="gap" aria-label="缺的字母" style="' +
+            style +
+            '">' +
             (filled ? '<span class="path-letter">' + escapeHtml(filled.emoji) + "</span>" : '<span class="path-blank">?</span>') +
             "</div>"
           );
         }
-        return '<div class="path-stone"><span class="path-letter">' + escapeHtml(s.ch) + "</span></div>";
+        return (
+          '<div class="path-stone" style="' +
+          style +
+          '"><span class="path-letter">' +
+          escapeHtml(s.ch) +
+          "</span></div>"
+        );
       })
       .join("");
-    var walk = state.sceneAnim === "path-walk" ? (q.miss || 0) + 1 : q.miss || 0;
+    var foxStyle =
+      "--from-left:" +
+      start.left +
+      "%;--from-rise:" +
+      start.rise +
+      "%;--to-left:" +
+      (walking ? dest.left : start.left) +
+      "%;--to-rise:" +
+      (walking ? dest.rise : start.rise) +
+      "%";
     return (
       '<div class="play-col">' +
       '<div class="prompt">' +
       escapeHtml(q.ask) +
       "</div>" +
       '<div class="life-stage is-place path-play">' +
-      '<div class="path-scene"><div class="path-ground"></div><div class="path-stones" style="--n:' +
-      (q.stones || []).length +
+      '<div class="path-scene">' +
+      '<div class="path-land" aria-hidden="true"><i class="ph-sun"></i><i class="ph-cloud c1"></i><i class="ph-cloud c2"></i><i class="ph-hill h1"></i><i class="ph-hill h2"></i><i class="ph-tree t1"></i><i class="ph-tree t2"></i><i class="ph-flower f1"></i><i class="ph-flower f2"></i><i class="ph-grass"></i><i class="ph-trail"></i></div>' +
+      '<div class="path-stones" style="--n:' +
+      n +
       '">' +
       stones +
-      '</div><div class="path-fox" style="--walk:' +
-      walk +
-      ";--n:" +
-      (q.stones || []).length +
+      "</div>" +
+      '<div class="path-fox' +
+      (walking ? " is-walk" : "") +
+      '" style="' +
+      foxStyle +
       '">' +
-      foxMini() +
+      foxWalker() +
       "</div></div>" +
       '<div class="life-tray">' +
       renderTrayItems(q) +
@@ -4563,8 +4597,30 @@
     );
   }
 
-  function foxMini() {
-    return '<span class="fox-mini" aria-hidden="true">🦊</span>';
+  function foxWalker() {
+    return (
+      '<span class="path-walker" aria-hidden="true">' +
+      '<svg class="path-fox-face" viewBox="0 0 140 140" width="56" height="56">' +
+      '<path d="M34 58 L22 18 L54 40 Z" fill="#e56a2a"></path>' +
+      '<path d="M106 58 L118 18 L86 40 Z" fill="#e56a2a"></path>' +
+      '<path d="M36 56 L28 26 L52 42 Z" fill="#fff1d6"></path>' +
+      '<path d="M104 56 L112 26 L88 42 Z" fill="#fff1d6"></path>' +
+      '<ellipse cx="70" cy="78" rx="46" ry="42" fill="#e56a2a"></ellipse>' +
+      '<ellipse cx="70" cy="90" rx="30" ry="24" fill="#fff1d6"></ellipse>' +
+      '<circle cx="54" cy="70" r="7" fill="#3b2412"></circle>' +
+      '<circle cx="86" cy="70" r="7" fill="#3b2412"></circle>' +
+      '<circle cx="52" cy="68" r="2.2" fill="#fffaf1"></circle>' +
+      '<circle cx="84" cy="68" r="2.2" fill="#fffaf1"></circle>' +
+      '<ellipse cx="54" cy="72.5" rx="11" ry="8" fill="none" stroke="#3b2412" stroke-width="2.2"></ellipse>' +
+      '<ellipse cx="86" cy="72.5" rx="11" ry="8" fill="none" stroke="#3b2412" stroke-width="2.2"></ellipse>' +
+      '<path d="M43 72 H97" stroke="#3b2412" stroke-width="2.2"></path>' +
+      '<ellipse cx="70" cy="84" rx="6" ry="4.5" fill="#3b2412"></ellipse>' +
+      '<path d="M 60 80 Q 70 86 80 80" fill="none" stroke="#3b2412" stroke-width="3" stroke-linecap="round"></path>' +
+      '<path d="M38 108 C38 124 102 124 102 108 C92 118 48 118 38 108Z" fill="#5dae72"></path>' +
+      "</svg>" +
+      '<i class="path-paw a"></i><i class="path-paw b"></i>' +
+      "</span>"
+    );
   }
 
   function renderBody(q) {
@@ -4579,12 +4635,13 @@
           '">2</span></div>'
         : "";
     var anim = state.bodyAnim || (state.choiceMark && state.choiceMark.cls === "ok" ? state.choiceMark.value : "");
-    function partBtn(id, label) {
+    function partBtn(id, label, extra) {
       var mark = state.choiceMark && state.choiceMark.value === id ? " " + state.choiceMark.cls : "";
       var live = anim === id ? " do-" + id : "";
       return (
         '<button class="body-hit ' +
         id +
+        (extra ? " " + extra : "") +
         mark +
         live +
         '" type="button" data-action="answer" data-value="' +
@@ -4608,15 +4665,19 @@
       (anim ? " anim-" + anim : "") +
       '" aria-label="小朋友">' +
       partBtn("head", "頭") +
-      '<div class="body-face" aria-hidden="true"><i class="eye"></i><i class="eye"></i><i class="smile"></i></div>' +
-      partBtn("hand", "手") +
-      '<span class="body-arm left" aria-hidden="true"></span>' +
-      '<span class="body-arm right" aria-hidden="true"></span>' +
+      '<div class="body-head" aria-hidden="true"><i class="hair"></i><i class="ear left"></i><i class="ear right"></i><div class="body-face"><i class="eye"></i><i class="eye"></i><i class="blush l"></i><i class="blush r"></i><i class="smile"></i></div></div>' +
+      '<i class="body-neck" aria-hidden="true"></i>' +
+      partBtn("hand", "手", "left") +
+      partBtn("hand", "手", "right") +
+      '<span class="body-arm left" aria-hidden="true"><i class="palm"></i></span>' +
+      '<span class="body-arm right" aria-hidden="true"><i class="palm"></i></span>' +
       partBtn("belly", "肚子") +
-      '<div class="body-torso" aria-hidden="true"></div>' +
+      '<div class="body-shirt" aria-hidden="true"><i class="sleeve left"></i><i class="sleeve right"></i><i class="collar"></i><i class="pocket"></i></div>' +
+      '<div class="body-shorts" aria-hidden="true"></div>' +
       partBtn("foot", "腳") +
-      '<span class="body-leg left" aria-hidden="true"></span>' +
-      '<span class="body-leg right" aria-hidden="true"></span>' +
+      '<span class="body-leg left" aria-hidden="true"><i class="shoe"></i></span>' +
+      '<span class="body-leg right" aria-hidden="true"><i class="shoe"></i></span>' +
+      '<i class="body-shadow" aria-hidden="true"></i>' +
       "</div></div></div></div>"
     );
   }
@@ -4886,7 +4947,7 @@
     var wait = 1000;
     if (state.levelId === "daynight") wait = 1450;
     if (state.levelId === "bpm-train") wait = 1700;
-    if (state.levelId === "abc-path") wait = 1150;
+    if (state.levelId === "abc-path") wait = 1450;
     setTimeout(nextQuestion, wait);
   }
 
