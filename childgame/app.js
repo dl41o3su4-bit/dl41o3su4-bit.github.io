@@ -1069,8 +1069,19 @@
     return path;
   }
 
+  function crossedTheRoad(world) {
+    if (!isTaskDone(world, "light")) return false;
+    if (isTaskDone(world, "retry")) return true;
+    if (planHas(world, "retry")) return false;
+    return true;
+  }
+
   function markerIndex(world) {
     var path = visibleDayPath(world);
+    if (crossedTheRoad(world)) {
+      var park = path.indexOf("habitat");
+      if (park >= 0) return park;
+    }
     var next = nextDayTask(world);
     if (!next) return Math.max(0, path.length - 1);
     var idx = path.indexOf(next);
@@ -3073,25 +3084,53 @@
   function renderDayTableBits(world) {
     var items = world.tableItems || [];
     if (!items.length) {
-      return '<span class="day-table-empty">🍽️</span>';
+      return '<span class="art-meal">🍽️</span>';
     }
-    return items
-      .slice(0, 6)
-      .map(function (it) {
-        return '<i class="day-utensil">' + it.emoji + "</i>";
-      })
-      .join("");
+    return (
+      '<span class="day-table-set">' +
+      '<span class="art-meal day-table-base">🍽️</span>' +
+      '<span class="day-table-bits">' +
+      items
+        .slice(0, 4)
+        .map(function (it) {
+          return '<i class="day-utensil">' + it.emoji + "</i>";
+        })
+        .join("") +
+      "</span></span>"
+    );
   }
 
   function renderDayAnimals(world) {
     var list = world.residentAnimals || [];
     if (!list.length) return "";
-    return list
-      .slice(0, 2)
-      .map(function (it) {
-        return '<i class="day-critter inline">' + it.emoji + "</i>";
-      })
-      .join("");
+    return (
+      '<span class="day-park-friends">' +
+      list
+        .slice(0, 3)
+        .map(function (it, i) {
+          return '<i class="day-critter bob" style="--bob-i:' + i + '">' + it.emoji + "</i>";
+        })
+        .join("") +
+      "</span>"
+    );
+  }
+
+  function renderDaySkyFx(world) {
+    var wx = (world && world.lastWeather) || "";
+    var bits = [];
+    var i;
+    if (wx === "rain") {
+      for (i = 0; i < 8; i++) {
+        bits.push('<i class="wx-drop" style="--x:' + (8 + i * 12) + "%;--d:" + (i * 0.13).toFixed(2) + 's"></i>');
+      }
+    } else if (wx === "cold") {
+      for (i = 0; i < 7; i++) {
+        bits.push('<i class="wx-flake" style="--x:' + (10 + i * 12) + "%;--d:" + (i * 0.2).toFixed(2) + 's"></i>');
+      }
+    } else if (wx === "sun") {
+      bits.push('<i class="wx-sun">☀️</i>');
+    }
+    return bits.join("");
   }
 
   function renderDayPlace(world, spec) {
@@ -3142,10 +3181,7 @@
       return '<span class="art-bed">🛏️</span>';
     }
     if (id === "table") {
-      if (isTaskDone(world, "table") && (world.tableItems || []).length) {
-        return renderDayTableBits(world);
-      }
-      return '<span class="art-meal">🍽️</span>';
+      return renderDayTableBits(world);
     }
     if (id === "light" || id === "retry") {
       return '<span class="art-light">🚦</span>' + (evening ? '<span class="art-lamp">🏮</span>' : "");
@@ -3191,13 +3227,17 @@
       ";--day-at:" +
       mark +
       '">' +
-      '<div class="day-sky" aria-hidden="true"></div>' +
+      '<div class="day-sky" aria-hidden="true">' +
+      renderDaySkyFx(world) +
+      "</div>" +
       '<div class="day-ground" aria-hidden="true"></div>' +
       '<div class="day-path" aria-hidden="true"></div>' +
       '<div class="day-places">' +
       places +
       "</div>" +
-      '<div class="day-marker" aria-hidden="true">' +
+      '<div class="day-marker' +
+      (crossedTheRoad(world) ? " is-park-side" : "") +
+      '" aria-hidden="true">' +
       renderFoxWear(world, "map") +
       "</div></div>" +
       (evening ? '<p class="day-endline">今天過得真好</p>' : "") +
@@ -6015,6 +6055,18 @@
           hasNext: html.indexOf("place-table is-next") >= 0 || html.indexOf("is-next") >= 0,
           dressDone: html.indexOf("place-room is-done") >= 0,
           tableNext: html.indexOf("place-table is-next") >= 0,
+          hasTableUtensils: html.indexOf("day-utensil") >= 0,
+          tableUtensilCount: (html.match(/class="day-utensil"/g) || []).length,
+          parkCritterCount: (html.match(/class="day-critter bob"/g) || []).length,
+          hasParkFriends: html.indexOf("day-park-friends") >= 0,
+          hasRain: html.indexOf("wx-drop") >= 0,
+          hasSnow: html.indexOf("wx-flake") >= 0,
+          hasSun: html.indexOf('class="wx-sun"') >= 0,
+          weatherClass: (html.match(/day-world[^"]*/) || [""])[0],
+          isEvening: html.indexOf("day-world is-evening") >= 0 || html.indexOf("is-evening wx-") >= 0,
+          endline: html.indexOf("今天過得真好") >= 0,
+          parkSide: html.indexOf("is-park-side") >= 0,
+          crossed: crossedTheRoad(world),
         };
       },
       finishDressForTest: function (opts) {
@@ -6032,6 +6084,64 @@
         growTodayPlan(world, "dress");
         world.todayPlan = sanitizeTodayPlan(world.todayPlan);
         world.todayHints = sanitizeTodayHints(world.todayHints);
+        return saveFoxWorld(world);
+      },
+      finishTableForTest: function (opts) {
+        opts = opts || {};
+        var world = ensureFoxWorld();
+        world.tableItems = sanitizeTableItems(
+          opts.items || [
+            { emoji: "🍚", name: "碗" },
+            { emoji: "🥢", name: "筷子" },
+            { emoji: "🥄", name: "湯匙" },
+          ]
+        );
+        if (opts.skipDone) return saveFoxWorld(world);
+        world.todayCompleted.table = true;
+        world.lastTask = "table";
+        growTodayPlan(world, "table");
+        world.todayPlan = sanitizeTodayPlan(world.todayPlan);
+        world.todayHints = sanitizeTodayHints(world.todayHints);
+        return saveFoxWorld(world);
+      },
+      finishLightForTest: function (opts) {
+        opts = opts || {};
+        var world = ensureFoxWorld();
+        world.lightMistakes = opts.misses || 0;
+        world.todayCompleted.light = true;
+        world.lastTask = "light";
+        growTodayPlan(world, "light");
+        if (opts.retry) {
+          world.todayCompleted.retry = true;
+          world.lastTask = "retry";
+          growTodayPlan(world, "retry");
+        }
+        world.todayPlan = sanitizeTodayPlan(world.todayPlan);
+        world.todayHints = sanitizeTodayHints(world.todayHints);
+        return saveFoxWorld(world);
+      },
+      setAnimalsForTest: function (list) {
+        var world = ensureFoxWorld();
+        world.residentAnimals = sanitizeAnimals(
+          list || [
+            { emoji: "🐟", name: "魚", zone: "water" },
+            { emoji: "🐦", name: "鳥", zone: "tree" },
+            { emoji: "🐰", name: "兔子", zone: "grass" },
+            { emoji: "🦆", name: "鴨子", zone: "water" },
+          ]
+        );
+        return saveFoxWorld(world);
+      },
+      finishDayForTest: function () {
+        var world = ensureFoxWorld();
+        var plan = todayPlanOf(world);
+        var i;
+        for (i = 0; i < plan.length; i++) {
+          var id = plan[i];
+          if (id === "friends") world.visitedFriends = true;
+          else if (world.todayCompleted) world.todayCompleted[id] = true;
+        }
+        world.lastTask = plan[plan.length - 1] || world.lastTask;
         return saveFoxWorld(world);
       },
       shortMissions: function () {
