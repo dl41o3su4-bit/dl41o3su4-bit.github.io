@@ -3593,11 +3593,11 @@
       '<div class="day-banner-scene at-' +
       at +
       '" aria-hidden="true">' +
-      '<span class="mini-corner mini-home">' +
+      '<span class="mini-corner mini-home"><i class="mini-hut"></i>' +
       homeBits +
       "</span>" +
-      '<span class="mini-corner mini-road">🚦</span>' +
-      '<span class="mini-corner mini-park">' +
+      '<span class="mini-corner mini-road"><i class="mini-crosswalk"></i><i class="bit">🚦</i></span>' +
+      '<span class="mini-corner mini-park"><i class="bit">🌳</i>' +
       parkBits +
       "</span>" +
       renderFoxWear(world, "mini") +
@@ -3681,9 +3681,9 @@
     var cls =
       "day-furn day-place place-" +
       spec.spot +
-      (spec.extraClass ? " " + spec.extraClass : "") +
       (done ? " is-done" : "") +
-      (next ? " is-next" : "");
+      (next ? " is-next" : "") +
+      (spec.extraClass ? " " + spec.extraClass : "");
     return (
       "<" +
       tag +
@@ -3731,7 +3731,8 @@
     var table = dayTaskMeta("table", world);
     return (
       '<div class="day-corner corner-home">' +
-      '<div class="live-house" aria-hidden="true"><i class="live-roof"></i><i class="live-win"></i></div>' +
+      '<div class="live-house" aria-hidden="true"><i class="live-roof"></i><i class="live-rail"></i><i class="live-win"></i></div>' +
+      '<div class="live-table" aria-hidden="true"></div>' +
       renderDayPlace(world, {
         id: "dress",
         spot: "room",

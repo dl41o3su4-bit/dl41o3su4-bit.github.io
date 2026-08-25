@@ -545,13 +545,54 @@ button:focus-visible {
 }
 
 .day-banner-scene .mini-corner {
+  position: relative;
   display: flex;
   align-items: flex-end;
   justify-content: center;
   gap: 2px;
-  min-height: 36px;
-  font-size: clamp(20px, 5.4vmin, 30px);
+  min-height: 42px;
+  font-size: clamp(18px, 4.8vmin, 26px);
   line-height: 1;
+}
+
+.day-banner-scene .mini-home {
+  background: linear-gradient(transparent 55%, #e8d5b0 55%);
+}
+
+.day-banner-scene .mini-road {
+  background: linear-gradient(transparent 55%, #8bc34a 55%);
+}
+
+.day-banner-scene .mini-park {
+  background: linear-gradient(transparent 55%, #8bc34a 55%);
+}
+
+.day-banner-scene .mini-hut {
+  position: relative;
+  width: 22px;
+  height: 14px;
+  margin-bottom: 2px;
+  background: #fff4d6;
+  border: 2px solid #e8c48a;
+  border-radius: 3px 3px 0 0;
+}
+
+.day-banner-scene .mini-hut::before {
+  content: "";
+  position: absolute;
+  left: -5px;
+  top: -9px;
+  width: 28px;
+  height: 10px;
+  background: #e8590c;
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+}
+
+.day-banner-scene .mini-crosswalk {
+  width: 16px;
+  height: 22px;
+  background: repeating-linear-gradient(90deg, #6c757d 0 3px, #f8f9fa 3px 6px);
+  border-radius: 2px;
 }
 
 .day-banner-scene .mini-corner .bit {
@@ -794,16 +835,17 @@ button:focus-visible {
 }
 
 .day-zebra {
-  left: 36%;
-  width: 28%;
-  top: 66%;
-  height: 34%;
+  left: 38%;
+  width: 24%;
+  bottom: 6%;
+  height: 24%;
   background: repeating-linear-gradient(
     90deg,
-    #6c757d 0 12px,
-    #f8f9fa 12px 22px
+    #6c757d 0 10px,
+    #f8f9fa 10px 18px
   );
-  box-shadow: inset 0 8px 0 #868e96, inset 0 -6px 0 #868e96;
+  border-radius: 4px;
+  box-shadow: inset 0 5px 0 #868e96, inset 0 -4px 0 #868e96;
   z-index: 1;
 }
 
@@ -824,21 +866,24 @@ button:focus-visible {
 .day-corner-name {
   position: absolute;
   left: 50%;
-  bottom: 4px;
+  bottom: 6px;
   transform: translateX(-50%);
+  z-index: 2;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: rgba(255, 248, 238, 0.88);
   font-size: clamp(12px, 2.6vmin, 16px);
   font-weight: 900;
   color: #3d2a1a;
-  text-shadow: 0 1px 0 rgba(255, 248, 238, 0.7);
   pointer-events: none;
 }
 
 .live-house {
   position: absolute;
-  left: 8%;
-  bottom: 32%;
-  width: 46%;
-  height: 38%;
+  left: 6%;
+  bottom: 30%;
+  width: 48%;
+  height: 46%;
   background: #fff4d6;
   border: 3px solid #e8c48a;
   border-radius: 10px 10px 0 0;
@@ -854,14 +899,36 @@ button:focus-visible {
   clip-path: polygon(50% 0, 100% 100%, 0 100%);
 }
 
+.live-rail {
+  position: absolute;
+  left: 10%;
+  top: 36%;
+  width: 46%;
+  height: 3px;
+  background: #c4a574;
+  border-radius: 2px;
+}
+
 .live-win {
   position: absolute;
-  top: 22%;
-  right: 12%;
-  width: 28%;
-  height: 32%;
+  top: 18%;
+  right: 10%;
+  width: 26%;
+  height: 28%;
   background: #d0ebff;
   border: 2px solid #e8c48a;
+}
+
+.live-table {
+  position: absolute;
+  left: 54%;
+  bottom: 32%;
+  width: 40%;
+  height: 10px;
+  background: #c08552;
+  border-radius: 3px;
+  box-shadow: 0 6px 0 #8d5b32;
+  z-index: 1;
 }
 
 .day-world.is-evening .live-win {
@@ -949,26 +1016,28 @@ button.day-place:active {
 }
 
 .furn-dress {
-  left: 12%;
-  bottom: 30%;
+  left: 10%;
+  bottom: 38%;
+  flex-direction: row;
+  align-items: flex-end;
 }
 
 .furn-table {
-  left: 48%;
-  bottom: 28%;
+  left: 56%;
+  bottom: 34%;
 }
 
 .furn-road {
   left: 0;
   right: 0;
-  bottom: 36%;
+  bottom: 30%;
   width: max-content;
   margin-inline: auto;
 }
 
 .furn-park {
-  left: 18%;
-  bottom: 30%;
+  left: 6%;
+  bottom: 28%;
 }
 
 .day-go-bubble {
@@ -1028,9 +1097,9 @@ button.day-place:active {
 .day-table-set {
   position: relative;
   display: inline-grid;
-  place-items: center;
-  min-width: 44px;
-  min-height: 36px;
+  place-items: end center;
+  min-width: 52px;
+  min-height: 40px;
 }
 
 .day-table-bits {
@@ -1064,13 +1133,14 @@ button.day-place:active {
 
 .day-park-friends {
   position: absolute;
-  left: 50%;
-  bottom: -4px;
+  left: 8%;
+  right: 8%;
+  bottom: -6px;
   display: flex;
   align-items: flex-end;
-  justify-content: center;
-  gap: 2px;
-  transform: translateX(-50%);
+  justify-content: space-around;
+  gap: 6px;
+  transform: none;
   pointer-events: none;
 }
 
