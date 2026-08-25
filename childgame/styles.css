@@ -3413,7 +3413,6 @@ button.day-place:active {
 }
 
 .listen-scene {
-  display: grid;
   container-type: size;
   background: linear-gradient(#fff4d6, #f4d9b0);
 }
@@ -3433,14 +3432,17 @@ button.day-place:active {
 }
 
 .listen-furn {
-  position: relative;
+  position: absolute;
   z-index: 2;
   min-width: 0;
   min-height: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
+}
+
+.listen-furn .furn-body,
+.listen-furn .furn-body i {
+  position: absolute;
+  display: block;
+  font-style: normal;
 }
 
 .furn-name {
@@ -3456,7 +3458,7 @@ button.day-place:active {
 
 .furn-hold {
   position: relative;
-  z-index: 3;
+  z-index: 4;
   display: flex;
   flex-wrap: wrap;
   align-items: flex-end;
@@ -3536,128 +3538,172 @@ button.day-place:active {
 }
 
 .listen-scene.scene-kitchen {
-  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr) minmax(0, 0.95fr);
-  grid-template-rows: minmax(0, 0.72fr) minmax(0, 1fr) minmax(0, 1.12fr);
-  grid-template-areas:
-    "counter counter fridge"
-    "counter counter fridge"
-    "table table fridge";
-  background: linear-gradient(#ffe8cc 0 56%, #e8c48a 56% 61%, #d4a574 61%);
-}
-
-.listen-scene.scene-kitchen .listen-furn.fridge {
-  grid-area: fridge;
-  align-self: stretch;
-  justify-content: flex-start;
-  padding: 10% 10% 8%;
-}
-
-.listen-scene.scene-kitchen .listen-furn.fridge .furn-name {
-  top: 4%;
-  right: 8%;
-}
-
-.listen-scene.scene-kitchen .listen-furn.fridge .furn-hold.on-top {
-  min-height: 28%;
-  align-items: flex-end;
-}
-
-.listen-scene.scene-kitchen .listen-furn.fridge .furn-body {
-  position: relative;
-  flex: 1 1 auto;
-  width: 78%;
-  min-height: 54%;
-  background: linear-gradient(#f1f3f5, #ced4da);
-  border: 3px solid #868e96;
-  border-radius: 12px 12px 6px 6px;
-  box-shadow: inset 0 10px 0 #e9ecef, 0 6px 0 rgba(80, 40, 10, 0.12);
-}
-
-.lk-handle {
-  top: 28%;
-  left: 10%;
-  width: 8%;
-  height: 22%;
-  border-radius: 6px;
-  background: #adb5bd;
-}
-
-.lk-stripe {
-  top: 46%;
-  left: 8%;
-  right: 8%;
-  height: 3px;
-  background: #adb5bd;
+  background: linear-gradient(#ffe8cc 0 58%, #e8c48a 58% 63%, #d4a574 63%);
 }
 
 .lk-window {
-  top: 8%;
-  left: 8%;
+  top: 7%;
+  left: 7%;
   width: 22%;
-  height: 20%;
+  height: 18%;
   background:
     linear-gradient(#fff 0 0) 50% 0 / 3px 100% no-repeat,
     linear-gradient(#fff 0 0) 0 50% / 100% 3px no-repeat,
-    linear-gradient(#a5d8ff, #d0ebff);
+    linear-gradient(#74c0fc, #d0ebff);
   border: 3px solid #e8c48a;
   border-radius: 6px;
   box-shadow: inset 0 0 0 3px #fff4d6;
-}
-
-.lk-cabinet {
-  left: 6%;
-  right: 34%;
-  top: 30%;
-  height: 22%;
-  background: linear-gradient(#fff4d6, #f0c49a);
-  border: 3px solid #e8c48a;
-  border-bottom: 8px solid #c1864a;
-  border-radius: 8px 8px 0 0;
 }
 
 .lk-floor {
   left: 0;
   right: 0;
   bottom: 0;
-  height: 38%;
+  height: 37%;
   background: repeating-linear-gradient(90deg, #d4a574 0 26px, #c68e4d 26px 30px);
 }
 
+.listen-scene.scene-kitchen .listen-furn.fridge {
+  top: 8%;
+  right: 4%;
+  width: 28%;
+  bottom: 7%;
+}
+
+.listen-scene.scene-kitchen .listen-furn.fridge .furn-name {
+  top: 2%;
+  right: 6%;
+}
+
+.listen-scene.scene-kitchen .listen-furn.fridge .furn-hold.on-top {
+  position: absolute;
+  left: 4%;
+  right: 4%;
+  top: 0;
+  height: 22%;
+  align-items: flex-end;
+}
+
+.listen-scene.scene-kitchen .listen-furn.fridge .furn-body {
+  left: 12%;
+  right: 10%;
+  top: 22%;
+  bottom: 0;
+  background: linear-gradient(#dee2e6, #adb5bd);
+  border: 3px solid #495057;
+  border-radius: 10px 10px 6px 6px;
+  box-shadow: inset 0 14px 0 #f1f3f5, 4px 6px 0 rgba(80, 40, 10, 0.16);
+}
+
+.lk-freezer {
+  left: 8%;
+  right: 8%;
+  top: 28%;
+  height: 3px;
+  background: #868e96;
+}
+
+.lk-handle {
+  top: 38%;
+  left: 10%;
+  width: 9%;
+  height: 26%;
+  border-radius: 6px;
+  background: #495057;
+}
+
 .listen-scene.scene-kitchen .listen-furn.counter {
-  grid-area: counter;
-  justify-content: flex-end;
-  padding: 0 8% 2% 6%;
+  left: 6%;
+  right: 34%;
+  top: 30%;
+  height: 26%;
 }
 
 .listen-scene.scene-kitchen .listen-furn.counter .furn-name {
-  left: 8%;
-  bottom: 8%;
+  left: 6%;
+  bottom: 6%;
 }
 
+.listen-scene.scene-kitchen .listen-furn.counter .furn-body {
+  left: 0;
+  right: 0;
+  top: 38%;
+  bottom: 0;
+  background: linear-gradient(#fff4d6, #e8c48a);
+  border: 3px solid #c1864a;
+  border-radius: 8px 8px 4px 4px;
+}
+
+.lk-top {
+  left: -2%;
+  right: -2%;
+  top: -18%;
+  height: 22%;
+  background: #c1864a;
+  border-radius: 6px;
+}
+
+.lk-door {
+  top: 18%;
+  bottom: 10%;
+  width: 38%;
+  background: #f0c49a;
+  border: 2px solid #c1864a;
+  border-radius: 4px;
+}
+
+.lk-door.a { left: 8%; }
+.lk-door.b { right: 8%; }
+
 .listen-scene.scene-kitchen .listen-furn.counter .furn-hold {
-  min-height: 58%;
-  padding: 0 6px 4px;
-  border-bottom: 10px solid #c1864a;
+  position: absolute;
+  left: 4%;
+  right: 4%;
+  top: 0;
+  height: 52%;
+  align-items: flex-end;
 }
 
 .listen-scene.scene-kitchen .listen-furn.table {
-  grid-area: table;
-  padding: 0 6% 6%;
+  left: 7%;
+  right: 36%;
+  bottom: 5%;
+  height: 30%;
 }
 
 .listen-scene.scene-kitchen .listen-furn.table .furn-name {
-  left: 10%;
-  bottom: 2%;
+  left: 8%;
+  bottom: 0;
 }
 
-.listen-scene.scene-kitchen .listen-furn.table .furn-hold {
-  align-items: flex-end;
-  min-height: 72%;
-  padding: 6px 10px 10px;
+.listen-scene.scene-kitchen .listen-furn.table .furn-body {
+  left: 6%;
+  right: 6%;
+  top: 42%;
+  bottom: 8%;
   background: #c1864a;
   border: 3px solid #8d5a2b;
-  border-radius: 18px 18px 10px 10px;
-  box-shadow: 0 8px 0 #8d5a2b;
+  border-radius: 16px 16px 8px 8px;
+}
+
+.lk-leg {
+  bottom: -28%;
+  width: 8%;
+  height: 34%;
+  background: #8d5a2b;
+  border-radius: 2px;
+}
+
+.lk-leg.a { left: 12%; }
+.lk-leg.b { right: 12%; }
+
+.listen-scene.scene-kitchen .listen-furn.table .furn-hold {
+  position: absolute;
+  left: 4%;
+  right: 4%;
+  top: 0;
+  height: 58%;
+  align-items: flex-end;
 }
 
 .listen-bowl {
@@ -3665,8 +3711,8 @@ button.day-place:active {
   align-items: flex-end;
   justify-content: center;
   gap: 2px;
-  min-width: 38%;
-  min-height: 58px;
+  min-width: 42%;
+  min-height: 52px;
   padding: 8px 8px 6px;
   background: radial-gradient(ellipse at 50% 20%, #fff8ee, #e8c48a 70%);
   border: 3px solid #d4a574;
@@ -3675,13 +3721,7 @@ button.day-place:active {
 }
 
 .listen-scene.scene-park {
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr) minmax(0, 0.95fr);
-  grid-template-rows: minmax(0, 0.7fr) minmax(0, 1fr) minmax(0, 0.95fr);
-  grid-template-areas:
-    "sky sky tree"
-    "bench bench tree"
-    "grass grass grass";
-  background: linear-gradient(#d0ebff 0 38%, #b2f2bb 38% 48%, #69db7c 48%);
+  background: linear-gradient(#d0ebff 0 36%, #8ce99a 36% 46%, #51cf66 46%);
 }
 
 .lp-hill {
@@ -3703,54 +3743,65 @@ button.day-place:active {
 }
 
 .listen-scene.scene-park .listen-furn.sky {
-  grid-area: sky;
-  justify-content: flex-start;
-  align-items: flex-end;
-  padding: 6% 8% 0;
+  left: 8%;
+  top: 4%;
+  width: 40%;
+  height: 24%;
 }
 
 .listen-scene.scene-park .listen-furn.tree {
-  grid-area: tree;
-  justify-content: flex-start;
-  padding: 4% 4% 0;
+  right: 2%;
+  top: 6%;
+  width: 34%;
+  height: 58%;
 }
 
 .listen-scene.scene-park .listen-furn.tree .furn-name {
-  top: 6%;
+  top: 4%;
   right: 8%;
 }
 
 .listen-scene.scene-park .listen-furn.tree .lp-tree {
-  position: relative;
-  font-size: min(28cqw, 34cqh, 88px);
+  position: absolute;
+  right: 4%;
+  bottom: 0;
+  font-size: min(32cqw, 38cqh, 96px);
   filter: drop-shadow(0 4px 0 rgba(0, 0, 0, 0.12));
 }
 
 .listen-scene.scene-park .listen-furn.tree .furn-hold.hang {
   position: absolute;
-  left: 4%;
+  left: 0;
   top: 18%;
   width: 70%;
 }
 
 .listen-scene.scene-park .listen-furn.bench {
-  grid-area: bench;
-  padding: 0 10% 4%;
+  left: 10%;
+  top: 38%;
+  width: 48%;
+  height: 28%;
 }
 
 .listen-scene.scene-park .listen-furn.bench .furn-name {
-  left: 12%;
-  bottom: 2%;
+  left: 8%;
+  bottom: 0;
 }
 
 .listen-scene.scene-park .listen-furn.bench .furn-hold {
-  min-height: 54%;
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  top: 0;
+  height: 62%;
+  align-items: flex-end;
 }
 
 .listen-scene.scene-park .listen-furn.bench .furn-body {
-  position: relative;
-  width: 86%;
-  height: 22%;
+  left: 6%;
+  right: 6%;
+  top: 58%;
+  bottom: 8%;
 }
 
 .lp-seat {
@@ -3775,22 +3826,19 @@ button.day-place:active {
 .lp-leg.b { right: 10%; }
 
 .listen-scene.scene-park .listen-furn.grass {
-  grid-area: grass;
-  padding: 2% 6% 4%;
+  left: 4%;
+  right: 4%;
+  bottom: 2%;
+  height: 28%;
 }
 
 .listen-scene.scene-park .listen-furn.grass .furn-name {
-  left: 8%;
-  bottom: 6%;
+  left: 6%;
+  bottom: 4%;
 }
 
 .listen-scene.scene-room {
-  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
-  grid-template-rows: minmax(0, 1fr) minmax(0, 1.05fr);
-  grid-template-areas:
-    "bed shelf"
-    "bed shelf";
-  background: linear-gradient(#fff4e0 0 58%, #e8d4b0 58%);
+  background: linear-gradient(#fff4e0 0 56%, #e8d4b0 56%);
 }
 
 .lr-window {
@@ -3814,49 +3862,74 @@ button.day-place:active {
 }
 
 .listen-scene.scene-room .listen-furn.shelf {
-  grid-area: shelf;
-  justify-content: flex-start;
-  padding: 16% 8% 8%;
+  top: 10%;
+  right: 5%;
+  width: 40%;
+  bottom: 10%;
 }
 
 .listen-scene.scene-room .listen-furn.shelf .furn-name {
-  top: 8%;
-  right: 10%;
+  top: 2%;
+  right: 8%;
 }
 
-.listen-scene.scene-room .listen-furn.shelf .furn-hold {
-  flex: 1 1 auto;
-  align-content: space-around;
-  align-items: flex-end;
-  min-height: 78%;
-  padding: 8px 8px 10px;
-  background:
-    linear-gradient(#c1864a 0 0) 0 32% / 100% 6px no-repeat,
-    linear-gradient(#c1864a 0 0) 0 66% / 100% 6px no-repeat,
-    linear-gradient(#f4d9b0, #e8c48a);
+.listen-scene.scene-room .listen-furn.shelf .furn-body {
+  left: 6%;
+  right: 6%;
+  top: 10%;
+  bottom: 0;
+  background: linear-gradient(#f4d9b0, #e8c48a);
   border: 3px solid #c1864a;
   border-radius: 8px;
   box-shadow: 0 6px 0 rgba(80, 40, 10, 0.12);
 }
 
+.lr-board {
+  left: 6%;
+  right: 6%;
+  height: 6px;
+  background: #c1864a;
+}
+
+.lr-board.a { top: 36%; }
+.lr-board.b { top: 68%; }
+
+.listen-scene.scene-room .listen-furn.shelf .furn-hold {
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  top: 12%;
+  bottom: 4%;
+  align-content: space-around;
+  align-items: flex-end;
+}
+
 .listen-scene.scene-room .listen-furn.bed {
-  grid-area: bed;
-  padding: 8% 6% 8%;
+  left: 5%;
+  width: 50%;
+  bottom: 8%;
+  height: 48%;
 }
 
 .listen-scene.scene-room .listen-furn.bed .furn-name {
-  left: 10%;
-  bottom: 6%;
+  left: 8%;
+  bottom: 0;
 }
 
 .listen-scene.scene-room .listen-furn.bed .furn-hold {
-  min-height: 42%;
+  position: absolute;
+  left: 18%;
+  right: 6%;
+  top: 8%;
+  height: 52%;
+  align-items: flex-end;
 }
 
 .listen-scene.scene-room .listen-furn.bed .furn-body {
-  position: relative;
-  width: 92%;
-  height: 46%;
+  left: 4%;
+  right: 4%;
+  top: 36%;
+  bottom: 8%;
   background: #74c0fc;
   border: 3px solid #4dabf7;
   border-radius: 18px 18px 10px 10px;
@@ -3883,13 +3956,7 @@ button.day-place:active {
 }
 
 .listen-scene.scene-street {
-  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
-  grid-template-rows: minmax(0, 0.7fr) minmax(0, 1.1fr) minmax(0, 0.95fr);
-  grid-template-areas:
-    "sky sky"
-    "shop stand"
-    "sidewalk sidewalk";
-  background: linear-gradient(#d0ebff 0 36%, #ffe8cc 36% 62%, #adb5bd 62% 78%, #868e96 78%);
+  background: linear-gradient(#d0ebff 0 34%, #ffe8cc 34% 60%, #adb5bd 60% 76%, #5c5c5c 76%);
 }
 
 .ls-road {
@@ -3903,69 +3970,97 @@ button.day-place:active {
 }
 
 .listen-scene.scene-street .listen-furn.sky {
-  grid-area: sky;
-  justify-content: flex-start;
-  padding: 4% 10% 0;
+  left: 8%;
+  top: 3%;
+  right: 8%;
+  height: 24%;
 }
 
 .listen-scene.scene-street .listen-furn.shop {
-  grid-area: shop;
-  padding: 4% 8% 0;
+  left: 6%;
+  top: 26%;
+  width: 42%;
+  height: 40%;
 }
 
 .listen-scene.scene-street .listen-furn.shop .furn-name {
-  top: 6%;
-  left: 10%;
+  top: 2%;
+  left: 8%;
+}
+
+.listen-scene.scene-street .listen-furn.shop .furn-body {
+  left: 6%;
+  right: 6%;
+  top: 10%;
+  bottom: 0;
+  background: #ffc078;
+  border: 3px solid #e8590c;
+  border-radius: 6px 6px 0 0;
 }
 
 .ls-awning {
-  left: 8%;
-  right: 8%;
-  top: 8%;
-  height: 16%;
+  left: -4%;
+  right: -4%;
+  top: -8%;
+  height: 22%;
   background: repeating-linear-gradient(90deg, #fa5252 0 14px, #fff4d6 14px 28px);
   border-radius: 8px 8px 0 0;
 }
 
 .listen-scene.scene-street .listen-furn.shop .furn-hold.window {
-  flex: 1 1 auto;
-  min-height: 58%;
-  margin-top: 18%;
-  width: 78%;
+  position: absolute;
+  left: 16%;
+  right: 16%;
+  top: 28%;
+  bottom: 12%;
   align-items: center;
-  background: linear-gradient(#a5d8ff, #d0ebff);
+  background: linear-gradient(#74c0fc, #d0ebff);
   border: 3px solid #e8c48a;
-  border-radius: 8px;
-  box-shadow: 0 10px 0 #ffc078;
+  border-radius: 6px;
 }
 
 .listen-scene.scene-street .listen-furn.stand {
-  grid-area: stand;
-  padding: 10% 10% 2%;
+  right: 8%;
+  top: 32%;
+  width: 34%;
+  height: 34%;
 }
 
 .listen-scene.scene-street .listen-furn.stand .furn-name {
-  right: 10%;
-  bottom: 4%;
+  right: 6%;
+  bottom: 0;
 }
 
-.listen-scene.scene-street .listen-furn.stand .furn-hold {
-  min-height: 64%;
-  padding: 8px 8px 10px;
+.listen-scene.scene-street .listen-furn.stand .furn-body {
+  left: 8%;
+  right: 8%;
+  top: 42%;
+  bottom: 6%;
   background: #e8c48a;
   border: 3px solid #c1864a;
   border-radius: 8px 8px 4px 4px;
-  box-shadow: 0 10px 0 #8d5a2b;
+  box-shadow: 0 8px 0 #8d5a2b;
+}
+
+.listen-scene.scene-street .listen-furn.stand .furn-hold {
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  top: 0;
+  height: 52%;
+  align-items: flex-end;
 }
 
 .listen-scene.scene-street .listen-furn.sidewalk {
-  grid-area: sidewalk;
-  padding: 2% 8% 4%;
+  left: 4%;
+  right: 4%;
+  bottom: 4%;
+  height: 26%;
 }
 
 .listen-scene.scene-street .listen-furn.sidewalk .furn-name {
-  left: 8%;
-  bottom: 4%;
+  left: 6%;
+  bottom: 2%;
 }
 
 .listen-stones {
@@ -5214,20 +5309,13 @@ button.day-place:active {
     align-content: center;
   }
 
-  .shell.is-life .listen-scene.scene-kitchen {
-    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 0.8fr);
-    grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
-    grid-template-areas:
-      "counter table fridge"
-      "counter table fridge";
+  .shell.is-life .listen-scene.scene-kitchen .listen-furn.table {
+    right: 34%;
+    height: 38%;
   }
 
-  .shell.is-life .listen-scene.scene-park {
-    grid-template-rows: minmax(0, 0.6fr) minmax(0, 1fr) minmax(0, 0.8fr);
-  }
-
-  .shell.is-life .listen-scene.scene-street {
-    grid-template-rows: minmax(0, 0.55fr) minmax(0, 1fr) minmax(0, 0.75fr);
+  .shell.is-life .listen-scene.scene-kitchen .listen-furn.counter {
+    height: 32%;
   }
 
   .shell.is-life .body-kid {

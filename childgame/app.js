@@ -4316,14 +4316,14 @@
     var scene = q.scene || "park";
     if (scene === "kitchen") {
       return (
-        '<div class="listen-land" aria-hidden="true"><i class="lk-window"></i><i class="lk-cabinet"></i><i class="lk-floor"></i></div>' +
+        '<div class="listen-land" aria-hidden="true"><i class="lk-window"></i><i class="lk-floor"></i></div>' +
         '<div class="listen-furn fridge"><span class="furn-name">冰箱</span><div class="furn-hold on-top">' +
         listenObjsOn(q, "fridge") +
-        '</div><div class="furn-body"><i class="lk-handle"></i><i class="lk-stripe"></i></div></div>' +
-        '<div class="listen-furn counter"><span class="furn-name">流理台</span><div class="furn-hold">' +
+        '</div><div class="furn-body"><i class="lk-freezer"></i><i class="lk-handle"></i></div></div>' +
+        '<div class="listen-furn counter"><span class="furn-name">流理台</span><div class="furn-body"><i class="lk-door a"></i><i class="lk-door b"></i><i class="lk-top"></i></div><div class="furn-hold">' +
         listenObjsOn(q, "counter") +
         "</div></div>" +
-        '<div class="listen-furn table"><span class="furn-name">桌子</span><div class="furn-hold">' +
+        '<div class="listen-furn table"><span class="furn-name">桌子</span><div class="furn-body"><i class="lk-leg a"></i><i class="lk-leg b"></i></div><div class="furn-hold">' +
         listenObjsOn(q, "table") +
         '<div class="listen-bowl">' +
         listenObjsOn(q, "bowl") +
@@ -4339,9 +4339,9 @@
         '<div class="listen-furn tree"><span class="furn-name">樹</span><i class="lp-tree" aria-hidden="true">🌳</i><div class="furn-hold hang">' +
         listenObjsOn(q, "tree") +
         "</div></div>" +
-        '<div class="listen-furn bench"><span class="furn-name">長椅</span><div class="furn-hold">' +
+        '<div class="listen-furn bench"><span class="furn-name">長椅</span><div class="furn-body"><i class="lp-seat"></i><i class="lp-leg a"></i><i class="lp-leg b"></i></div><div class="furn-hold">' +
         listenObjsOn(q, "bench") +
-        '</div><div class="furn-body"><i class="lp-seat"></i><i class="lp-leg a"></i><i class="lp-leg b"></i></div></div>' +
+        "</div></div>" +
         '<div class="listen-furn grass"><span class="furn-name">草地</span><div class="furn-hold">' +
         listenObjsOn(q, "grass") +
         "</div></div>"
@@ -4350,12 +4350,12 @@
     if (scene === "room") {
       return (
         '<div class="listen-land" aria-hidden="true"><i class="lr-window"></i><i class="lr-rug"></i></div>' +
-        '<div class="listen-furn shelf"><span class="furn-name">架子</span><div class="furn-hold">' +
+        '<div class="listen-furn shelf"><span class="furn-name">架子</span><div class="furn-body"><i class="lr-board a"></i><i class="lr-board b"></i></div><div class="furn-hold">' +
         listenObjsOn(q, "shelf") +
         "</div></div>" +
-        '<div class="listen-furn bed"><span class="furn-name">床</span><div class="furn-hold">' +
+        '<div class="listen-furn bed"><span class="furn-name">床</span><div class="furn-body"><i class="lr-pillow"></i><i class="lr-blanket"></i></div><div class="furn-hold">' +
         listenObjsOn(q, "bed") +
-        '</div><div class="furn-body"><i class="lr-pillow"></i><i class="lr-blanket"></i></div></div>'
+        "</div></div>"
       );
     }
     return (
@@ -4363,10 +4363,10 @@
       '<div class="listen-furn sky"><div class="furn-hold">' +
       listenObjsOn(q, "sky") +
       "</div></div>" +
-      '<div class="listen-furn shop"><span class="furn-name">店</span><i class="ls-awning" aria-hidden="true"></i><div class="furn-hold window">' +
+      '<div class="listen-furn shop"><span class="furn-name">店</span><div class="furn-body"><i class="ls-awning"></i></div><div class="furn-hold window">' +
       listenObjsOn(q, "window") +
       "</div></div>" +
-      '<div class="listen-furn stand"><span class="furn-name">攤子</span><div class="furn-hold">' +
+      '<div class="listen-furn stand"><span class="furn-name">攤子</span><div class="furn-body"></div><div class="furn-hold">' +
       listenObjsOn(q, "stand") +
       "</div></div>" +
       '<div class="listen-furn sidewalk"><span class="furn-name">人行道</span><div class="furn-hold">' +
