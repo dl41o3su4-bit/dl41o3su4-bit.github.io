@@ -4223,6 +4223,8 @@
       mark +
       '" data-life-item="' +
       item.id +
+      '" data-home="' +
+      escapeHtml(item.slot || "") +
       '"' +
       (placed ? ' data-placed="1"' : "") +
       style +
