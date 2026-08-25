@@ -1198,16 +1198,25 @@
     return true;
   }
 
-  function markerIndex(world) {
-    var path = visibleDayPath(world);
-    if (crossedTheRoad(world)) {
-      var park = path.indexOf("habitat");
-      if (park >= 0) return park;
-    }
+  function markerSpot(world) {
     var next = nextDayTask(world);
-    if (!next) return Math.max(0, path.length - 1);
-    var idx = path.indexOf(next);
-    return idx >= 0 ? idx : 0;
+    if (next === "friends" || next === "habitat") return "park";
+    if (next === "light" || next === "retry") return "road";
+    if (next === "table") return "table";
+    if (next === "dress") return "home";
+    if (crossedTheRoad(world) || isTaskDone(world, "habitat") || isTaskDone(world, "friends")) {
+      return "park";
+    }
+    if (isTaskDone(world, "light") || isTaskDone(world, "retry")) return "road";
+    if (isTaskDone(world, "table")) return "table";
+    return "home";
+  }
+
+  function markerIndex(world) {
+    var spot = markerSpot(world);
+    if (spot === "park") return 2;
+    if (spot === "road") return 1;
+    return 0;
   }
 
   function dayTaskMeta(id, world) {
@@ -3571,26 +3580,26 @@
     var done = todayDoneCount(world);
     var plan = todayPlanOf(world);
     var evening = dayIsFinished(world);
-    var spots = plan
-      .map(function (id) {
-        var meta = dayTaskMeta(id, world);
-        return (
-          '<span class="mini-spot ' +
-          meta.spot +
-          (isTaskDone(world, id) ? " done" : "") +
-          '">' +
-          meta.emoji +
-          "</span>"
-        );
-      })
-      .join("");
+    var at = markerSpot(world);
+    var homeBits =
+      renderMiniIcons(world.outfit, "bit") || '<i class="bit">🛏️</i>';
+    var parkBits =
+      renderMiniIcons(world.residentAnimals, "bit") || '<i class="bit">🌳</i>';
     return (
       '<button class="day-banner' +
       (evening ? " is-evening" : "") +
       (world.lastWeather ? " wx-" + world.lastWeather : "") +
       '" type="button" data-action="open-day" aria-label="小狐狸的一天">' +
-      '<div class="day-banner-scene" aria-hidden="true">' +
-      spots +
+      '<div class="day-banner-scene at-' +
+      at +
+      '" aria-hidden="true">' +
+      '<span class="mini-corner mini-home">' +
+      homeBits +
+      "</span>" +
+      '<span class="mini-corner mini-road">🚦</span>' +
+      '<span class="mini-corner mini-park">' +
+      parkBits +
+      "</span>" +
       renderFoxWear(world, "mini") +
       "</div>" +
       '<div class="day-banner-copy">' +
@@ -3667,36 +3676,33 @@
     var id = spec.id;
     var done = isTaskDone(world, id);
     var next = nextDayTask(world) === id;
-    var locked = !done && !next;
-    var preview = locked && !planHas(world, id);
     var tag = next ? "button" : "div";
-    var action = next
-      ? ' data-action="day-task" data-level="' + id + '"'
-      : locked
-        ? ' data-action="day-lock" data-level="' + id + '"'
-        : "";
+    var action = next ? ' data-action="day-task" data-level="' + id + '"' : "";
     var cls =
-      "day-place place-" +
+      "day-furn day-place place-" +
       spec.spot +
+      (spec.extraClass ? " " + spec.extraClass : "") +
       (done ? " is-done" : "") +
-      (next ? " is-next" : "") +
-      (locked ? " is-locked" : "") +
-      (preview ? " is-preview" : "");
+      (next ? " is-next" : "");
     return (
       "<" +
       tag +
       ' class="' +
       cls +
-      '" type="button"' +
+      '"' +
+      (next ? ' type="button"' : "") +
       action +
+      (next ? ' aria-label="' + spec.label + '"' : "") +
       ">" +
       '<div class="day-spot-art" aria-hidden="true">' +
       spec.art +
-      (done ? '<span class="day-check">✓</span>' : "") +
       "</div>" +
-      '<span class="day-spot-label">' +
-      spec.label +
-      "</span></" +
+      (next
+        ? '<span class="day-go-bubble">去這裡</span><span class="day-spot-label">' +
+          spec.label +
+          "</span>"
+        : "") +
+      "</" +
       tag +
       ">"
     );
@@ -3704,11 +3710,11 @@
 
   function dayPlaceArt(id, world, evening) {
     if (id === "dress") {
-      if ((world.outfit || []).length) {
-        var kept = renderMiniIcons(world.outfit, "day-kept");
-        return kept || '<span class="art-shirt">👕</span>';
-      }
-      return '<span class="art-bed">🛏️</span>';
+      var kept = (world.outfit || []).length ? renderMiniIcons(world.outfit, "day-kept") : "";
+      return (
+        '<span class="art-bed">🛏️</span>' +
+        (kept || '<span class="art-shirt">👕</span>')
+      );
     }
     if (id === "table") {
       return renderDayTableBits(world);
@@ -3720,27 +3726,85 @@
     return '<span class="art-tree">🌳</span>' + renderDayAnimals(world);
   }
 
+  function renderHomeCorner(world, evening) {
+    var dress = dayTaskMeta("dress", world);
+    var table = dayTaskMeta("table", world);
+    return (
+      '<div class="day-corner corner-home">' +
+      '<div class="live-house" aria-hidden="true"><i class="live-roof"></i><i class="live-win"></i></div>' +
+      renderDayPlace(world, {
+        id: "dress",
+        spot: "room",
+        label: dress.label,
+        art: dayPlaceArt("dress", world, evening),
+        extraClass: "furn-dress",
+      }) +
+      renderDayPlace(world, {
+        id: "table",
+        spot: "table",
+        label: table.label,
+        art: dayPlaceArt("table", world, evening),
+        extraClass: "furn-table",
+      }) +
+      '<span class="day-corner-name">家</span></div>'
+    );
+  }
+
+  function renderRoadCorner(world, evening) {
+    var id = nextDayTask(world) === "retry" ? "retry" : "light";
+    var meta = dayTaskMeta(id, world);
+    return (
+      '<div class="day-corner corner-road">' +
+      '<div class="day-zebra" aria-hidden="true"></div>' +
+      renderDayPlace(world, {
+        id: id,
+        spot: "road",
+        label: meta.label,
+        art: dayPlaceArt(id, world, evening),
+        extraClass: "furn-road",
+      }) +
+      '<span class="day-corner-name">馬路</span></div>'
+    );
+  }
+
+  function renderParkCorner(world, evening) {
+    var id = nextDayTask(world) === "friends" ? "friends" : "habitat";
+    var meta = dayTaskMeta(id, world);
+    return (
+      '<div class="day-corner corner-park">' +
+      '<span class="day-trees" aria-hidden="true"><i>🌳</i><i>🌲</i><i>🌳</i></span>' +
+      renderDayPlace(world, {
+        id: id,
+        spot: id === "friends" ? "friends" : "park",
+        label: meta.label,
+        art: dayPlaceArt(id, world, evening),
+        extraClass: "furn-park",
+      }) +
+      '<span class="day-corner-name">公園</span></div>'
+    );
+  }
+
   function renderDayWorld() {
     var world = ensureFoxWorld();
-    var path = visibleDayPath(world);
     var evening = dayIsFinished(world);
     var mark = markerIndex(world);
-    var places = path
-      .map(function (id) {
-        var meta = dayTaskMeta(id, world);
-        return renderDayPlace(world, {
-          id: id,
-          spot: meta.spot,
-          label: meta.label,
-          art: dayPlaceArt(id, world, evening),
-        });
-      })
-      .join("");
+    var spot = markerSpot(world);
+    var foxAt = spot === "table" ? "at-table" : "at-" + spot;
+    var done = todayDoneCount(world);
+    var plan = todayPlanOf(world);
     return (
       '<div class="shell is-home is-day' +
       (evening ? " is-evening" : "") +
       '">' +
-      topTools('<button class="home-btn" type="button" data-action="school-home" aria-label="回家">🏠</button>') +
+      topTools(
+        '<div class="day-top-left">' +
+          '<button class="home-btn" type="button" data-action="school-home" aria-label="回家">🏠</button>' +
+          '<div class="progress-chip day-count">今天 ' +
+          done +
+          " / " +
+          plan.length +
+          "</div></div>"
+      ) +
       '<div class="home-hero">' +
       '<p class="kicker">和小狐狸一起過一天</p>' +
       '<h1 class="title">小狐狸的一天</h1></div>' +
@@ -3751,19 +3815,21 @@
       "</p></div>" +
       '<div class="day-world' +
       (evening ? " is-evening" : "") +
+      " " +
+      foxAt +
       (world.lastWeather ? " wx-" + world.lastWeather : "") +
-      '" style="--day-n:' +
-      path.length +
-      ";--day-at:" +
+      '" style="--day-n:3;--day-at:' +
       mark +
       '">' +
       '<div class="day-sky" aria-hidden="true">' +
       renderDaySkyFx(world) +
       "</div>" +
       '<div class="day-ground" aria-hidden="true"></div>' +
-      '<div class="day-path" aria-hidden="true"></div>' +
-      '<div class="day-places">' +
-      places +
+      '<div class="day-trail" aria-hidden="true"></div>' +
+      '<div class="day-live">' +
+      renderHomeCorner(world, evening) +
+      renderRoadCorner(world, evening) +
+      renderParkCorner(world, evening) +
       "</div>" +
       '<div class="day-marker' +
       (crossedTheRoad(world) ? " is-park-side" : "") +
@@ -4268,40 +4334,6 @@
       '<div class="life-tray">' +
       tray +
       "</div></div></div>"
-    );
-  }
-
-  function renderPicChoice(q, prompt) {
-    var buttons = q.choices
-      .map(function (s) {
-        var mark = state.choiceMark && state.choiceMark.value === s ? " " + state.choiceMark.cls : "";
-        return (
-          '<button class="choice glyph' +
-          mark +
-          '" type="button" data-action="answer" data-value="' +
-          s +
-          '">' +
-          s +
-          "</button>"
-        );
-      })
-      .join("");
-    return (
-      '<div class="play-col">' +
-      '<div class="prompt">' +
-      prompt +
-      "</div>" +
-      '<div class="pic-stage"><div class="pic-card">' +
-      '<span class="pic-emoji">' +
-      q.emoji +
-      "</span>" +
-      '<span class="pic-word">' +
-      escapeHtml(q.word || "") +
-      "</span>" +
-      "</div></div>" +
-      '<div class="choices">' +
-      buttons +
-      "</div></div>"
     );
   }
 
@@ -7064,6 +7096,11 @@
           }),
           hasOutfitWear: html.indexOf("has-outfit") >= 0,
           hasPreview: html.indexOf("is-preview") >= 0,
+          hasLocked: html.indexOf("is-locked") >= 0,
+          hasGoBubble: html.indexOf("去這裡") >= 0,
+          hasHomeCorner: html.indexOf("corner-home") >= 0,
+          hasRoadCorner: html.indexOf("corner-road") >= 0,
+          hasParkCorner: html.indexOf("corner-park") >= 0,
           hasNext: html.indexOf("place-table is-next") >= 0 || html.indexOf("is-next") >= 0,
           dressDone: html.indexOf("place-room is-done") >= 0,
           tableNext: html.indexOf("place-table is-next") >= 0,
