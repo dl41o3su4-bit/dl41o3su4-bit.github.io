@@ -4706,17 +4706,19 @@ button.day-place:active {
 
 .path-fox {
   position: absolute;
-  left: var(--to-left, 2%);
-  bottom: calc(var(--to-rise, 18%) + 10%);
+  left: var(--from-left, 2%);
+  bottom: calc(var(--from-rise, 18%) + 10%);
   z-index: 4;
   width: min(18cqw, 26cqh, 72px);
   transform: translateX(-50%);
   pointer-events: none;
   text-align: center;
+  transition: left 1.15s ease, bottom 1.15s ease;
 }
 
 .path-fox.is-walk {
-  animation: pathFoxWalk 1.15s ease forwards;
+  left: var(--to-left, 50%);
+  bottom: calc(var(--to-rise, 28%) + 10%);
 }
 
 .path-walker {
@@ -4799,12 +4801,12 @@ button.day-place:active {
 
 .body-shadow {
   position: absolute;
-  left: 22%;
-  right: 22%;
-  bottom: 2%;
-  height: 8%;
+  left: 28%;
+  right: 28%;
+  bottom: 3%;
+  height: 6%;
   border-radius: 50%;
-  background: rgba(61, 42, 26, 0.16);
+  background: rgba(61, 42, 26, 0.12);
   z-index: 0;
 }
 
@@ -5085,23 +5087,23 @@ button.day-place:active {
 }
 
 .body-kid.anim-head .body-head {
-  animation: nodHead 0.7s ease;
+  animation: nodHead 0.85s ease;
 }
 
 .body-kid.anim-hand .body-arm.right {
-  animation: waveHand 0.75s ease;
+  animation: waveHand 0.9s ease;
 }
 
 .body-kid.anim-belly .body-shirt {
-  animation: bellyBreath 0.8s ease;
+  animation: bellyBreath 0.9s ease;
 }
 
 .body-kid.anim-foot .body-leg.left {
-  animation: stompFoot 0.55s ease;
+  animation: stompFoot 0.7s ease;
 }
 
 .body-kid.anim-foot .body-leg.right {
-  animation: stompFoot 0.55s ease 0.12s;
+  animation: stompFoot 0.7s ease 0.14s;
 }
 
 .day-scene {
@@ -5781,17 +5783,6 @@ button.day-place:active {
   100% { transform: scale(2.1) translateY(-22px); opacity: 0; }
 }
 
-@keyframes pathFoxWalk {
-  from {
-    left: var(--from-left, 2%);
-    bottom: calc(var(--from-rise, 18%) + 10%);
-  }
-  to {
-    left: var(--to-left, 50%);
-    bottom: calc(var(--to-rise, 28%) + 10%);
-  }
-}
-
 @keyframes pathFoxBob {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-6px); }
@@ -5804,28 +5795,29 @@ button.day-place:active {
 
 @keyframes nodHead {
   0%, 100% { transform: rotate(0); }
-  30% { transform: rotate(14deg); }
-  55% { transform: rotate(-10deg); }
-  75% { transform: rotate(6deg); }
+  25% { transform: rotate(18deg); }
+  50% { transform: rotate(-14deg); }
+  75% { transform: rotate(8deg); }
 }
 
 @keyframes waveHand {
   0%, 100% { transform: rotate(0); }
-  25% { transform: rotate(-46deg); }
-  50% { transform: rotate(-8deg); }
-  75% { transform: rotate(-40deg); }
+  20% { transform: rotate(-58deg); }
+  40% { transform: rotate(-12deg); }
+  60% { transform: rotate(-52deg); }
+  80% { transform: rotate(-8deg); }
 }
 
 @keyframes bellyBreath {
   0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.1, 0.92); }
+  50% { transform: scale(1.14, 0.88); }
 }
 
 @keyframes stompFoot {
   0%, 100% { transform: translateY(0); }
-  35% { transform: translateY(-12px); }
-  55% { transform: translateY(8px); }
-  70% { transform: translateY(0); }
+  30% { transform: translateY(-16px); }
+  50% { transform: translateY(10px); }
+  70% { transform: translateY(-4px); }
 }
 
 @keyframes binWiggle {

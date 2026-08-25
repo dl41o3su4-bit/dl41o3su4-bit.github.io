@@ -4690,7 +4690,6 @@
 
   function renderAbcPath(q) {
     var n = (q.stones || []).length;
-    var walking = state.sceneAnim === "path-walk";
     var dest = pathStoneSpot(q.miss || 0, n);
     var start = { left: "2", rise: 18 };
     var stones = (q.stones || [])
@@ -4724,9 +4723,9 @@
       "%;--from-rise:" +
       start.rise +
       "%;--to-left:" +
-      (walking ? dest.left : start.left) +
+      dest.left +
       "%;--to-rise:" +
-      (walking ? dest.rise : start.rise) +
+      dest.rise +
       "%";
     return (
       '<div class="play-col">' +
@@ -4741,9 +4740,7 @@
       '">' +
       stones +
       "</div>" +
-      '<div class="path-fox' +
-      (walking ? " is-walk" : "") +
-      '" style="' +
+      '<div class="path-fox" style="' +
       foxStyle +
       '">' +
       foxWalker() +
@@ -5107,10 +5104,18 @@
     state.foxMood = "happy";
     render();
     replayFoxHappy();
+    if (state.levelId === "abc-path") {
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          var fox = app.querySelector(".path-fox");
+          if (fox) fox.classList.add("is-walk");
+        });
+      });
+    }
     var wait = 1000;
     if (state.levelId === "daynight") wait = 1450;
     if (state.levelId === "bpm-train") wait = 1700;
-    if (state.levelId === "abc-path") wait = 1450;
+    if (state.levelId === "abc-path") wait = 1500;
     if (isStickerLevel()) wait = 1100;
     setTimeout(nextQuestion, wait);
   }
