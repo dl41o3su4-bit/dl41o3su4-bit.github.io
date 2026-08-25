@@ -3909,7 +3909,7 @@
       '<div class="cubby-shelf" aria-label="數字的家">' +
       homes +
       "</div>" +
-      '<div class="toy-mat" aria-label="遊戲墊">' +
+      '<div class="toy-mat match-mat" aria-label="遊戲墊">' +
       piles +
       "</div></div></div></div>"
     );
@@ -3918,7 +3918,13 @@
   function renderShareSeat(person) {
     var guest = itemInSlot(person.id);
     return (
-      '<div class="share-seat">' +
+      '<div class="share-seat' +
+      (guest ? " filled" : "") +
+      '" data-life-slot="' +
+      escapeHtml(person.id) +
+      '" aria-label="' +
+      escapeHtml(person.name) +
+      '的位子">' +
       '<div class="share-who"><span class="share-face">' +
       person.face +
       '</span><span class="share-name">' +
@@ -3926,11 +3932,7 @@
       "</span></div>" +
       '<div class="share-plate' +
       (guest ? " filled" : "") +
-      '" data-life-slot="' +
-      escapeHtml(person.id) +
-      '" aria-label="' +
-      escapeHtml(person.name) +
-      '的盤子">' +
+      '">' +
       (guest ? '<span class="share-put">' + guest.emoji + "</span>" : "") +
       "</div></div>"
     );
