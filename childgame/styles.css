@@ -5521,27 +5521,28 @@ button.day-place:active {
   min-height: 0;
   overflow: hidden;
   display: flex;
-  align-items: flex-end;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: flex-end;
   border-radius: 24px;
   border: 3px solid #f0c49a;
   box-shadow: 0 8px 16px rgba(180, 120, 70, 0.12);
+  container-type: size;
 }
 
 .sticker-scene.scene-kitchen {
-  background: linear-gradient(#fff4d6 0 46%, #f0c49a 46% 52%, #ffe8cc 52% 100%);
+  background: linear-gradient(#fff4d6 0 34%, #f0c49a 34% 38%, #ffe0b5 38% 100%);
 }
 
 .sticker-scene.scene-park {
-  background: linear-gradient(#a5d8ff 0 38%, #8ce99a 38% 100%);
+  background: linear-gradient(#a5d8ff 0 30%, #8ce99a 30% 100%);
 }
 
 .sticker-scene.scene-room {
-  background: linear-gradient(#ffe8cc 0 42%, #e8c48a 42% 48%, #fff4d6 48% 100%);
+  background: linear-gradient(#ffe8cc 0 32%, #e8c48a 32% 36%, #fff1d6 36% 100%);
 }
 
 .sticker-scene.scene-table {
-  background: linear-gradient(#fff8ee 0 52%, #e8c48a 52% 58%, #f4d9b0 58% 100%);
+  background: linear-gradient(#fff8ee 0 36%, #d4a574 36% 42%, #f4d9b0 42% 100%);
 }
 
 .sticker-land {
@@ -5553,91 +5554,75 @@ button.day-place:active {
 .sk-window,
 .sr-window {
   position: absolute;
-  top: 8%;
-  right: 8%;
-  width: 22%;
-  height: 22%;
+  top: 6%;
+  right: 7%;
+  width: min(14cqw, 18cqh, 56px);
+  height: min(14cqw, 18cqh, 56px);
   background: #d0ebff;
   border: 3px solid #3d2a1a;
-  border-radius: 8px;
-  box-shadow: inset 0 0 0 3px #fffaf1;
+  border-radius: 6px;
 }
 
-.sk-counter {
+.sk-window b,
+.sr-window b {
   position: absolute;
-  left: 4%;
-  right: 4%;
+  background: #3d2a1a;
+}
+
+.sk-window b:first-child,
+.sr-window b:first-child {
+  left: 50%;
+  top: 0;
   bottom: 0;
-  height: 28%;
-  background: linear-gradient(#fffaf1 0 18%, #f0c49a 18% 100%);
-  border-top: 4px solid #d9480f;
-  border-radius: 8px 8px 0 0;
+  width: 3px;
+  margin-left: -1.5px;
+}
+
+.sk-window b:last-child,
+.sr-window b:last-child {
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 3px;
+  margin-top: -1.5px;
 }
 
 .sp-hill {
   position: absolute;
-  left: -8%;
-  right: -8%;
-  bottom: 18%;
-  height: 36%;
+  left: -10%;
+  right: -10%;
+  bottom: 0;
+  height: 42%;
   background: #69db7c;
   border-radius: 50% 50% 0 0;
 }
 
-.sp-cloth {
+.sp-sun {
   position: absolute;
-  left: 10%;
-  right: 10%;
-  bottom: 6%;
-  height: 22%;
-  background: repeating-linear-gradient(90deg, #fffaf1 0 18px, #ffc9c9 18px 36px);
-  border-radius: 16px;
-  box-shadow: 0 6px 0 #8ce99a;
-}
-
-.sr-rug {
-  position: absolute;
-  left: 12%;
-  right: 12%;
-  bottom: 4%;
-  height: 18%;
-  background: #ffa8a8;
-  border-radius: 40px;
-  box-shadow: inset 0 0 0 6px #ffc9c9;
-}
-
-.st-top {
-  position: absolute;
+  top: 7%;
   left: 8%;
-  right: 8%;
-  bottom: 16%;
-  height: 14%;
-  background: #d4a574;
-  border: 3px solid #3d2a1a;
-  border-radius: 10px;
+  width: min(12cqw, 16cqh, 44px);
+  height: min(12cqw, 16cqh, 44px);
+  background: #ffe066;
+  border: 3px solid #f59f00;
+  border-radius: 50%;
 }
-
-.st-leg {
-  position: absolute;
-  bottom: 2%;
-  width: 8px;
-  height: 16%;
-  background: #3d2a1a;
-  border-radius: 4px;
-}
-
-.st-leg.a { left: 16%; }
-.st-leg.b { right: 16%; }
 
 .sticker-table {
   position: relative;
   z-index: 2;
-  width: 94%;
+  width: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-content: center;
   gap: 8px;
-  padding: 10px 8px 14px;
-  margin-bottom: 6%;
+  padding: 18% 10px 12px;
+}
+
+.sticker-scene.scene-park .sticker-table {
+  padding-top: 14%;
 }
 
 .sticker-table.n3 {
@@ -5648,7 +5633,41 @@ button.day-place:active {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+.sticker-table::before {
+  content: "";
+  position: absolute;
+  left: 5%;
+  right: 5%;
+  top: 16%;
+  bottom: 4%;
+  z-index: 0;
+  border-radius: 22px;
+  pointer-events: none;
+}
+
+.sticker-scene.scene-kitchen .sticker-table::before {
+  background: #fff4e0;
+  box-shadow: 0 10px 0 #d9480f;
+}
+
+.sticker-scene.scene-park .sticker-table::before {
+  background: repeating-linear-gradient(90deg, #fffaf1 0 16px, #ffc9c9 16px 32px);
+  box-shadow: 0 8px 0 #69db7c;
+}
+
+.sticker-scene.scene-room .sticker-table::before {
+  background: #ffe8cc;
+  box-shadow: 0 10px 0 #c9854a;
+}
+
+.sticker-scene.scene-table .sticker-table::before {
+  background: #e8b86d;
+  box-shadow: 0 10px 0 #3d2a1a;
+}
+
 .sticker-obj {
+  position: relative;
+  z-index: 1;
   min-width: 0;
   min-height: 88px;
   padding: 6px 4px 8px;

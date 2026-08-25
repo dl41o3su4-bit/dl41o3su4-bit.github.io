@@ -3873,15 +3873,15 @@
 
   function renderStickerLand(scene) {
     if (scene === "kitchen") {
-      return '<div class="sticker-land" aria-hidden="true"><i class="sk-window"></i><i class="sk-counter"></i></div>';
+      return '<div class="sticker-land" aria-hidden="true"><i class="sk-window"><b></b><b></b></i></div>';
     }
     if (scene === "park") {
-      return '<div class="sticker-land" aria-hidden="true"><i class="sp-hill"></i><i class="sp-cloth"></i></div>';
+      return '<div class="sticker-land" aria-hidden="true"><i class="sp-hill"></i><i class="sp-sun"></i></div>';
     }
     if (scene === "room") {
-      return '<div class="sticker-land" aria-hidden="true"><i class="sr-window"></i><i class="sr-rug"></i></div>';
+      return '<div class="sticker-land" aria-hidden="true"><i class="sr-window"><b></b><b></b></i></div>';
     }
-    return '<div class="sticker-land" aria-hidden="true"><i class="st-top"></i><i class="st-leg a"></i><i class="st-leg b"></i></div>';
+    return '<div class="sticker-land" aria-hidden="true"></div>';
   }
 
   function renderStickerPlay(q) {
