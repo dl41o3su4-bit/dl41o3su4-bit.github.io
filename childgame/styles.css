@@ -3711,13 +3711,13 @@ button.day-place:active {
   align-items: flex-end;
   justify-content: center;
   gap: 2px;
-  min-width: 42%;
-  min-height: 52px;
-  padding: 8px 8px 6px;
-  background: radial-gradient(ellipse at 50% 20%, #fff8ee, #e8c48a 70%);
-  border: 3px solid #d4a574;
-  border-radius: 50%;
-  box-shadow: inset 0 -8px 0 rgba(193, 134, 74, 0.25);
+  min-width: 48%;
+  min-height: 58px;
+  padding: 10px 10px 8px;
+  background: radial-gradient(ellipse at 50% 18%, #fffdf8, #e8c48a 60%, #c1864a);
+  border: 4px solid #8d5a2b;
+  border-radius: 50% 50% 46% 46%;
+  box-shadow: inset 0 -10px 0 rgba(141, 90, 43, 0.22), 0 4px 0 #8d5a2b;
 }
 
 .listen-scene.scene-park {
