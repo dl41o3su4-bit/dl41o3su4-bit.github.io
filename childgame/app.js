@@ -670,6 +670,7 @@
       lastWeather: "",
       lastPlace: "",
       lightMistakes: 0,
+      yesterdayLightMistakes: 0,
       todayPlan: [],
       todayHints: {},
       visitedFriends: false,
@@ -786,6 +787,8 @@
     d.lastPlace = sanitizeText(raw.lastPlace, 12);
     var misses = parseInt(raw.lightMistakes, 10);
     d.lightMistakes = isFinite(misses) && misses > 0 ? Math.min(Math.floor(misses), 99) : 0;
+    var yMiss = parseInt(raw.yesterdayLightMistakes, 10);
+    d.yesterdayLightMistakes = isFinite(yMiss) && yMiss > 0 ? Math.min(Math.floor(yMiss), 99) : 0;
     d.todayPlan = sanitizeTodayPlan(raw.todayPlan);
     d.todayHints = sanitizeTodayHints(raw.todayHints);
     d.visitedFriends = raw.visitedFriends === true;
@@ -881,54 +884,127 @@
     world.todayHints[id] = sanitizeText(line, 36);
   }
 
+  function yesterdayMissedRoad(world) {
+    return ((world && world.yesterdayLightMistakes) || 0) >= 1;
+  }
+
+  function hasOutfit(world) {
+    return !!(world && world.outfit && world.outfit.length);
+  }
+
+  function hasAnimals(world) {
+    return !!(world && world.residentAnimals && world.residentAnimals.length);
+  }
+
+  function outfitBlob(world) {
+    return ((world && world.outfit) || [])
+      .map(function (it) {
+        return (it.name || "") + (it.emoji || "");
+      })
+      .join(" ");
+  }
+
+  function needsClothesChange(world) {
+    if (!hasOutfit(world)) return true;
+    var wx = (world && world.lastWeather) || "";
+    if (!wx) return false;
+    var blob = outfitBlob(world);
+    if (wx === "rain") return !/雨衣|雨靴|雨傘|☂️/.test(blob);
+    if (wx === "cold") return !/圍巾|外套/.test(blob);
+    if (wx === "sun") return /圍巾|雨衣|雨靴/.test(blob) && !/短袖|太陽眼鏡|帽子/.test(blob);
+    if (wx === "wind") return !/帽子|外套/.test(blob);
+    return false;
+  }
+
+  function setTableHint(world) {
+    var weather = (world && world.lastWeather) || "";
+    if (weather === "rain") setHint(world, "table", "下雨了，在家吃早餐");
+    else if (weather === "cold") setHint(world, "table", "好冷，先吃熱的");
+    else setHint(world, "table", "太陽出來了，去野餐");
+  }
+
+  function setLightHint(world) {
+    var weather = (world && world.lastWeather) || "";
+    if (yesterdayMissedRoad(world) && !isTaskDone(world, "light")) {
+      setHint(world, "light", "昨天燈還沒看清楚，再過一次馬路");
+      return;
+    }
+    if (weather === "rain") setHint(world, "light", "穿好雨衣，過馬路要更小心");
+    else if (weather === "cold") setHint(world, "light", "穿暖和，過馬路看燈");
+    else if (weather === "wind") setHint(world, "light", "風有點大，過馬路看燈");
+    else setHint(world, "light", "過馬路，看燈燈");
+  }
+
+  function growFromTraces(world) {
+    if (yesterdayMissedRoad(world) && !planHas(world, "light") && !isTaskDone(world, "light")) {
+      appendPlan(world, "light");
+      setLightHint(world);
+      return;
+    }
+    if (needsClothesChange(world) && !planHas(world, "dress") && !isTaskDone(world, "dress")) {
+      appendPlan(world, "dress");
+      if (hasOutfit(world)) setHint(world, "dress", "天氣不一樣了，換一件");
+      return;
+    }
+    if (!planHas(world, "table") && !isTaskDone(world, "table")) {
+      appendPlan(world, "table");
+      setTableHint(world);
+    }
+  }
+
   function seedTodayPlan(world) {
     if (world.todayPlan && world.todayPlan.length) return world;
     var done = world.todayCompleted || {};
     var hints = world.todayHints || {};
+    world.todayHints = hints;
     if (done.habitat || done.light || done.table || done.dress || done.retry || world.visitedFriends) {
       var plan = [];
       if (world.visitedFriends) plan.push("friends");
-      plan.push("dress");
-      if (done.dress) plan.push("table");
-      if (done.table) plan.push("light");
-      if (done.light) {
-        if (done.retry || (world.lightMistakes || 0) >= 1) plan.push("retry");
-        plan.push("habitat");
-      }
+      if (done.dress) plan.push("dress");
+      if (done.table) plan.push("table");
+      if (done.light) plan.push("light");
+      if (done.retry || ((world.lightMistakes || 0) >= 1 && done.light && !done.habitat)) plan.push("retry");
+      if (done.habitat) plan.push("habitat");
       world.todayPlan = sanitizeTodayPlan(plan);
-      world.todayHints = hints;
+      var last = world.lastTask || plan[plan.length - 1] || "";
+      if (last) growTodayPlan(world, last);
       return world;
     }
-    if ((world.residentAnimals || []).length >= 1) {
-      world.todayPlan = ["friends", "dress"];
-      if (!hints.friends) hints.friends = "魚還在河邊，要不要先去看看？";
-      world.todayHints = hints;
+    if (hasAnimals(world)) {
+      world.todayPlan = ["friends"];
+      if (!hints.friends) {
+        var pal = world.residentAnimals[world.residentAnimals.length - 1];
+        hints.friends = pal.name + "還在公園，要不要先去看看？";
+      }
+      return world;
+    }
+    if (yesterdayMissedRoad(world)) {
+      world.todayPlan = ["light"];
+      setLightHint(world);
+      return world;
+    }
+    if (hasOutfit(world) && !needsClothesChange(world)) {
+      world.todayPlan = ["table"];
+      setTableHint(world);
       return world;
     }
     world.todayPlan = ["dress"];
-    world.todayHints = hints;
     return world;
   }
 
   function growTodayPlan(world, justFinished) {
-    var weather = world.lastWeather || "";
     if (justFinished === "friends") {
-      appendPlan(world, "dress");
+      growFromTraces(world);
       return;
     }
     if (justFinished === "dress") {
       appendPlan(world, "table");
-      if (weather === "rain") setHint(world, "table", "下雨了，在家吃早餐");
-      else if (weather === "cold") setHint(world, "table", "好冷，先吃熱的");
-      else setHint(world, "table", "太陽出來了，去野餐");
+      setTableHint(world);
       return;
     }
     if (justFinished === "table") {
       appendPlan(world, "light");
-      if (weather === "rain") setHint(world, "light", "穿好雨衣，過馬路要更小心");
-      else if (weather === "cold") setHint(world, "light", "穿暖和，過馬路看燈");
-      else if (weather === "wind") setHint(world, "light", "風有點大，過馬路看燈");
-      else setHint(world, "light", "過馬路，看燈燈");
+      setLightHint(world);
       return;
     }
     if (justFinished === "light") {
@@ -989,6 +1065,7 @@
 
   function rolloverFoxWorld(world, today) {
     pushMemory(world, yesterdaySummary(world));
+    world.yesterdayLightMistakes = world.lightMistakes || 0;
     world.dayNumber = (world.dayNumber || 1) + 1;
     world.currentDate = today;
     world.todayCompleted = emptyTodayCompleted();
@@ -1029,12 +1106,48 @@
   }
 
   function dayLockLine(id) {
+    var next = nextDayTask(ensureFoxWorld());
+    if (next === "friends") return "先去看朋友";
+    if (next === "dress") return "先穿好衣服";
+    if (next === "table") return "先去擺早餐";
+    if (next === "light" || next === "retry") return "先過馬路";
+    if (next === "habitat") return "先去公園";
     if (id === "dress") return "先去看朋友";
     if (id === "table") return "先穿好衣服";
     if (id === "light") return "先吃完早餐";
     if (id === "retry") return "先過馬路";
     if (id === "habitat") return "先過馬路";
     return "先做好前面的";
+  }
+
+  function kidJoinNames(list) {
+    var names = [];
+    var i;
+    for (i = 0; i < (list || []).length && names.length < 2; i++) {
+      var n = list[i] && list[i].name;
+      if (n && names.indexOf(n) < 0) names.push(n);
+    }
+    if (!names.length) return "";
+    if (names.length === 1) return names[0];
+    return names[0] + "和" + names[1];
+  }
+
+  function dayRecapLine(world) {
+    var wear = kidJoinNames((world && world.outfit) || []);
+    var food = kidJoinNames((world && world.tableItems) || []);
+    var animals = (world && world.residentAnimals) || [];
+    var pal = animals.length ? animals[animals.length - 1].name : "";
+    var again = isTaskDone(world, "retry") || (yesterdayMissedRoad(world) && isTaskDone(world, "light"));
+    var first = [];
+    if (wear) first.push("你幫我穿了" + wear);
+    if (food) first.push("桌上還有" + food);
+    var second = [];
+    if (pal) second.push(pal + "住在公園");
+    if (again) second.push("我們又過了一次馬路");
+    var line = "";
+    if (first.length) line += first.join("，") + "。";
+    if (second.length) line += second.join("，") + "。";
+    return line || "今天我們一起玩，明天再來。";
   }
 
   function dayFoxGreeting(world) {
@@ -1048,7 +1161,7 @@
       if (mem) return "你回來了！昨天" + mem + "。";
       return "你回來了！今天要一起去哪裡？";
     }
-    if (dayIsFinished(world)) return "今天過得真好";
+    if (dayIsFinished(world)) return dayRecapLine(world);
     var next = nextDayTask(world);
     if (next && world.todayHints && world.todayHints[next]) return world.todayHints[next];
     if (next === "friends") return "魚還在河邊，要不要先去看看？";
@@ -3377,6 +3490,7 @@
       "</span>" +
       '<span class="day-banner-bits">' +
       renderMiniIcons(world.outfit, "bit") +
+      renderMiniIcons(world.tableItems, "bit") +
       renderMiniIcons(world.residentAnimals, "bit") +
       "</span></div>" +
       '<span class="day-banner-go">' +
@@ -3478,7 +3592,7 @@
 
   function dayPlaceArt(id, world, evening) {
     if (id === "dress") {
-      if (isTaskDone(world, "dress")) {
+      if ((world.outfit || []).length) {
         var kept = renderMiniIcons(world.outfit, "day-kept");
         return kept || '<span class="art-shirt">👕</span>';
       }
@@ -3490,7 +3604,7 @@
     if (id === "light" || id === "retry") {
       return '<span class="art-light">🚦</span>' + (evening ? '<span class="art-lamp">🏮</span>' : "");
     }
-    if (id === "friends") return '<span class="art-paw">🐾</span>';
+    if (id === "friends") return '<span class="art-paw">🐾</span>' + renderDayAnimals(world);
     return '<span class="art-tree">🌳</span>' + renderDayAnimals(world);
   }
 
@@ -3544,7 +3658,7 @@
       '" aria-hidden="true">' +
       renderFoxWear(world, "map") +
       "</div></div>" +
-      (evening ? '<p class="day-endline">今天過得真好</p>' : "") +
+      (evening ? '<p class="day-endline">' + escapeHtml(dayRecapLine(world)) + "</p>" : "") +
       "</div>"
     );
   }
@@ -6772,7 +6886,9 @@
           hasSun: html.indexOf("wx-sun-icon") >= 0,
           weatherClass: (html.match(/day-world[^"]*/) || [""])[0],
           isEvening: html.indexOf("day-world is-evening") >= 0 || html.indexOf("is-evening wx-") >= 0,
-          endline: html.indexOf("今天過得真好") >= 0,
+          endline: html.indexOf("day-endline") >= 0,
+          recap: dayRecapLine(world),
+          hasDressKeep: html.indexOf("day-kept") >= 0,
           parkSide: html.indexOf("is-park-side") >= 0,
           crossed: crossedTheRoad(world),
         };

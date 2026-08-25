@@ -901,7 +901,8 @@ button.day-place:active {
   font-size: clamp(18px, 4.2vmin, 26px);
 }
 
-.place-park .day-spot-art {
+.place-park .day-spot-art,
+.place-friends .day-spot-art {
   min-width: 48px;
   min-height: 36px;
 }
