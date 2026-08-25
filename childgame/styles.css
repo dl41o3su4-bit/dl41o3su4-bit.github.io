@@ -3406,7 +3406,8 @@ button.day-place:active {
 .body-play,
 .day-play,
 .sort-play,
-.cubby-play {
+.cubby-play,
+.share-play {
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -3419,7 +3420,8 @@ button.day-place:active {
 .body-scene,
 .day-scene,
 .sort-scene,
-.playroom {
+.playroom,
+.share-scene {
   position: relative;
   flex: 1 1 0;
   min-width: 0;
@@ -5727,6 +5729,198 @@ button.day-place:active {
   font-size: clamp(40px, 9vmin, 64px);
 }
 
+.match-home .playroom.is-kitchen {
+  background: linear-gradient(#fff1d6 0 42%, #f4c2a0 42%);
+}
+
+.match-home .playroom.is-kitchen .pr-floor {
+  background: repeating-linear-gradient(90deg, #f4c2a0 0 22px, #e8a87c 22px 26px);
+}
+
+.match-home .playroom.is-kitchen .pr-window {
+  background: linear-gradient(#ffd8a8, #ffe8cc);
+}
+
+.match-pile {
+  padding: 6px;
+}
+
+.pile-dish {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 88px;
+  background:
+    radial-gradient(circle at 50% 42%, #fffdf8 0 58%, #ffe8cc 59% 78%, #f0c49a 79%);
+  border: 3px solid #e8c48a;
+  border-radius: 50%;
+  box-shadow: inset 0 -6px 0 rgba(180, 120, 70, 0.12), 0 4px 0 rgba(180, 120, 70, 0.1);
+}
+
+.toy-mat .match-pile {
+  width: min(40%, 168px);
+  min-width: 112px;
+  min-height: 112px;
+}
+
+.match-pile .scatter-item {
+  font-size: clamp(32px, 6vmin, 44px);
+}
+
+.cubby .match-pile.in-slot {
+  width: 100%;
+  min-width: 0;
+  min-height: 72px;
+  padding: 2px;
+}
+
+.cubby .match-pile.in-slot .pile-dish {
+  min-height: 64px;
+}
+
+.cubby .match-pile.in-slot .scatter-item {
+  font-size: clamp(32px, 6vmin, 44px);
+}
+
+.life-ghost.match-pile {
+  width: 140px;
+  min-width: 140px;
+  min-height: 140px;
+}
+
+.share-play {
+  flex: 1 1 0;
+  min-height: 0;
+}
+
+.share-scene {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  container-type: size;
+  background: linear-gradient(#fff4e0 0 40%, #e8c48a 40% 46%, #c1864a 46% 100%);
+}
+
+.share-land {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.share-land i {
+  position: absolute;
+  display: block;
+  font-style: normal;
+}
+
+.sh-window {
+  top: 8%;
+  right: 10%;
+  width: 14%;
+  height: 16%;
+  background: linear-gradient(#a5d8ff, #d0ebff);
+  border: 3px solid #e8c48a;
+  border-radius: 8px;
+}
+
+.sh-floor {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 60%;
+  background: repeating-linear-gradient(90deg, #d4a574 0 28px, #c1864a 28px 32px);
+}
+
+.share-table {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  gap: 8px;
+  min-height: 0;
+  flex: 1 1 auto;
+  margin: 8% 6% 6%;
+  padding: 18px 12px 16px;
+  background: radial-gradient(ellipse at 50% 40%, #fff3bf 0 42%, #e8c48a 43% 100%);
+  border: 4px solid #8d5a2b;
+  border-radius: 50% / 28%;
+  box-shadow: inset 0 10px 0 rgba(255, 253, 248, 0.2), 0 10px 0 rgba(141, 90, 43, 0.18);
+}
+
+.share-seat {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.share-who {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1;
+}
+
+.share-face {
+  font-size: min(18cqw, 18cqh, 56px);
+  line-height: 1;
+  filter: drop-shadow(0 2px 0 rgba(0, 0, 0, 0.08));
+}
+
+.share-name {
+  font-size: clamp(14px, 3.2vmin, 20px);
+  font-weight: 900;
+  color: #3b2412;
+}
+
+.share-plate {
+  width: min(22cqw, 28cqh, 88px);
+  height: min(22cqw, 28cqh, 88px);
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at 50% 40%, #fffdf8 0 62%, #ffe8cc 63% 82%, #f0c49a 83%);
+  border: 3px solid #e8c48a;
+  border-radius: 50%;
+  box-shadow: inset 0 -6px 0 rgba(180, 120, 70, 0.12);
+}
+
+.share-plate.aim {
+  outline: 4px solid #ff922b;
+  outline-offset: 2px;
+}
+
+.share-plate.filled {
+  background: radial-gradient(circle at 50% 40%, #d3f9d8 0 62%, #8ce99a 63%);
+  border-color: #2b8a3e;
+}
+
+.share-put {
+  font-size: min(14cqw, 16cqh, 48px);
+  line-height: 1;
+  animation: pop 0.35s ease;
+}
+
+.share-scene.done .share-plate.filled {
+  animation: pop 0.4s ease;
+}
+
+.share-fruit .life-emoji {
+  font-size: clamp(36px, 8vmin, 56px);
+}
+
+.share-fruit .life-name {
+  display: none;
+}
+
+.preview-share span {
+  font-size: 22px;
+}
+
 .sticker-play {
   flex: 1 1 0;
   min-height: 0;
@@ -6349,6 +6543,7 @@ button.day-place:active {
   .dress-board,
   .habitat-scene,
   .table-scene,
+  .share-scene,
   .listen-scene,
   .train-scene,
   .pop-scene,
@@ -6438,6 +6633,7 @@ button.day-place:active {
   .shell.is-life .dress-board,
   .shell.is-life .habitat-scene,
   .shell.is-life .table-scene,
+  .shell.is-life .share-scene,
   .shell.is-life .listen-scene,
   .shell.is-life .train-scene,
   .shell.is-life .pop-scene,
@@ -6458,7 +6654,8 @@ button.day-place:active {
   .shell.is-life .body-play,
   .shell.is-life .day-play,
   .shell.is-life .sort-play,
-  .shell.is-life .sticker-play {
+  .shell.is-life .sticker-play,
+  .shell.is-life .share-play {
     flex-direction: row;
     align-items: stretch;
   }
@@ -6515,6 +6712,31 @@ button.day-place:active {
     width: min(32%, 140px);
     min-width: 96px;
     min-height: 96px;
+  }
+
+  .toy-mat .match-pile {
+    width: min(38%, 176px);
+    min-width: 120px;
+    min-height: 120px;
+  }
+
+  .match-home .playroom.is-kitchen {
+    background: linear-gradient(90deg, #fff1d6 0 58%, #f4c2a0 58%);
+  }
+
+  .match-home .playroom.is-kitchen .pr-floor {
+    height: 100%;
+    width: 62%;
+    background: repeating-linear-gradient(90deg, #f4c2a0 0 22px, #e8a87c 22px 26px);
+  }
+
+  .share-face {
+    font-size: min(14cqw, 20cqh, 52px);
+  }
+
+  .share-plate {
+    width: min(16cqw, 22cqh, 80px);
+    height: min(16cqw, 22cqh, 80px);
   }
 
   .shell.is-life .sticker-pic {

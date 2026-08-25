@@ -10,6 +10,15 @@
   var MEMORY_CAP = 12;
   var FRUITS = ["🍎", "🍊", "🍋", "🍇", "🍓", "🍑", "🍒", "🍌", "🍉", "🥝", "⭐", "🍐", "🍍", "🥭", "🍈"];
   var ANIMALS = ["🐶", "🐱", "🐰", "🐻", "🐼", "🐸", "🐵", "🐥", "🐧", "🦊", "🦁", "🐯", "🐷", "🐮", "🐨"];
+  var FAMILY = [
+    { face: "👨", name: "爸爸" },
+    { face: "👩", name: "媽媽" },
+    { face: "👧", name: "姊姊" },
+    { face: "👦", name: "弟弟" },
+    { face: "🧒", name: "小孩" },
+    { face: "👴", name: "爺爺" },
+    { face: "👵", name: "奶奶" },
+  ];
   var PRAISE = ["好棒！", "答對了！"];
 
   var TRACE = {
@@ -103,7 +112,7 @@
 
   var OLD_MATH_LEVELS = [
     { id: "count", name: "數一數", hint: "數一數有幾個", emoji: "🍎", cls: "c1" },
-    { id: "match", name: "連連看", hint: "找到一樣多的", emoji: "🔢", cls: "c2" },
+    { id: "match", name: "連連看", hint: "送回數字的家", emoji: "🔢", cls: "c2" },
     { id: "next", name: "下一個是誰", hint: "3 4 5 ？", emoji: "➡️", cls: "c3" },
     { id: "trace", name: "描一描", hint: "用手指描 0～10", emoji: "✏️", cls: "c4" },
   ];
@@ -113,7 +122,7 @@
     { id: "ord", name: "第幾個", hint: "從左邊數第幾個", emoji: "5️⃣", cls: "c6" },
     { id: "missing", name: "缺了誰", hint: "少了哪個數字", emoji: "❓", cls: "c7" },
     { id: "bond", name: "湊一湊", hint: "再拿幾個才滿", emoji: "🍇", cls: "c8" },
-    { id: "match-draw", name: "畫線連連看", hint: "畫線連起來", emoji: "🖍️", cls: "c9" },
+    { id: "match-draw", name: "畫線連連看", hint: "一人一顆", emoji: "🖍️", cls: "c9" },
   ];
 
   var WORD_LEVELS = [
@@ -1507,44 +1516,86 @@
     return qs;
   }
 
+  function uniqueCounts(n, min, max) {
+    var pool = [];
+    var i;
+    for (i = min; i <= max; i++) pool.push(i);
+    return shuffle(pool).slice(0, n);
+  }
+
   function makeMatchQuestions() {
     var qs = [];
-    var prev = 0;
-    for (var i = 0; i < 8; i++) {
-      var n;
+    var prevKey = "";
+    for (var i = 0; i < 7; i++) {
+      var max = i < 3 ? 6 : 10;
+      var counts;
+      var key;
+      var tries = 0;
       do {
-        n = randInt(1, 10);
-      } while (n === prev);
-      prev = n;
-      var wrongs = makeChoices(n, 1, 10).filter(function (x) {
-        return x !== n;
+        counts = uniqueCounts(3, 1, max);
+        key = counts.slice().sort(function (a, b) {
+          return a - b;
+        }).join(",");
+        tries += 1;
+      } while (key === prevKey && tries < 8);
+      prevKey = key;
+      var useAnimals = i % 2 === 1;
+      var icon = useAnimals ? pick(ANIMALS) : pick(FRUITS);
+      var piles = counts.map(function (n, idx) {
+        return {
+          id: "pile-" + i + "-" + idx,
+          emoji: icon,
+          name: "",
+          slot: String(n),
+          count: n,
+          icon: icon,
+          kind: "pile",
+        };
       });
-      var groups = shuffle([
-        { count: n, ok: true },
-        { count: wrongs[0], ok: false },
-        { count: wrongs[1], ok: false },
-      ]);
-      qs.push({ n: n, animal: pick(ANIMALS), groups: groups });
+      var homes = counts.map(function (n) {
+        return { id: String(n), label: String(n) };
+      });
+      var q = makeCubbyQuestion(piles, homes, "這盤有幾個？送回數字的家");
+      q.scene = useAnimals ? "playroom" : "kitchen";
+      qs.push(q);
     }
     return qs;
   }
 
   function makeMatchDrawQuestions() {
-    var qs = [];
-    for (var i = 0; i < 10; i++) {
-      var pairCount = i < 5 ? 2 : 3;
-      var nums = shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]).slice(0, pairCount);
-      var animals = shuffle(ANIMALS).slice(0, pairCount);
-      var left = [];
-      var rightSrc = [];
-      for (var p = 0; p < pairCount; p++) {
-        left.push({ pair: p, n: nums[p] });
-        rightSrc.push({ pair: p, count: nums[p], animal: animals[p] });
+    var peopleNs = [2, 3, 2, 4, 3, 5, 4];
+    return peopleNs.map(function (n, i) {
+      var fruit = pick(FRUITS);
+      var extras = i === 2 || i === 5 ? 1 : 0;
+      var folks = shuffle(FAMILY).slice(0, n);
+      var items = [];
+      var p;
+      for (p = 0; p < n; p++) {
+        items.push({
+          id: "share-" + i + "-" + p,
+          emoji: fruit,
+          name: "",
+          slot: "any",
+          anySlot: true,
+        });
       }
-      left = shuffle(left);
-      qs.push({ left: left, right: shuffle(rightSrc) });
-    }
-    return qs;
+      for (p = 0; p < extras; p++) {
+        items.push({
+          id: "share-x-" + i + "-" + p,
+          emoji: fruit,
+          name: "",
+        });
+      }
+      return {
+        ask: "有" + n + "個人，一人一顆",
+        n: n,
+        fruit: fruit,
+        people: folks.map(function (who, idx) {
+          return { id: "p" + idx, face: who.face, name: who.name };
+        }),
+        items: shuffle(items),
+      };
+    });
   }
 
   function makeNextQuestions() {
@@ -2981,8 +3032,10 @@
   function foxPrompt() {
     var q = state.questions[state.qIndex];
     if (state.levelId === "count") return "一顆一顆點，數一數";
-    if (state.levelId === "match") return "哪一群跟上面的數字一樣多？";
-    if (state.levelId === "match-draw") return "把一樣多的連起來";
+    if (state.levelId === "match") return "這盤有幾個？送回數字的家";
+    if (state.levelId === "match-draw") {
+      return q && q.n ? "有" + q.n + "個人，一人一顆" : "一人一顆";
+    }
     if (state.levelId === "next") return "下一個數字是誰？";
     if (state.levelId === "trace") return (q && NUM_TIPS[q.n]) || "從亮點開始，描一描";
     if (state.levelId === "more") {
@@ -3036,8 +3089,21 @@
     return state.levelId === "bpm-pic" || state.levelId === "abc-pic" || state.levelId === "hanzi";
   }
 
+  function isNumberHomeLevel() {
+    return state.levelId === "match";
+  }
+
+  function isShareLevel() {
+    return state.levelId === "match-draw";
+  }
+
   function isCubbyLevel() {
-    return state.levelId === "bpm-draw" || state.levelId === "abc-case" || state.levelId === "abc-draw";
+    return (
+      state.levelId === "bpm-draw" ||
+      state.levelId === "abc-case" ||
+      state.levelId === "abc-draw" ||
+      isNumberHomeLevel()
+    );
   }
 
   function firstUnplacedCubbyItem() {
@@ -3079,7 +3145,14 @@
   }
 
   function isDragPlaceLevel() {
-    return isPlaceLevel() || state.levelId === "bond" || state.levelId === "light" || isStickerLevel() || isCubbyLevel();
+    return (
+      isPlaceLevel() ||
+      state.levelId === "bond" ||
+      state.levelId === "light" ||
+      isStickerLevel() ||
+      isCubbyLevel() ||
+      isShareLevel()
+    );
   }
 
   function resetMoreTaps() {
@@ -3106,7 +3179,14 @@
   }
 
   function isSceneLevel() {
-    return isLifeLevel() || state.levelId === "bpm-listen" || state.levelId === "abc-pop" || isStickerLevel() || isCubbyLevel();
+    return (
+      isLifeLevel() ||
+      state.levelId === "bpm-listen" ||
+      state.levelId === "abc-pop" ||
+      isStickerLevel() ||
+      isCubbyLevel() ||
+      isShareLevel()
+    );
   }
 
   function isVoiceLevel() {
@@ -3119,7 +3199,9 @@
       state.levelId === "daynight" ||
       state.levelId === "sort" ||
       isStickerLevel() ||
-      isCubbyLevel()
+      isCubbyLevel() ||
+      isShareLevel() ||
+      isNumberHomeLevel()
     );
   }
 
@@ -3188,7 +3270,7 @@
   }
 
   function isConnectLevel() {
-    return state.levelId === "match-draw";
+    return false;
   }
 
   function isTraceLevel() {
@@ -3312,7 +3394,7 @@
       );
     }
     if (id === "match") {
-      return '<span class="preview-art preview-match" aria-hidden="true"><b>3</b><span class="stars">⭐</span><span class="stars">⭐</span><span class="stars">⭐</span></span>';
+      return '<span class="preview-art preview-match preview-cubby" aria-hidden="true"><span>🍎🍎</span><b>2</b></span>';
     }
     if (id === "next") {
       return '<span class="preview-art preview-next" aria-hidden="true"><i>3</i><i>4</i><i>5</i><em>?</em></span>';
@@ -3339,7 +3421,7 @@
       return '<span class="preview-art preview-count" aria-hidden="true"><span>🍇</span><span>🍇</span><span class="slot">+</span></span>';
     }
     if (id === "match-draw") {
-      return '<span class="preview-art preview-match" aria-hidden="true"><b>2</b><span class="draw-line"></span><span>⭐⭐</span></span>';
+      return '<span class="preview-art preview-match preview-share" aria-hidden="true"><span>👩🧒</span><span>🍎🍎</span></span>';
     }
     if (id === "bpm-trace") {
       return (
@@ -3751,84 +3833,147 @@
     );
   }
 
+  function renderMatchPile(item, extraClass) {
+    var mark = extraClass ? " " + extraClass : "";
+    var placed = extraClass === "in-slot";
+    var style = "";
+    if (!placed && item.x != null) {
+      style =
+        ' style="--tx:' +
+        item.x +
+        "%;--ty:" +
+        item.y +
+        "%;--tr:" +
+        (item.r || 0) +
+        'deg"';
+    }
+    return (
+      '<div class="life-item cubby-toy match-pile' +
+      mark +
+      '" data-life-item="' +
+      item.id +
+      '" data-home="' +
+      escapeHtml(item.slot || "") +
+      '"' +
+      (placed ? ' data-placed="1"' : "") +
+      style +
+      ' role="img" aria-label="這一盤">' +
+      '<span class="pile-dish">' +
+      scatterIcons(item.icon || item.emoji, item.count, "scatter-sm", item.id) +
+      "</span></div>"
+    );
+  }
+
   function renderMatch(q) {
-    var groups = q.groups
-      .map(function (g, idx) {
-        var mark = state.choiceMark && state.choiceMark.value === idx ? " " + state.choiceMark.cls : "";
+    var popping = state.sceneAnim === "cubby-home";
+    var homes = (q.homes || [])
+      .map(function (home) {
+        var guest = itemInSlot(home.id);
         return (
-          '<button class="group' +
-          mark +
-          '" type="button" data-action="answer" data-value="' +
-          idx +
-          '" aria-label="這一群有 ' +
-          g.count +
-          ' 個">' +
-          scatterIcons(q.animal, g.count, "scatter-sm", idx + 1) +
-          "</button>"
+          '<div class="cubby tone-' +
+          (home.tone || 0) +
+          (guest ? " filled" : "") +
+          (popping && guest ? " pop" : "") +
+          '" data-life-slot="' +
+          escapeHtml(home.id) +
+          '" aria-label="數字 ' +
+          escapeHtml(home.label) +
+          ' 的家"><span class="cubby-tag"><span class="cubby-label">' +
+          escapeHtml(home.label) +
+          '</span></span><div class="cubby-box"><div class="cubby-hold">' +
+          (guest ? renderMatchPile(guest, "in-slot") : "") +
+          "</div></div></div>"
         );
+      })
+      .join("");
+    var piles = (q.items || [])
+      .filter(function (item) {
+        return !state.placed[item.id];
+      })
+      .map(function (item) {
+        return renderMatchPile(item, "");
       })
       .join("");
     return (
       '<div class="play-col">' +
-      '<div class="prompt">哪一群一樣多？</div>' +
-      '<div class="match-stage"><div class="match-wrap">' +
-      '<div class="big-num">' +
-      q.n +
+      '<div class="prompt">' +
+      escapeHtml(q.prompt || "這盤有幾個？送回數字的家") +
       "</div>" +
-      '<div class="groups">' +
-      groups +
+      '<div class="life-stage is-place cubby-play match-home">' +
+      '<div class="playroom homes-' +
+      ((q.homes && q.homes.length) || 3) +
+      (q.scene === "kitchen" ? " is-kitchen" : "") +
+      (popping ? " done" : "") +
+      '">' +
+      '<div class="playroom-land" aria-hidden="true"><i class="pr-window"></i><i class="pr-wall"></i><i class="pr-floor"></i></div>' +
+      '<div class="cubby-shelf" aria-label="數字的家">' +
+      homes +
+      "</div>" +
+      '<div class="toy-mat" aria-label="遊戲墊">' +
+      piles +
       "</div></div></div></div>"
     );
   }
 
+  function renderShareSeat(person) {
+    var guest = itemInSlot(person.id);
+    return (
+      '<div class="share-seat">' +
+      '<div class="share-who"><span class="share-face">' +
+      person.face +
+      '</span><span class="share-name">' +
+      escapeHtml(person.name) +
+      "</span></div>" +
+      '<div class="share-plate' +
+      (guest ? " filled" : "") +
+      '" data-life-slot="' +
+      escapeHtml(person.id) +
+      '" aria-label="' +
+      escapeHtml(person.name) +
+      '的盤子">' +
+      (guest ? '<span class="share-put">' + guest.emoji + "</span>" : "") +
+      "</div></div>"
+    );
+  }
+
   function renderMatchDraw(q) {
-    var left = q.left
+    var tray = (q.items || [])
+      .filter(function (item) {
+        return !state.placed[item.id];
+      })
       .map(function (item) {
-        var done = state.matchDone[item.pair] ? " done" : "";
         return (
-          '<div class="match-num' +
-          done +
-          '" data-match-side="left" data-match-pair="' +
-          item.pair +
-          '" role="button" aria-label="數字 ' +
-          item.n +
-          '">' +
-          item.n +
-          "</div>"
+          '<div class="life-item share-fruit" data-life-item="' +
+          item.id +
+          '" role="img" aria-label="水果"><span class="life-emoji">' +
+          item.emoji +
+          "</span></div>"
         );
       })
       .join("");
-    var right = q.right
-      .map(function (item) {
-        var done = state.matchDone[item.pair] ? " done" : "";
-        return (
-          '<div class="match-group' +
-          done +
-          '" data-match-side="right" data-match-pair="' +
-          item.pair +
-          '" role="button" aria-label="這一群有 ' +
-          item.count +
-          ' 個">' +
-          scatterIcons(item.animal, item.count, "scatter-sm", item.pair + 11) +
-          "</div>"
-        );
+    var seats = (q.people || [])
+      .map(function (person) {
+        return renderShareSeat(person);
       })
       .join("");
     return (
       '<div class="play-col">' +
-      '<div class="prompt">畫線連連看</div>' +
-      '<div class="match-stage is-draw">' +
-      '<div class="match-board" style="--pairs:' +
-      q.left.length +
-      '">' +
-      '<div class="match-col match-left">' +
-      left +
+      '<div class="prompt">' +
+      escapeHtml(q.ask || foxPrompt()) +
       "</div>" +
-      '<div class="match-col match-right">' +
-      right +
+      '<div class="life-stage is-place share-play">' +
+      '<div class="share-scene' +
+      (state.sceneAnim === "share-done" ? " done" : "") +
+      '" data-seats="' +
+      (q.people || []).length +
+      '">' +
+      '<div class="share-land" aria-hidden="true"><i class="sh-window"></i><i class="sh-floor"></i></div>' +
+      '<div class="share-table">' +
+      seats +
       "</div></div>" +
-      '<svg class="match-lines" aria-hidden="true"></svg>' +
-      "</div></div>"
+      '<div class="life-tray share-tray">' +
+      tray +
+      "</div></div></div>"
     );
   }
 
@@ -5491,6 +5636,12 @@
     if (item.kind === "sticker") {
       g.className = "life-ghost sticker-chip";
       g.innerHTML = '<span class="sticker-glyph">' + escapeHtml(item.emoji) + "</span>";
+    } else if (item.kind === "pile") {
+      g.className = "life-ghost cubby-toy match-pile";
+      g.innerHTML =
+        '<span class="pile-dish">' +
+        scatterIcons(item.icon || item.emoji, item.count, "scatter-sm", item.id) +
+        "</span>";
     } else if (item.kind === "letter") {
       g.className = "life-ghost cubby-toy is-letter";
       g.innerHTML = '<span class="life-emoji">' + escapeHtml(item.emoji) + "</span>";
@@ -5501,6 +5652,9 @@
         item.emoji +
         "</span>" +
         (item.name ? '<span class="life-name">' + escapeHtml(item.name) + "</span>" : "");
+    } else if (isShareLevel()) {
+      g.className = "life-ghost share-fruit";
+      g.innerHTML = '<span class="life-emoji">' + item.emoji + "</span>";
     } else {
       g.innerHTML =
         '<span class="life-emoji">' +
@@ -5552,7 +5706,8 @@
     if (state.levelId === "sort") state.sceneAnim = "sort-done";
     if (isStickerLevel()) state.sceneAnim = "sticker-pop";
     if (isCubbyLevel()) state.sceneAnim = "cubby-home";
-    state.foxMsg = state.levelId === "bond" ? "好棒" : lifeCheer();
+    if (isShareLevel()) state.sceneAnim = "share-done";
+    state.foxMsg = state.levelId === "bond" || isNumberHomeLevel() || isShareLevel() ? "好棒" : lifeCheer();
     state.foxMood = "happy";
     render();
     replayFoxHappy();
@@ -5570,6 +5725,7 @@
     if (state.levelId === "abc-path") wait = 1500;
     if (isStickerLevel()) wait = 1100;
     if (isCubbyLevel()) wait = 1100;
+    if (isShareLevel()) wait = 1000;
     setTimeout(nextQuestion, wait);
   }
 
@@ -5583,7 +5739,7 @@
     var ghost = document.querySelector(".life-ghost");
     var target = app.querySelector('[data-life-item="' + itemId + '"]');
     playWrong();
-    setFox("再看一次", "think");
+    setFox(isNumberHomeLevel() || isShareLevel() ? "再數一次" : "再看一次", "think");
     placeDrag.active = false;
     placeDrag.pointerId = null;
     placeDrag.moved = false;
@@ -6967,6 +7123,123 @@
         }
         world.lastTask = plan[plan.length - 1] || world.lastTask;
         return saveFoxWorld(world);
+      },
+      matchPlay: function () {
+        var homes = makeMatchQuestions();
+        var share = makeMatchDrawQuestions();
+        return {
+          homeRounds: homes.length,
+          homePiles: homes[0] && homes[0].items ? homes[0].items.length : 0,
+          homeCubbies: homes[0] && homes[0].homes ? homes[0].homes.length : 0,
+          homeCountsUnique: homes.every(function (q) {
+            var seen = {};
+            return (q.items || []).every(function (it) {
+              if (seen[it.slot]) return false;
+              seen[it.slot] = true;
+              return it.kind === "pile" && it.count === parseInt(it.slot, 10);
+            });
+          }),
+          homeCubbyShuffled: homes.some(function (q) {
+            var labels = (q.homes || []).map(function (h) {
+              return h.label;
+            });
+            var counts = (q.items || [])
+              .map(function (it) {
+                return String(it.count);
+              })
+              .sort();
+            return labels.join(",") !== counts.join(",");
+          }),
+          shareRounds: share.length,
+          sharePeople: share.map(function (q) {
+            return q.n;
+          }),
+          shareOneEach: share.every(function (q) {
+            var need = (q.items || []).filter(function (it) {
+              return it.anySlot;
+            }).length;
+            return q.n >= 2 && q.n <= 5 && need === q.n && (q.people || []).length === q.n;
+          }),
+          shareHasExtra: share.some(function (q) {
+            return (q.items || []).some(function (it) {
+              return !it.slot;
+            });
+          }),
+        };
+      },
+      renderMatchScreens: function () {
+        startLevel("match");
+        var homeHtml = app.innerHTML;
+        startLevel("match-draw");
+        var shareHtml = app.innerHTML;
+        goHome();
+        return {
+          homeHasCubby: homeHtml.indexOf("match-home") >= 0 && homeHtml.indexOf("cubby-shelf") >= 0 && homeHtml.indexOf("match-pile") >= 0,
+          homeNoBigNumQuiz: homeHtml.indexOf("哪一群一樣多") < 0 && homeHtml.indexOf('class="groups"') < 0,
+          shareHasTable: shareHtml.indexOf("share-play") >= 0 && shareHtml.indexOf("share-plate") >= 0 && shareHtml.indexOf("share-fruit") >= 0,
+          shareNoLines: shareHtml.indexOf("match-lines") < 0 && shareHtml.indexOf("match-board") < 0,
+        };
+      },
+      placeMatchScreens: function () {
+        startLevel("match");
+        var q = state.questions[state.qIndex];
+        var pile = q.items[0];
+        var wrong = null;
+        var i;
+        for (i = 0; i < q.homes.length; i++) {
+          if (q.homes[i].id !== pile.slot) {
+            wrong = q.homes[i];
+            break;
+          }
+        }
+        tryPlace(pile.id, wrong.id);
+        var bounced = !state.placed[pile.id];
+        tryPlace(pile.id, pile.slot);
+        var piledHome = state.placed[pile.id] === pile.slot;
+        startLevel("match-draw");
+        for (i = 0; i < state.questions.length; i++) {
+          if (
+            state.questions[i].items.some(function (it) {
+              return !it.slot;
+            })
+          ) {
+            state.qIndex = i;
+            state.placed = {};
+            break;
+          }
+        }
+        q = state.questions[state.qIndex];
+        render();
+        var fruit = null;
+        var extra = null;
+        for (i = 0; i < q.items.length; i++) {
+          if (q.items[i].anySlot && !fruit) fruit = q.items[i];
+          if (!q.items[i].slot) extra = q.items[i];
+        }
+        tryPlace(fruit.id, q.people[0].id);
+        var fruitOk = state.placed[fruit.id] === q.people[0].id;
+        var extraBounced = true;
+        if (extra) {
+          tryPlace(extra.id, q.people[1] ? q.people[1].id : q.people[0].id);
+          extraBounced = !state.placed[extra.id];
+        }
+        var otherFruit = null;
+        for (i = 0; i < q.items.length; i++) {
+          if (q.items[i].anySlot && q.items[i].id !== fruit.id) {
+            otherFruit = q.items[i];
+            break;
+          }
+        }
+        if (otherFruit) tryPlace(otherFruit.id, q.people[0].id);
+        var noDump = itemsInSlot(q.people[0].id).length === 1 && (!otherFruit || !state.placed[otherFruit.id]);
+        goHome();
+        return {
+          bounced: bounced,
+          piledHome: piledHome,
+          fruitOk: fruitOk,
+          extraBounced: extraBounced,
+          noDump: noDump,
+        };
       },
       shortMissions: function () {
         var dress = makeDressQuestions(true);
