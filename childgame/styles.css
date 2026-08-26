@@ -714,9 +714,9 @@ button:focus-visible {
 .day-world.at-door { --fox-x: 17%; }
 .day-world.at-table { --fox-x: 22%; }
 .day-world.at-road { --fox-x: 48%; }
-.day-world.at-park { --fox-x: 80%; }
+.day-world.at-park { --fox-x: 86%; }
 .day-world.at-road .day-marker.is-park-side { --fox-x: 58%; }
-.day-world.at-park .day-marker.is-park-side { --fox-x: 80%; }
+.day-world.at-park .day-marker.is-park-side { --fox-x: 86%; }
 
 .day-world.wx-rain .day-sky {
   background: linear-gradient(#6d8298, #9aafc0 55%, #c5d0d8);
@@ -1087,10 +1087,10 @@ button:focus-visible {
 }
 
 .park-pond {
-  left: 6%;
+  left: 4%;
   bottom: 14%;
-  width: 50%;
-  height: 26%;
+  width: 54%;
+  height: 28%;
   border-radius: 50%;
   background: radial-gradient(ellipse at 30% 26%, #f8fcff 0 10%, #d0ebff 26%, #74c0fc 58%, #339af0 82%, #1c7ed6 100%);
   border: 3px solid #1864ab;
@@ -1388,17 +1388,18 @@ button.day-place:active {
 }
 
 .furn-park {
-  left: auto;
-  right: 8%;
-  bottom: 40%;
+  left: 18%;
+  right: auto;
+  top: 26%;
+  bottom: auto;
   min-width: 72px;
-  min-height: 64px;
+  min-height: 40px;
   z-index: 3;
 }
 
 .furn-park .day-go-bubble {
   top: auto;
-  bottom: calc(100% + 8px);
+  bottom: calc(100% + 6px);
   left: 50%;
   right: auto;
   transform: translateX(-50%);
@@ -1407,7 +1408,8 @@ button.day-place:active {
 .furn-park .day-spot-label {
   position: absolute;
   left: 50%;
-  bottom: -20px;
+  top: calc(100% + 4px);
+  bottom: auto;
   transform: translateX(-50%);
   margin-top: 0;
   white-space: nowrap;
