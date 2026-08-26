@@ -6327,6 +6327,45 @@ button.day-place:active {
   background: #fff8ee;
 }
 
+.do-prop,
+.life-item.do-prop {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+  gap: 0;
+  filter: drop-shadow(0 4px 0 rgba(80, 40, 10, 0.14));
+}
+
+.do-prop .do-art {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.do-prop .life-emoji {
+  position: relative;
+  z-index: 1;
+  font-size: min(18cqw, 16cqh, 52px);
+  line-height: 1;
+}
+
+.do-prop .life-name {
+  position: absolute;
+  left: 50%;
+  bottom: 2px;
+  z-index: 2;
+  transform: translateX(-50%);
+  max-width: 100%;
+  padding: 0 7px;
+  border-radius: 8px;
+  background: rgba(255, 253, 248, 0.9);
+  font-size: clamp(12px, 2.5vmin, 16px);
+  line-height: 1.25;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
 .do-place {
   position: absolute;
   top: 8px;
@@ -6357,9 +6396,9 @@ button.day-place:active {
 .do-prop {
   position: absolute;
   z-index: 5;
-  min-width: 96px;
+  min-width: var(--tap);
   min-height: var(--tap);
-  padding: 8px 12px;
+  padding: 0;
 }
 
 .do-prop.nudge {
@@ -6406,133 +6445,346 @@ button.day-place:active {
 }
 
 .do-wash {
-  background:
-    repeating-linear-gradient(#e7f5ff 0 22px, #d0ebff 22px 24px);
+  background: linear-gradient(#e7f5ff 0 52%, #fff4d6 52% 62%, #e8c48a 62%);
+}
+
+.dw-wall {
+  inset: 0 0 48% 0;
+  background: #e7f5ff;
 }
 
 .dw-tiles {
-  inset: 0;
+  inset: 0 0 48% 0;
   background:
-    repeating-linear-gradient(90deg, transparent 0 46px, rgba(255, 253, 248, 0.45) 46px 48px),
-    repeating-linear-gradient(transparent 0 46px, rgba(255, 253, 248, 0.45) 46px 48px);
+    repeating-linear-gradient(90deg, transparent 0 36px, rgba(255, 253, 248, 0.55) 36px 38px),
+    repeating-linear-gradient(transparent 0 36px, rgba(255, 253, 248, 0.55) 36px 38px);
+}
+
+.dw-counter {
+  left: 4%;
+  right: 4%;
+  bottom: 4%;
+  height: 22%;
+  background: linear-gradient(#fff8ee, #f4d9b0);
+  border: 3px solid #c1864a;
+  border-radius: 10px 10px 8px 8px;
+  box-shadow: 0 8px 0 #8d5a2b;
 }
 
 .dw-mirror,
 .db-mirror {
   display: grid !important;
   place-items: center;
-  font-size: min(10cqw, 12cqh, 36px);
-  color: rgba(61, 42, 26, 0.28);
+  font-size: min(14cqw, 16cqh, 52px);
+  color: rgba(61, 42, 26, 0.45);
 }
 
 .dw-mirror::after,
 .db-mirror::after {
-  content: "🧒";
+  content: "🦊";
 }
 
 .dw-mirror {
-  top: 6%;
-  left: 28%;
-  width: 26%;
-  height: 20%;
+  top: 5%;
+  left: 22%;
+  width: 34%;
+  height: 26%;
   background:
-    linear-gradient(135deg, rgba(255, 253, 248, 0.7) 0 16%, transparent 28%),
-    linear-gradient(#a5d8ff, #74c0fc);
-  border: 6px solid #c1864a;
-  border-radius: 10px;
-  box-shadow: 0 6px 0 #8d5a2b;
+    linear-gradient(135deg, rgba(255, 253, 248, 0.78) 0 18%, transparent 30%),
+    linear-gradient(#d0ebff, #74c0fc);
+  border: 8px solid #c1864a;
+  border-radius: 12px;
+  box-shadow: inset 0 0 0 3px #ffe8cc, 0 6px 0 #8d5a2b;
 }
 
 .dw-basin {
   left: 16%;
-  right: 28%;
-  bottom: 8%;
-  height: 28%;
-  background: linear-gradient(#f1f3f5, #ced4da);
-  border: 3px solid #868e96;
-  border-radius: 18px 18px 40px 40px;
-  box-shadow: inset 0 14px 0 #e9ecef;
+  right: 24%;
+  bottom: 16%;
+  height: 30%;
+  background: linear-gradient(#fff, #e9ecef 42%, #ced4da);
+  border: 4px solid #adb5bd;
+  border-radius: 50% 50% 46% 46% / 58% 58% 42% 42%;
+  box-shadow:
+    inset 0 16px 18px rgba(134, 142, 150, 0.28),
+    0 6px 0 rgba(141, 90, 43, 0.12);
 }
 
-.dw-water {
-  left: 34%;
-  width: 10%;
-  top: 42%;
+.dw-well {
+  left: 22%;
+  right: 30%;
+  bottom: 20%;
+  height: 16%;
+  background: radial-gradient(ellipse at 50% 30%, #f8f9fa 0 36%, #dee2e6 100%);
+  border-radius: 50%;
+  box-shadow: inset 0 10px 12px rgba(73, 80, 87, 0.22);
+}
+
+.dw-rail {
+  right: 7%;
+  top: 18%;
+  width: 16%;
+  height: 6px;
+  background: #adb5bd;
+  border: 2px solid #868e96;
+  border-radius: 6px;
+}
+
+.dw-rail::before,
+.dw-rail::after {
+  content: "";
+  position: absolute;
+  top: -8px;
+  width: 8px;
+  height: 16px;
+  background: #868e96;
+  border-radius: 4px;
+}
+
+.dw-rail::before { left: 8%; }
+.dw-rail::after { right: 8%; }
+
+.dw-water,
+.db-water {
+  width: 14px;
   height: 0;
-  background: linear-gradient(#74c0fc, #4dabf7);
-  border-radius: 8px;
+  background: linear-gradient(#4dabf7, #74c0fc);
+  clip-path: polygon(32% 0, 68% 0, 92% 100%, 8% 100%);
+  border-radius: 0 0 40% 40%;
   opacity: 0;
 }
 
+.dw-water {
+  left: 39%;
+  top: 46%;
+}
+
+.dw-pool,
+.db-pool {
+  opacity: 0;
+}
+
+.dw-pool {
+  left: 28%;
+  right: 36%;
+  bottom: 22%;
+  height: 8%;
+  background: rgba(77, 171, 247, 0.35);
+  border-radius: 50%;
+}
+
 .do-wash.phase-1 .dw-water,
-.do-wash.phase-3 .dw-water {
-  height: 22%;
+.do-wash.phase-3 .dw-water,
+.do-brush.phase-1 .db-water {
+  height: 18%;
   opacity: 0.95;
 }
 
+.do-wash.phase-1 .dw-pool,
+.do-wash.phase-3 .dw-pool {
+  opacity: 1;
+}
+
 .do-wash .do-prop.tap {
-  left: 22%;
+  left: 32%;
+  top: 28%;
+  width: 88px;
+  height: 108px;
+}
+
+.do-prop.tap .life-emoji,
+.do-prop.soap .life-emoji,
+.do-prop.towel .life-emoji {
+  display: none;
+}
+
+.do-prop.tap .do-art {
+  background: linear-gradient(90deg, #f1f3f5, #adb5bd 46%, #868e96);
+  left: 18%;
+  right: 52%;
+  top: 10%;
+  bottom: 18%;
+  border: 3px solid #495057;
+  border-radius: 12px 12px 8px 8px;
+}
+
+.do-prop.tap .do-art::before {
+  content: "";
+  position: absolute;
+  left: 70%;
+  top: -6px;
+  width: 46px;
+  height: 36px;
+  border: 10px solid #868e96;
+  border-left-color: transparent;
+  border-bottom-color: transparent;
+  border-radius: 0 22px 0 0;
+}
+
+.do-prop.tap::after {
+  content: "";
+  position: absolute;
+  left: 2%;
   top: 30%;
+  width: 22px;
+  height: 10px;
+  background: #ffd43b;
+  border: 3px solid #f59f00;
+  border-radius: 8px;
+  pointer-events: none;
 }
 
 .do-wash .do-prop.soap {
-  right: 8%;
-  top: 28%;
+  right: 7%;
+  bottom: 24%;
+  width: 84px;
+  height: 72px;
+}
+
+.do-prop.soap .do-art {
+  left: 10%;
+  right: 10%;
+  top: 22%;
+  bottom: 28%;
+  background: linear-gradient(#ffa8c5, #f783ac);
+  border: 3px solid #e64980;
+  border-radius: 12px;
+  box-shadow: inset 0 8px 0 rgba(255, 253, 248, 0.4);
+}
+
+.do-prop.soap .do-art::after {
+  content: "";
+  position: absolute;
+  left: 18%;
+  top: -10px;
+  width: 12px;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  box-shadow: 16px -4px 0 rgba(255, 255, 255, 0.7);
 }
 
 .do-wash .do-prop.towel {
-  right: 6%;
-  bottom: 10%;
-  background: #fff4d6;
+  right: 5%;
+  top: 20%;
+  width: 88px;
+  height: 110px;
+}
+
+.do-prop.towel .do-art,
+.do-prop.towel .do-ico {
+  left: 12%;
+  right: 12%;
+  top: 8%;
+  bottom: 16%;
+  background: linear-gradient(#ffe8cc, #ffc078);
+  border: 3px solid #e8590c;
+  border-radius: 6px 6px 12px 12px;
+  box-shadow: inset 0 10px 0 rgba(255, 253, 248, 0.35);
+}
+
+.do-prop.towel .do-art {
+  position: absolute;
 }
 
 .do-prop.towel .do-ico {
-  width: 42px;
-  height: 36px;
-  background: linear-gradient(#ffe8cc, #ffc078);
-  border: 3px solid #e8590c;
-  border-radius: 6px 6px 10px 10px;
-  box-shadow: inset 0 8px 0 rgba(255, 253, 248, 0.45);
+  position: absolute;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+.do-wash.phase-4 .do-prop.towel,
+.do-wash.is-done .do-prop.towel {
+  opacity: 0.35;
 }
 
 .do-wash .do-spot.hands {
-  left: 22%;
-  right: 30%;
-  bottom: 12%;
-  height: 42%;
+  left: 20%;
+  right: 28%;
+  bottom: 18%;
+  height: 28%;
 }
 
 .do-hands {
   position: relative;
-  width: min(70%, 220px);
-  height: 62%;
+  width: min(78%, 240px);
+  height: 86%;
   min-height: 64px;
+}
+
+.do-hands i,
+.do-face i,
+.do-kid i,
+.do-eater i {
+  display: block;
+  font-style: normal;
 }
 
 .do-hands .palm {
   position: absolute;
-  bottom: 8%;
-  width: 42%;
-  height: 78%;
+  bottom: 4%;
+  width: 40%;
+  height: 58%;
   background: #e8b86d;
   border: 3px solid #8d5a2b;
-  border-radius: 46% 46% 38% 38%;
+  border-radius: 42% 42% 36% 36%;
   box-shadow: inset 0 -8px 0 rgba(141, 90, 43, 0.16);
 }
 
-.do-hands .palm.left { left: 4%; transform: rotate(-12deg); }
-.do-hands .palm.right { right: 4%; transform: rotate(12deg); }
+.do-hands .palm.left { left: 6%; transform: rotate(-14deg); }
+.do-hands .palm.right { right: 6%; transform: rotate(14deg); }
+
+.do-hands .f,
+.do-hands .thumb {
+  position: absolute;
+  background: inherit;
+  border: 3px solid #8d5a2b;
+  border-bottom-color: transparent;
+  box-shadow: none;
+}
+
+.do-hands .f {
+  top: -38%;
+  width: 22%;
+  height: 48%;
+  border-radius: 40% 40% 16% 16%;
+}
+
+.do-hands .f1 { left: 4%; height: 40%; }
+.do-hands .f2 { left: 27%; height: 50%; }
+.do-hands .f3 { left: 50%; height: 48%; }
+.do-hands .f4 { left: 73%; height: 38%; }
+
+.do-hands .thumb {
+  top: 28%;
+  width: 30%;
+  height: 34%;
+  border-radius: 46%;
+}
+
+.do-hands .palm.left .thumb {
+  left: -26%;
+  transform: rotate(-38deg);
+}
+
+.do-hands .palm.right .thumb {
+  right: -26%;
+  transform: rotate(38deg);
+}
 
 .do-hands .drops,
 .do-hands .bubbles,
 .do-hands .cloth {
   position: absolute;
-  inset: 6% 8% 10%;
+  inset: 0 4% 4%;
   pointer-events: none;
   opacity: 0;
 }
 
-.do-spot.hands.is-wet .palm {
+.do-spot.hands.is-wet .palm,
+.do-spot.hands.is-wet .f,
+.do-spot.hands.is-wet .thumb {
   background: #e8c48a;
   box-shadow: inset 0 0 12px rgba(77, 171, 247, 0.55);
 }
@@ -6542,10 +6794,13 @@ button.day-place:active {
   background:
     radial-gradient(circle at 22% 30%, #74c0fc 0 6px, transparent 7px),
     radial-gradient(circle at 70% 22%, #a5d8ff 0 5px, transparent 6px),
-    radial-gradient(circle at 48% 62%, #4dabf7 0 5px, transparent 6px);
+    radial-gradient(circle at 48% 62%, #4dabf7 0 5px, transparent 6px),
+    radial-gradient(circle at 34% 78%, #74c0fc 0 4px, transparent 5px);
 }
 
-.do-spot.hands.is-soap .palm {
+.do-spot.hands.is-soap .palm,
+.do-spot.hands.is-soap .f,
+.do-spot.hands.is-soap .thumb {
   background: #fff;
   border-color: #74c0fc;
 }
@@ -6560,12 +6815,16 @@ button.day-place:active {
     radial-gradient(circle at 30% 80%, #fff 0 6px, #d0ebff 7px, transparent 8px);
 }
 
-.do-spot.hands.is-clean .palm {
+.do-spot.hands.is-clean .palm,
+.do-spot.hands.is-clean .f,
+.do-spot.hands.is-clean .thumb {
   background: #ffe8cc;
   box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.7);
 }
 
-.do-spot.hands.is-towel .palm {
+.do-spot.hands.is-towel .palm,
+.do-spot.hands.is-towel .f,
+.do-spot.hands.is-towel .thumb {
   background: #f4d9b0;
 }
 
@@ -6577,74 +6836,142 @@ button.day-place:active {
 }
 
 .do-brush {
-  background:
-    repeating-linear-gradient(#fff4e0 0 20px, #ffe8cc 20px 22px);
+  background: linear-gradient(#fff4e0 0 54%, #ffe8cc 54% 64%, #e8c48a 64%);
+}
+
+.db-wall {
+  inset: 0 0 46% 0;
+  background: #fff4e0;
 }
 
 .db-tiles {
-  inset: 0;
+  inset: 0 0 46% 0;
   background:
-    repeating-linear-gradient(90deg, transparent 0 40px, rgba(255, 253, 248, 0.4) 40px 42px);
+    repeating-linear-gradient(90deg, transparent 0 34px, rgba(255, 253, 248, 0.5) 34px 36px);
+}
+
+.db-counter {
+  left: 28%;
+  right: 6%;
+  bottom: 4%;
+  height: 20%;
+  background: linear-gradient(#fff8ee, #f4d9b0);
+  border: 3px solid #c1864a;
+  border-radius: 10px;
+  box-shadow: 0 8px 0 #8d5a2b;
 }
 
 .db-mirror {
   top: 6%;
-  right: 10%;
-  width: 20%;
-  height: 18%;
+  right: 8%;
+  width: 22%;
+  height: 24%;
   background:
-    linear-gradient(135deg, rgba(255, 253, 248, 0.7) 0 16%, transparent 28%),
-    linear-gradient(#a5d8ff, #74c0fc);
-  border: 6px solid #c1864a;
-  border-radius: 10px;
-  box-shadow: 0 6px 0 #8d5a2b;
+    linear-gradient(135deg, rgba(255, 253, 248, 0.78) 0 18%, transparent 30%),
+    linear-gradient(#d0ebff, #74c0fc);
+  border: 8px solid #c1864a;
+  border-radius: 12px;
+  box-shadow: inset 0 0 0 3px #ffe8cc, 0 6px 0 #8d5a2b;
 }
 
-.db-sink {
-  left: 28%;
-  right: 18%;
-  bottom: 8%;
-  height: 30%;
-  background: linear-gradient(#f1f3f5, #adb5bd);
-  border: 3px solid #868e96;
-  border-radius: 16px 16px 36px 36px;
+.db-basin {
+  left: 36%;
+  right: 14%;
+  bottom: 16%;
+  height: 28%;
+  background: linear-gradient(#fff, #e9ecef 42%, #ced4da);
+  border: 4px solid #adb5bd;
+  border-radius: 50% 50% 46% 46% / 58% 58% 42% 42%;
+  box-shadow: inset 0 16px 18px rgba(134, 142, 150, 0.28);
+}
+
+.db-well {
+  left: 42%;
+  right: 20%;
+  bottom: 20%;
+  height: 14%;
+  background: radial-gradient(ellipse at 50% 30%, #f8f9fa 0 36%, #dee2e6 100%);
+  border-radius: 50%;
+  box-shadow: inset 0 10px 12px rgba(73, 80, 87, 0.22);
 }
 
 .db-spout {
-  left: 44%;
-  top: 34%;
-  width: 12%;
+  left: 52%;
+  top: 32%;
+  width: 10%;
+  height: 20%;
+  background: linear-gradient(90deg, #f1f3f5, #adb5bd 50%, #868e96);
+  border: 3px solid #495057;
+  border-radius: 12px 12px 8px 8px;
+}
+
+.db-spout::after {
+  content: "";
+  position: absolute;
+  left: 70%;
+  top: 0;
+  width: 34px;
+  height: 28px;
+  border: 8px solid #868e96;
+  border-left-color: transparent;
+  border-bottom-color: transparent;
+  border-radius: 0 18px 0 0;
+}
+
+.db-water {
+  left: 61%;
+  top: 42%;
+}
+
+.db-holder {
+  left: 32%;
+  bottom: 18%;
+  width: 10%;
   height: 16%;
-  background: #adb5bd;
-  border: 3px solid #868e96;
-  border-radius: 12px 12px 6px 6px;
-  box-shadow: inset 0 8px 0 #ced4da;
+  background: linear-gradient(#fff, #dee2e6);
+  border: 3px solid #adb5bd;
+  border-radius: 8px 8px 14px 14px;
 }
 
 .do-brush .do-spot.spout {
-  left: 38%;
+  left: 42%;
   top: 28%;
-  width: 24%;
-  height: 26%;
+  width: 28%;
+  height: 36%;
 }
 
 .do-brush .do-prop.cup {
-  left: 8%;
-  bottom: 12%;
+  left: 46%;
+  bottom: 20%;
+  width: 84px;
+  height: 88px;
 }
 
-.do-brush .do-prop.cup.is-full {
-  background: #d0ebff;
+.do-brush .do-prop.cup.is-full .life-emoji {
+  filter: drop-shadow(0 8px 0 #74c0fc);
+}
+
+.do-brush .do-prop.cup.is-full .do-art {
+  left: 28%;
+  right: 28%;
+  top: 38%;
+  bottom: 28%;
+  background: rgba(77, 171, 247, 0.45);
+  border-radius: 0 0 12px 12px;
 }
 
 .do-brush .do-prop.paste {
-  right: 6%;
-  top: 30%;
+  right: 7%;
+  bottom: 22%;
+  width: 84px;
+  height: 88px;
 }
 
 .do-brush .do-prop.brush {
-  left: 38%;
-  bottom: 14%;
+  left: 30%;
+  bottom: 18%;
+  width: 84px;
+  height: 88px;
 }
 
 .do-brush .do-prop.brush.has-paste .life-emoji {
@@ -6652,27 +6979,51 @@ button.day-place:active {
 }
 
 .do-brush .do-prop.brush.is-home {
-  left: 10%;
-  bottom: 14%;
+  left: 30%;
+  bottom: 18%;
 }
 
 .do-brush .do-spot.mouth {
-  left: 6%;
-  top: 10%;
-  width: 28%;
-  height: 46%;
+  left: 3%;
+  top: 8%;
+  width: 30%;
+  height: 72%;
 }
 
 .do-face {
   position: relative;
-  width: min(100%, 120px);
-  height: 72%;
-  min-height: 72px;
+  width: min(100%, 168px);
+  height: 88%;
+  min-height: 110px;
 }
+
+.do-hair {
+  position: absolute;
+  left: 16%;
+  right: 16%;
+  top: 2%;
+  height: 22%;
+  background: #8d5a2b;
+  border: 3px solid #6d451c;
+  border-radius: 50% 50% 12% 12%;
+}
+
+.do-ear {
+  position: absolute;
+  top: 34%;
+  width: 14%;
+  height: 16%;
+  background: #f4d9b0;
+  border: 3px solid #c1864a;
+  border-radius: 50%;
+}
+
+.do-ear.a { left: 6%; }
+.do-ear.b { right: 6%; }
 
 .do-head {
   position: absolute;
-  inset: 4% 10% 18%;
+  inset: 12% 12% 16%;
   background: #f4d9b0;
   border: 3px solid #c1864a;
   border-radius: 50%;
@@ -6680,9 +7031,9 @@ button.day-place:active {
 
 .do-eye {
   position: absolute;
-  top: 32%;
-  width: 8px;
-  height: 8px;
+  top: 38%;
+  width: 10px;
+  height: 10px;
   background: #3d2a1a;
   border-radius: 50%;
 }
@@ -6690,13 +7041,25 @@ button.day-place:active {
 .do-eye.a { left: 32%; }
 .do-eye.b { right: 32%; }
 
+.do-blush {
+  position: absolute;
+  top: 48%;
+  width: 12%;
+  height: 8%;
+  background: rgba(255, 135, 135, 0.55);
+  border-radius: 50%;
+}
+
+.do-blush.a { left: 22%; }
+.do-blush.b { right: 22%; }
+
 .do-lips,
 .do-teeth,
 .do-foam {
   position: absolute;
   left: 30%;
   right: 30%;
-  bottom: 26%;
+  bottom: 24%;
   height: 16%;
   border-radius: 0 0 16px 16px;
 }
@@ -6708,17 +7071,22 @@ button.day-place:active {
 .do-teeth {
   left: 34%;
   right: 34%;
-  bottom: 30%;
+  bottom: 28%;
   height: 10%;
   background: #fff;
   opacity: 0;
 }
 
 .do-foam {
+  left: 24%;
+  right: 24%;
+  bottom: 18%;
+  height: 22%;
   opacity: 0;
   background:
-    radial-gradient(circle at 30% 40%, #fff 0 5px, transparent 6px),
-    radial-gradient(circle at 70% 50%, #fff 0 6px, transparent 7px);
+    radial-gradient(circle at 28% 40%, #fff 0 8px, transparent 9px),
+    radial-gradient(circle at 70% 48%, #fff 0 10px, transparent 11px),
+    radial-gradient(circle at 48% 70%, #fff 0 7px, transparent 8px);
 }
 
 .do-spot.mouth.is-foam .do-foam,
@@ -6735,11 +7103,11 @@ button.day-place:active {
 }
 
 .do-out {
-  background: linear-gradient(#fff4d6 0 58%, #e8d4b0 58%);
+  background: linear-gradient(#fff4d6 0 56%, #e8d4b0 56%);
 }
 
 .do-wall {
-  inset: 0 0 42% 0;
+  inset: 0 0 44% 0;
   background: #fff4e0;
 }
 
@@ -6747,57 +7115,85 @@ button.day-place:active {
   left: 0;
   right: 0;
   bottom: 0;
-  height: 42%;
+  height: 44%;
   background: repeating-linear-gradient(90deg, #e8d4b0 0 26px, #d4b48a 26px 30px);
 }
 
 .do-mat {
-  left: 38%;
-  right: 10%;
-  bottom: 6%;
-  height: 12%;
+  left: 28%;
+  right: 30%;
+  bottom: 5%;
+  height: 14%;
   background: #fa5252;
   border-radius: 40%;
   box-shadow: inset 0 0 0 6px #ffa8a8;
 }
 
+.do-hook {
+  left: 8%;
+  top: 16%;
+  width: 10px;
+  height: 18px;
+  background: #868e96;
+  border-radius: 0 0 8px 8px;
+}
+
 .do-rack {
-  left: 6%;
-  bottom: 16%;
-  width: 22%;
-  height: 10%;
+  left: 5%;
+  bottom: 12%;
+  width: 20%;
+  height: 8px;
   background: #c1864a;
   border-radius: 8px;
 }
 
+.do-out .do-prop.socks,
+.do-out .do-prop.shoes,
+.do-out .do-prop.bag {
+  width: 88px;
+  height: 88px;
+}
+
 .do-out .do-prop.socks {
-  left: 6%;
-  bottom: 28%;
+  left: 5%;
+  bottom: 6%;
 }
 
 .do-out .do-prop.shoes {
-  left: 20%;
-  bottom: 26%;
+  left: 16%;
+  bottom: 6%;
 }
 
 .do-out .do-prop.bag {
-  left: 8%;
-  top: 16%;
+  left: 5%;
+  top: 18%;
+}
+
+.do-out .do-prop.door,
+.do-out .do-spot.leave {
+  right: 5%;
+  top: 8%;
+  width: 24%;
+  height: 68%;
+  min-height: 120px;
 }
 
 .do-out .do-prop.door {
-  right: 6%;
-  top: 10%;
-  width: 22%;
-  height: 62%;
-  min-height: 120px;
   background: linear-gradient(#e8c48a, #c1864a);
   border: 4px solid #8d5a2b;
   border-radius: 10px 10px 4px 4px;
-  box-shadow: inset -10px 0 0 rgba(61, 42, 26, 0.12);
+  box-shadow: inset -10px 0 0 rgba(61, 42, 26, 0.12), inset 0 0 0 10px rgba(255, 232, 204, 0.18);
+  filter: none;
+}
+
+.do-prop.door .life-emoji {
+  display: none;
 }
 
 .do-prop.door .do-ico {
+  position: absolute;
+  right: 12%;
+  top: 46%;
   width: 16px;
   height: 16px;
   background: #ffe066;
@@ -6811,12 +7207,16 @@ button.day-place:active {
   background: linear-gradient(#ffe8cc, #e8c48a);
 }
 
+.do-out .do-spot.leave {
+  z-index: 2;
+}
+
 .do-kid {
   position: absolute;
-  left: 28%;
-  top: 12%;
-  width: 30%;
-  height: 76%;
+  left: 32%;
+  top: 10%;
+  width: 28%;
+  height: 78%;
   z-index: 4;
   display: flex;
   flex-direction: column;
@@ -6829,33 +7229,89 @@ button.day-place:active {
   flex: 1 1 62%;
 }
 
-.do-face-ico {
-  font-size: min(18cqw, 16cqh, 56px);
-  line-height: 1;
+.do-kid-hair {
+  position: absolute;
+  left: 28%;
+  right: 28%;
+  top: 2%;
+  height: 16%;
+  background: #8d5a2b;
+  border: 3px solid #6d451c;
+  border-radius: 50% 50% 20% 20%;
 }
 
+.do-kid-head {
+  position: absolute;
+  left: 28%;
+  right: 28%;
+  top: 8%;
+  height: 28%;
+  background: #f4d9b0;
+  border: 3px solid #c1864a;
+  border-radius: 50%;
+}
+
+.do-kid-eye {
+  position: absolute;
+  top: 20%;
+  width: 7px;
+  height: 7px;
+  background: #3d2a1a;
+  border-radius: 50%;
+}
+
+.do-kid-eye.a { left: 38%; }
+.do-kid-eye.b { right: 38%; }
+
 .do-torso {
-  width: 48%;
-  height: 44%;
+  position: absolute;
+  left: 26%;
+  right: 26%;
+  top: 34%;
+  height: 40%;
   background: #a5d8ff;
   border: 3px solid #74c0fc;
   border-radius: 28px 28px 22px 22px;
   box-shadow: inset 0 -8px 0 rgba(28, 126, 214, 0.12);
 }
 
+.do-arm {
+  position: absolute;
+  top: 38%;
+  width: 12px;
+  height: 28%;
+  background: #f4d9b0;
+  border: 3px solid #e8c48a;
+  border-radius: 10px;
+}
+
+.do-arm.a { left: 16%; transform: rotate(12deg); }
+.do-arm.b { right: 16%; transform: rotate(-12deg); }
+
+.do-pack {
+  position: absolute;
+  right: 10%;
+  top: 36%;
+  width: 22%;
+  height: 28%;
+  background: #fa5252;
+  border: 3px solid #c92a2a;
+  border-radius: 10px;
+}
+
 .do-wear {
   position: absolute;
   z-index: 2;
   line-height: 1;
-  font-size: min(16cqw, 14cqh, 48px);
+  font-size: min(14cqw, 12cqh, 40px);
   filter: drop-shadow(0 3px 0 rgba(180, 120, 70, 0.16));
   animation: pop 0.35s ease;
   pointer-events: none;
 }
 
 .do-wear.bag {
-  top: 28%;
-  right: 8%;
+  top: 32%;
+  right: 4%;
 }
 
 .do-out .do-spot.feet {
@@ -6878,30 +7334,40 @@ button.day-place:active {
 .do-leg.a { left: 32%; }
 .do-leg.b { right: 32%; }
 
-.do-wear.socks {
-  left: 18%;
-  bottom: 4%;
+.do-sock {
+  position: absolute;
+  bottom: 10%;
+  width: 20px;
+  height: 18px;
+  background: #ffa8a8;
+  border: 3px solid #fa5252;
+  border-radius: 8px 8px 4px 4px;
+  animation: pop 0.35s ease;
 }
 
-.do-wear.shoes {
-  right: 14%;
-  bottom: 0;
+.do-sock.a { left: 30%; }
+.do-sock.b { right: 30%; }
+
+.do-shoe {
+  position: absolute;
+  bottom: 2%;
+  width: 26px;
+  height: 16px;
+  background: #4dabf7;
+  border: 3px solid #1c7ed6;
+  border-radius: 10px 16px 8px 8px;
+  animation: pop 0.35s ease;
 }
 
-.do-out .do-spot.leave {
-  right: 4%;
-  top: 8%;
-  width: 26%;
-  height: 70%;
-  z-index: 2;
-}
+.do-shoe.a { left: 28%; }
+.do-shoe.b { right: 28%; }
 
 .do-eat {
-  background: linear-gradient(#fff4e0 0 54%, #e8d4b0 54%);
+  background: linear-gradient(#fff4e0 0 52%, #e8d4b0 52%);
 }
 
 .de-wall {
-  inset: 0 0 46% 0;
+  inset: 0 0 48% 0;
   background: #ffe8cc;
 }
 
@@ -6909,25 +7375,81 @@ button.day-place:active {
   left: 0;
   right: 0;
   bottom: 0;
-  height: 46%;
+  height: 48%;
   background: repeating-linear-gradient(90deg, #d4a574 0 24px, #c68e4d 24px 28px);
 }
 
-.de-sink {
-  left: 4%;
-  bottom: 18%;
-  width: 24%;
-  height: 28%;
-  background: linear-gradient(#f1f3f5, #adb5bd);
-  border: 3px solid #868e96;
-  border-radius: 12px 12px 22px 22px;
+.de-counter {
+  left: 3%;
+  width: 28%;
+  bottom: 12%;
+  height: 18%;
+  background: linear-gradient(#fff8ee, #f4d9b0);
+  border: 3px solid #c1864a;
+  border-radius: 10px;
+  box-shadow: 0 8px 0 #8d5a2b;
+}
+
+.de-basin {
+  left: 5%;
+  width: 22%;
+  bottom: 22%;
+  height: 22%;
+  background: linear-gradient(#fff, #e9ecef 42%, #ced4da);
+  border: 4px solid #adb5bd;
+  border-radius: 50% 50% 46% 46% / 58% 58% 42% 42%;
+  box-shadow: inset 0 12px 14px rgba(134, 142, 150, 0.28);
+}
+
+.de-well {
+  left: 8%;
+  width: 16%;
+  bottom: 26%;
+  height: 10%;
+  background: radial-gradient(ellipse at 50% 30%, #f8f9fa 0 36%, #dee2e6 100%);
+  border-radius: 50%;
+  box-shadow: inset 0 8px 10px rgba(73, 80, 87, 0.2);
+}
+
+.de-spout {
+  left: 12%;
+  top: 28%;
+  width: 8%;
+  height: 16%;
+  background: linear-gradient(90deg, #f1f3f5, #adb5bd 50%, #868e96);
+  border: 3px solid #495057;
+  border-radius: 10px 10px 6px 6px;
+}
+
+.de-spout::after {
+  content: "";
+  position: absolute;
+  left: 60%;
+  top: 0;
+  width: 26px;
+  height: 22px;
+  border: 7px solid #868e96;
+  border-left-color: transparent;
+  border-bottom-color: transparent;
+  border-radius: 0 16px 0 0;
+}
+
+.de-sideboard {
+  left: 34%;
+  width: 16%;
+  bottom: 16%;
+  height: 16%;
+  background: linear-gradient(#e8c48a, #c1864a);
+  border: 3px solid #8d5a2b;
+  border-radius: 8px;
+  box-shadow: 0 10px 0 #8d5a2b;
 }
 
 .de-table {
-  left: 34%;
-  right: 10%;
-  bottom: 16%;
-  height: 22%;
+  left: 54%;
+  right: 5%;
+  bottom: 14%;
+  height: 20%;
   background: #c1864a;
   border: 3px solid #8d5a2b;
   border-radius: 16px;
@@ -6935,23 +7457,27 @@ button.day-place:active {
 }
 
 .do-eat .do-prop.soap {
-  left: 6%;
-  top: 16%;
+  left: 20%;
+  bottom: 28%;
+  width: 76px;
+  height: 68px;
 }
 
 .do-eat .do-prop.bowl {
-  left: 8%;
-  bottom: 36%;
+  left: 35%;
+  bottom: 26%;
+  width: 84px;
+  height: 84px;
 }
 
 .do-eat .do-prop.bowl.on-table {
-  left: 48%;
-  bottom: 28%;
+  left: 62%;
+  bottom: 26%;
 }
 
 .do-eat .do-prop.bowl.in-sink {
   left: 8%;
-  bottom: 22%;
+  bottom: 24%;
 }
 
 .do-eat .do-prop.bowl.is-empty .life-emoji {
@@ -6960,41 +7486,95 @@ button.day-place:active {
 
 .do-eat .do-prop.spoon {
   right: 8%;
-  bottom: 30%;
+  bottom: 26%;
+  width: 76px;
+  height: 76px;
 }
 
 .do-eat .do-spot.hands {
-  left: 4%;
-  top: 22%;
-  width: 28%;
-  height: 34%;
-  background: rgba(255, 253, 248, 0.35);
+  left: 5%;
+  bottom: 20%;
+  width: 20%;
+  height: 26%;
+  background: transparent;
 }
 
 .do-hands.tiny {
-  width: 86%;
-  height: 56%;
+  width: 92%;
+  height: 78%;
 }
 
 .do-eat .do-spot.table {
-  left: 34%;
-  right: 8%;
-  bottom: 12%;
-  height: 36%;
+  left: 54%;
+  right: 4%;
+  bottom: 10%;
+  height: 42%;
 }
 
 .do-eater {
   position: absolute;
-  top: -28%;
-  font-size: min(16cqw, 14cqh, 48px);
+  left: 8%;
+  top: 2%;
+  width: 36%;
+  height: 58%;
   pointer-events: none;
+}
+
+.de-hair {
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  top: 0;
+  height: 22%;
+  background: #8d5a2b;
+  border: 3px solid #6d451c;
+  border-radius: 50% 50% 20% 20%;
+}
+
+.de-head {
+  position: absolute;
+  left: 16%;
+  right: 16%;
+  top: 8%;
+  height: 42%;
+  background: #f4d9b0;
+  border: 3px solid #c1864a;
+  border-radius: 50%;
+}
+
+.de-eye {
+  position: absolute;
+  top: 24%;
+  width: 7px;
+  height: 7px;
+  background: #3d2a1a;
+  border-radius: 50%;
+}
+
+.de-eye.a { left: 32%; }
+.de-eye.b { right: 32%; }
+
+.de-body {
+  position: absolute;
+  left: 20%;
+  right: 20%;
+  top: 46%;
+  height: 42%;
+  background: #ffa8a8;
+  border: 3px solid #fa5252;
+  border-radius: 16px 16px 8px 8px;
 }
 
 .do-eat .do-spot.sink {
   left: 3%;
-  bottom: 14%;
+  bottom: 12%;
   width: 28%;
-  height: 36%;
+  height: 38%;
+}
+
+.do-eat.phase-3 .do-spot.sink,
+.do-eat.phase-4 .do-spot.sink {
+  z-index: 6;
 }
 
 .preview-cubby b {
@@ -8249,6 +8829,19 @@ button.day-place:active {
   .shell.is-life .share-play {
     flex-direction: row;
     align-items: stretch;
+  }
+
+  .do-wash .do-prop.tap {
+    width: 96px;
+    height: 116px;
+  }
+
+  .do-brush .do-spot.mouth {
+    width: 26%;
+  }
+
+  .do-face {
+    min-height: 130px;
   }
 
   .shell.is-life .cubby-play {

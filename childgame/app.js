@@ -5573,11 +5573,23 @@
       ' role="img" aria-label="' +
       escapeHtml(item.name || item.emoji) +
       '">' +
+      '<span class="do-art" aria-hidden="true"></span>' +
       (item.emoji
         ? '<span class="life-emoji">' + item.emoji + "</span>"
         : '<span class="life-emoji do-ico" aria-hidden="true"></span>') +
       (item.name ? '<span class="life-name">' + escapeHtml(item.name) + "</span>" : "") +
       "</div>"
+    );
+  }
+
+  function renderDoHands(extraClass) {
+    return (
+      '<div class="do-hands' +
+      (extraClass ? " " + extraClass : "") +
+      '" aria-hidden="true">' +
+      '<i class="palm left"><i class="f f1"></i><i class="f f2"></i><i class="f f3"></i><i class="f f4"></i><i class="thumb"></i></i>' +
+      '<i class="palm right"><i class="f f1"></i><i class="f f2"></i><i class="f f3"></i><i class="f f4"></i><i class="thumb"></i></i>' +
+      '<i class="drops"></i><i class="bubbles"></i><i class="cloth"></i></div>'
     );
   }
 
@@ -5615,18 +5627,17 @@
       phase <= 0 ? "dry" : phase === 1 ? "wet" : phase === 2 ? "soap" : phase === 3 ? "clean" : "towel";
     return (
       '<div class="do-land" aria-hidden="true">' +
-      '<i class="dw-tiles"></i><i class="dw-mirror"></i><i class="dw-basin"></i>' +
-      '<i class="dw-water"></i></div>' +
+      '<i class="dw-wall"></i><i class="dw-tiles"></i><i class="dw-counter"></i>' +
+      '<i class="dw-mirror"></i><i class="dw-basin"></i><i class="dw-well"></i>' +
+      '<i class="dw-rail"></i><i class="dw-water"></i><i class="dw-pool"></i></div>' +
       renderDoProp(orderItem(q, "tap")) +
       renderDoProp(orderItem(q, "soap")) +
       renderDoProp(orderItem(q, "towel")) +
       '<div class="do-spot hands is-' +
       hands +
       '" data-life-slot="hands" aria-label="手">' +
-      '<div class="do-hands" aria-hidden="true">' +
-      '<i class="palm left"></i><i class="palm right"></i>' +
-      '<i class="drops"></i><i class="bubbles"></i><i class="cloth"></i>' +
-      '</div><span class="do-spot-name">手</span></div>'
+      renderDoHands() +
+      "</div>"
     );
   }
 
@@ -5635,10 +5646,10 @@
     var brushSlot = phase === 1 ? ' data-life-slot="brush-spot"' : "";
     return (
       '<div class="do-land" aria-hidden="true">' +
-      '<i class="db-tiles"></i><i class="db-mirror"></i><i class="db-sink"></i>' +
-      '<i class="db-spout"></i></div>' +
-      '<div class="do-spot spout" data-life-slot="spout" aria-label="水龍頭">' +
-      '<span class="do-spot-name">水</span></div>' +
+      '<i class="db-wall"></i><i class="db-tiles"></i><i class="db-counter"></i>' +
+      '<i class="db-mirror"></i><i class="db-basin"></i><i class="db-well"></i>' +
+      '<i class="db-spout"></i><i class="db-water"></i><i class="db-holder"></i></div>' +
+      '<div class="do-spot spout" data-life-slot="spout" aria-label="水龍頭"></div>' +
       renderDoProp(orderItem(q, "cup"), phase >= 1 ? "is-full" : "") +
       renderDoProp(orderItem(q, "paste"), phase >= 2 ? "is-used" : "") +
       renderDoProp(
@@ -5650,9 +5661,11 @@
       mouth +
       '" data-life-slot="mouth" aria-label="嘴巴">' +
       '<div class="do-face" aria-hidden="true">' +
+      '<i class="do-hair"></i><i class="do-ear a"></i><i class="do-ear b"></i>' +
       '<i class="do-head"></i><i class="do-eye a"></i><i class="do-eye b"></i>' +
+      '<i class="do-blush a"></i><i class="do-blush b"></i>' +
       '<i class="do-lips"></i><i class="do-teeth"></i><i class="do-foam"></i>' +
-      '</div><span class="do-spot-name">嘴巴</span></div>'
+      "</div></div>"
     );
   }
 
@@ -5660,36 +5673,40 @@
     return (
       '<div class="do-land" aria-hidden="true">' +
       '<i class="do-wall"></i><i class="do-floor"></i><i class="do-mat"></i>' +
-      '<i class="do-rack"></i></div>' +
+      '<i class="do-hook"></i><i class="do-rack"></i></div>' +
       (phase < 1 ? renderDoProp(orderItem(q, "socks")) : "") +
       (phase < 2 ? renderDoProp(orderItem(q, "shoes")) : "") +
       (phase < 3 ? renderDoProp(orderItem(q, "bag")) : "") +
       renderDoProp(orderItem(q, "door"), phase >= 4 ? "is-open" : "", 'data-life-slot="leave"') +
       '<div class="do-kid" aria-label="小朋友">' +
       '<div class="do-spot body" data-life-slot="body" aria-label="身體">' +
-      '<span class="do-face-ico">🧒</span>' +
+      '<i class="do-kid-hair" aria-hidden="true"></i>' +
+      '<i class="do-kid-head" aria-hidden="true"></i>' +
+      '<i class="do-kid-eye a" aria-hidden="true"></i><i class="do-kid-eye b" aria-hidden="true"></i>' +
       '<i class="do-torso" aria-hidden="true"></i>' +
-      (phase >= 3 ? '<span class="do-wear bag">🎒</span>' : "") +
-      '</div>' +
+      '<i class="do-arm a" aria-hidden="true"></i><i class="do-arm b" aria-hidden="true"></i>' +
+      (phase >= 3 ? '<i class="do-pack" aria-hidden="true"></i><span class="do-wear bag">🎒</span>' : "") +
+      "</div>" +
       '<div class="do-spot feet" data-life-slot="feet" aria-label="腳">' +
       '<i class="do-leg a" aria-hidden="true"></i><i class="do-leg b" aria-hidden="true"></i>' +
-      (phase >= 1 ? '<span class="do-wear socks">🧦</span>' : "") +
-      (phase >= 2 ? '<span class="do-wear shoes">👟</span>' : "") +
+      (phase >= 1 ? '<i class="do-sock a" aria-hidden="true"></i><i class="do-sock b" aria-hidden="true"></i>' : "") +
+      (phase >= 2 ? '<i class="do-shoe a" aria-hidden="true"></i><i class="do-shoe b" aria-hidden="true"></i>' : "") +
       "</div></div>" +
       '<div class="do-spot leave" data-life-slot="leave" aria-label="門口"></div>'
     );
   }
 
   function renderOrderEat(q, phase) {
-    var hands = phase <= 0 ? "dry" : "clean";
+    var hands = phase <= 0 ? "dry" : phase === 1 ? "soap" : "clean";
     var bowlSlot = phase === 2 ? ' data-life-slot="bowl-spot"' : "";
     var bowlOn = phase >= 2 && phase < 4;
     var bowlSink = phase >= 4;
     var bowlEmpty = phase >= 3;
     return (
       '<div class="do-land" aria-hidden="true">' +
-      '<i class="de-wall"></i><i class="de-floor"></i><i class="de-sink"></i>' +
-      '<i class="de-table"></i></div>' +
+      '<i class="de-wall"></i><i class="de-floor"></i><i class="de-counter"></i>' +
+      '<i class="de-basin"></i><i class="de-well"></i><i class="de-spout"></i>' +
+      '<i class="de-sideboard"></i><i class="de-table"></i></div>' +
       renderDoProp(orderItem(q, "soap")) +
       renderDoProp(
         orderItem(q, "bowl"),
@@ -5700,15 +5717,13 @@
       '<div class="do-spot hands is-' +
       hands +
       '" data-life-slot="hands" aria-label="手">' +
-      '<div class="do-hands tiny" aria-hidden="true">' +
-      '<i class="palm left"></i><i class="palm right"></i>' +
-      '<i class="bubbles"></i></div>' +
-      '<span class="do-spot-name">手</span></div>' +
+      renderDoHands("tiny") +
+      "</div>" +
       '<div class="do-spot table" data-life-slot="table" aria-label="桌子">' +
-      '<span class="do-eater" aria-hidden="true">🧒</span>' +
-      '<span class="do-spot-name">桌子</span></div>' +
-      '<div class="do-spot sink" data-life-slot="sink" aria-label="水槽">' +
-      '<span class="do-spot-name">水槽</span></div>'
+      '<div class="do-eater" aria-hidden="true">' +
+      '<i class="de-hair"></i><i class="de-head"></i><i class="de-eye a"></i><i class="de-eye b"></i>' +
+      '<i class="de-body"></i></div></div>' +
+      '<div class="do-spot sink" data-life-slot="sink" aria-label="水槽"></div>'
     );
   }
 
