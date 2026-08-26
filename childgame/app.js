@@ -4382,7 +4382,7 @@
       '<span class="day-vanity-art' +
       (used ? " is-used" : "") +
       '">' +
-      '<i class="dv-counter"></i><i class="dv-basin"></i><i class="dv-well"></i><i class="dv-tap"></i>' +
+      '<i class="dv-mirror"></i><i class="dv-counter"></i><i class="dv-basin"></i><i class="dv-well"></i><i class="dv-tap"></i>' +
       (used
         ? '<i class="dv-cup is-home"></i><i class="dv-brush is-home"></i><i class="dv-foam"></i><i class="dv-paste"></i>'
         : '<i class="dv-cup"></i>') +
