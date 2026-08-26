@@ -1237,20 +1237,21 @@ button.day-place:active {
 }
 
 .furn-dress {
-  left: 40%;
+  left: calc(max(36%, 5% + 148px) + 64px);
   bottom: 34%;
   min-width: 118px;
   min-height: 88px;
   flex-direction: row;
   align-items: flex-end;
-  z-index: 2;
+  z-index: 5;
 }
 
 .furn-dress .day-go-bubble {
-  top: -30px;
+  top: -36px;
   left: 0;
   right: auto;
   transform: none;
+  padding: 2px 8px;
 }
 
 .furn-out {
@@ -1267,7 +1268,7 @@ button.day-place:active {
   bottom: 10%;
   min-width: 76px;
   min-height: 52px;
-  z-index: 2;
+  z-index: 5;
 }
 
 .furn-table .day-go-bubble {
@@ -1309,6 +1310,7 @@ button.day-place:active {
 }
 
 .day-sink-art {
+  overflow: hidden;
   width: clamp(110px, 20vmin, 128px);
   height: clamp(88px, 16.8vmin, 112px);
 }
@@ -1802,7 +1804,7 @@ button.day-place:active {
 .day-dress-art {
   display: flex;
   align-items: flex-end;
-  gap: 4px;
+  gap: 10px;
 }
 
 .day-dress-art i,
@@ -1871,6 +1873,7 @@ button.day-place:active {
 .day-hang-art {
   position: relative;
   overflow: visible;
+  z-index: 5;
   width: clamp(72px, 14.5vmin, 88px);
   height: clamp(84px, 17vmin, 104px);
 }
@@ -2002,8 +2005,8 @@ button.day-place:active {
 .day-hang-art .hang-glass.on-peg,
 .day-hang-art .hang-scarf.on-peg,
 .day-hang-art .hang-umb.on-peg {
-  left: 10%;
-  right: auto;
+  left: auto;
+  right: 8%;
   top: 6%;
   z-index: 5;
 }
@@ -10285,7 +10288,7 @@ button.day-place:active {
   }
 
   .furn-dress {
-    left: 16%;
+    left: calc(max(48%, 8% + 126px) + 40px);
     min-width: 96px;
     min-height: 72px;
   }
