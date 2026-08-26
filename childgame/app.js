@@ -4577,10 +4577,14 @@
     return "on-hanger";
   }
 
+  function hangBodyInner() {
+    return '<i class="dh-sleeve a"></i><i class="dh-sleeve b"></i><i class="dh-neck"></i>';
+  }
+
   function renderDayHangBits(world) {
     var outfit = (world && world.outfit) || [];
     if (!outfit.length) {
-      return '<i class="dh-shirt hang-tee on-hanger"></i>';
+      return '<i class="dh-shirt hang-tee on-hanger">' + hangBodyInner() + "</i>";
     }
     return outfit
       .slice(0, 3)
@@ -4588,6 +4592,12 @@
         var kind = hangKindOf(it);
         if (kind === "boot") {
           return '<i class="day-kept hang-boot on-floor a"></i><i class="day-kept hang-boot on-floor b"></i>';
+        }
+        if (kind === "tee" || kind === "coat" || kind === "rain") {
+          return '<i class="day-kept hang-' + kind + " " + hangSeatOf(it) + '">' + hangBodyInner() + "</i>";
+        }
+        if (kind === "cap") {
+          return '<i class="day-kept hang-cap on-peg"><i class="dh-brim"></i></i>';
         }
         return '<i class="day-kept hang-' + kind + " " + hangSeatOf(it) + '"></i>';
       })

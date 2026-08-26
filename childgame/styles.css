@@ -1247,7 +1247,10 @@ button.day-place:active {
 }
 
 .furn-dress .day-go-bubble {
-  top: -32px;
+  top: -30px;
+  left: 0;
+  right: auto;
+  transform: none;
 }
 
 .furn-out {
@@ -1260,10 +1263,10 @@ button.day-place:active {
 
 .furn-table {
   left: auto;
-  right: 1%;
-  bottom: 18%;
-  min-width: 84px;
-  min-height: 56px;
+  right: 18%;
+  bottom: 20%;
+  min-width: 76px;
+  min-height: 52px;
   z-index: 2;
 }
 
@@ -1802,7 +1805,7 @@ button.day-place:active {
 .day-dress-art i,
 .day-bed-art i,
 .day-hang-art i,
-.day-table-art i,
+.day-table-art > i,
 .day-light-art i,
 .day-tree-art i {
   position: absolute;
@@ -1916,98 +1919,109 @@ button.day-place:active {
 .day-hang-art .hang-coat,
 .day-hang-art .hang-rain,
 .day-hang-art .dh-shirt {
-  left: 20%;
-  right: 20%;
-  top: 34%;
-  height: 38%;
-  min-height: 34px;
-  border-radius: 4px 4px 6px 6px;
+  left: 30%;
+  right: 30%;
+  top: 40%;
+  height: 36%;
+  min-height: 28px;
+  border-radius: 3px 3px 6px 6px;
+  z-index: 2;
 }
 
 .day-hang-art .hang-tee,
 .day-hang-art .dh-shirt {
-  background: linear-gradient(#a5d8ff, #74c0fc);
+  background: #74c0fc;
   border: 2px solid #1c7ed6;
-  box-shadow: inset 0 3px 0 rgba(255, 253, 248, 0.28);
 }
 
-.day-hang-art .hang-tee::before,
-.day-hang-art .hang-tee::after,
-.day-hang-art .dh-shirt::before,
-.day-hang-art .dh-shirt::after,
-.day-hang-art .hang-coat::before,
-.day-hang-art .hang-coat::after,
-.day-hang-art .hang-rain::before,
-.day-hang-art .hang-rain::after {
-  content: "";
+.day-hang-art .dh-sleeve,
+.day-hang-art .dh-neck,
+.day-hang-art .dh-brim {
   position: absolute;
-  top: 10%;
-  width: 16px;
-  height: 18px;
+  display: block;
+  pointer-events: none;
+}
+
+.day-hang-art .dh-sleeve {
+  top: 2%;
+  width: 15px;
+  height: 12px;
   background: inherit;
   border: 2px solid #1c7ed6;
-  border-radius: 5px;
+  border-radius: 4px;
 }
 
-.day-hang-art .hang-tee::before,
-.day-hang-art .dh-shirt::before,
-.day-hang-art .hang-coat::before,
-.day-hang-art .hang-rain::before { left: -14px; }
+.day-hang-art .dh-sleeve.a { left: -14px; }
+.day-hang-art .dh-sleeve.b { right: -14px; }
 
-.day-hang-art .hang-tee::after,
-.day-hang-art .dh-shirt::after,
-.day-hang-art .hang-coat::after,
-.day-hang-art .hang-rain::after { right: -14px; }
+.day-hang-art .dh-neck {
+  left: 26%;
+  right: 26%;
+  top: -5px;
+  height: 8px;
+  background: #fff4d6;
+  border: 2px solid #1c7ed6;
+  border-bottom: 0;
+  border-radius: 8px 8px 0 0;
+}
 
 .day-hang-art .hang-coat {
-  height: 44%;
-  background: linear-gradient(#e8c48a, #c1864a);
+  height: 42%;
+  background: #c1864a;
   border: 2px solid #8d5a2b;
 }
 
-.day-hang-art .hang-coat::before,
-.day-hang-art .hang-coat::after {
+.day-hang-art .hang-coat .dh-sleeve,
+.day-hang-art .hang-coat .dh-neck {
   border-color: #8d5a2b;
 }
 
+.day-hang-art .hang-coat .dh-neck {
+  background: #fff4d6;
+}
+
 .day-hang-art .hang-rain {
-  height: 44%;
-  background: linear-gradient(#ffe066, #f59f00);
+  height: 42%;
+  background: #f59f00;
   border: 2px solid #e67700;
 }
 
-.day-hang-art .hang-rain::before,
-.day-hang-art .hang-rain::after {
+.day-hang-art .hang-rain .dh-sleeve,
+.day-hang-art .hang-rain .dh-neck {
   border-color: #e67700;
+}
+
+.day-hang-art .hang-rain .dh-neck {
+  background: #fff4d6;
 }
 
 .day-hang-art .hang-cap.on-peg,
 .day-hang-art .hang-glass.on-peg,
 .day-hang-art .hang-scarf.on-peg,
 .day-hang-art .hang-umb.on-peg {
-  left: auto;
-  right: 12%;
-  top: 12%;
+  left: 10%;
+  right: auto;
+  top: 6%;
+  z-index: 5;
 }
 
 .day-hang-art .hang-cap {
-  width: 32px;
-  height: 18px;
+  width: 30px;
+  height: 16px;
   background: #fa5252;
   border: 2px solid #c92a2a;
-  border-radius: 8px 8px 2px 2px;
+  border-radius: 10px 10px 2px 2px;
 }
 
-.day-hang-art .hang-cap::after {
-  content: "";
-  position: absolute;
-  left: -8px;
-  right: 18%;
-  bottom: -4px;
+.day-hang-art .hang-cap .dh-brim {
+  left: -6px;
+  width: 36px;
+  right: auto;
+  bottom: -5px;
   height: 7px;
   background: #1c7ed6;
   border: 2px solid #1864ab;
-  border-radius: 2px 6px 2px 2px;
+  border-radius: 2px 7px 2px 2px;
 }
 
 .day-hang-art .hang-glass {
@@ -2125,14 +2139,14 @@ button.day-place:active {
 
 .day-table-art {
   overflow: visible;
-  width: clamp(84px, 16vmin, 100px);
-  height: clamp(54px, 11.5vmin, 70px);
+  width: clamp(76px, 14vmin, 88px);
+  height: clamp(52px, 11vmin, 64px);
 }
 
 .dtb-top {
   left: 2%;
   right: 2%;
-  top: 36%;
+  top: 42%;
   height: 16px;
   background: linear-gradient(#e8c48a, #c1864a);
   border: 2px solid #8d5a2b;
@@ -2143,11 +2157,12 @@ button.day-place:active {
 
 .dtb-leg {
   bottom: 0;
-  top: 56%;
+  top: 60%;
   width: 12px;
   background: linear-gradient(#a86a38, #6d451c);
   border: 2px solid #5c3d1e;
   border-radius: 2px 2px 1px 1px;
+  z-index: 1;
 }
 
 .dtb-leg.a { left: 16%; }
@@ -2155,10 +2170,11 @@ button.day-place:active {
 
 .day-table-set {
   position: absolute;
-  left: 6%;
-  right: 6%;
-  top: 0;
-  height: 38%;
+  left: 8%;
+  right: 8%;
+  top: auto;
+  bottom: 58%;
+  height: 26px;
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -2173,11 +2189,13 @@ button.day-place:active {
   gap: 4px;
   transform: none;
   pointer-events: none;
-  z-index: 1;
 }
 
+.day-table-art .day-utensil,
 .day-table-bits .day-utensil {
   position: relative;
+  top: auto;
+  bottom: auto;
   display: block;
   font-style: normal;
   line-height: 1;
@@ -10270,10 +10288,10 @@ button.day-place:active {
   }
 
   .furn-table {
-    right: 0;
-    bottom: 16%;
-    min-width: 76px;
-    min-height: 48px;
+    right: 26%;
+    bottom: 18%;
+    min-width: 68px;
+    min-height: 46px;
   }
 
   .day-hang-art {
@@ -10282,7 +10300,7 @@ button.day-place:active {
   }
 
   .day-table-art {
-    width: 76px;
+    width: 72px;
     height: 48px;
   }
 
@@ -10517,7 +10535,7 @@ button.day-place:active {
   }
 
   .day-table-art {
-    width: 76px;
+    width: 72px;
     height: 48px;
   }
 
