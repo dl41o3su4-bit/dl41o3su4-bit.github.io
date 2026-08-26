@@ -4508,7 +4508,8 @@
       spec.art +
       "</div>" +
       (next
-        ? '<span class="day-go-bubble">去這裡</span><span class="day-spot-label">' +
+        ? (id === "dress" ? "" : '<span class="day-go-bubble">去這裡</span>') +
+          '<span class="day-spot-label">' +
           spec.label +
           "</span>"
         : "") +
@@ -4605,11 +4606,13 @@
   }
 
   function renderDayDressArt(world) {
+    var bubble = nextDayTask(world) === "dress" ? '<span class="day-go-bubble">去這裡</span>' : "";
     return (
       '<span class="day-dress-art">' +
       '<span class="day-bed-art">' +
       '<i class="dbd-post a"></i><i class="dbd-post b"></i>' +
       '<i class="dbd-frame"></i><i class="dbd-blanket"></i><i class="dbd-pillow"></i>' +
+      bubble +
       "</span>" +
       '<span class="day-hang-art">' +
       '<i class="dh-post a"></i><i class="dh-post b"></i>' +

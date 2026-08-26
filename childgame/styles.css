@@ -1246,18 +1246,6 @@ button.day-place:active {
   z-index: 5;
 }
 
-.furn-dress .day-go-bubble {
-  /* Over the bed, left of the hang. left:22% + -50% sat 「裡」
-     on the sleeve; left:0 is only ~4px further left. */
-  top: auto;
-  bottom: calc(100% + 16px);
-  left: 0;
-  right: auto;
-  transform: translateX(-20px);
-  padding: 2px 8px;
-  z-index: 8;
-}
-
 .furn-out {
   left: 68%;
   bottom: 18%;
@@ -1826,8 +1814,20 @@ button.day-place:active {
 
 .day-bed-art {
   position: relative;
+  z-index: 8;
   width: clamp(46px, 10.4vmin, 70px);
   height: clamp(26px, 6.6vmin, 40px);
+}
+
+.furn-dress .day-bed-art .day-go-bubble {
+  /* Containing block is the bed, not bed+hang. Sit above the rail. */
+  top: auto;
+  left: 50%;
+  right: auto;
+  bottom: calc(clamp(84px, 17vmin, 104px) + 12px);
+  transform: translateX(-50%);
+  padding: 2px 8px;
+  z-index: 2;
 }
 
 .dbd-post {
@@ -10318,13 +10318,6 @@ button.day-place:active {
     left: calc(max(48%, 8% + 126px) + 40px);
     min-width: 96px;
     min-height: 72px;
-  }
-
-  .furn-dress .day-go-bubble {
-    left: 0;
-    transform: translateX(-16px);
-    bottom: calc(100% + 12px);
-    top: auto;
   }
 
   .furn-table {
