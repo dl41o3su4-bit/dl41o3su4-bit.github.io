@@ -1320,6 +1320,7 @@ button.day-place:active {
 .day-door-art {
   position: relative;
   display: block;
+  overflow: visible;
   pointer-events: none;
 }
 
@@ -1573,14 +1574,15 @@ button.day-place:active {
 
 .dv-brush,
 .dv-brush.is-home {
-  right: 8%;
+  right: 9%;
   bottom: 20%;
-  width: 14%;
-  height: 58%;
-  background: linear-gradient(#4dabf7, #1c7ed6);
-  border: 2px solid #1864ab;
-  border-radius: 4px 4px 5px 5px;
-  box-shadow: inset 0 2px 0 rgba(255, 253, 248, 0.35);
+  width: 16%;
+  height: 50%;
+  overflow: visible;
+  background: linear-gradient(#51cf66, #2f9e44);
+  border: 2px solid #2b8a3e;
+  border-radius: 3px 3px 5px 5px;
+  box-shadow: inset 0 2px 0 rgba(255, 253, 248, 0.28);
   z-index: 5;
 }
 
@@ -1588,48 +1590,60 @@ button.day-place:active {
 .dv-brush.is-home::before {
   content: "";
   position: absolute;
-  left: -70%;
-  right: -70%;
-  top: -4%;
-  height: 34%;
+  left: 50%;
+  top: 0;
+  width: 22px;
+  height: 15px;
+  transform: translate(-50%, -100%);
   background:
     repeating-linear-gradient(
       90deg,
       #fffef8 0 3px,
-      #ffe8cc 3px 4px,
-      #fff4e6 4px 7px
+      #dee2e6 3px 5px
     );
-  border: 2px solid #e8590c;
-  border-radius: 5px 5px 3px 3px;
-  box-shadow: inset 0 2px 0 rgba(255, 253, 248, 0.5);
+  border: 2px solid #5c3d1e;
+  border-radius: 4px 4px 2px 2px;
+  box-shadow: inset 0 2px 0 rgba(255, 253, 248, 0.45);
 }
 
 .dv-brush::after,
 .dv-brush.is-home::after {
   content: "";
   position: absolute;
-  left: 12%;
-  right: 12%;
-  top: 28%;
-  height: 8%;
-  background: #74c0fc;
-  border-radius: 2px;
+  left: 18%;
+  right: 18%;
+  top: 0;
+  height: 6px;
+  background: #8ce99a;
+  border-radius: 1px;
+}
+
+.dv-foam,
+.dv-foam::before {
+  background: #fffef8;
+  border: 2px solid #868e96;
+  border-radius: 50%;
 }
 
 .dv-foam {
-  left: 10%;
-  right: 26%;
-  bottom: 20%;
-  height: 30%;
-  background: #fff;
-  border: 2px solid #adb5bd;
-  border-radius: 50%;
-  box-shadow:
-    12px -7px 0 -1px #fff,
-    12px -7px 0 1px #adb5bd,
-    -8px 2px 0 -2px #fff8ee,
-    4px 8px 0 -3px #f8f9fa;
+  left: 16%;
+  bottom: 22%;
+  width: 26%;
+  height: 20%;
+  min-width: 20px;
+  min-height: 16px;
   z-index: 4;
+}
+
+.dv-foam::before {
+  content: "";
+  position: absolute;
+  left: 60%;
+  top: -55%;
+  width: 90%;
+  height: 95%;
+  min-width: 16px;
+  min-height: 14px;
 }
 
 .dv-paste {
@@ -4200,9 +4214,22 @@ button.day-place:active {
 }
 
 .day-critter.kind-fish > .habitat-apple {
+  width: 14px;
+  height: 14px;
   left: 0;
   top: 50%;
-  transform: translate(-42%, -58%);
+  transform: translate(-78%, -50%);
+}
+
+.day-critter.kind-fish > .habitat-apple::before {
+  top: -5px;
+  width: 7px;
+  height: 5px;
+}
+
+.day-critter.kind-fish > .habitat-apple::after {
+  top: -5px;
+  height: 5px;
 }
 
 .day-critter.kind-duck > .habitat-apple {
