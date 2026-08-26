@@ -3988,7 +3988,7 @@
       return '<span class="preview-art preview-match" aria-hidden="true"><span>🍎</span><b>吃</b><span>🧸</span></span>';
     }
     if (id === "order") {
-      return '<span class="preview-art preview-match" aria-hidden="true"><span>👐</span><b>🧼</b></span>';
+      return '<span class="preview-art preview-match" aria-hidden="true"><span>✋</span><b>🧼</b></span>';
     }
     if (id === "body") {
       return '<span class="preview-art preview-match" aria-hidden="true"><span>✋</span><b>手</b></span>';
@@ -6477,7 +6477,7 @@
     if (isCubbyLevel()) wait = 1100;
     if (isShareLevel()) wait = 1000;
     if (state.levelId === "more") wait = 1100;
-    if (state.levelId === "order") wait = 1500;
+    if (state.levelId === "order") wait = 2000;
     setTimeout(nextQuestion, wait);
   }
 

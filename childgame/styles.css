@@ -6357,9 +6357,9 @@ button.day-place:active {
 .do-prop {
   position: absolute;
   z-index: 5;
-  min-width: 88px;
+  min-width: 96px;
   min-height: var(--tap);
-  padding: 8px 10px;
+  padding: 8px 12px;
 }
 
 .do-prop.nudge {
@@ -6399,7 +6399,9 @@ button.day-place:active {
   pointer-events: none;
 }
 
-.do-scene.is-done .do-spot {
+.do-scene.is-done .do-spot,
+.do-scene.is-done .do-prop.door.is-open,
+.do-scene.is-done .do-prop.bowl.in-sink {
   animation: pop 0.45s ease;
 }
 
