@@ -4063,7 +4063,7 @@ button.day-place:active {
   align-items: center;
   justify-content: center;
   gap: 0;
-  padding: 8px 12px 10px;
+  padding: 8px 12px 16px;
   overflow: visible;
 }
 
@@ -4084,7 +4084,6 @@ button.day-place:active {
 
 .dress-zone.body {
   flex: 0 0 auto;
-  width: auto;
   min-height: 0;
   height: 96px;
   margin-top: -7px;
@@ -4189,7 +4188,7 @@ button.day-place:active {
   content: "";
   position: absolute;
   left: 50%;
-  bottom: -3px;
+  bottom: 1px;
   width: 26px;
   height: 12px;
   transform: translateX(-50%);
