@@ -4294,18 +4294,72 @@
     return html;
   }
 
+  function dayCritterKind(it) {
+    var blob = ((it && it.name) || "") + ((it && it.emoji) || "");
+    if (/鴨|🦆/.test(blob)) return "duck";
+    if (/貓頭鷹|🦉/.test(blob)) return "owl";
+    if (/羊|🐑/.test(blob)) return "sheep";
+    if (/蟹|🦀/.test(blob)) return "crab";
+    if (/駱駝|🐪/.test(blob)) return "camel";
+    if (/兔|🐰/.test(blob)) return "rabbit";
+    if (/蜥蜴|🦎/.test(blob)) return "lizard";
+    if (/魚|🐟|🐠/.test(blob)) return "fish";
+    if (/鳥|🐦/.test(blob)) return "bird";
+    if (it && it.zone === "water") return "fish";
+    if (it && it.zone === "tree") return "bird";
+    if (it && it.zone === "desert") return "camel";
+    return "rabbit";
+  }
+
   function renderDayAnimals(world) {
-    var list = world.residentAnimals || [];
+    var list = (world && world.residentAnimals) || [];
     if (!list.length) return "";
+    var seats = { water: 0, tree: 0, grass: 0, desert: 0 };
     return (
       '<span class="day-park-friends">' +
       list
         .slice(0, 3)
         .map(function (it, i) {
-          return '<i class="day-critter bob" style="--bob-i:' + i + '">' + it.emoji + "</i>";
+          var zone = it.zone || "grass";
+          var kind = dayCritterKind(it);
+          var seat = seats[zone] || 0;
+          seats[zone] = seat + 1;
+          var motion = zone === "water" ? "swim" : zone === "tree" ? "perch" : "bob";
+          return (
+            '<i class="day-critter in-' +
+            zone +
+            " kind-" +
+            kind +
+            " " +
+            motion +
+            '" style="--bob-i:' +
+            i +
+            ";--seat:" +
+            seat +
+            '" aria-label="' +
+            escapeHtml(it.name) +
+            '"></i>'
+          );
         })
         .join("") +
       "</span>"
+    );
+  }
+
+  function renderParkNature(world) {
+    var list = (world && world.residentAnimals) || [];
+    var hasDesert = false;
+    var i;
+    for (i = 0; i < list.length && i < 3; i++) {
+      if (list[i].zone === "desert") hasDesert = true;
+    }
+    return (
+      '<div class="park-nature" aria-hidden="true">' +
+      '<i class="park-pond"></i>' +
+      '<i class="park-grass"></i>' +
+      (hasDesert ? '<i class="park-sand"></i>' : "") +
+      '<span class="day-trees"><i class="day-tree"></i><i class="day-tree is-mid"><i class="day-branch"></i></i><i class="day-tree"></i></span>' +
+      "</div>"
     );
   }
 
@@ -4474,8 +4528,8 @@
     if (id === "dress") return renderDayDressArt(world);
     if (id === "table") return renderDayTableBits(world);
     if (id === "light" || id === "retry") return renderDayLightArt(evening);
-    if (id === "friends") return '<span class="art-paw">🐾</span>' + renderDayAnimals(world);
-    return renderDayTreeArt() + renderDayAnimals(world);
+    if (id === "friends" || id === "habitat") return '<span class="park-go-hit" aria-hidden="true"></span>';
+    return renderDayTreeArt();
   }
 
   function renderHomeCorner(world, evening) {
@@ -4551,7 +4605,8 @@
     var meta = dayTaskMeta(id, world);
     return (
       '<div class="day-corner corner-park">' +
-      '<span class="day-trees" aria-hidden="true"><i class="day-tree"></i><i class="day-tree is-mid"></i><i class="day-tree"></i></span>' +
+      renderParkNature(world) +
+      renderDayAnimals(world) +
       renderDayPlace(world, {
         id: id,
         spot: id === "friends" ? "friends" : "park",
@@ -8211,8 +8266,11 @@
           tableNext: html.indexOf("place-table is-next") >= 0,
           hasTableUtensils: html.indexOf("day-utensil") >= 0,
           tableUtensilCount: (html.match(/class="day-utensil"/g) || []).length,
-          parkCritterCount: (html.match(/class="day-critter bob"/g) || []).length,
+          parkCritterCount: (html.match(/class="day-critter /g) || []).length,
           hasParkFriends: html.indexOf("day-park-friends") >= 0,
+          hasParkPond: html.indexOf("park-pond") >= 0,
+          hasParkGrass: html.indexOf("park-grass") >= 0,
+          hasParkSand: html.indexOf("park-sand") >= 0,
           hasRain: html.indexOf("wx-drop") >= 0,
           hasSnow: html.indexOf("wx-flake") >= 0,
           hasSun: html.indexOf("wx-sun-icon") >= 0,
