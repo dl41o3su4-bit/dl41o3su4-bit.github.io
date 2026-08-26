@@ -1247,12 +1247,13 @@ button.day-place:active {
 }
 
 .furn-dress .day-go-bubble {
-  /* Above the rail, over the bed — not over the tee/cap. */
+  /* Over the bed, left of the hang. left:22% + -50% sat 「裡」
+     on the sleeve; left:0 is only ~4px further left. */
   top: auto;
-  bottom: calc(100% + 10px);
-  left: 22%;
+  bottom: calc(100% + 16px);
+  left: 0;
   right: auto;
-  transform: translateX(-50%);
+  transform: translateX(-20px);
   padding: 2px 8px;
   z-index: 8;
 }
@@ -10317,6 +10318,13 @@ button.day-place:active {
     left: calc(max(48%, 8% + 126px) + 40px);
     min-width: 96px;
     min-height: 72px;
+  }
+
+  .furn-dress .day-go-bubble {
+    left: 0;
+    transform: translateX(-16px);
+    bottom: calc(100% + 12px);
+    top: auto;
   }
 
   .furn-table {
