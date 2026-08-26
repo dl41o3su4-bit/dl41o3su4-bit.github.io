@@ -1263,15 +1263,18 @@ button.day-place:active {
 
 .furn-table {
   left: auto;
-  right: 18%;
-  bottom: 20%;
+  right: 16%;
+  bottom: 10%;
   min-width: 76px;
   min-height: 52px;
   z-index: 2;
 }
 
 .furn-table .day-go-bubble {
-  top: -32px;
+  top: -28px;
+  left: auto;
+  right: 0;
+  transform: none;
 }
 
 .furn-road {
@@ -10288,8 +10291,8 @@ button.day-place:active {
   }
 
   .furn-table {
-    right: 26%;
-    bottom: 18%;
+    right: 22%;
+    bottom: 10%;
     min-width: 68px;
     min-height: 46px;
   }
