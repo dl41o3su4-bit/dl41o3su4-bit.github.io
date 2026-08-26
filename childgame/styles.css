@@ -841,22 +841,20 @@ button:focus-visible {
 }
 
 .day-zebra {
-  left: 10%;
-  right: 6%;
+  left: 8%;
+  right: 8%;
   width: auto;
-  bottom: 8%;
-  height: 38%;
+  bottom: 11%;
+  height: clamp(28px, 7vmin, 40px);
   background:
     repeating-linear-gradient(
       90deg,
-      #f8f9fa 0 16px,
-      #212529 16px 28px
+      #f8f9fa 0 20px,
+      #343a40 20px 34px
     );
-  border-radius: 3px;
-  box-shadow:
-    inset 0 7px 0 #868e96,
-    inset 0 -7px 0 #495057,
-    0 4px 0 #343a40;
+  border: 0;
+  border-radius: 2px;
+  box-shadow: none;
   z-index: 1;
 }
 
@@ -867,15 +865,29 @@ button:focus-visible {
 }
 
 .dz-print {
-  width: 11px;
-  height: 16px;
-  background: rgba(43, 33, 24, 0.38);
-  border-radius: 50% 50% 40% 40%;
+  width: 16px;
+  height: 13px;
+  background: #3d2a1a;
+  border-radius: 50% 50% 46% 46%;
+  opacity: 0.88;
 }
 
-.dz-print.a { left: 24%; top: 40%; transform: rotate(-16deg); }
-.dz-print.b { left: 48%; top: 50%; transform: rotate(10deg); }
-.dz-print.c { left: 70%; top: 38%; transform: rotate(-8deg); }
+.dz-print::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -8px;
+  width: 7px;
+  height: 8px;
+  margin-left: -3.5px;
+  background: #3d2a1a;
+  border-radius: 50%;
+  box-shadow: -8px 3px 0 #3d2a1a, 8px 3px 0 #3d2a1a;
+}
+
+.dz-print.a { left: 18%; top: 42%; transform: rotate(-12deg); }
+.dz-print.b { left: 42%; top: 28%; transform: rotate(8deg); }
+.dz-print.c { left: 66%; top: 46%; transform: rotate(-6deg); }
 
 .day-live {
   position: absolute;
@@ -1341,7 +1353,7 @@ button.day-place:active {
 .furn-road .day-spot-label {
   position: absolute;
   left: calc(100% + 4px);
-  bottom: 36%;
+  bottom: 48%;
   transform: none;
   white-space: nowrap;
 }
