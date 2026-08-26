@@ -1334,13 +1334,12 @@ button.day-place:active {
   z-index: 2;
 }
 
-.furn-dress .day-spot-label {
+.furn-dress .day-bed-art .day-spot-label {
   position: absolute;
-  left: 6px;
-  bottom: 0;
-  z-index: 9;
-  padding: 1px 4px 2px;
-  line-height: 1.25;
+  left: 50%;
+  bottom: calc(100% + 4px);
+  transform: translateX(-50%);
+  z-index: 3;
   white-space: nowrap;
 }
 
@@ -1964,16 +1963,17 @@ button.day-place:active {
 .day-bed-art {
   position: relative;
   z-index: 8;
+  overflow: visible;
   width: clamp(46px, 10.4vmin, 70px);
   height: clamp(26px, 6.6vmin, 40px);
 }
 
 .furn-dress .day-bed-art .day-go-bubble {
-  /* Containing block is the bed, not bed+hang. Sit above the rail. */
+  /* Containing block is the bed. Stack on the same center line as 換衣服. */
   top: auto;
   left: 50%;
   right: auto;
-  bottom: calc(clamp(84px, 17vmin, 104px) + 12px);
+  bottom: calc(100% + 28px);
   transform: translateX(-50%);
   padding: 2px 8px;
   z-index: 2;
