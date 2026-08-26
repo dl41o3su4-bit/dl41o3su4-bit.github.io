@@ -54,6 +54,8 @@
     10: "10 是鉛筆加雞蛋"
   };
 
+  var ZH_COUNT = ["零", "一", "二", "三", "四", "五", "六", "七", "八", "九", "十"];
+
   var LETTER_TIPS = {
     A: "A 像尖尖帳篷",
     B: "B 像兩個肚子",
@@ -3297,7 +3299,9 @@
     if (state.levelId === "ord") return (q && q.ask) || "從左邊數，請第幾個";
     if (state.levelId === "missing") return (q && q.ask) || "少了誰？拖上去";
     if (state.levelId === "bond") return "拖進去，湊滿";
-    if (state.levelId === "bpm-trace") return "從亮點開始，描一描";
+    if (state.levelId === "bpm-trace") {
+      return q && q.sym ? q.sym + "，從亮點開始，描一描" : "從亮點開始，描一描";
+    }
     if (state.levelId === "bpm-pic") {
       return (q && q.ask) || ((q && q.word ? q.word : "這個字") + "的第一個音貼上去");
     }
@@ -3459,6 +3463,17 @@
       state.levelId === "body" ||
       state.levelId === "daynight" ||
       state.levelId === "sort" ||
+      state.levelId === "trace" ||
+      state.levelId === "bpm-trace" ||
+      state.levelId === "abc-trace" ||
+      state.levelId === "count" ||
+      state.levelId === "bond" ||
+      state.levelId === "more" ||
+      state.levelId === "dress" ||
+      state.levelId === "table" ||
+      state.levelId === "habitat" ||
+      state.levelId === "light" ||
+      state.levelId === "order" ||
       isStickerLevel() ||
       isCubbyLevel() ||
       isShareLevel() ||
@@ -3466,28 +3481,93 @@
     );
   }
 
-  function speakNow(text, lang) {
-    if (!text || !window.speechSynthesis) return;
+  var lastSpokenKey = "";
+  var speakGen = 0;
+
+  function zhCountWord(n) {
+    n = Number(n);
+    if (n >= 0 && n <= 10) return ZH_COUNT[n];
+    return String(n);
+  }
+
+  function pickVoice(lang) {
+    var voices = window.speechSynthesis.getVoices() || [];
+    var want = (lang || "zh-TW").toLowerCase();
+    var i;
+    for (i = 0; i < voices.length; i++) {
+      var v = (voices[i].lang || "").toLowerCase();
+      if (v === want || v.indexOf(want.split("-")[0]) === 0) return voices[i];
+    }
+    return null;
+  }
+
+  function spokenKey(parts) {
+    return parts
+      .map(function (p) {
+        return (p.lang || "zh-TW") + ":" + p.text;
+      })
+      .join("|");
+  }
+
+  function stopSpeech() {
+    speakGen += 1;
+    lastSpokenKey = "";
+    if (!window.speechSynthesis) return;
     try {
       window.speechSynthesis.cancel();
-      var u = new SpeechSynthesisUtterance(text);
-      u.lang = lang || "zh-TW";
-      u.rate = 0.92;
-      var voices = window.speechSynthesis.getVoices() || [];
-      var want = (lang || "zh-TW").toLowerCase();
-      var i;
-      for (i = 0; i < voices.length; i++) {
-        var v = (voices[i].lang || "").toLowerCase();
-        if (v === want || v.indexOf(want.split("-")[0]) === 0) {
-          u.voice = voices[i];
-          break;
-        }
-      }
-      window.speechSynthesis.speak(u);
     } catch (e) {}
   }
 
-  function speakPrompt() {
+  function speakParts(parts, force) {
+    if (!state.soundOn || !window.speechSynthesis) return;
+    var list = [];
+    var i;
+    for (i = 0; i < (parts || []).length; i++) {
+      if (parts[i] && parts[i].text) list.push(parts[i]);
+    }
+    if (!list.length) return;
+    var key = spokenKey(list);
+    if (!force && key === lastSpokenKey) return;
+    lastSpokenKey = key;
+    speakGen += 1;
+    var gen = speakGen;
+    try {
+      window.speechSynthesis.cancel();
+      i = 0;
+      function next() {
+        if (gen !== speakGen || i >= list.length) return;
+        var p = list[i];
+        i += 1;
+        var u = new SpeechSynthesisUtterance(p.text);
+        u.lang = p.lang || "zh-TW";
+        u.rate = 0.92;
+        var voice = pickVoice(u.lang);
+        if (voice) u.voice = voice;
+        u.onend = function () {
+          if (gen !== speakGen) return;
+          next();
+        };
+        window.speechSynthesis.speak(u);
+      }
+      next();
+    } catch (e) {}
+  }
+
+  function speakNow(text, lang, force) {
+    if (!text) return;
+    speakParts([{ text: text, lang: lang || "zh-TW" }], force);
+  }
+
+  function speakCheer() {
+    speakNow(state.foxMsg || lifeCheer() || "好棒", "zh-TW");
+  }
+
+  function celebratePass() {
+    replayFoxHappy();
+    speakCheer();
+  }
+
+  function speakPrompt(force) {
     var q = state.questions[state.qIndex];
     var text = state.foxMsg || foxPrompt();
     var lang = "zh-TW";
@@ -3502,11 +3582,20 @@
         })
         .filter(Boolean);
       text = letters.join(" ");
+    } else if (state.levelId === "abc-trace" && q) {
+      speakParts(
+        [
+          { text: String(q.letter || "").toUpperCase(), lang: "en-US" },
+          { text: LETTER_TIPS[q.letter] || "從亮點開始，描一描", lang: "zh-TW" },
+        ],
+        force
+      );
+      return;
     } else if (state.levelId === "bpm-listen" && q) {
       if (state.stepIndex === 0) text = "找找看，哪一個是" + q.word + "？";
       else text = q.word + "的第一個音是誰？";
     }
-    speakNow(text, lang);
+    speakNow(text, lang, force);
   }
 
   function lifeCheer() {
@@ -4428,6 +4517,10 @@
     }
     if (state.levelId === "abc-trace" && q && LETTER_TIPS[q.letter]) {
       prompt = LETTER_TIPS[q.letter];
+      promptCls = "prompt trace-tip";
+    }
+    if (state.levelId === "bpm-trace" && q && q.sym) {
+      prompt = q.sym + "，從亮點開始，描一描";
       promptCls = "prompt trace-tip";
     }
     return (
@@ -6025,7 +6118,7 @@
     if (!allNeededPlaced(q)) {
       setFox("好棒", "happy");
       render();
-      replayFoxHappy();
+      celebratePass();
       setTimeout(function () {
         if (isDragPlaceLevel() && state.screen === "play" && !state.locked) {
           setFox(foxPrompt(), "idle");
@@ -6050,7 +6143,7 @@
         : lifeCheer();
     state.foxMood = "happy";
     render();
-    replayFoxHappy();
+    celebratePass();
     if (isPathLevel()) {
       requestAnimationFrame(function () {
         requestAnimationFrame(function () {
@@ -6383,9 +6476,11 @@
     if (all) {
       state.locked = true;
       setFox(pick(PRAISE), "happy");
+      celebratePass();
       setTimeout(nextQuestion, 900);
     } else {
       setFox(pick(PRAISE), "happy");
+      celebratePass();
       setTimeout(function () {
         if (isConnectLevel() && state.screen === "play" && !state.locked) {
           setFox(foxPrompt(), "idle");
@@ -6543,6 +6638,7 @@
     state.foxMsg = foxPrompt();
     state.screen = "play";
     render();
+    lastSpokenKey = "";
     if (isVoiceLevel()) speakPrompt();
   }
 
@@ -6588,6 +6684,7 @@
   }
 
   function goHome() {
+    stopSpeech();
     if (state.dayMode && (state.screen === "play" || state.screen === "clear")) {
       openDayWorld();
       return;
@@ -6629,7 +6726,7 @@
     state.foxMood = "happy";
     playStar();
     render();
-    if (isSceneLevel()) replayFoxHappy();
+    celebratePass();
     if (state.dayMode) {
       clearDayAuto();
       state.dayAutoTimer = setTimeout(function () {
@@ -6665,6 +6762,7 @@
     state.qIndex += 1;
     state.foxMsg = foxPrompt();
     render();
+    lastSpokenKey = "";
     if (isVoiceLevel()) speakPrompt();
   }
 
@@ -6675,6 +6773,7 @@
     state.foxMood = "happy";
     playCorrect();
     render();
+    celebratePass();
     setTimeout(nextQuestion, 900);
   }
 
@@ -6735,7 +6834,7 @@
     state.foxMood = "happy";
     playCorrect();
     render();
-    replayFoxHappy();
+    celebratePass();
     if (value === "go") {
       requestAnimationFrame(function () {
         var kid = app.querySelector(".street-kid");
@@ -6821,7 +6920,7 @@
         state.foxMood = "happy";
         playCorrect();
         render();
-        replayFoxHappy();
+        celebratePass();
         setTimeout(nextQuestion, 950);
       } else {
         markRetry(raw, "再看一次");
@@ -6849,13 +6948,13 @@
           state.foxMsg = "好棒";
           state.foxMood = "happy";
           render();
-          replayFoxHappy();
+          celebratePass();
           setTimeout(nextQuestion, 1000);
         } else {
           state.foxMsg = "好棒";
           state.foxMood = "happy";
           render();
-          replayFoxHappy();
+          celebratePass();
           setTimeout(function () {
             if (state.levelId !== "body" || state.screen !== "play") return;
             state.stepIndex += 1;
@@ -6942,7 +7041,13 @@
     if (!isFinite(n) || n < 0 || n >= max) return;
     state.moreTapped[side][idx] = true;
     playTap();
-    if (moreAllTapped(q)) state.foxMsg = foxPrompt();
+    if (moreAllTapped(q)) {
+      state.foxMsg = foxPrompt();
+      render();
+      lastSpokenKey = "";
+      if (isVoiceLevel()) speakPrompt();
+      return;
+    }
     render();
   }
 
@@ -6968,9 +7073,14 @@
       playCorrect();
       render();
       replayFoxHappy();
+      speakParts([
+        { text: zhCountWord(state.countNum) + "，一共" + zhCountWord(max) + "個", lang: "zh-TW" },
+        { text: "好棒", lang: "zh-TW" },
+      ]);
       setTimeout(nextQuestion, 1000);
       return;
     }
+    speakNow(zhCountWord(state.countNum), "zh-TW");
     render();
   }
 
@@ -7096,11 +7206,13 @@
       state.foxMood = "happy";
       playCorrect();
       render();
+      celebratePass();
       setTimeout(nextQuestion, 900);
       return;
     }
     setFox("下一筆，從亮點開始", "idle");
     render();
+    speakNow("下一筆，從亮點開始", "zh-TW");
   }
 
   function rejectWrite() {
@@ -7189,6 +7301,8 @@
     if (state.soundOn) {
       ensureAudio();
       playTap();
+    } else {
+      stopSpeech();
     }
     render();
   }
@@ -7279,7 +7393,7 @@
     } else if (action === "listen-find") {
       handleListenFind(t.getAttribute("data-value"));
     } else if (action === "speak") {
-      speakPrompt();
+      speakPrompt(true);
     }
   });
 
