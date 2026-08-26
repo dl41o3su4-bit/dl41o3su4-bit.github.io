@@ -1133,6 +1133,7 @@ button:focus-visible {
   width: clamp(18px, 4.4vmin, 28px);
   height: clamp(28px, 7vmin, 42px);
   font-style: normal;
+  overflow: visible;
 }
 
 .day-tree.is-mid {
@@ -2141,9 +2142,12 @@ button.day-place:active {
   bottom: 25%;
 }
 
-.day-critter.in-tree {
-  right: calc(18% + var(--seat, 0) * 8%);
-  bottom: 43%;
+.day-tree .day-critter.in-tree {
+  left: calc(-48% + var(--seat, 0) * 10px);
+  right: auto;
+  top: auto;
+  bottom: 60%;
+  z-index: 2;
 }
 
 .day-critter.in-grass {
@@ -2209,31 +2213,57 @@ button.day-place:active {
   border-radius: 2px;
 }
 
-.day-critter.kind-bird,
-.day-critter.kind-owl {
-  width: 11px;
-  height: 9px;
+.day-critter.kind-bird {
+  width: 13px;
+  height: 10px;
+  overflow: visible;
   background: linear-gradient(#ffa94d, #f76707);
   border: 2px solid #d9480f;
-  border-radius: 50%;
+  border-radius: 50% 50% 45% 45%;
+  box-shadow: inset 4px 2px 0 -2px #3d2a1a;
+  z-index: 2;
+}
+
+.day-critter.kind-bird::before {
+  content: "";
+  position: absolute;
+  right: -3px;
+  top: 1px;
+  width: 7px;
+  height: 5px;
+  background: #ff922b;
+  border: 1px solid #d9480f;
+  border-radius: 70% 40% 50% 40%;
+}
+
+.day-critter.kind-bird::after {
+  content: "";
+  position: absolute;
+  left: -5px;
+  top: 2px;
+  width: 0;
+  height: 0;
+  border-top: 3px solid transparent;
+  border-bottom: 3px solid transparent;
+  border-right: 5px solid #ffd43b;
 }
 
 .day-critter.kind-owl {
   width: 12px;
   height: 12px;
   background: linear-gradient(#e8c48a, #c1864a);
-  border-color: #8d5a2b;
+  border: 2px solid #8d5a2b;
+  border-radius: 50%;
   box-shadow:
     inset 3px 3px 0 #fff8ee,
     inset -3px 3px 0 #fff8ee;
 }
 
-.day-critter.kind-bird::after,
 .day-critter.kind-owl::after {
   content: "";
   position: absolute;
   left: -4px;
-  top: 3px;
+  top: 4px;
   border: 3px solid transparent;
   border-right-color: #f59f00;
 }
@@ -2367,7 +2397,7 @@ button.day-place:active {
 
 @keyframes park-perch {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-3px); }
+  50% { transform: translateY(-2px); }
 }
 
 @keyframes critter-bob {

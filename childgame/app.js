@@ -4311,39 +4311,57 @@
     return "rabbit";
   }
 
+  function renderDayCritterMark(it, i, seat) {
+    var zone = it.zone || "grass";
+    var kind = dayCritterKind(it);
+    var motion = zone === "water" ? "swim" : zone === "tree" ? "perch" : "bob";
+    return (
+      '<i class="day-critter in-' +
+      zone +
+      " kind-" +
+      kind +
+      " " +
+      motion +
+      '" style="--bob-i:' +
+      i +
+      ";--seat:" +
+      seat +
+      '" aria-label="' +
+      escapeHtml(it.name) +
+      '"></i>'
+    );
+  }
+
   function renderDayAnimals(world) {
     var list = (world && world.residentAnimals) || [];
     if (!list.length) return "";
-    var seats = { water: 0, tree: 0, grass: 0, desert: 0 };
-    return (
-      '<span class="day-park-friends">' +
-      list
-        .slice(0, 3)
-        .map(function (it, i) {
-          var zone = it.zone || "grass";
-          var kind = dayCritterKind(it);
-          var seat = seats[zone] || 0;
-          seats[zone] = seat + 1;
-          var motion = zone === "water" ? "swim" : zone === "tree" ? "perch" : "bob";
-          return (
-            '<i class="day-critter in-' +
-            zone +
-            " kind-" +
-            kind +
-            " " +
-            motion +
-            '" style="--bob-i:' +
-            i +
-            ";--seat:" +
-            seat +
-            '" aria-label="' +
-            escapeHtml(it.name) +
-            '"></i>'
-          );
-        })
-        .join("") +
-      "</span>"
-    );
+    var seats = { water: 0, grass: 0, desert: 0 };
+    var bits = [];
+    var i;
+    for (i = 0; i < list.length && i < 3; i++) {
+      var it = list[i];
+      var zone = it.zone || "grass";
+      if (zone === "tree") continue;
+      var seat = seats[zone] || 0;
+      seats[zone] = seat + 1;
+      bits.push(renderDayCritterMark(it, i, seat));
+    }
+    if (!bits.length) return "";
+    return '<span class="day-park-friends">' + bits.join("") + "</span>";
+  }
+
+  function renderParkTreeCritters(world) {
+    var list = (world && world.residentAnimals) || [];
+    var bits = "";
+    var seat = 0;
+    var i;
+    for (i = 0; i < list.length && i < 3; i++) {
+      if (list[i].zone === "tree") {
+        bits += renderDayCritterMark(list[i], i, seat);
+        seat += 1;
+      }
+    }
+    return bits;
   }
 
   function renderParkNature(world) {
@@ -4358,7 +4376,9 @@
       '<i class="park-pond"></i>' +
       '<i class="park-grass"></i>' +
       (hasDesert ? '<i class="park-sand"></i>' : "") +
-      '<span class="day-trees"><i class="day-tree"></i><i class="day-tree is-mid"><i class="day-branch"></i></i><i class="day-tree"></i></span>' +
+      '<span class="day-trees"><i class="day-tree"></i><i class="day-tree is-mid"><i class="day-branch"></i>' +
+      renderParkTreeCritters(world) +
+      '</i><i class="day-tree"></i></span>' +
       "</div>"
     );
   }
