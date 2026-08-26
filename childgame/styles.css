@@ -2931,7 +2931,8 @@ button.day-place:active {
 
 .day-fox-wear.map .wear.head {
   font-size: 20px;
-  top: -10px;
+  top: auto;
+  bottom: 24px;
 }
 
 .day-fox-wear .wear.body {
