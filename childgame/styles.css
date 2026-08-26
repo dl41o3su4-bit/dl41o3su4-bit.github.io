@@ -2155,7 +2155,7 @@ button.day-place:active {
   right: auto;
   top: 76%;
   bottom: auto;
-  margin-top: -13px;
+  margin-top: -10px;
   z-index: 3;
 }
 
@@ -2321,33 +2321,34 @@ button.day-place:active {
   border-left: 8px solid #e8590c;
 }
 
-.day-critter-feet {
+.day-critter.kind-bird .day-critter-feet {
   position: absolute;
-  left: 4px;
-  right: 4px;
-  bottom: 0;
-  height: 5px;
-  background: transparent;
-  box-shadow: none;
+  left: 6px;
+  top: auto;
+  bottom: -5px;
+  width: 10px;
+  height: 6px;
+  background: transparent !important;
+  box-shadow: none !important;
+  border: 0;
+  z-index: 0;
   pointer-events: none;
-  z-index: 4;
 }
 
-.day-critter-feet::before,
-.day-critter-feet::after {
+.day-critter.kind-bird .day-critter-feet::before,
+.day-critter.kind-bird .day-critter-feet::after {
   content: "";
   position: absolute;
   bottom: 0;
-  width: 3px;
+  width: 2px;
   height: 6px;
-  background:
-    linear-gradient(#7c2d12, #7c2d12) 50% 0 / 2px 5px no-repeat,
-    linear-gradient(#7c2d12, #7c2d12) 50% 100% / 3px 1px no-repeat;
-  box-shadow: none;
+  background: #7c2d12;
+  border: 0;
+  border-radius: 1px;
 }
 
-.day-critter-feet::before { left: 0; }
-.day-critter-feet::after { right: 0; }
+.day-critter.kind-bird .day-critter-feet::before { left: 0; }
+.day-critter.kind-bird .day-critter-feet::after { left: 7px; }
 
 .day-critter.kind-owl {
   width: 16px;
