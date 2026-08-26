@@ -3995,6 +3995,7 @@ button.day-place:active {
 .body-play,
 .day-play,
 .sort-play,
+.order-play,
 .cubby-play,
 .share-play {
   display: flex;
@@ -6307,6 +6308,671 @@ button.day-place:active {
   filter: drop-shadow(0 0 8px rgba(43, 138, 62, 0.4));
 }
 
+.order-play {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.do-scene {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  border-radius: 28px;
+  border: 2px solid #f0c49a;
+  box-shadow: 0 8px 16px rgba(180, 120, 70, 0.12);
+  container-type: size;
+  background: #fff8ee;
+}
+
+.do-place {
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  z-index: 6;
+  padding: 4px 10px;
+  border-radius: 14px;
+  background: rgba(255, 250, 241, 0.92);
+  font-weight: 900;
+  font-size: clamp(16px, 3.6vmin, 22px);
+  pointer-events: none;
+}
+
+.do-land {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.do-land i {
+  position: absolute;
+  display: block;
+  font-style: normal;
+  line-height: 1;
+}
+
+.do-prop {
+  position: absolute;
+  z-index: 5;
+  min-width: 88px;
+  min-height: var(--tap);
+  padding: 8px 10px;
+}
+
+.do-prop.nudge {
+  animation: shake 0.4s ease;
+}
+
+.do-prop.dragging {
+  opacity: 0.3;
+}
+
+.do-spot {
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 88px;
+  min-height: var(--tap);
+  border-radius: 24px;
+  border: 3px dashed transparent;
+}
+
+.do-spot.aim {
+  outline: 4px solid #ff922b;
+  outline-offset: 2px;
+  background: rgba(255, 253, 248, 0.28);
+}
+
+.do-spot-name {
+  z-index: 2;
+  padding: 0 8px;
+  border-radius: 8px;
+  background: rgba(255, 253, 248, 0.82);
+  font-size: clamp(14px, 3vmin, 18px);
+  font-weight: 900;
+  pointer-events: none;
+}
+
+.do-scene.is-done .do-spot {
+  animation: pop 0.45s ease;
+}
+
+.do-wash {
+  background:
+    repeating-linear-gradient(#e7f5ff 0 22px, #d0ebff 22px 24px);
+}
+
+.dw-tiles {
+  inset: 0;
+  background:
+    repeating-linear-gradient(90deg, transparent 0 46px, rgba(255, 253, 248, 0.45) 46px 48px),
+    repeating-linear-gradient(transparent 0 46px, rgba(255, 253, 248, 0.45) 46px 48px);
+}
+
+.dw-mirror {
+  top: 6%;
+  left: 28%;
+  width: 30%;
+  height: 22%;
+  background: linear-gradient(#d0ebff, #a5d8ff);
+  border: 4px solid #e8c48a;
+  border-radius: 16px;
+  box-shadow: inset 0 0 0 3px #fffdf8;
+}
+
+.dw-basin {
+  left: 16%;
+  right: 28%;
+  bottom: 8%;
+  height: 28%;
+  background: linear-gradient(#f1f3f5, #ced4da);
+  border: 3px solid #868e96;
+  border-radius: 18px 18px 40px 40px;
+  box-shadow: inset 0 14px 0 #e9ecef;
+}
+
+.dw-water {
+  left: 34%;
+  width: 10%;
+  top: 42%;
+  height: 0;
+  background: linear-gradient(#74c0fc, #4dabf7);
+  border-radius: 8px;
+  opacity: 0;
+}
+
+.do-wash.phase-1 .dw-water,
+.do-wash.phase-3 .dw-water {
+  height: 22%;
+  opacity: 0.95;
+}
+
+.do-wash .do-prop.tap {
+  left: 22%;
+  top: 30%;
+}
+
+.do-wash .do-prop.soap {
+  right: 8%;
+  top: 28%;
+}
+
+.do-wash .do-prop.towel {
+  right: 6%;
+  bottom: 10%;
+  background: #fff4d6;
+}
+
+.do-prop.towel .do-ico {
+  width: 42px;
+  height: 36px;
+  background: linear-gradient(#ffe8cc, #ffc078);
+  border: 3px solid #e8590c;
+  border-radius: 6px 6px 10px 10px;
+  box-shadow: inset 0 8px 0 rgba(255, 253, 248, 0.45);
+}
+
+.do-wash .do-spot.hands {
+  left: 22%;
+  right: 30%;
+  bottom: 12%;
+  height: 42%;
+}
+
+.do-hands {
+  position: relative;
+  width: min(70%, 220px);
+  height: 62%;
+  min-height: 64px;
+}
+
+.do-hands .palm {
+  position: absolute;
+  bottom: 8%;
+  width: 42%;
+  height: 78%;
+  background: #f4d9b0;
+  border: 3px solid #c1864a;
+  border-radius: 40% 40% 36% 36%;
+  box-shadow: inset 0 -8px 0 rgba(180, 120, 70, 0.12);
+}
+
+.do-hands .palm.left { left: 4%; transform: rotate(-12deg); }
+.do-hands .palm.right { right: 4%; transform: rotate(12deg); }
+
+.do-hands .drops,
+.do-hands .bubbles,
+.do-hands .cloth {
+  position: absolute;
+  inset: 6% 8% 10%;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.do-spot.hands.is-wet .palm {
+  background: #e8c48a;
+  box-shadow: inset 0 0 12px rgba(77, 171, 247, 0.55);
+}
+
+.do-spot.hands.is-wet .drops {
+  opacity: 1;
+  background:
+    radial-gradient(circle at 22% 30%, #74c0fc 0 6px, transparent 7px),
+    radial-gradient(circle at 70% 22%, #a5d8ff 0 5px, transparent 6px),
+    radial-gradient(circle at 48% 62%, #4dabf7 0 5px, transparent 6px);
+}
+
+.do-spot.hands.is-soap .palm {
+  background: #fff;
+  border-color: #74c0fc;
+}
+
+.do-spot.hands.is-soap .bubbles {
+  opacity: 1;
+  background:
+    radial-gradient(circle at 18% 28%, #fff 0 8px, #d0ebff 9px, transparent 10px),
+    radial-gradient(circle at 62% 18%, #fff 0 10px, #a5d8ff 11px, transparent 12px),
+    radial-gradient(circle at 40% 58%, #fff 0 7px, #d0ebff 8px, transparent 9px),
+    radial-gradient(circle at 78% 52%, #fff 0 9px, #a5d8ff 10px, transparent 11px),
+    radial-gradient(circle at 30% 80%, #fff 0 6px, #d0ebff 7px, transparent 8px);
+}
+
+.do-spot.hands.is-clean .palm {
+  background: #ffe8cc;
+  box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.7);
+}
+
+.do-spot.hands.is-towel .palm {
+  background: #f4d9b0;
+}
+
+.do-spot.hands.is-towel .cloth {
+  opacity: 1;
+  background: linear-gradient(#ffe8cc, #ffc078);
+  border: 3px solid #e8590c;
+  border-radius: 12px;
+}
+
+.do-brush {
+  background:
+    repeating-linear-gradient(#fff4e0 0 20px, #ffe8cc 20px 22px);
+}
+
+.db-tiles {
+  inset: 0;
+  background:
+    repeating-linear-gradient(90deg, transparent 0 40px, rgba(255, 253, 248, 0.4) 40px 42px);
+}
+
+.db-mirror {
+  top: 6%;
+  right: 10%;
+  width: 22%;
+  height: 20%;
+  background: linear-gradient(#d0ebff, #a5d8ff);
+  border: 4px solid #e8c48a;
+  border-radius: 14px;
+}
+
+.db-sink {
+  left: 28%;
+  right: 18%;
+  bottom: 8%;
+  height: 30%;
+  background: linear-gradient(#f1f3f5, #adb5bd);
+  border: 3px solid #868e96;
+  border-radius: 16px 16px 36px 36px;
+}
+
+.db-spout {
+  left: 46%;
+  top: 38%;
+  width: 8%;
+  height: 12%;
+  background: #868e96;
+  border-radius: 8px 8px 2px 2px;
+}
+
+.do-brush .do-spot.spout {
+  left: 40%;
+  top: 32%;
+  width: 20%;
+  height: 22%;
+}
+
+.do-brush .do-prop.cup {
+  left: 8%;
+  bottom: 12%;
+}
+
+.do-brush .do-prop.cup.is-full {
+  background: #d0ebff;
+}
+
+.do-brush .do-prop.paste {
+  right: 6%;
+  top: 30%;
+}
+
+.do-brush .do-prop.brush {
+  left: 38%;
+  bottom: 14%;
+}
+
+.do-brush .do-prop.brush.has-paste .life-emoji {
+  filter: drop-shadow(0 -6px 0 #fff);
+}
+
+.do-brush .do-prop.brush.is-home {
+  left: 10%;
+  bottom: 14%;
+}
+
+.do-brush .do-spot.mouth {
+  left: 6%;
+  top: 10%;
+  width: 28%;
+  height: 46%;
+}
+
+.do-face {
+  position: relative;
+  width: min(100%, 120px);
+  height: 72%;
+  min-height: 72px;
+}
+
+.do-head {
+  position: absolute;
+  inset: 4% 10% 18%;
+  background: #f4d9b0;
+  border: 3px solid #c1864a;
+  border-radius: 50%;
+}
+
+.do-eye {
+  position: absolute;
+  top: 32%;
+  width: 8px;
+  height: 8px;
+  background: #3d2a1a;
+  border-radius: 50%;
+}
+
+.do-eye.a { left: 32%; }
+.do-eye.b { right: 32%; }
+
+.do-lips,
+.do-teeth,
+.do-foam {
+  position: absolute;
+  left: 30%;
+  right: 30%;
+  bottom: 26%;
+  height: 16%;
+  border-radius: 0 0 16px 16px;
+}
+
+.do-lips {
+  background: #fa5252;
+}
+
+.do-teeth {
+  left: 34%;
+  right: 34%;
+  bottom: 30%;
+  height: 10%;
+  background: #fff;
+  opacity: 0;
+}
+
+.do-foam {
+  opacity: 0;
+  background:
+    radial-gradient(circle at 30% 40%, #fff 0 5px, transparent 6px),
+    radial-gradient(circle at 70% 50%, #fff 0 6px, transparent 7px);
+}
+
+.do-spot.mouth.is-foam .do-foam,
+.do-spot.mouth.is-foam .do-teeth {
+  opacity: 1;
+}
+
+.do-spot.mouth.is-clean .do-teeth {
+  opacity: 1;
+}
+
+.do-spot.mouth.is-clean .do-lips {
+  background: #ff8787;
+}
+
+.do-out {
+  background: linear-gradient(#fff4d6 0 58%, #e8d4b0 58%);
+}
+
+.do-wall {
+  inset: 0 0 42% 0;
+  background: #fff4e0;
+}
+
+.do-floor {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 42%;
+  background: repeating-linear-gradient(90deg, #e8d4b0 0 26px, #d4b48a 26px 30px);
+}
+
+.do-mat {
+  left: 38%;
+  right: 10%;
+  bottom: 6%;
+  height: 12%;
+  background: #fa5252;
+  border-radius: 40%;
+  box-shadow: inset 0 0 0 6px #ffa8a8;
+}
+
+.do-rack {
+  left: 6%;
+  bottom: 16%;
+  width: 22%;
+  height: 10%;
+  background: #c1864a;
+  border-radius: 8px;
+}
+
+.do-out .do-prop.socks {
+  left: 6%;
+  bottom: 28%;
+}
+
+.do-out .do-prop.shoes {
+  left: 20%;
+  bottom: 26%;
+}
+
+.do-out .do-prop.bag {
+  left: 8%;
+  top: 16%;
+}
+
+.do-out .do-prop.door {
+  right: 6%;
+  top: 10%;
+  width: 22%;
+  height: 62%;
+  min-height: 120px;
+  background: linear-gradient(#e8c48a, #c1864a);
+  border: 4px solid #8d5a2b;
+  border-radius: 10px 10px 4px 4px;
+  box-shadow: inset -10px 0 0 rgba(61, 42, 26, 0.12);
+}
+
+.do-prop.door .do-ico {
+  width: 16px;
+  height: 16px;
+  background: #ffe066;
+  border: 3px solid #f59f00;
+  border-radius: 50%;
+}
+
+.do-out .do-prop.door.is-open {
+  transform: perspective(240px) rotateY(-48deg);
+  transform-origin: left center;
+  background: linear-gradient(#ffe8cc, #e8c48a);
+}
+
+.do-kid {
+  position: absolute;
+  left: 28%;
+  top: 12%;
+  width: 30%;
+  height: 76%;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.do-out .do-spot.body {
+  position: relative;
+  width: 100%;
+  flex: 1 1 62%;
+}
+
+.do-face-ico {
+  font-size: min(18cqw, 16cqh, 56px);
+  line-height: 1;
+}
+
+.do-torso {
+  width: 46%;
+  height: 42%;
+  background: #a5d8ff;
+  border: 3px solid #74c0fc;
+  border-radius: 22px 22px 16px 16px;
+}
+
+.do-wear {
+  position: absolute;
+  z-index: 2;
+  line-height: 1;
+  font-size: min(16cqw, 14cqh, 48px);
+  filter: drop-shadow(0 3px 0 rgba(180, 120, 70, 0.16));
+  animation: pop 0.35s ease;
+  pointer-events: none;
+}
+
+.do-wear.bag {
+  top: 28%;
+  right: 8%;
+}
+
+.do-out .do-spot.feet {
+  position: relative;
+  width: 100%;
+  flex: 0 0 30%;
+  min-height: 64px;
+}
+
+.do-leg {
+  position: absolute;
+  bottom: 18%;
+  width: 16px;
+  height: 48%;
+  background: #f4d9b0;
+  border: 3px solid #e8c48a;
+  border-radius: 10px;
+}
+
+.do-leg.a { left: 32%; }
+.do-leg.b { right: 32%; }
+
+.do-wear.socks {
+  left: 18%;
+  bottom: 4%;
+}
+
+.do-wear.shoes {
+  right: 14%;
+  bottom: 0;
+}
+
+.do-out .do-spot.leave {
+  right: 4%;
+  top: 8%;
+  width: 26%;
+  height: 70%;
+  z-index: 2;
+}
+
+.do-eat {
+  background: linear-gradient(#fff4e0 0 54%, #e8d4b0 54%);
+}
+
+.de-wall {
+  inset: 0 0 46% 0;
+  background: #ffe8cc;
+}
+
+.de-floor {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 46%;
+  background: repeating-linear-gradient(90deg, #d4a574 0 24px, #c68e4d 24px 28px);
+}
+
+.de-sink {
+  left: 4%;
+  bottom: 18%;
+  width: 24%;
+  height: 28%;
+  background: linear-gradient(#f1f3f5, #adb5bd);
+  border: 3px solid #868e96;
+  border-radius: 12px 12px 22px 22px;
+}
+
+.de-table {
+  left: 34%;
+  right: 10%;
+  bottom: 16%;
+  height: 22%;
+  background: #c1864a;
+  border: 3px solid #8d5a2b;
+  border-radius: 16px;
+  box-shadow: 0 14px 0 #8d5a2b;
+}
+
+.do-eat .do-prop.soap {
+  left: 6%;
+  top: 16%;
+}
+
+.do-eat .do-prop.bowl {
+  left: 8%;
+  bottom: 36%;
+}
+
+.do-eat .do-prop.bowl.on-table {
+  left: 48%;
+  bottom: 28%;
+}
+
+.do-eat .do-prop.bowl.in-sink {
+  left: 8%;
+  bottom: 22%;
+}
+
+.do-eat .do-prop.bowl.is-empty .life-emoji {
+  filter: grayscale(0.2) brightness(1.25);
+}
+
+.do-eat .do-prop.spoon {
+  right: 8%;
+  bottom: 30%;
+}
+
+.do-eat .do-spot.hands {
+  left: 4%;
+  top: 28%;
+  width: 26%;
+  height: 28%;
+}
+
+.do-hands.tiny {
+  width: 86%;
+  height: 56%;
+}
+
+.do-eat .do-spot.table {
+  left: 34%;
+  right: 8%;
+  bottom: 12%;
+  height: 36%;
+}
+
+.do-eater {
+  position: absolute;
+  top: -28%;
+  font-size: min(16cqw, 14cqh, 48px);
+  pointer-events: none;
+}
+
+.do-eat .do-spot.sink {
+  left: 3%;
+  bottom: 14%;
+  width: 28%;
+  height: 36%;
+}
+
 .preview-cubby b {
   background: linear-gradient(#ffe8cc, #e8c48a);
   border-color: #c1864a;
@@ -7431,6 +8097,7 @@ button.day-place:active {
   .day-scene,
   .sort-scene,
   .sticker-scene,
+  .do-scene,
   .playroom {
     flex: 1 1 auto;
   }
@@ -7539,6 +8206,7 @@ button.day-place:active {
   .shell.is-life .day-scene,
   .shell.is-life .sort-scene,
   .shell.is-life .sticker-scene,
+  .shell.is-life .do-scene,
   .shell.is-life .playroom {
     flex: 1 1 auto;
     min-width: 0;
@@ -7552,6 +8220,7 @@ button.day-place:active {
   .shell.is-life .body-play,
   .shell.is-life .day-play,
   .shell.is-life .sort-play,
+  .shell.is-life .order-play,
   .shell.is-life .sticker-play,
   .shell.is-life .share-play {
     flex-direction: row;

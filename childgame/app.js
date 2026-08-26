@@ -153,7 +153,7 @@
     { id: "habitat", name: "誰住哪裡", hint: "魚鳥駱駝住哪裡", emoji: "🐟", cls: "l3" },
     { id: "light", name: "紅燈停", hint: "紅燈停黃燈等", emoji: "🚦", cls: "l4" },
     { id: "sort", name: "分一分", hint: "拖進對的地方", emoji: "🧺", cls: "l5" },
-    { id: "order", name: "先做哪件", hint: "先做哪一件", emoji: "1️⃣", cls: "l6" },
+    { id: "order", name: "做一遍", hint: "照順序做一遍", emoji: "🧼", cls: "l6" },
     { id: "body", name: "身體在哪", hint: "摸摸看", emoji: "🧒", cls: "l7" },
     { id: "daynight", name: "白天晚上", hint: "一天的事情", emoji: "☀️", cls: "l8" },
   ];
@@ -3165,35 +3165,182 @@
     });
   }
 
-  function makeOrderQuestions() {
-    var seqs = [
-      [
-        lifeItem("wake", "🛏️", "起床", "1"),
-        lifeItem("brush", "🪥", "刷牙", "2"),
-        lifeItem("out", "🚪", "出門", "3"),
-      ],
-      [
-        lifeItem("wash", "🧼", "洗手", "1"),
-        lifeItem("eat", "🍚", "吃飯", "2"),
-        lifeItem("bowl", "🥣", "收碗", "3"),
-      ],
-      [
-        lifeItem("shoes", "👟", "穿鞋", "1"),
-        lifeItem("leave", "🚪", "出門", "2"),
-        lifeItem("school", "🏫", "上學", "3"),
-      ],
-    ];
-    return shuffle(seqs.concat(seqs)).slice(0, 6).map(function (items) {
+  function doItem(id, emoji, name, cls) {
+    return { id: id, emoji: emoji, name: name, slot: "", cls: cls || id };
+  }
+
+  function rotateNoRepeat(list, count) {
+    var out = [];
+    var pool = [];
+    while (out.length < count) {
+      if (!pool.length) {
+        pool = shuffle(list);
+        if (out.length && pool.length > 1 && pool[0].routine === out[out.length - 1].routine) {
+          var swap = pool[0];
+          pool[0] = pool[1];
+          pool[1] = swap;
+        }
+      }
+      out.push(pool.shift());
+    }
+    return out.map(function (row) {
       return {
-        ask: "先做哪件？拖到 1 2 3",
-        slots: [
-          { id: "1", emoji: "1️⃣", label: "1" },
-          { id: "2", emoji: "2️⃣", label: "2" },
-          { id: "3", emoji: "3️⃣", label: "3" },
-        ],
-        items: shuffle(items.slice()),
+        routine: row.routine,
+        ask: row.ask,
+        place: row.place,
+        cheer: row.cheer,
+        steps: row.steps.slice(),
+        hints: row.hints,
+        items: row.items.slice(),
       };
     });
+  }
+
+  function currentOrderStep(q) {
+    if (!q || !q.steps) return null;
+    return q.steps[state.stepIndex] || null;
+  }
+
+  function orderStepDone(q) {
+    return !!(q && q.steps && state.stepIndex >= q.steps.length);
+  }
+
+  function orderItem(q, id) {
+    var i;
+    if (q && q.items) {
+      for (i = 0; i < q.items.length; i++) {
+        if (q.items[i].id === id) return q.items[i];
+      }
+    }
+    return { id: id, emoji: "", name: "", cls: id };
+  }
+
+  function makeOrderQuestions() {
+    var routines = [
+      {
+        routine: "wash",
+        ask: "洗手，做一遍",
+        place: "洗手台",
+        cheer: "手洗乾淨了",
+        items: [
+          doItem("tap", "🚰", "水龍頭", "tap"),
+          doItem("soap", "🧼", "肥皂", "soap"),
+          doItem("towel", "", "毛巾", "towel"),
+        ],
+        steps: [
+          { item: "tap", slot: "hands", say: "首先，打開水龍頭，把手弄濕", miss: "水要流在手上" },
+          { item: "soap", slot: "hands", say: "然後，肥皂搓搓手", miss: "肥皂要搓在手上" },
+          { item: "tap", slot: "hands", say: "接著，用水沖乾淨", miss: "水要沖在手上" },
+          { item: "towel", slot: "hands", say: "最後，用毛巾擦乾", miss: "毛巾擦在手上" },
+        ],
+        hints: {
+          "0>soap": "手還沒濕，肥皂搓不起泡",
+          "0>towel": "手還沒濕，先開水龍頭",
+          "1>tap": "先搓肥皂，再沖",
+          "1>towel": "肥皂還在手上，先沖乾淨",
+          "2>soap": "肥皂洗過了，用水沖乾淨",
+          "2>towel": "手還沒沖乾淨",
+          "3>tap": "水關好了，用毛巾擦乾",
+          "3>soap": "手洗好了，用毛巾擦乾",
+          soap: "手還沒濕，肥皂搓不起泡",
+          towel: "手還沒洗乾淨",
+        },
+      },
+      {
+        routine: "brush",
+        ask: "刷牙，做一遍",
+        place: "洗臉台",
+        cheer: "牙齒刷好了",
+        items: [
+          doItem("cup", "🥛", "杯子", "cup"),
+          doItem("paste", "🧴", "牙膏", "paste"),
+          doItem("brush", "🪥", "牙刷", "brush"),
+        ],
+        steps: [
+          { item: "cup", slot: "spout", say: "首先，把杯子接滿水", miss: "杯子去水龍頭接水" },
+          { item: "paste", slot: "brush-spot", say: "然後，擠牙膏到牙刷上", miss: "牙膏擠在牙刷上" },
+          { item: "brush", slot: "mouth", say: "接著，刷刷牙", miss: "牙刷放到嘴巴裡" },
+          { item: "cup", slot: "mouth", say: "最後，漱口，牙刷放回去", miss: "喝一口水漱口" },
+        ],
+        hints: {
+          "0>paste": "杯子還沒裝水",
+          "0>brush": "還沒擠牙膏呢",
+          "1>cup": "先擠牙膏",
+          "1>brush": "還沒擠牙膏呢",
+          "2>cup": "先刷一刷，再漱口",
+          "2>paste": "牙膏擠好了，開始刷",
+          "3>paste": "刷好了，喝水漱口",
+          "3>brush": "刷好了，喝水漱口",
+          paste: "杯子還沒裝水",
+          brush: "還沒擠牙膏呢",
+        },
+      },
+      {
+        routine: "out",
+        ask: "出門，做一遍",
+        place: "門口",
+        cheer: "可以出門了",
+        items: [
+          doItem("socks", "🧦", "襪子", "socks"),
+          doItem("shoes", "👟", "鞋子", "shoes"),
+          doItem("bag", "🎒", "書包", "bag"),
+          doItem("door", "", "門", "door"),
+        ],
+        steps: [
+          { item: "socks", slot: "feet", say: "首先，穿上襪子", miss: "襪子穿到腳上" },
+          { item: "shoes", slot: "feet", say: "然後，穿上鞋子", miss: "鞋子穿到腳上" },
+          { item: "bag", slot: "body", say: "接著，背好書包", miss: "書包背到身上" },
+          { item: "door", slot: "leave", say: "最後，打開門", miss: "去開門" },
+        ],
+        hints: {
+          "0>shoes": "襪子還沒穿，鞋子穿不進去",
+          "0>bag": "先穿襪子",
+          "0>door": "還沒穿好，還不能出門",
+          "1>socks": "襪子穿好了，換鞋子",
+          "1>bag": "鞋子還沒穿，先穿鞋子",
+          "1>door": "鞋子還沒穿，還不能出門",
+          "2>socks": "先背書包",
+          "2>shoes": "先背書包",
+          "2>door": "書包還沒背，還不能出門",
+          "3>socks": "都穿好了，去開門",
+          "3>shoes": "都穿好了，去開門",
+          "3>bag": "都穿好了，去開門",
+          shoes: "襪子還沒穿，鞋子穿不進去",
+          bag: "先把襪子和鞋子穿好",
+          door: "還沒穿好，還不能出門",
+        },
+      },
+      {
+        routine: "eat",
+        ask: "吃飯，做一遍",
+        place: "餐桌",
+        cheer: "吃飽了，碗收好了",
+        items: [
+          doItem("soap", "🧼", "肥皂", "soap"),
+          doItem("bowl", "🍚", "碗", "bowl"),
+          doItem("spoon", "🥄", "湯匙", "spoon"),
+        ],
+        steps: [
+          { item: "soap", slot: "hands", say: "首先，先洗手", miss: "肥皂搓在手上" },
+          { item: "bowl", slot: "table", say: "然後，把碗端過來", miss: "碗端到桌上" },
+          { item: "spoon", slot: "bowl-spot", say: "接著，吃飯", miss: "用湯匙吃飯" },
+          { item: "bowl", slot: "sink", say: "最後，把碗放到水槽", miss: "碗放到水槽" },
+        ],
+        hints: {
+          "0>bowl": "手還沒洗，不能端碗",
+          "0>spoon": "手還沒洗",
+          "1>soap": "手洗好了，把碗端過來",
+          "1>spoon": "碗還沒端過來",
+          "2>soap": "先吃飯",
+          "2>bowl": "先吃飯",
+          "3>soap": "吃完了，把碗放到水槽",
+          "3>spoon": "吃完了，把碗放到水槽",
+          bowl: "手還沒洗，不能端碗",
+          spoon: "手還沒洗",
+        },
+      },
+    ];
+    return rotateNoRepeat(routines, 4);
   }
 
   function makeBodyQuestions() {
@@ -3297,6 +3444,11 @@
       return "兩邊都點完，再比";
     }
     if (state.levelId === "ord") return (q && q.ask) || "從左邊數，請第幾個";
+    if (state.levelId === "order") {
+      var step = currentOrderStep(q);
+      if (orderStepDone(q) && q) return q.cheer || "做好了";
+      return (step && step.say) || (q && q.ask) || "做一遍";
+    }
     if (state.levelId === "missing") return (q && q.ask) || "少了誰？拖上去";
     if (state.levelId === "bond") return "拖進去，湊滿";
     if (state.levelId === "bpm-trace") {
@@ -3603,7 +3755,10 @@
     if (state.levelId === "table") return "擺好了";
     if (state.levelId === "sort") return "收好了";
     if (state.levelId === "daynight") return "一天過完了";
-    if (state.levelId === "order") return "排好了";
+    if (state.levelId === "order") {
+      var done = state.questions[state.qIndex];
+      return (done && done.cheer) || "做好了";
+    }
     if (state.levelId === "bpm-train") return "上車了";
     if (isPathLevel()) return "走過去了";
     if (state.levelId === "body") return "找到了";
@@ -3833,7 +3988,7 @@
       return '<span class="preview-art preview-match" aria-hidden="true"><span>🍎</span><b>吃</b><span>🧸</span></span>';
     }
     if (id === "order") {
-      return '<span class="preview-art preview-next" aria-hidden="true"><i>1</i><i>2</i><i>3</i></span>';
+      return '<span class="preview-art preview-match" aria-hidden="true"><span>👐</span><b>🧼</b></span>';
     }
     if (id === "body") {
       return '<span class="preview-art preview-match" aria-hidden="true"><span>✋</span><b>手</b></span>';
@@ -5028,6 +5183,7 @@
     else if (state.levelId === "missing") body = renderMissing(q);
     else if (state.levelId === "ord") body = renderOrd(q);
     else if (state.levelId === "sort") body = renderSort(q);
+    else if (state.levelId === "order") body = renderOrder(q);
     else if (state.levelId === "daynight") body = renderDayNight(q);
     else if (isPlaceLevel()) body = renderLifePlace(q);
     if (state.levelId === "light") body = renderLight(q);
@@ -5387,8 +5543,6 @@
     var board = "";
     if (state.levelId === "sort" || state.levelId === "daynight") {
       board = '<div class="life-scene">' + slots + "</div>";
-    } else if (state.levelId === "order") {
-      board = '<div class="life-homes">' + slots + "</div>";
     } else {
       board = '<div class="life-homes">' + slots + "</div>";
     }
@@ -5402,6 +5556,159 @@
       '<div class="life-tray">' +
       tray +
       "</div></div></div>"
+    );
+  }
+
+  function renderDoProp(item, extraClass, extraAttr) {
+    var mark = extraClass ? " " + extraClass : "";
+    var bits = extraAttr ? " " + extraAttr : "";
+    return (
+      '<div class="life-item do-prop' +
+      (item.cls ? " " + item.cls : "") +
+      mark +
+      '" data-life-item="' +
+      item.id +
+      '"' +
+      bits +
+      ' role="img" aria-label="' +
+      escapeHtml(item.name || item.emoji) +
+      '">' +
+      (item.emoji
+        ? '<span class="life-emoji">' + item.emoji + "</span>"
+        : '<span class="life-emoji do-ico" aria-hidden="true"></span>') +
+      (item.name ? '<span class="life-name">' + escapeHtml(item.name) + "</span>" : "") +
+      "</div>"
+    );
+  }
+
+  function renderOrder(q) {
+    var phase = state.stepIndex;
+    var done = state.sceneAnim === "order-done" || orderStepDone(q);
+    if (done) phase = (q.steps || []).length;
+    var scene = "";
+    if (q.routine === "brush") scene = renderOrderBrush(q, phase);
+    else if (q.routine === "out") scene = renderOrderOut(q, phase);
+    else if (q.routine === "eat") scene = renderOrderEat(q, phase);
+    else scene = renderOrderWash(q, phase);
+    return (
+      '<div class="play-col">' +
+      '<div class="prompt">' +
+      escapeHtml(q.ask || "做一遍") +
+      "</div>" +
+      '<div class="life-stage is-place order-play">' +
+      '<div class="do-scene do-' +
+      escapeHtml(q.routine || "wash") +
+      " phase-" +
+      phase +
+      (done ? " is-done" : "") +
+      '">' +
+      '<span class="do-place">' +
+      escapeHtml(q.place || "") +
+      "</span>" +
+      scene +
+      "</div></div></div>"
+    );
+  }
+
+  function renderOrderWash(q, phase) {
+    var hands =
+      phase <= 0 ? "dry" : phase === 1 ? "wet" : phase === 2 ? "soap" : phase === 3 ? "clean" : "towel";
+    return (
+      '<div class="do-land" aria-hidden="true">' +
+      '<i class="dw-tiles"></i><i class="dw-mirror"></i><i class="dw-basin"></i>' +
+      '<i class="dw-water"></i></div>' +
+      renderDoProp(orderItem(q, "tap")) +
+      renderDoProp(orderItem(q, "soap")) +
+      renderDoProp(orderItem(q, "towel")) +
+      '<div class="do-spot hands is-' +
+      hands +
+      '" data-life-slot="hands" aria-label="手">' +
+      '<div class="do-hands" aria-hidden="true">' +
+      '<i class="palm left"></i><i class="palm right"></i>' +
+      '<i class="drops"></i><i class="bubbles"></i><i class="cloth"></i>' +
+      '</div><span class="do-spot-name">手</span></div>'
+    );
+  }
+
+  function renderOrderBrush(q, phase) {
+    var mouth = phase <= 2 ? "plain" : phase === 3 ? "foam" : "clean";
+    var brushSlot = phase === 1 ? ' data-life-slot="brush-spot"' : "";
+    return (
+      '<div class="do-land" aria-hidden="true">' +
+      '<i class="db-tiles"></i><i class="db-mirror"></i><i class="db-sink"></i>' +
+      '<i class="db-spout"></i></div>' +
+      '<div class="do-spot spout" data-life-slot="spout" aria-label="水龍頭">' +
+      '<span class="do-spot-name">水</span></div>' +
+      renderDoProp(orderItem(q, "cup"), phase >= 1 ? "is-full" : "") +
+      renderDoProp(orderItem(q, "paste"), phase >= 2 ? "is-used" : "") +
+      renderDoProp(
+        orderItem(q, "brush"),
+        (phase >= 2 && phase < 4 ? "has-paste" : "") + (phase >= 4 ? "is-home" : ""),
+        brushSlot
+      ) +
+      '<div class="do-spot mouth is-' +
+      mouth +
+      '" data-life-slot="mouth" aria-label="嘴巴">' +
+      '<div class="do-face" aria-hidden="true">' +
+      '<i class="do-head"></i><i class="do-eye a"></i><i class="do-eye b"></i>' +
+      '<i class="do-lips"></i><i class="do-teeth"></i><i class="do-foam"></i>' +
+      '</div><span class="do-spot-name">嘴巴</span></div>'
+    );
+  }
+
+  function renderOrderOut(q, phase) {
+    return (
+      '<div class="do-land" aria-hidden="true">' +
+      '<i class="do-wall"></i><i class="do-floor"></i><i class="do-mat"></i>' +
+      '<i class="do-rack"></i></div>' +
+      (phase < 1 ? renderDoProp(orderItem(q, "socks")) : "") +
+      (phase < 2 ? renderDoProp(orderItem(q, "shoes")) : "") +
+      (phase < 3 ? renderDoProp(orderItem(q, "bag")) : "") +
+      renderDoProp(orderItem(q, "door"), phase >= 4 ? "is-open" : "", 'data-life-slot="leave"') +
+      '<div class="do-kid" aria-label="小朋友">' +
+      '<div class="do-spot body" data-life-slot="body" aria-label="身體">' +
+      '<span class="do-face-ico">🧒</span>' +
+      '<i class="do-torso" aria-hidden="true"></i>' +
+      (phase >= 3 ? '<span class="do-wear bag">🎒</span>' : "") +
+      '</div>' +
+      '<div class="do-spot feet" data-life-slot="feet" aria-label="腳">' +
+      '<i class="do-leg a" aria-hidden="true"></i><i class="do-leg b" aria-hidden="true"></i>' +
+      (phase >= 1 ? '<span class="do-wear socks">🧦</span>' : "") +
+      (phase >= 2 ? '<span class="do-wear shoes">👟</span>' : "") +
+      "</div></div>" +
+      '<div class="do-spot leave" data-life-slot="leave" aria-label="門口"></div>'
+    );
+  }
+
+  function renderOrderEat(q, phase) {
+    var hands = phase <= 0 ? "dry" : "clean";
+    var bowlSlot = phase === 2 ? ' data-life-slot="bowl-spot"' : "";
+    var bowlOn = phase >= 2 && phase < 4;
+    var bowlSink = phase >= 4;
+    var bowlEmpty = phase >= 3;
+    return (
+      '<div class="do-land" aria-hidden="true">' +
+      '<i class="de-wall"></i><i class="de-floor"></i><i class="de-sink"></i>' +
+      '<i class="de-table"></i></div>' +
+      renderDoProp(orderItem(q, "soap")) +
+      renderDoProp(
+        orderItem(q, "bowl"),
+        (bowlOn ? "on-table" : "") + (bowlSink ? " in-sink" : "") + (bowlEmpty ? " is-empty" : ""),
+        bowlSlot
+      ) +
+      renderDoProp(orderItem(q, "spoon"), phase >= 3 ? "is-used" : "") +
+      '<div class="do-spot hands is-' +
+      hands +
+      '" data-life-slot="hands" aria-label="手">' +
+      '<div class="do-hands tiny" aria-hidden="true">' +
+      '<i class="palm left"></i><i class="palm right"></i>' +
+      '<i class="bubbles"></i></div>' +
+      '<span class="do-spot-name">手</span></div>' +
+      '<div class="do-spot table" data-life-slot="table" aria-label="桌子">' +
+      '<span class="do-eater" aria-hidden="true">🧒</span>' +
+      '<span class="do-spot-name">桌子</span></div>' +
+      '<div class="do-spot sink" data-life-slot="sink" aria-label="水槽">' +
+      '<span class="do-spot-name">水槽</span></div>'
     );
   }
 
@@ -6101,6 +6408,7 @@
 
   function allNeededPlaced(q) {
     var i;
+    if (state.levelId === "order") return orderStepDone(q);
     if (q.needAny && q.needAny.length) {
       for (i = 0; i < q.needAny.length; i++) {
         if (state.placed[q.needAny[i]]) return true;
@@ -6116,6 +6424,13 @@
   function finishPlaceIfDone() {
     var q = state.questions[state.qIndex];
     if (!allNeededPlaced(q)) {
+      if (state.levelId === "order") {
+        setFox(foxPrompt(), "idle");
+        render();
+        lastSpokenKey = "";
+        speakPrompt();
+        return;
+      }
       setFox("好棒", "happy");
       render();
       celebratePass();
@@ -6134,6 +6449,7 @@
     if (state.levelId === "ord") state.sceneAnim = "ord-step";
     if (state.levelId === "more") state.sceneAnim = "scale-bounce";
     if (state.levelId === "sort") state.sceneAnim = "sort-done";
+    if (state.levelId === "order") state.sceneAnim = "order-done";
     if (isStickerLevel()) state.sceneAnim = "sticker-pop";
     if (isCubbyLevel()) state.sceneAnim = "cubby-home";
     if (isShareLevel()) state.sceneAnim = "share-done";
@@ -6161,6 +6477,7 @@
     if (isCubbyLevel()) wait = 1100;
     if (isShareLevel()) wait = 1000;
     if (state.levelId === "more") wait = 1100;
+    if (state.levelId === "order") wait = 1500;
     setTimeout(nextQuestion, wait);
   }
 
@@ -6170,7 +6487,65 @@
     return el;
   }
 
-  function bouncePlaceItem(itemId) {
+  function orderHint(item, slotId) {
+    var q = state.questions[state.qIndex];
+    var step = currentOrderStep(q);
+    if (!q || !item) return "先做前面的";
+    if (step && item.id === step.item && slotId && slotId !== step.slot) {
+      return step.miss || "放到這裡";
+    }
+    var map = q.hints || {};
+    var key = state.stepIndex + ">" + item.id;
+    return map[key] || map[item.id] || "先做前面的";
+  }
+
+  function bounceOrderItem(itemId, slotId) {
+    var item = lifeItemById(itemId);
+    var hint = orderHint(item, slotId);
+    var ghost = document.querySelector(".life-ghost");
+    var target = app.querySelector('[data-life-item="' + itemId + '"]');
+    setFox(hint, "idle");
+    speakNow(hint, "zh-TW", true);
+    placeDrag.active = false;
+    placeDrag.pointerId = null;
+    placeDrag.moved = false;
+    clearPlaceAim();
+    if (ghost && target) {
+      var r = target.getBoundingClientRect();
+      ghost.style.transition = "left 0.32s ease, top 0.32s ease";
+      ghost.style.left = r.left + r.width / 2 - ghost.offsetWidth / 2 + "px";
+      ghost.style.top = r.top + r.height / 2 - ghost.offsetHeight / 2 + "px";
+      setTimeout(function () {
+        hidePlaceGhost();
+        if (target.parentNode) {
+          target.classList.remove("dragging");
+          target.classList.add("nudge");
+        }
+        setTimeout(function () {
+          if (target.parentNode) target.classList.remove("nudge");
+        }, 420);
+      }, 320);
+    } else {
+      hidePlaceGhost();
+      if (target) {
+        target.classList.remove("dragging");
+        target.classList.add("nudge");
+      }
+      setTimeout(function () {
+        if (target && target.parentNode) target.classList.remove("nudge");
+      }, 420);
+    }
+    setTimeout(function () {
+      if (state.levelId !== "order" || state.screen !== "play" || state.locked) return;
+      setFox(foxPrompt(), "idle");
+    }, 1600);
+  }
+
+  function bouncePlaceItem(itemId, slotId) {
+    if (state.levelId === "order") {
+      bounceOrderItem(itemId, slotId);
+      return;
+    }
     var ghost = document.querySelector(".life-ghost");
     var target = app.querySelector('[data-life-item="' + itemId + '"]');
     playWrong();
@@ -6232,6 +6607,10 @@
 
   function itemFitsSlot(item, slotId) {
     if (!item || !slotId) return false;
+    if (state.levelId === "order") {
+      var step = currentOrderStep(state.questions[state.qIndex]);
+      return !!(step && item.id === step.item && slotId === step.slot);
+    }
     if (item.feed) return zoneHasResident(slotId);
     if (item.anySlot) return !itemInSlot(slotId);
     var q = state.questions[state.qIndex];
@@ -6250,13 +6629,27 @@
       return;
     }
     var item = lifeItemById(itemId);
-    if (!item || state.placed[item.id]) {
+    if (!item || (state.placed[item.id] && state.levelId !== "order")) {
       hidePlaceGhost();
       clearItemDragClass(itemId);
       return;
     }
+    if (state.levelId === "order") {
+      if (!itemFitsSlot(item, slotId)) {
+        bouncePlaceItem(itemId, slotId);
+        return;
+      }
+      hidePlaceGhost();
+      clearItemDragClass(itemId);
+      state.heldItem = null;
+      state.stepIndex += 1;
+      if (allNeededPlaced(state.questions[state.qIndex])) playStar();
+      else playCorrect();
+      finishPlaceIfDone();
+      return;
+    }
     if (!itemFitsSlot(item, slotId) || slotIsFull(slotId)) {
-      bouncePlaceItem(itemId);
+      bouncePlaceItem(itemId, slotId);
       return;
     }
     hidePlaceGhost();
@@ -6322,6 +6715,10 @@
     if (!moved) {
       hidePlaceGhost();
       clearItemDragClass(itemId);
+      if (state.levelId === "order") {
+        var step = currentOrderStep(state.questions[state.qIndex]);
+        if (step) tryPlace(itemId, step.slot);
+      }
       return;
     }
     if (over) {
@@ -7448,6 +7845,10 @@
       placeAllNeeded: function () {
         var q = state.questions[state.qIndex];
         var i;
+        if (state.levelId === "order") {
+          state.stepIndex = q && q.steps ? q.steps.length : 0;
+          return state.stepIndex;
+        }
         if (!q || !q.items) return 0;
         var n = 0;
         for (i = 0; i < q.items.length; i++) {
