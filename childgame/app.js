@@ -4349,7 +4349,7 @@
     return true;
   }
 
-  function renderDayCritterMark(it, i, seat) {
+  function renderDayCritterMark(it, i, seat, extraInner) {
     var zone = it.zone || "grass";
     var kind = dayCritterKind(it);
     var motion = zone === "water" ? "swim" : zone === "tree" ? "perch" : "bob";
@@ -4357,6 +4357,7 @@
     if (kind === "bird" || kind === "owl") inner += '<i class="day-critter-feet"></i>';
     if (kind === "bird") inner += '<i class="day-critter-tail"></i>';
     if (kind === "rabbit" || kind === "bird") inner += '<i class="day-critter-eye"></i>';
+    if (extraInner) inner += extraInner;
     return (
       '<i class="day-critter in-' +
       zone +
@@ -5755,9 +5756,34 @@
     );
   }
 
-  function renderHabitatCritter(item, slotId, i, extraClass) {
+  function isHabitatFeedItem(item) {
+    return !!(item && (item.feed || item.name === "點心"));
+  }
+
+  function zoneHasFeed(slotId) {
+    var many = itemsInSlot(slotId);
+    var i;
+    for (i = 0; i < many.length; i++) {
+      if (isHabitatFeedItem(many[i])) return true;
+    }
+    return false;
+  }
+
+  function habitatAppleMark() {
+    return '<span class="habitat-apple" aria-hidden="true"></span>';
+  }
+
+  function habitatPlacedAnimals(slotId) {
+    return itemsInSlot(slotId).filter(function (item) {
+      return !isHabitatFeedItem(item);
+    });
+  }
+
+  function renderHabitatCritter(item, slotId, i, extraClass, withApple) {
+    if (isHabitatFeedItem(item)) return "";
     var mark = extraClass ? " " + extraClass : "";
     var it = habitatMarkItem(item, slotId);
+    var apple = withApple ? habitatAppleMark() : "";
     if (isHabitatAnimalItem(item) || namedCritterKind(item)) {
       return (
         '<span class="habitat-critter in-' +
@@ -5770,7 +5796,7 @@
         ';--bob-i:' +
         i +
         '">' +
-        renderDayCritterMark(it, i, i) +
+        renderDayCritterMark(it, i, i, apple) +
         "</span>"
       );
     }
@@ -5780,23 +5806,32 @@
       mark +
       '">' +
       (item.emoji || "") +
+      apple +
       "</span>"
     );
   }
 
   function renderHabitatResidents(slotId) {
     var q = state.questions[state.qIndex];
-    var html = itemsInSlot(slotId)
-      .map(function (item, i) {
-        return renderHabitatCritter(item, slotId, i, "");
+    var placed = habitatPlacedAnimals(slotId);
+    var fed = zoneHasFeed(slotId);
+    var residents = (q && q.residents) || [];
+    var homeHere = 0;
+    var i;
+    for (i = 0; i < residents.length; i++) {
+      if (residents[i].zone === slotId) homeHere += 1;
+    }
+    var html = placed
+      .map(function (item, idx) {
+        return renderHabitatCritter(item, slotId, idx, "", fed && homeHere === 0 && idx === 0);
       })
       .join("");
-    var residents = (q && q.residents) || [];
-    var i;
-    var seat = itemsInSlot(slotId).length;
+    var seat = placed.length;
+    var firstHome = true;
     for (i = 0; i < residents.length; i++) {
       if (residents[i].zone === slotId) {
-        html += renderHabitatCritter(residents[i], slotId, seat, "home");
+        html += renderHabitatCritter(residents[i], slotId, seat, "home", fed && firstHome);
+        firstHome = false;
         seat += 1;
       }
     }
@@ -8373,6 +8408,9 @@
           vanityHasCup: html.indexOf("dv-cup") >= 0,
           vanityHasBrush: html.indexOf("dv-brush") >= 0,
           vanityHasFoam: html.indexOf("dv-foam") >= 0,
+          vanityHasPaste: html.indexOf("dv-paste") >= 0,
+          sinkHasTowel: html.indexOf("ds-towel") >= 0,
+          sinkHasSoap: html.indexOf("ds-soap") >= 0,
           doorOpen: html.indexOf("day-door-art is-open") >= 0,
           hasMatShoes: html.indexOf("dd-shoes") >= 0,
           hasOutfitWear: html.indexOf("has-outfit") >= 0,
@@ -8720,6 +8758,7 @@
         return {
           ask: q.ask,
           hasApple: app.innerHTML.indexOf("life-apple") >= 0,
+          hasHabitatApple: app.innerHTML.indexOf("habitat-apple") >= 0,
           hasCar: app.innerHTML.indexOf("life-car") >= 0,
           hasFriendCritter: app.innerHTML.indexOf("life-chip-art") >= 0 && app.innerHTML.indexOf("day-critter") >= 0,
           noSnackEmoji: app.innerHTML.indexOf(">🍎<") < 0,
@@ -8734,7 +8773,14 @@
       },
       placeItem: function (itemId, slotId) {
         tryPlace(itemId, slotId);
-        return { placed: state.placed[itemId] || null, fox: state.foxMsg, locked: !!state.locked };
+        return {
+          placed: state.placed[itemId] || null,
+          fox: state.foxMsg,
+          locked: !!state.locked,
+          hasHabitatApple: app.innerHTML.indexOf("habitat-apple") >= 0,
+          hasHabitatEmoji: app.innerHTML.indexOf("habitat-emoji") >= 0,
+          hasSnackEmoji: app.innerHTML.indexOf(">🍎<") >= 0,
+        };
       },
     };
   } catch (e) {}

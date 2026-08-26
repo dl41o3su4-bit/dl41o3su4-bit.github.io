@@ -1247,18 +1247,18 @@ button.day-place:active {
 }
 
 .furn-wash {
-  left: max(32%, calc(5% + 78px));
+  left: max(34%, calc(5% + 108px));
   bottom: 31%;
-  min-width: 56px;
-  min-height: 52px;
+  min-width: 72px;
+  min-height: 64px;
   z-index: 3;
 }
 
 .furn-brush {
   left: 5%;
   bottom: 31%;
-  min-width: 46px;
-  min-height: 52px;
+  min-width: 64px;
+  min-height: 72px;
   z-index: 3;
 }
 
@@ -1324,13 +1324,13 @@ button.day-place:active {
 }
 
 .day-sink-art {
-  width: clamp(58px, 13vmin, 88px);
-  height: clamp(50px, 12vmin, 78px);
+  width: clamp(72px, 15.4vmin, 108px);
+  height: clamp(62px, 14vmin, 96px);
 }
 
 .day-vanity-art {
-  width: clamp(42px, 9.4vmin, 64px);
-  height: clamp(50px, 11.6vmin, 74px);
+  width: clamp(64px, 13.6vmin, 96px);
+  height: clamp(72px, 15.4vmin, 108px);
 }
 
 .day-door-art {
@@ -1429,34 +1429,49 @@ button.day-place:active {
 }
 
 .ds-towel {
-  right: 7%;
-  top: 14%;
-  width: 18%;
-  height: 38%;
-  background: linear-gradient(#ffe8cc, #ffc078);
+  right: 2%;
+  top: 10%;
+  width: 30%;
+  height: 54%;
+  background:
+    repeating-linear-gradient(
+      180deg,
+      #ffe8cc 0 7px,
+      #ffc078 7px 9px
+    );
   border: 2px solid #e8590c;
-  border-radius: 3px 3px 6px 6px;
-  box-shadow: inset 0 4px 0 rgba(255, 253, 248, 0.35);
+  border-radius: 4px 4px 10px 10px;
+  box-shadow:
+    inset 0 6px 0 rgba(255, 253, 248, 0.45),
+    3px 4px 0 rgba(141, 90, 43, 0.16);
+  z-index: 3;
 }
 
 .ds-soap {
-  right: 8%;
-  bottom: 22%;
-  width: 18%;
-  height: 16%;
-  background: linear-gradient(#ffa8c5, #f783ac);
-  border: 2px solid #e64980;
-  border-radius: 4px;
-  box-shadow: inset 0 3px 0 rgba(255, 253, 248, 0.4);
+  right: 4%;
+  bottom: 16%;
+  width: 28%;
+  height: 22%;
+  background: linear-gradient(#ffa8c5, #f06595);
+  border: 2px solid #c2255c;
+  border-radius: 7px;
+  box-shadow:
+    inset 0 4px 0 rgba(255, 253, 248, 0.5),
+    0 2px 0 #e64980;
+  z-index: 4;
 }
 
 .ds-sheen {
-  left: 22%;
-  right: 32%;
-  bottom: 24%;
-  height: 12%;
-  background: rgba(77, 171, 247, 0.38);
+  left: 10%;
+  right: 20%;
+  bottom: 16%;
+  height: 34%;
+  background:
+    radial-gradient(ellipse at 40% 24%, rgba(255, 255, 255, 0.85) 0 16%, rgba(77, 171, 247, 0.42) 48%, rgba(34, 139, 230, 0.62) 100%);
+  border: 2px solid rgba(24, 100, 171, 0.35);
   border-radius: 50%;
+  box-shadow: inset 0 4px 0 rgba(255, 255, 255, 0.4);
+  z-index: 3;
 }
 
 .dv-mirror {
@@ -1541,63 +1556,115 @@ button.day-place:active {
 }
 
 .dv-cup {
-  right: 4%;
-  bottom: 20%;
-  width: 24%;
-  height: 34%;
+  right: 3%;
+  bottom: 14%;
+  width: 30%;
+  height: 30%;
   background: linear-gradient(#fffef8, #ffe8cc);
-  border: 2px solid #e8c48a;
-  border-radius: 3px 3px 7px 7px;
-  box-shadow: inset 0 4px 0 rgba(255, 253, 248, 0.5);
+  border: 2px solid #d4a574;
+  border-radius: 5px 5px 10px 10px;
+  box-shadow: inset 0 6px 0 rgba(255, 253, 248, 0.55);
+  z-index: 3;
 }
 
 .dv-cup.is-home {
-  background: linear-gradient(#fffef8 0 38%, #d0ebff 38% 72%, #ffe8cc 72% 100%);
+  background: linear-gradient(#fffef8, #ffe8cc);
 }
 
-.dv-brush {
-  right: 10%;
-  bottom: 36%;
-  width: 12%;
-  height: 34%;
-  background: linear-gradient(#74c0fc, #1c7ed6);
+.dv-brush,
+.dv-brush.is-home {
+  right: 8%;
+  bottom: 20%;
+  width: 14%;
+  height: 58%;
+  background: linear-gradient(#4dabf7, #1c7ed6);
   border: 2px solid #1864ab;
-  border-radius: 3px 3px 2px 2px;
-  box-shadow: inset 0 2px 0 rgba(255, 253, 248, 0.28);
+  border-radius: 4px 4px 5px 5px;
+  box-shadow: inset 0 2px 0 rgba(255, 253, 248, 0.35);
+  z-index: 5;
 }
 
-.dv-brush::before {
+.dv-brush::before,
+.dv-brush.is-home::before {
   content: "";
   position: absolute;
-  left: -18%;
-  right: -18%;
-  top: -10%;
-  height: 28%;
-  background: linear-gradient(#fff4e6, #ffd8a8);
+  left: -70%;
+  right: -70%;
+  top: -4%;
+  height: 34%;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      #fffef8 0 3px,
+      #ffe8cc 3px 4px,
+      #fff4e6 4px 7px
+    );
   border: 2px solid #e8590c;
-  border-radius: 2px 2px 3px 3px;
+  border-radius: 5px 5px 3px 3px;
+  box-shadow: inset 0 2px 0 rgba(255, 253, 248, 0.5);
+}
+
+.dv-brush::after,
+.dv-brush.is-home::after {
+  content: "";
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  top: 28%;
+  height: 8%;
+  background: #74c0fc;
+  border-radius: 2px;
 }
 
 .dv-foam {
-  left: 22%;
-  right: 40%;
-  bottom: 22%;
-  height: 12%;
-  background: rgba(255, 255, 255, 0.78);
+  left: 10%;
+  right: 26%;
+  bottom: 20%;
+  height: 30%;
+  background: #fff;
+  border: 2px solid #adb5bd;
   border-radius: 50%;
   box-shadow:
-    6px -2px 0 rgba(255, 255, 255, 0.7),
-    -4px 1px 0 rgba(255, 248, 238, 0.65);
+    12px -7px 0 -1px #fff,
+    12px -7px 0 1px #adb5bd,
+    -8px 2px 0 -2px #fff8ee,
+    4px 8px 0 -3px #f8f9fa;
+  z-index: 4;
 }
 
 .dv-paste {
-  right: 8%;
+  left: 4%;
+  bottom: 3%;
+  width: 34%;
+  height: 16%;
+  background: linear-gradient(90deg, #ff6b6b 0 72%, #fa5252 72% 100%);
+  border: 2px solid #c92a2a;
+  border-radius: 3px 8px 8px 3px;
+  box-shadow: inset 0 2px 0 rgba(255, 253, 248, 0.3);
+  z-index: 5;
+}
+
+.dv-paste::before {
+  content: "";
+  position: absolute;
+  right: -26%;
+  top: 8%;
+  width: 28%;
+  height: 84%;
+  background: #fff;
+  border: 2px solid #c92a2a;
+  border-radius: 2px 3px 3px 2px;
+}
+
+.dv-paste::after {
+  content: "";
+  position: absolute;
+  left: 18%;
   top: 18%;
-  width: 16%;
-  height: 10%;
-  background: radial-gradient(circle at 40% 40%, #fff 0 30%, #ffc9c9 100%);
-  border: 1px solid #ffa8a8;
-  border-radius: 50%;
+  width: 38%;
+  height: 64%;
+  background: #fff5f5;
+  border-radius: 2px;
 }
 
 .dd-frame {
@@ -4056,6 +4123,7 @@ button.day-place:active {
   position: absolute;
   display: block;
   line-height: 1;
+  overflow: visible;
   filter: drop-shadow(0 2px 0 rgba(0, 0, 0, 0.12));
   animation: hab-in 0.4s ease;
 }
@@ -4091,6 +4159,88 @@ button.day-place:active {
 
 .habitat-critter.habitat-emoji {
   font-size: min(12cqw, 14cqh, 36px);
+}
+
+.habitat-apple {
+  position: absolute;
+  display: block;
+  width: 28px;
+  height: 28px;
+  background: radial-gradient(circle at 32% 30%, #ff8787 0 24%, #e03131 68%, #c92a2a 100%);
+  border: 2px solid #c92a2a;
+  border-radius: 50%;
+  box-shadow: inset 0 2px 0 rgba(255, 253, 248, 0.28);
+  z-index: 6;
+  pointer-events: none;
+}
+
+.habitat-apple::before {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: -7px;
+  width: 11px;
+  height: 8px;
+  background: #51cf66;
+  border: 2px solid #2b8a3e;
+  border-radius: 60% 40% 70% 20%;
+  transform: rotate(16deg);
+}
+
+.habitat-apple::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -7px;
+  width: 3px;
+  height: 8px;
+  background: #8d5a2b;
+  border-radius: 2px;
+  transform: translateX(-50%);
+}
+
+.day-critter.kind-fish > .habitat-apple {
+  left: 0;
+  top: 50%;
+  transform: translate(-42%, -58%);
+}
+
+.day-critter.kind-duck > .habitat-apple {
+  left: 0;
+  top: 40%;
+  transform: translate(-48%, -60%);
+}
+
+.day-critter.kind-bird > .habitat-apple,
+.day-critter.kind-owl > .habitat-apple {
+  left: 0;
+  top: 40%;
+  transform: translate(-62%, -55%);
+}
+
+.day-critter.kind-rabbit > .habitat-apple {
+  right: 0;
+  top: 38%;
+  transform: translate(42%, -40%);
+}
+
+.day-critter.kind-sheep > .habitat-apple {
+  left: 0;
+  top: 40%;
+  transform: translate(-52%, -50%);
+}
+
+.day-critter.kind-camel > .habitat-apple {
+  left: 0;
+  top: 20%;
+  transform: translate(-48%, -40%);
+}
+
+.day-critter.kind-crab > .habitat-apple,
+.day-critter.kind-lizard > .habitat-apple {
+  left: 0;
+  top: 40%;
+  transform: translate(-48%, -55%);
 }
 
 .habitat-zone.water .habitat-critter.in-water {
@@ -10029,25 +10179,25 @@ button.day-place:active {
   }
 
   .day-vanity-art {
-    width: 34px;
-    height: 42px;
+    width: 58px;
+    height: 66px;
   }
 
   .day-sink-art {
-    width: 44px;
-    height: 44px;
+    width: 64px;
+    height: 60px;
   }
 
   .furn-wash {
-    left: max(50%, calc(10% + 52px));
-    min-width: 40px;
-    min-height: 40px;
+    left: max(50%, calc(10% + 78px));
+    min-width: 56px;
+    min-height: 56px;
   }
 
   .furn-brush {
-    left: 10%;
-    min-width: 34px;
-    min-height: 40px;
+    left: 8%;
+    min-width: 56px;
+    min-height: 60px;
   }
 
   .furn-brush .day-go-bubble {
@@ -10274,8 +10424,13 @@ button.day-place:active {
   }
 
   .day-vanity-art {
-    width: 36px;
-    height: 40px;
+    width: 52px;
+    height: 58px;
+  }
+
+  .day-sink-art {
+    width: 58px;
+    height: 54px;
   }
 
   .day-bed-art {
