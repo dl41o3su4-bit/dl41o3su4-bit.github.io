@@ -1087,14 +1087,28 @@ button:focus-visible {
 }
 
 .park-pond {
-  left: 10%;
-  bottom: 22%;
-  width: 34%;
-  height: 12%;
+  left: 6%;
+  bottom: 14%;
+  width: 50%;
+  height: 26%;
   border-radius: 50%;
-  background: radial-gradient(ellipse at 38% 34%, #d0ebff 0 28%, #74c0fc 62%, #4dabf7 100%);
-  border: 2px solid #1c7ed6;
-  box-shadow: inset 0 3px 0 rgba(255, 253, 248, 0.45);
+  background: radial-gradient(ellipse at 30% 26%, #f8fcff 0 10%, #d0ebff 26%, #74c0fc 58%, #339af0 82%, #1c7ed6 100%);
+  border: 3px solid #1864ab;
+  box-shadow:
+    inset 0 6px 0 rgba(255, 253, 248, 0.5),
+    inset 16px 8px 0 -8px rgba(255, 253, 248, 0.28);
+}
+
+.park-pond::before {
+  content: "";
+  position: absolute;
+  left: 16%;
+  top: 16%;
+  width: 36%;
+  height: 30%;
+  border-radius: 50%;
+  background: rgba(255, 253, 248, 0.48);
+  pointer-events: none;
 }
 
 .park-grass {
@@ -1119,11 +1133,11 @@ button:focus-visible {
 
 .day-trees {
   position: absolute;
-  right: 6%;
+  right: 4%;
   bottom: 34%;
   display: flex;
   align-items: flex-end;
-  gap: 4px;
+  gap: 8px;
   pointer-events: none;
   isolation: isolate;
 }
@@ -1139,13 +1153,15 @@ button:focus-visible {
 }
 
 .day-tree {
+  width: clamp(42px, 9vmin, 62px);
+  height: clamp(72px, 16.5vmin, 104px);
   z-index: 0;
 }
 
 .day-tree.is-mid {
-  width: clamp(14px, 3.6vmin, 22px);
-  height: clamp(22px, 5.6vmin, 34px);
-  transform: translateY(4px);
+  width: clamp(36px, 7.6vmin, 54px);
+  height: clamp(60px, 14vmin, 88px);
+  transform: translateY(6px);
   z-index: 2;
 }
 
@@ -1164,6 +1180,13 @@ button:focus-visible {
   z-index: 4;
 }
 
+.day-tree::before {
+  left: 0;
+  right: 0;
+  height: 56%;
+  border-width: 3px;
+}
+
 .day-tree::after,
 .day-tree-art .dt-trunk {
   content: "";
@@ -1178,12 +1201,19 @@ button:focus-visible {
   z-index: 1;
 }
 
+.day-tree::after {
+  left: 32%;
+  right: 32%;
+  top: 50%;
+  border-width: 2px;
+}
+
 .day-branch {
   position: absolute;
   left: -22px;
   top: 76%;
   width: 30px;
-  height: 3px;
+  height: 5px;
   background: #8d5a2b;
   border-radius: 2px;
   z-index: 2;
@@ -1358,15 +1388,29 @@ button.day-place:active {
 }
 
 .furn-park {
-  left: 4%;
-  bottom: 30%;
-  min-width: 64px;
-  min-height: 52px;
+  left: auto;
+  right: 8%;
+  bottom: 40%;
+  min-width: 72px;
+  min-height: 64px;
   z-index: 3;
 }
 
+.furn-park .day-go-bubble {
+  top: auto;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+}
+
 .furn-park .day-spot-label {
-  margin-top: 2px;
+  position: absolute;
+  left: 50%;
+  bottom: -20px;
+  transform: translateX(-50%);
+  margin-top: 0;
+  white-space: nowrap;
 }
 
 .day-sink-art,
