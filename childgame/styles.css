@@ -1319,7 +1319,7 @@ button.day-place:active {
 
 .furn-out .day-go-bubble {
   top: auto;
-  bottom: calc(100% + 8px);
+  bottom: calc(100% + 48px);
   left: 50%;
   right: auto;
   transform: translateX(-50%);
