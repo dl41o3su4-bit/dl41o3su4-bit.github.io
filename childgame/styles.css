@@ -1562,17 +1562,17 @@ button.day-place:active {
   bottom: 12%;
   width: 42px;
   height: 44px;
-  background: linear-gradient(#fffef8, #fff3d6);
-  border: 3px solid #5c3d1e;
+  background: linear-gradient(#ffffff, #fffef8);
+  border: 3px solid #3d2a1a;
   border-radius: 6px 6px 12px 12px;
   box-shadow:
-    inset 0 8px 0 rgba(255, 253, 248, 0.7),
-    0 2px 0 #3d2a1a;
+    inset 0 8px 0 rgba(255, 255, 255, 0.9),
+    0 2px 0 #2a1c12;
   z-index: 3;
 }
 
 .dv-cup.is-home {
-  background: linear-gradient(#fffef8, #fff3d6);
+  background: linear-gradient(#ffffff, #fffef8);
 }
 
 .dv-brush,
@@ -10436,13 +10436,13 @@ button.day-place:active {
   }
 
   .day-vanity-art {
-    width: 104px;
-    height: 116px;
+    width: 110px;
+    height: 122px;
   }
 
   .day-sink-art {
-    width: 104px;
-    height: 90px;
+    width: 110px;
+    height: 96px;
   }
 
   .day-bed-art {
