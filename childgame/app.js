@@ -5811,11 +5811,11 @@
       slotId +
       '" aria-label="' +
       label +
-      '"><span class="habitat-tag">' +
-      label +
-      '</span><div class="habitat-residents">' +
+      '"><div class="habitat-residents">' +
       renderHabitatResidents(slotId) +
-      "</div></div>"
+      '</div><span class="habitat-tag">' +
+      label +
+      "</span></div>"
     );
   }
 
@@ -8731,6 +8731,10 @@
           carId: car && car.id,
           friendSlot: friend && friend.slot,
         };
+      },
+      placeItem: function (itemId, slotId) {
+        tryPlace(itemId, slotId);
+        return { placed: state.placed[itemId] || null, fox: state.foxMsg, locked: !!state.locked };
       },
     };
   } catch (e) {}

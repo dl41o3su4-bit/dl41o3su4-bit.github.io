@@ -4711,8 +4711,8 @@ button.day-place:active {
 .habitat-scene.layout-meadow .habitat-critter.in-tree {
   left: 38%;
   top: 24%;
-  margin-left: calc(min(16cqw, 20cqh, 58px) * 0.28);
-  margin-top: calc(min(22cqw, 28cqh, 80px) * 0.16);
+  margin-left: calc(min(16cqw, 20cqh, 58px) * 0.4);
+  margin-top: calc(min(22cqw, 28cqh, 80px) * 0.2);
 }
 
 .habitat-scene.layout-meadow .habitat-critter.in-grass {
@@ -4729,8 +4729,8 @@ button.day-place:active {
 .habitat-scene.layout-oasis .habitat-critter.in-tree {
   left: calc(10% + var(--seat, 0) * 32%);
   top: calc(17% + var(--seat, 0) * 16%);
-  margin-left: calc(min(14cqw, 18cqh, 50px) * 0.3);
-  margin-top: calc(min(26cqw, 32cqh, 88px) * 0.2);
+  margin-left: calc(min(14cqw, 18cqh, 50px) * 0.42);
+  margin-top: calc(min(26cqw, 32cqh, 88px) * 0.22);
 }
 
 .habitat-scene.layout-oasis .habitat-critter.in-desert {
@@ -4770,8 +4770,8 @@ button.day-place:active {
 }
 
 .habitat-scene.layout-dunes .habitat-critter.in-desert {
-  left: calc(22% + var(--seat, 0) * 12%);
-  bottom: 16%;
+  left: calc(15% + var(--seat, 0) * 10%);
+  bottom: 18%;
 }
 
 .habitat-scene.layout-woods .habitat-zone.grass .habitat-tag {
@@ -5179,7 +5179,7 @@ button.day-place:active {
   right: auto;
   top: auto;
   bottom: auto;
-  zoom: 2.35;
+  zoom: 2.55;
 }
 
 .life-car {
