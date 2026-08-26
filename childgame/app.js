@@ -3110,8 +3110,9 @@
     var friendItem = lifeItem("friend-new", buddy.emoji, buddy.name, buddy.zone);
     var food = lifeItem("snack-visit", "🍎", "點心");
     food.feed = true;
+    var who = residents[0] && residents[0].name ? residents[0].name : "";
     return {
-      ask: "去看朋友，帶一個新朋友或餵一餵",
+      ask: who ? who + "還在，帶新朋友或餵一餵" : "去看朋友，帶一個新朋友或餵一餵",
       visit: true,
       layout: sample.layout || "river",
       zones: zones,
@@ -3880,7 +3881,19 @@
     if (state.levelId === "bpm-train") return "上車了";
     if (isPathLevel()) return "走過去了";
     if (state.levelId === "body") return "找到了";
-    if (state.dayVisit) return "見到朋友了";
+    if (state.dayVisit) {
+      var cheerQ = state.questions[state.qIndex];
+      var ci;
+      if (cheerQ && cheerQ.items) {
+        for (ci = 0; ci < cheerQ.items.length; ci++) {
+          if (cheerQ.items[ci].feed && state.placed[cheerQ.items[ci].id]) {
+            var fed = residentInZone(state.placed[cheerQ.items[ci].id]);
+            if (fed && fed.name) return fed.name + "吃蘋果了";
+          }
+        }
+      }
+      return "見到朋友了";
+    }
     return "好棒";
   }
 
@@ -4373,6 +4386,9 @@
     }
     if (state.levelId === "habitat" && item && item.name === "車子") {
       return '<span class="life-car" aria-hidden="true"></span>';
+    }
+    if (state.levelId === "habitat" && item && (item.feed || item.name === "點心")) {
+      return '<span class="life-apple" aria-hidden="true"></span>';
     }
     return '<span class="life-emoji">' + item.emoji + "</span>";
   }
@@ -5759,7 +5775,7 @@
       );
     }
     return (
-      '<span class="habitat-critter habitat-emoji ' +
+      '<span class="habitat-critter habitat-emoji in-' +
       slotId +
       mark +
       '">' +
@@ -6985,7 +7001,13 @@
     var ghost = document.querySelector(".life-ghost");
     var target = app.querySelector('[data-life-item="' + itemId + '"]');
     playWrong();
-    setFox(isNumberHomeLevel() || isShareLevel() ? "再數一次" : "再看一次", "think");
+    var bounceItem = lifeItemById(itemId);
+    var bounceLine = isNumberHomeLevel() || isShareLevel() ? "再數一次" : "再看一次";
+    if (bounceItem && bounceItem.feed && slotId && !zoneHasResident(slotId)) {
+      bounceLine = "這裡還沒朋友";
+    }
+    setFox(bounceLine, "think");
+    if (bounceLine === "這裡還沒朋友") speakNow(bounceLine, "zh-TW", true);
     placeDrag.active = false;
     placeDrag.pointerId = null;
     placeDrag.moved = false;
@@ -7031,14 +7053,18 @@
     return null;
   }
 
-  function zoneHasResident(slotId) {
+  function residentInZone(slotId) {
     var q = state.questions[state.qIndex];
     var list = (q && q.residents) || [];
     var i;
     for (i = 0; i < list.length; i++) {
-      if (list[i].zone === slotId) return true;
+      if (list[i].zone === slotId) return list[i];
     }
-    return false;
+    return null;
+  }
+
+  function zoneHasResident(slotId) {
+    return !!residentInZone(slotId);
   }
 
   function itemFitsSlot(item, slotId) {
@@ -8639,6 +8665,71 @@
           dayBrushRoutine: (makeOrderQuestions("brush")[0] || {}).routine,
           dayOut: makeOrderQuestions("out").length,
           dayOutRoutine: (makeOrderQuestions("out")[0] || {}).routine,
+        };
+      },
+      habitatSitPlay: function (layout) {
+        startLevel("habitat");
+        var qs = makeHabitatQuestions(false);
+        var i;
+        var q = qs[0];
+        for (i = 0; i < qs.length; i++) {
+          if (qs[i].layout === layout) q = qs[i];
+        }
+        state.questions = [q];
+        state.qIndex = 0;
+        state.placed = {};
+        for (i = 0; i < q.items.length; i++) {
+          if (q.items[i].slot) state.placed[q.items[i].id] = q.items[i].slot;
+        }
+        render();
+        return {
+          layout: q.layout,
+          html: app.innerHTML,
+          hasTreeCritter: app.innerHTML.indexOf("habitat-critter in-tree") >= 0,
+          hasWaterCritter: app.innerHTML.indexOf("habitat-critter in-water") >= 0,
+          chipZoom: (function () {
+            var n = app.querySelector(".life-chip-art .day-critter");
+            return n ? getComputedStyle(n).zoom : "";
+          })(),
+          tagZ: (function () {
+            var n = app.querySelector(".habitat-tag");
+            return n ? getComputedStyle(n).zIndex : "";
+          })(),
+        };
+      },
+      friendsVisitPlay: function (residents) {
+        var world = ensureFoxWorld();
+        world.residentAnimals = sanitizeAnimals(
+          residents || [{ emoji: "🐟", name: "魚", zone: "water" }]
+        );
+        saveFoxWorld(world);
+        state.dayMode = true;
+        state.dayTaskId = "friends";
+        state.dayVisit = true;
+        startLevel("habitat", true);
+        var q = state.questions[state.qIndex];
+        var snack = null;
+        var friend = null;
+        var car = null;
+        var i;
+        for (i = 0; i < q.items.length; i++) {
+          if (q.items[i].feed) snack = q.items[i];
+          else if (q.items[i].name === "車子") car = q.items[i];
+          else friend = q.items[i];
+        }
+        return {
+          ask: q.ask,
+          hasApple: app.innerHTML.indexOf("life-apple") >= 0,
+          hasCar: app.innerHTML.indexOf("life-car") >= 0,
+          hasFriendCritter: app.innerHTML.indexOf("life-chip-art") >= 0 && app.innerHTML.indexOf("day-critter") >= 0,
+          noSnackEmoji: app.innerHTML.indexOf(">🍎<") < 0,
+          feedWater: snack ? itemFitsSlot(snack, "water") : false,
+          feedEmpty: snack ? itemFitsSlot(snack, friend && friend.slot === "tree" ? "desert" : "tree") : false,
+          carFails: car ? !itemFitsSlot(car, "water") : false,
+          snackId: snack && snack.id,
+          friendId: friend && friend.id,
+          carId: car && car.id,
+          friendSlot: friend && friend.slot,
         };
       },
     };
