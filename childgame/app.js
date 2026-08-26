@@ -1108,7 +1108,7 @@
     if (justFinished === "brush") {
       if (needsClothesChange(world)) {
         appendPlan(world, "dress");
-        setHint(world, "dress", "牙齒刷好了，去穿衣服");
+        setHint(world, "dress", "牙刷放杯子裡了，去穿衣服");
       } else {
         appendPlan(world, "table");
         setHint(world, "table", "牙齒刷好了，去擺早餐");
@@ -1474,7 +1474,7 @@
     if (next === "wash") return "首先去洗手";
     if (next === "brush") return "去刷牙";
     if (next === "dress") {
-      if (brushedTheTeeth(world)) return "牙齒刷好了，去穿衣服";
+      if (brushedTheTeeth(world)) return "牙刷放杯子裡了，去穿衣服";
       return washedTheHands(world) ? "手洗好了，去穿衣服" : "先穿好衣服";
     }
     if (next === "table") {
@@ -4520,7 +4520,7 @@
       '">' +
       '<i class="dv-mirror"></i><i class="dv-counter"></i><i class="dv-basin"></i><i class="dv-well"></i><i class="dv-tap"></i>' +
       (used
-        ? '<i class="dv-cup is-home"></i><i class="dv-brush is-home"></i><i class="dv-foam"></i><i class="dv-paste"></i>'
+        ? '<i class="dv-cup is-home"></i><i class="dv-brush is-home"></i><i class="dv-head"></i><i class="dv-foam"></i><i class="dv-foam-b"></i><i class="dv-paste"></i>'
         : '<i class="dv-cup"></i>') +
       "</span>"
     );
@@ -8407,6 +8407,7 @@
           vanityUsed: html.indexOf("day-vanity-art is-used") >= 0,
           vanityHasCup: html.indexOf("dv-cup") >= 0,
           vanityHasBrush: html.indexOf("dv-brush") >= 0,
+          vanityHasHead: html.indexOf("dv-head") >= 0,
           vanityHasFoam: html.indexOf("dv-foam") >= 0,
           vanityHasPaste: html.indexOf("dv-paste") >= 0,
           sinkHasTowel: html.indexOf("ds-towel") >= 0,

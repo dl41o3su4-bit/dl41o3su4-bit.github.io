@@ -1247,24 +1247,25 @@ button.day-place:active {
 }
 
 .furn-wash {
-  left: max(34%, calc(5% + 108px));
+  left: max(36%, calc(5% + 148px));
   bottom: 31%;
-  min-width: 72px;
-  min-height: 64px;
+  min-width: 110px;
+  min-height: 88px;
   z-index: 3;
 }
 
 .furn-brush {
   left: 5%;
   bottom: 31%;
-  min-width: 64px;
-  min-height: 72px;
+  min-width: 110px;
+  min-height: 118px;
   z-index: 3;
 }
 
 .furn-brush .day-go-bubble {
-  left: 62%;
-  transform: translateX(-40%);
+  left: 4%;
+  top: -30px;
+  transform: none;
 }
 
 .furn-dress {
@@ -1325,13 +1326,13 @@ button.day-place:active {
 }
 
 .day-sink-art {
-  width: clamp(72px, 15.4vmin, 108px);
-  height: clamp(62px, 14vmin, 96px);
+  width: clamp(110px, 20vmin, 128px);
+  height: clamp(88px, 16.8vmin, 112px);
 }
 
 .day-vanity-art {
-  width: clamp(64px, 13.6vmin, 96px);
-  height: clamp(72px, 15.4vmin, 108px);
+  width: clamp(110px, 20vmin, 128px);
+  height: clamp(118px, 22vmin, 142px);
 }
 
 .day-door-art {
@@ -1498,8 +1499,8 @@ button.day-place:active {
 }
 
 .dv-basin {
-  left: 10%;
-  right: 28%;
+  left: 8%;
+  right: calc(5% + 48px);
   bottom: 14%;
   height: 36%;
   background: radial-gradient(ellipse at 50% 26%, #ffffff 0 36%, #f1f3f5 64%, #dee2e6 100%);
@@ -1512,8 +1513,8 @@ button.day-place:active {
 }
 
 .dv-well {
-  left: 22%;
-  right: 40%;
+  left: 18%;
+  right: calc(5% + 62px);
   bottom: 20%;
   height: 14%;
   background: radial-gradient(ellipse at 50% 20%, #fff 0 30%, #e9ecef 100%);
@@ -1557,27 +1558,30 @@ button.day-place:active {
 }
 
 .dv-cup {
-  right: 3%;
-  bottom: 14%;
-  width: 30%;
-  height: 30%;
-  background: linear-gradient(#fffef8, #ffe8cc);
-  border: 2px solid #d4a574;
-  border-radius: 5px 5px 10px 10px;
-  box-shadow: inset 0 6px 0 rgba(255, 253, 248, 0.55);
+  right: 5%;
+  bottom: 12%;
+  width: 42px;
+  height: 44px;
+  background: linear-gradient(#fffef8, #fff3d6);
+  border: 3px solid #5c3d1e;
+  border-radius: 6px 6px 12px 12px;
+  box-shadow:
+    inset 0 8px 0 rgba(255, 253, 248, 0.7),
+    0 2px 0 #3d2a1a;
   z-index: 3;
 }
 
 .dv-cup.is-home {
-  background: linear-gradient(#fffef8, #ffe8cc);
+  background: linear-gradient(#fffef8, #fff3d6);
 }
 
 .dv-brush,
 .dv-brush.is-home {
-  right: 9%;
-  bottom: 20%;
-  width: 16%;
-  height: 50%;
+  right: 20px;
+  bottom: 18%;
+  width: 12px;
+  height: 52%;
+  min-height: 56px;
   overflow: visible;
   background: linear-gradient(#51cf66, #2f9e44);
   border: 2px solid #2b8a3e;
@@ -1586,64 +1590,44 @@ button.day-place:active {
   z-index: 5;
 }
 
-.dv-brush::before,
-.dv-brush.is-home::before {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 0;
-  width: 22px;
-  height: 15px;
-  transform: translate(-50%, -100%);
+.dv-head {
+  right: 13px;
+  bottom: 62%;
+  width: 26px;
+  height: 16px;
   background:
     repeating-linear-gradient(
       90deg,
-      #fffef8 0 3px,
-      #dee2e6 3px 5px
+      #fffef8 0 4px,
+      #e9ecef 4px 6px
     );
   border: 2px solid #5c3d1e;
-  border-radius: 4px 4px 2px 2px;
-  box-shadow: inset 0 2px 0 rgba(255, 253, 248, 0.45);
-}
-
-.dv-brush::after,
-.dv-brush.is-home::after {
-  content: "";
-  position: absolute;
-  left: 18%;
-  right: 18%;
-  top: 0;
-  height: 6px;
-  background: #8ce99a;
-  border-radius: 1px;
+  border-radius: 5px 5px 2px 2px;
+  box-shadow: inset 0 2px 0 rgba(255, 253, 248, 0.5);
+  z-index: 6;
 }
 
 .dv-foam,
-.dv-foam::before {
-  background: #fffef8;
-  border: 2px solid #868e96;
+.dv-foam-b {
+  background: #fff;
+  border: 0;
   border-radius: 50%;
+  box-shadow: 1px 1px 0 #e9ecef;
+  z-index: 4;
 }
 
 .dv-foam {
   left: 16%;
-  bottom: 22%;
-  width: 26%;
-  height: 20%;
-  min-width: 20px;
-  min-height: 16px;
-  z-index: 4;
+  bottom: 24%;
+  width: 24px;
+  height: 18px;
 }
 
-.dv-foam::before {
-  content: "";
-  position: absolute;
-  left: 60%;
-  top: -55%;
-  width: 90%;
-  height: 95%;
-  min-width: 16px;
-  min-height: 14px;
+.dv-foam-b {
+  left: 30%;
+  bottom: 31%;
+  width: 18px;
+  height: 14px;
 }
 
 .dv-paste {
@@ -10206,30 +10190,31 @@ button.day-place:active {
   }
 
   .day-vanity-art {
-    width: 58px;
-    height: 66px;
+    width: 110px;
+    height: 124px;
   }
 
   .day-sink-art {
-    width: 64px;
-    height: 60px;
+    width: 110px;
+    height: 96px;
   }
 
   .furn-wash {
-    left: max(50%, calc(10% + 78px));
-    min-width: 56px;
-    min-height: 56px;
+    left: max(48%, calc(8% + 126px));
+    min-width: 110px;
+    min-height: 88px;
   }
 
   .furn-brush {
-    left: 8%;
-    min-width: 56px;
-    min-height: 60px;
+    left: 4%;
+    min-width: 110px;
+    min-height: 118px;
   }
 
   .furn-brush .day-go-bubble {
-    left: 52%;
-    transform: translateX(-42%);
+    left: 2%;
+    top: -28px;
+    transform: none;
     padding: 1px 6px;
     font-size: 11px;
   }
@@ -10451,13 +10436,13 @@ button.day-place:active {
   }
 
   .day-vanity-art {
-    width: 52px;
-    height: 58px;
+    width: 104px;
+    height: 116px;
   }
 
   .day-sink-art {
-    width: 58px;
-    height: 54px;
+    width: 104px;
+    height: 90px;
   }
 
   .day-bed-art {
