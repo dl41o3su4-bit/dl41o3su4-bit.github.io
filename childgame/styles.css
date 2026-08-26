@@ -4055,14 +4055,15 @@ button.day-place:active {
 
 .dress-kid {
   width: min(100%, 280px);
-  height: 100%;
+  height: auto;
+  max-height: 100%;
   min-height: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 0;
-  padding: 6px 10px;
+  padding: 8px 12px 10px;
   overflow: visible;
 }
 
@@ -4075,23 +4076,26 @@ button.day-place:active {
 }
 
 .dress-zone.head {
-  flex: 0 0 30%;
-  min-height: 64px;
+  flex: 0 0 auto;
+  min-height: 0;
   z-index: 1;
   margin-bottom: -7px;
 }
 
 .dress-zone.body {
-  flex: 1 1 38%;
-  min-height: 72px;
+  flex: 0 0 auto;
+  width: auto;
+  min-height: 0;
+  height: 96px;
   margin-top: -7px;
   margin-bottom: -7px;
   overflow: visible;
 }
 
 .dress-zone.feet {
-  flex: 0 0 24%;
-  min-height: 56px;
+  flex: 0 0 auto;
+  min-height: 0;
+  height: 68px;
   margin-top: -7px;
   overflow: visible;
 }
@@ -4102,7 +4106,7 @@ button.day-place:active {
 }
 
 .dress-face {
-  font-size: min(26cqw, 42cqh, 64px);
+  font-size: 56px;
   line-height: 1;
 }
 
@@ -4110,11 +4114,9 @@ button.day-place:active {
   position: relative;
   align-self: stretch;
   justify-self: center;
-  width: min(38%, 80px);
-  height: calc(100% + 48px);
-  min-height: 52px;
-  margin-top: -40px;
-  margin-bottom: -16px;
+  width: 86px;
+  height: 100%;
+  min-height: 0;
   background: #f4d9b0;
   border: 3px solid #e8c48a;
   border-radius: 22px 22px 18px 18px;
@@ -4126,9 +4128,9 @@ button.day-place:active {
 .dress-torso::after {
   content: "";
   position: absolute;
-  top: 14%;
-  width: 36px;
-  height: 20px;
+  top: 18%;
+  width: 34px;
+  height: 18px;
   background: inherit;
   border: inherit;
   border-radius: 16px;
@@ -4136,16 +4138,16 @@ button.day-place:active {
 }
 
 .dress-torso::before {
-  left: -28px;
+  left: -26px;
   border-radius: 16px 6px 10px 16px;
-  transform: rotate(-38deg);
+  transform: rotate(-36deg);
   transform-origin: 100% 30%;
 }
 
 .dress-torso::after {
-  right: -28px;
+  right: -26px;
   border-radius: 6px 16px 16px 10px;
-  transform: rotate(38deg);
+  transform: rotate(36deg);
   transform-origin: 0% 30%;
 }
 
@@ -4168,16 +4170,16 @@ button.day-place:active {
   align-items: stretch;
   justify-content: center;
   gap: 12px;
-  height: calc(100% + 20px);
-  margin-top: -20px;
+  width: 54px;
+  height: 100%;
 }
 
 .dress-legs i {
   position: relative;
   display: block;
-  width: 22px;
+  width: 20px;
   height: 100%;
-  min-height: 28px;
+  min-height: 0;
   background: #f4d9b0;
   border: 3px solid #e8c48a;
   border-radius: 12px;
@@ -4187,9 +4189,9 @@ button.day-place:active {
   content: "";
   position: absolute;
   left: 50%;
-  bottom: -2px;
-  width: 28px;
-  height: 13px;
+  bottom: -3px;
+  width: 26px;
+  height: 12px;
   transform: translateX(-50%);
   background: #5c3310;
   border-radius: 50%;
