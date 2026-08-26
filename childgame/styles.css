@@ -714,9 +714,9 @@ button:focus-visible {
 .day-world.at-door { --fox-x: 17%; }
 .day-world.at-table { --fox-x: 22%; }
 .day-world.at-road { --fox-x: 48%; }
-.day-world.at-park { --fox-x: 86%; }
+.day-world.at-park { --fox-x: 90%; }
 .day-world.at-road .day-marker.is-park-side { --fox-x: 58%; }
-.day-world.at-park .day-marker.is-park-side { --fox-x: 86%; }
+.day-world.at-park .day-marker.is-park-side { --fox-x: 90%; }
 
 .day-world.wx-rain .day-sky {
   background: linear-gradient(#6d8298, #9aafc0 55%, #c5d0d8);
