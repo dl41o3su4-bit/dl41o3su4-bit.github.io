@@ -4294,7 +4294,7 @@
     return html;
   }
 
-  function dayCritterKind(it) {
+  function namedCritterKind(it) {
     var blob = ((it && it.name) || "") + ((it && it.emoji) || "");
     if (/鴨|🦆/.test(blob)) return "duck";
     if (/貓頭鷹|🦉/.test(blob)) return "owl";
@@ -4305,10 +4305,35 @@
     if (/蜥蜴|🦎/.test(blob)) return "lizard";
     if (/魚|🐟|🐠/.test(blob)) return "fish";
     if (/鳥|🐦/.test(blob)) return "bird";
+    return "";
+  }
+
+  function dayCritterKind(it) {
+    var named = namedCritterKind(it);
+    if (named) return named;
     if (it && it.zone === "water") return "fish";
     if (it && it.zone === "tree") return "bird";
     if (it && it.zone === "desert") return "camel";
     return "rabbit";
+  }
+
+  function isHabitatAnimalItem(item) {
+    return !!(item && namedCritterKind(item) && item.name !== "車子" && item.name !== "點心" && !item.feed);
+  }
+
+  function habitatMarkItem(item, zone) {
+    return {
+      name: (item && item.name) || "",
+      emoji: (item && item.emoji) || "",
+      zone: zone || (item && (item.zone || item.slot)) || "grass",
+    };
+  }
+
+  function shouldDrawHabitatCritter(item) {
+    if (!isHabitatAnimalItem(item)) return false;
+    if (state.levelId === "habitat") return true;
+    if (state.levelId === "dress" || state.levelId === "table") return false;
+    return true;
   }
 
   function renderDayCritterMark(it, i, seat) {
@@ -4336,6 +4361,20 @@
       inner +
       "</i>"
     );
+  }
+
+  function renderHabitatChipArt(item) {
+    if (shouldDrawHabitatCritter(item)) {
+      return (
+        '<span class="life-chip-art">' +
+        renderDayCritterMark(habitatMarkItem(item), 0, 0) +
+        "</span>"
+      );
+    }
+    if (state.levelId === "habitat" && item && item.name === "車子") {
+      return '<span class="life-car" aria-hidden="true"></span>';
+    }
+    return '<span class="life-emoji">' + item.emoji + "</span>";
   }
 
   function renderDayAnimals(world) {
@@ -5597,9 +5636,8 @@
       (placed ? ' data-placed="1"' : "") +
       ' role="img" aria-label="' +
       escapeHtml(item.name || item.emoji) +
-      '"><span class="life-emoji">' +
-      item.emoji +
-      "</span>" +
+      '">' +
+      renderHabitatChipArt(item) +
       (item.name ? '<span class="life-name">' + escapeHtml(item.name) + "</span>" : "") +
       "</div>"
     );
@@ -5701,18 +5739,49 @@
     );
   }
 
+  function renderHabitatCritter(item, slotId, i, extraClass) {
+    var mark = extraClass ? " " + extraClass : "";
+    var it = habitatMarkItem(item, slotId);
+    if (isHabitatAnimalItem(item) || namedCritterKind(item)) {
+      return (
+        '<span class="habitat-critter in-' +
+        slotId +
+        " kind-" +
+        dayCritterKind(it) +
+        mark +
+        '" style="--seat:' +
+        i +
+        ';--bob-i:' +
+        i +
+        '">' +
+        renderDayCritterMark(it, i, i) +
+        "</span>"
+      );
+    }
+    return (
+      '<span class="habitat-critter habitat-emoji ' +
+      slotId +
+      mark +
+      '">' +
+      (item.emoji || "") +
+      "</span>"
+    );
+  }
+
   function renderHabitatResidents(slotId) {
     var q = state.questions[state.qIndex];
     var html = itemsInSlot(slotId)
-      .map(function (item) {
-        return '<span class="habitat-critter ' + slotId + '">' + item.emoji + "</span>";
+      .map(function (item, i) {
+        return renderHabitatCritter(item, slotId, i, "");
       })
       .join("");
     var residents = (q && q.residents) || [];
     var i;
+    var seat = itemsInSlot(slotId).length;
     for (i = 0; i < residents.length; i++) {
       if (residents[i].zone === slotId) {
-        html += '<span class="habitat-critter home ' + slotId + '">' + residents[i].emoji + "</span>";
+        html += renderHabitatCritter(residents[i], slotId, seat, "home");
+        seat += 1;
       }
     }
     return html;
@@ -5749,13 +5818,15 @@
       '<i class="hab-water"></i>' +
       '<i class="hab-pond"></i>' +
       '<i class="hab-foam"></i>' +
-      '<i class="hab-tree t1">🌳</i>' +
-      '<i class="hab-tree t2">🌲</i>' +
-      '<i class="hab-tree t3">🌳</i>' +
-      '<i class="hab-palm p1">🌴</i>' +
-      '<i class="hab-palm p2">🌴</i>' +
-      '<i class="hab-tuft g1">🌿</i>' +
-      '<i class="hab-tuft g2">🌿</i>' +
+      '<i class="hab-tree t1"></i>' +
+      '<i class="hab-tree t2"></i>' +
+      '<i class="hab-tree t3"></i>' +
+      '<i class="hab-palm p1"></i>' +
+      '<i class="hab-palm p2"></i>' +
+      '<i class="hab-tuft g1"></i>' +
+      '<i class="hab-tuft g2"></i>' +
+      '<i class="hab-grass"></i>' +
+      '<i class="hab-sand"></i>' +
       "</div>"
     );
   }
@@ -6758,9 +6829,7 @@
       g.innerHTML = '<span class="life-emoji">' + item.emoji + "</span>";
     } else {
       g.innerHTML =
-        '<span class="life-emoji">' +
-        item.emoji +
-        "</span>" +
+        renderHabitatChipArt(item) +
         (item.name ? '<span class="life-name">' + escapeHtml(item.name) + "</span>" : "");
     }
     if (state.levelId === "ord") g.classList.add("ord-flag");
