@@ -8,6 +8,8 @@
   var DAY_ROUTE = ["dress", "table", "light", "habitat"];
   var DAY_TASK_IDS = ["friends", "dress", "table", "light", "retry", "habitat"];
   var MEMORY_CAP = 12;
+  var THEME_WALL_CAP = 8;
+  var THEME_WALL_SHOW = 5;
   var FRUITS = ["🍎", "🍊", "🍋", "🍇", "🍓", "🍑", "🍒", "🍌", "🍉", "🥝", "⭐", "🍐", "🍍", "🥭", "🍈"];
   var ANIMALS = ["🐶", "🐱", "🐰", "🐻", "🐼", "🐸", "🐵", "🐥", "🐧", "🦊", "🦁", "🐯", "🐷", "🐮", "🐨"];
   var FAMILY = [
@@ -155,6 +157,10 @@
   ];
 
   var LEVELS = OLD_MATH_LEVELS.concat(NEW_MATH_LEVELS, WORD_LEVELS, ENGLISH_LEVELS, LIFE_LEVELS);
+  var SCHOOL_THEME_IDS = {};
+  OLD_MATH_LEVELS.concat(NEW_MATH_LEVELS, WORD_LEVELS, ENGLISH_LEVELS).forEach(function (lv) {
+    SCHOOL_THEME_IDS[lv.id] = 1;
+  });
 
   var ABC_ORDER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
@@ -676,6 +682,8 @@
       tableItems: [],
       residentAnimals: [],
       memories: [],
+      themeWall: [],
+      themeToldN: 0,
       lastWeather: "",
       lastPlace: "",
       lightMistakes: 0,
@@ -768,6 +776,53 @@
     return out;
   }
 
+  function sanitizeGlyph(s) {
+    s = sanitizeText(s, 4);
+    if (!s) return "";
+    if (BPM_ORDER.indexOf(s) >= 0) return s;
+    if (/^[A-Za-z]$/.test(s)) return s;
+    if (/^\d{1,2}$/.test(s)) {
+      var n = parseInt(s, 10);
+      if (n >= 0 && n <= 10) return String(n);
+    }
+    if (/^[\u4e00-\u9fff]{1,2}$/.test(s)) return s;
+    return "";
+  }
+
+  function sanitizeThemeMark(it) {
+    if (!isPlainObject(it)) return null;
+    var kind = sanitizeText(it.kind, 8);
+    if (kind !== "glyph" && kind !== "pic" && kind !== "count") return null;
+    var mark = { kind: kind };
+    var glyph = sanitizeGlyph(it.glyph);
+    if (glyph) mark.glyph = glyph;
+    var emoji = sanitizeEmoji(it.emoji);
+    if (emoji) mark.emoji = emoji;
+    var word = sanitizeText(it.word, 12);
+    if (word) mark.word = word;
+    var n = parseInt(it.n, 10);
+    if (isFinite(n) && n > 0) mark.n = Math.min(Math.floor(n), 99);
+    var level = sanitizeText(it.level, 16);
+    if (level) mark.level = level;
+    var date = sanitizeText(it.date, 10);
+    if (/^\d{4}-\d{2}-\d{2}$/.test(date)) mark.date = date;
+    if (kind === "glyph" && !mark.glyph) return null;
+    if (kind === "pic" && !mark.emoji && !mark.word) return null;
+    if (kind === "count" && !mark.n) return null;
+    return mark;
+  }
+
+  function sanitizeThemeWall(list) {
+    if (!Array.isArray(list)) return [];
+    var out = [];
+    var i;
+    for (i = 0; i < list.length && out.length < THEME_WALL_CAP; i++) {
+      var mark = sanitizeThemeMark(list[i]);
+      if (mark) out.push(mark);
+    }
+    return out;
+  }
+
   function sanitizeFoxWorld(raw) {
     var d = defaultFoxWorld();
     if (!isPlainObject(raw)) return d;
@@ -792,6 +847,9 @@
     d.tableItems = sanitizeTableItems(raw.tableItems);
     d.residentAnimals = sanitizeAnimals(raw.residentAnimals);
     d.memories = sanitizeMemories(raw.memories);
+    d.themeWall = sanitizeThemeWall(raw.themeWall);
+    var told = parseInt(raw.themeToldN, 10);
+    d.themeToldN = isFinite(told) && told > 0 ? Math.min(Math.floor(told), 99) : 0;
     d.lastWeather = sanitizeWeather(raw.lastWeather);
     d.lastPlace = sanitizeText(raw.lastPlace, 12);
     var misses = parseInt(raw.lightMistakes, 10);
@@ -1043,6 +1101,145 @@
     }
   }
 
+  function themeMarksSame(a, b) {
+    if (!a || !b || a.kind !== b.kind) return false;
+    if (a.kind === "glyph") return a.glyph === b.glyph;
+    if (a.kind === "pic") return (a.word && a.word === b.word) || (a.emoji && a.emoji === b.emoji && a.word === b.word);
+    if (a.kind === "count") return a.n === b.n && a.emoji === b.emoji;
+    return false;
+  }
+
+  function pushThemeMark(world, raw) {
+    var mark = sanitizeThemeMark(raw);
+    if (!mark || !world) return;
+    if (!world.themeWall) world.themeWall = [];
+    world.themeWall = world.themeWall.filter(function (m) {
+      return !themeMarksSame(m, mark);
+    });
+    world.themeWall.push(mark);
+    if (world.themeWall.length > THEME_WALL_CAP) {
+      world.themeWall = world.themeWall.slice(world.themeWall.length - THEME_WALL_CAP);
+    }
+  }
+
+  function lastThemeMark(world) {
+    var list = (world && world.themeWall) || [];
+    return list.length ? list[list.length - 1] : null;
+  }
+
+  function themeTalkLine(world, yesterday) {
+    var list = (world && world.themeWall) || [];
+    var i;
+    for (i = list.length - 1; i >= 0; i--) {
+      var m = list[i];
+      if (!m) continue;
+      if (m.kind === "glyph" && m.glyph) {
+        return (yesterday ? "你昨天描了" : "你描了") + m.glyph + "，我貼在牆上了";
+      }
+      if (m.kind === "pic" && m.word) {
+        return (yesterday ? "你昨天貼了" : "你貼了") + m.word + "，我貼在牆上了";
+      }
+      if (m.kind === "count" && m.n) {
+        return (yesterday ? "你昨天數了" : "你數了") + m.n + "個，我貼在牆上了";
+      }
+    }
+    return "";
+  }
+
+  function themeWallUnseen(world) {
+    var n = ((world && world.themeWall) || []).length;
+    var told = parseInt(world && world.themeToldN, 10) || 0;
+    return n > 0 && n > told;
+  }
+
+  function markThemeTold(world) {
+    if (!world) return;
+    world.themeToldN = ((world.themeWall) || []).length;
+  }
+
+  function questionThemeMark(q) {
+    var id = state.levelId;
+    if (!q) return null;
+    if (id === "trace" && q.n != null) return { kind: "glyph", glyph: String(q.n) };
+    if (id === "bpm-trace" && q.sym) return { kind: "glyph", glyph: q.sym };
+    if (id === "abc-trace" && q.letter) return { kind: "glyph", glyph: q.letter };
+    if ((id === "bpm-pic" || id === "abc-pic" || id === "hanzi") && (q.emoji || q.word)) {
+      return { kind: "pic", emoji: q.emoji, word: q.word, glyph: q.answer };
+    }
+    if (id === "bpm-listen" && q.word) {
+      return { kind: "pic", emoji: q.emoji, word: q.word, glyph: q.bpm };
+    }
+    return null;
+  }
+
+  function captureQuestionTheme() {
+    if (state.dayMode || !SCHOOL_THEME_IDS[state.levelId]) return;
+    var mark = questionThemeMark(state.questions[state.qIndex]);
+    if (!mark) return;
+    var world = ensureFoxWorld();
+    mark.level = state.levelId;
+    mark.date = world.currentDate;
+    pushThemeMark(world, mark);
+    saveFoxWorld(world);
+  }
+
+  function schoolFinishMark() {
+    var id = state.levelId;
+    var qs = state.questions || [];
+    var q = qs.length ? qs[qs.length - 1] : null;
+    if (!q) return null;
+    if (id === "count") return { kind: "count", n: q.count, emoji: q.fruit };
+    if (id === "match-draw") return { kind: "count", n: q.n, emoji: q.fruit };
+    if (id === "match") {
+      var piles = (q.items || []).slice().sort(function (a, b) {
+        return (b.count || 0) - (a.count || 0);
+      });
+      if (piles[0] && piles[0].count) {
+        return { kind: "count", n: piles[0].count, emoji: piles[0].emoji || piles[0].icon };
+      }
+    }
+    if (id === "more" && (q.icon || q.prize)) return { kind: "pic", emoji: q.icon || q.prize };
+    if (id === "bond") return { kind: "count", n: q.target, emoji: q.fruit };
+    if (id === "ord" && q.target != null) return { kind: "glyph", glyph: String(q.target) };
+    if (id === "next" || id === "missing") {
+      var stone = q.stones && q.miss != null ? q.stones[q.miss] : null;
+      if (stone && stone.ch) return { kind: "glyph", glyph: String(stone.ch) };
+    }
+    if (id === "bpm-draw" || id === "abc-draw") {
+      var toy = (q.items || [])[0];
+      if (toy) return { kind: "pic", emoji: toy.emoji, word: toy.name, glyph: toy.slot };
+    }
+    if (id === "abc-case") {
+      var home = q.homes && q.homes[0];
+      if (home && home.label) return { kind: "glyph", glyph: home.label };
+    }
+    if (id === "bpm-train") {
+      var rider = (q.items || [])[0];
+      if (rider) return { kind: "pic", emoji: rider.emoji, word: rider.name, glyph: rider.slot };
+    }
+    if (id === "abc-pop" && q.letter) return { kind: "glyph", glyph: String(q.letter).toUpperCase() };
+    if (id === "abc-path") {
+      var gap = (q.stones || []).filter(function (s) {
+        return s && s.gap;
+      })[0];
+      if (gap && gap.ch) return { kind: "glyph", glyph: String(gap.ch).toUpperCase() };
+    }
+    return null;
+  }
+
+  function captureSchoolThemeFinish() {
+    if (state.dayMode || !SCHOOL_THEME_IDS[state.levelId]) return;
+    var id = state.levelId;
+    if (questionThemeMark(state.questions[state.qIndex])) return;
+    var mark = schoolFinishMark();
+    if (!mark) return;
+    var world = ensureFoxWorld();
+    mark.level = id;
+    mark.date = world.currentDate;
+    pushThemeMark(world, mark);
+    saveFoxWorld(world);
+  }
+
   function yesterdaySummary(world) {
     var mems = (world && world.memories) || [];
     var i;
@@ -1069,6 +1266,10 @@
       return "昨天你幫我穿上" + outfit[outfit.length - 1].name;
     }
     if (done.dress) return "昨天我們穿好衣服";
+    var theme = lastThemeMark(world);
+    if (theme && theme.kind === "glyph" && theme.glyph) return "昨天你描了" + theme.glyph;
+    if (theme && theme.kind === "pic" && theme.word) return "昨天你貼了" + theme.word;
+    if (theme && theme.kind === "count" && theme.n) return "昨天你數了" + theme.n + "個";
     return "昨天我們在家裡玩";
   }
 
@@ -1159,9 +1360,34 @@
     return line || "今天我們一起玩，明天再來。";
   }
 
+  function dayOpenTalk(world) {
+    var rolledFirst = foxWorldSession.rolled && !foxWorldSession.greeted;
+    var wall;
+    if (rolledFirst) {
+      wall = themeTalkLine(world, true);
+      if (wall) {
+        markThemeTold(world);
+        saveFoxWorld(world);
+        return wall;
+      }
+      return dayFoxGreeting(world);
+    }
+    if (themeWallUnseen(world)) {
+      wall = themeTalkLine(world, false);
+      if (wall) {
+        markThemeTold(world);
+        saveFoxWorld(world);
+        return wall;
+      }
+    }
+    return dayFoxGreeting(world);
+  }
+
   function dayFoxGreeting(world) {
     if (isFirstDayVisit(world)) return "今天要一起去哪裡？";
     if (foxWorldSession.rolled && !foxWorldSession.greeted) {
+      var wallHello = themeTalkLine(world, true);
+      if (wallHello) return wallHello;
       if (world.todayPlan && world.todayPlan[0] === "friends") {
         return (world.todayHints && world.todayHints.friends) || "魚還在河邊，要不要先去看看？";
       }
@@ -3623,11 +3849,11 @@
   function renderDayTableBits(world) {
     var items = world.tableItems || [];
     if (!items.length) {
-      return '<span class="art-meal">🍽️</span>';
+      return '<span class="day-table-empty" aria-hidden="true"></span>';
     }
     return (
       '<span class="day-table-set">' +
-      '<span class="art-meal day-table-base">🍽️</span>' +
+      '<span class="day-table-empty" aria-hidden="true"></span>' +
       '<span class="day-table-bits">' +
       items
         .slice(0, 4)
@@ -3637,6 +3863,50 @@
         .join("") +
       "</span></span>"
     );
+  }
+
+  function renderThemeScrap(mark, i) {
+    var rot = ((i * 7) % 11) - 5;
+    var style = ' style="--r:' + rot + 'deg"';
+    if (mark.kind === "glyph" && mark.glyph) {
+      return '<i class="theme-scrap scrap-glyph"' + style + ">" + escapeHtml(mark.glyph) + "</i>";
+    }
+    if (mark.kind === "pic") {
+      var pic = mark.emoji || escapeHtml(mark.word || mark.glyph || "");
+      return '<i class="theme-scrap scrap-pic"' + style + ">" + pic + "</i>";
+    }
+    if (mark.kind === "count" && mark.n) {
+      return (
+        '<i class="theme-scrap scrap-count"' +
+        style +
+        ">" +
+        (mark.emoji || "") +
+        "<b>" +
+        mark.n +
+        "</b></i>"
+      );
+    }
+    return "";
+  }
+
+  function renderThemeWall(world) {
+    var marks = ((world && world.themeWall) || []).slice();
+    var starOn = state.starsTotal > 0 && marks.length > 0;
+    var room = starOn ? THEME_WALL_SHOW - 1 : THEME_WALL_SHOW;
+    var show = marks.slice(Math.max(0, marks.length - room));
+    if (!show.length) {
+      return '<div class="theme-wall is-empty" aria-hidden="true"><i class="theme-hook"></i></div>';
+    }
+    var html = '<div class="theme-wall" aria-hidden="true">';
+    var i;
+    for (i = 0; i < show.length; i++) {
+      html += renderThemeScrap(show[i], i);
+    }
+    if (starOn) {
+      html += '<i class="theme-scrap scrap-star" style="--r:2deg">⭐' + state.starsTotal + "</i>";
+    }
+    html += "</div>";
+    return html;
   }
 
   function renderDayAnimals(world) {
@@ -3731,7 +4001,9 @@
     var table = dayTaskMeta("table", world);
     return (
       '<div class="day-corner corner-home">' +
-      '<div class="live-house" aria-hidden="true"><i class="live-roof"></i><i class="live-rail"></i><i class="live-win"></i></div>' +
+      '<div class="live-house" aria-hidden="true"><i class="live-roof"></i><i class="live-rail"></i><i class="live-win"></i>' +
+      renderThemeWall(world) +
+      "</div>" +
       '<div class="live-table" aria-hidden="true"></div>' +
       renderDayPlace(world, {
         id: "dress",
@@ -6281,7 +6553,7 @@
     state.screen = "day";
     state.levelId = null;
     state.locked = false;
-    state.foxMsg = dayFoxGreeting(world);
+    state.foxMsg = dayOpenTalk(world);
     state.foxMood = dayIsFinished(world) ? "happy" : "idle";
     foxWorldSession.greeted = true;
     if (location.hash !== "#day") {
@@ -6351,6 +6623,7 @@
   function finishLevel() {
     state.starsRun = 1;
     saveStars(state.starsTotal + 1);
+    captureSchoolThemeFinish();
     state.screen = "clear";
     state.foxMsg = isLifeLevel() ? lifeCheer() : "你好棒！";
     state.foxMood = "happy";
@@ -6366,6 +6639,7 @@
   }
 
   function nextQuestion() {
+    captureQuestionTheme();
     var finishing = state.qIndex + 1 >= state.questions.length;
     if (finishing && state.dayMode) completeDayTask(state.dayTaskId || state.levelId);
     state.choiceMark = null;
@@ -7037,6 +7311,11 @@
         return sanitizeFoxWorld(loadFoxWorldRaw());
       },
       ensure: ensureFoxWorld,
+      pushTheme: function (mark) {
+        var w = ensureFoxWorld();
+        pushThemeMark(w, mark);
+        return saveFoxWorld(w);
+      },
       simulateNewDay: function () {
         var w = ensureFoxWorld();
         var d = new Date();
