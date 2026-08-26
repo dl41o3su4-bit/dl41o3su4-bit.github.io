@@ -5,8 +5,8 @@
   var SOUND_KEY = "childgame-sound";
   var FOX_WORLD_KEY = "foxWorldV1";
   var FOX_WORLD_VERSION = 1;
-  var DAY_ROUTE = ["wash", "dress", "table", "out", "light", "habitat"];
-  var DAY_TASK_IDS = ["friends", "wash", "dress", "table", "out", "light", "retry", "habitat"];
+  var DAY_ROUTE = ["wash", "brush", "dress", "table", "out", "light", "habitat"];
+  var DAY_TASK_IDS = ["friends", "wash", "brush", "dress", "table", "out", "light", "retry", "habitat"];
   var MEMORY_CAP = 12;
   var THEME_WALL_CAP = 8;
   var THEME_WALL_SHOW = 5;
@@ -633,7 +633,7 @@
   }
 
   function emptyTodayCompleted() {
-    return { wash: false, dress: false, table: false, out: false, light: false, habitat: false, retry: false };
+    return { wash: false, brush: false, dress: false, table: false, out: false, light: false, habitat: false, retry: false };
   }
 
   function isDayTaskId(id) {
@@ -649,7 +649,7 @@
     var out = [];
     var seen = {};
     var i;
-    for (i = 0; i < list.length && out.length < 8; i++) {
+    for (i = 0; i < list.length && out.length < 10; i++) {
       var id = sanitizeText(list[i], 12);
       if (!isDayTaskId(id) || seen[id]) continue;
       seen[id] = 1;
@@ -695,6 +695,7 @@
       todayHints: {},
       visitedFriends: false,
       washedToday: false,
+      brushedToday: false,
       wentOut: false,
     };
   }
@@ -841,6 +842,7 @@
     var tc = isPlainObject(raw.todayCompleted) ? raw.todayCompleted : {};
     d.todayCompleted = {
       wash: tc.wash === true,
+      brush: tc.brush === true,
       dress: tc.dress === true,
       table: tc.table === true,
       out: tc.out === true,
@@ -867,6 +869,7 @@
     d.todayHints = sanitizeTodayHints(raw.todayHints);
     d.visitedFriends = raw.visitedFriends === true;
     d.washedToday = raw.washedToday === true;
+    d.brushedToday = raw.brushedToday === true;
     d.wentOut = raw.wentOut === true;
     return d;
   }
@@ -964,6 +967,10 @@
     return !!(world && (world.washedToday || (world.todayCompleted && world.todayCompleted.wash)));
   }
 
+  function brushedTheTeeth(world) {
+    return !!(world && (world.brushedToday || (world.todayCompleted && world.todayCompleted.brush)));
+  }
+
   function wentOutTheDoor(world) {
     return !!(world && (world.wentOut || (world.todayCompleted && world.todayCompleted.out)));
   }
@@ -1048,14 +1055,17 @@
       done.dress ||
       done.retry ||
       done.wash ||
+      done.brush ||
       done.out ||
       world.visitedFriends ||
       world.washedToday ||
+      world.brushedToday ||
       world.wentOut
     ) {
       var plan = [];
       if (world.visitedFriends) plan.push("friends");
       if (done.wash || world.washedToday) plan.push("wash");
+      if (done.brush || world.brushedToday) plan.push("brush");
       if (done.dress) plan.push("dress");
       if (done.table) plan.push("table");
       if (done.out || world.wentOut) plan.push("out");
@@ -1091,12 +1101,17 @@
       return;
     }
     if (justFinished === "wash") {
+      appendPlan(world, "brush");
+      setHint(world, "brush", "手洗好了，去刷牙");
+      return;
+    }
+    if (justFinished === "brush") {
       if (needsClothesChange(world)) {
         appendPlan(world, "dress");
-        setHint(world, "dress", "手洗好了，去穿衣服");
+        setHint(world, "dress", "牙齒刷好了，去穿衣服");
       } else {
         appendPlan(world, "table");
-        setHint(world, "table", "手洗好了，去擺早餐");
+        setHint(world, "table", "牙齒刷好了，去擺早餐");
       }
       return;
     }
@@ -1292,6 +1307,7 @@
       if (m.indexOf("過馬路") >= 0) return "昨天我們一起過馬路";
       if (m.indexOf("來作客") >= 0 || m.indexOf("看朋友") >= 0) return "昨天我們去看朋友";
       if (m.indexOf("出門") >= 0) return "昨天我們出門了";
+      if (m.indexOf("刷牙") >= 0) return "昨天我們刷牙了";
       if (m.indexOf("洗手") >= 0) return "昨天我們洗手了";
       if (m.indexOf("早餐") >= 0 || m.indexOf("擺好") >= 0) return "昨天我們擺好早餐";
       var wear = m.match(/穿上(.+)$/);
@@ -1327,6 +1343,7 @@
     world.todayHints = {};
     world.visitedFriends = false;
     world.washedToday = false;
+    world.brushedToday = false;
     world.wentOut = false;
     world.lightMistakes = 0;
     seedTodayPlan(world);
@@ -1364,13 +1381,15 @@
     var next = nextDayTask(ensureFoxWorld());
     if (next === "friends") return "先去看朋友";
     if (next === "wash") return "先去洗手";
+    if (next === "brush") return "先去刷牙";
     if (next === "dress") return "先穿好衣服";
     if (next === "table") return "先去擺早餐";
     if (next === "out") return "先穿鞋出門";
     if (next === "light" || next === "retry") return "先過馬路";
     if (next === "habitat") return "先去公園";
     if (id === "wash") return "先去看朋友";
-    if (id === "dress") return "先去洗手";
+    if (id === "brush") return "先去洗手";
+    if (id === "dress") return "先去刷牙";
     if (id === "table") return "先穿好衣服";
     if (id === "out") return "先吃完早餐";
     if (id === "light") return "先穿鞋出門";
@@ -1453,8 +1472,15 @@
     if (next && world.todayHints && world.todayHints[next]) return world.todayHints[next];
     if (next === "friends") return "魚還在河邊，要不要先去看看？";
     if (next === "wash") return "首先去洗手";
-    if (next === "dress") return washedTheHands(world) ? "手洗好了，去穿衣服" : "先穿好衣服";
-    if (next === "table") return washedTheHands(world) && !isTaskDone(world, "dress") ? "手洗好了，去擺早餐" : "衣服好了，去擺早餐";
+    if (next === "brush") return "去刷牙";
+    if (next === "dress") {
+      if (brushedTheTeeth(world)) return "牙齒刷好了，去穿衣服";
+      return washedTheHands(world) ? "手洗好了，去穿衣服" : "先穿好衣服";
+    }
+    if (next === "table") {
+      if (brushedTheTeeth(world) && !isTaskDone(world, "dress")) return "牙齒刷好了，去擺早餐";
+      return washedTheHands(world) && !isTaskDone(world, "dress") ? "手洗好了，去擺早餐" : "衣服好了，去擺早餐";
+    }
     if (next === "out") return "吃飽了，穿鞋出門";
     if (next === "light") return wentOutTheDoor(world) ? "門開了，過馬路" : "吃飽了，過馬路";
     if (next === "retry") return "再過一次，看清楚燈";
@@ -1465,7 +1491,7 @@
   function visibleDayPath(world) {
     var path = [];
     if (planHas(world, "friends") || isTaskDone(world, "friends")) path.push("friends");
-    path.push("wash", "dress", "table", "out", "light");
+    path.push("wash", "brush", "dress", "table", "out", "light");
     if (planHas(world, "retry") || isTaskDone(world, "retry")) path.push("retry");
     path.push("habitat");
     return path;
@@ -1485,6 +1511,7 @@
     if (next === "table") return "table";
     if (next === "out") return "door";
     if (next === "wash") return "sink";
+    if (next === "brush") return "vanity";
     if (next === "dress") return "home";
     if (crossedTheRoad(world) || isTaskDone(world, "habitat") || isTaskDone(world, "friends")) {
       return "park";
@@ -1505,6 +1532,7 @@
     var weather = (world && world.lastWeather) || "";
     if (id === "friends") return { spot: "friends", label: "去看朋友", emoji: "🐾" };
     if (id === "wash") return { spot: "sink", label: "洗手", emoji: "🚰" };
+    if (id === "brush") return { spot: "vanity", label: "刷牙", emoji: "🦷" };
     if (id === "dress") return { spot: "room", label: "換衣服", emoji: "👕" };
     if (id === "out") return { spot: "door", label: "出門", emoji: "🚪" };
     if (id === "table") {
@@ -1650,6 +1678,9 @@
     else if (taskId === "wash") {
       world.washedToday = true;
       pushMemory(world, "我們洗手了");
+    } else if (taskId === "brush") {
+      world.brushedToday = true;
+      pushMemory(world, "我們刷牙了");
     } else if (taskId === "out") {
       world.wentOut = true;
       pushMemory(world, "我們出門了");
@@ -3421,7 +3452,7 @@
   function makeOrderQuestions(onlyRoutine) {
     var want = arguments.length ? onlyRoutine : state.dayMode ? state.dayOrderRoutine : "";
     var routines = orderRoutineList();
-    if (want === "wash" || want === "out") {
+    if (want === "wash" || want === "out" || want === "brush") {
       var i;
       for (i = 0; i < routines.length; i++) {
         if (routines[i].routine === want) return [cloneOrderRoutine(routines[i])];
@@ -4345,6 +4376,20 @@
     );
   }
 
+  function renderDayVanityArt(world) {
+    var used = brushedTheTeeth(world);
+    return (
+      '<span class="day-vanity-art' +
+      (used ? " is-used" : "") +
+      '">' +
+      '<i class="dv-counter"></i><i class="dv-basin"></i><i class="dv-well"></i><i class="dv-tap"></i>' +
+      (used
+        ? '<i class="dv-cup is-home"></i><i class="dv-brush is-home"></i><i class="dv-foam"></i><i class="dv-paste"></i>'
+        : '<i class="dv-cup"></i>') +
+      "</span>"
+    );
+  }
+
   function renderDayDoorArt(world) {
     var open = wentOutTheDoor(world);
     return (
@@ -4424,6 +4469,7 @@
 
   function dayPlaceArt(id, world, evening) {
     if (id === "wash") return renderDaySinkArt(world);
+    if (id === "brush") return renderDayVanityArt(world);
     if (id === "out") return renderDayDoorArt(world);
     if (id === "dress") return renderDayDressArt(world);
     if (id === "table") return renderDayTableBits(world);
@@ -4434,6 +4480,7 @@
 
   function renderHomeCorner(world, evening) {
     var wash = dayTaskMeta("wash", world);
+    var brush = dayTaskMeta("brush", world);
     var dress = dayTaskMeta("dress", world);
     var table = dayTaskMeta("table", world);
     var out = dayTaskMeta("out", world);
@@ -4449,6 +4496,13 @@
         label: wash.label,
         art: dayPlaceArt("wash", world, evening),
         extraClass: "furn-wash",
+      }) +
+      renderDayPlace(world, {
+        id: "brush",
+        spot: "vanity",
+        label: brush.label,
+        art: dayPlaceArt("brush", world, evening),
+        extraClass: "furn-brush",
       }) +
       renderDayPlace(world, {
         id: "dress",
@@ -4519,9 +4573,11 @@
         ? "at-table"
         : spot === "sink"
           ? "at-sink"
-          : spot === "door"
-            ? "at-door"
-            : "at-" + spot;
+          : spot === "vanity"
+            ? "at-vanity"
+            : spot === "door"
+              ? "at-door"
+              : "at-" + spot;
     var done = todayDoneCount(world);
     var plan = todayPlanOf(world);
     return (
@@ -7309,8 +7365,8 @@
     state.dayTaskId = id;
     state.dayVisit = id === "friends";
     state.dayLightExtra = id === "retry";
-    state.dayOrderRoutine = id === "wash" || id === "out" ? id : "";
-    var playId = id === "friends" ? "habitat" : id === "retry" ? "light" : id === "wash" || id === "out" ? "order" : id;
+    state.dayOrderRoutine = id === "wash" || id === "brush" || id === "out" ? id : "";
+    var playId = id === "friends" ? "habitat" : id === "retry" ? "light" : id === "wash" || id === "brush" || id === "out" ? "order" : id;
     startLevel(playId, true);
   }
 
@@ -8124,17 +8180,23 @@
           hasWindow: html.indexOf("art-window") >= 0,
           hasZebra: html.indexOf("art-zebra") >= 0,
           hasEmptyBoxClass: /art-window|art-zebra|art-table/.test(html),
-          labels: ["洗手", "出門", "換衣服", "擺早餐", "去野餐", "過馬路", "去公園", "去看朋友", "再過一次"].filter(function (s) {
+          labels: ["洗手", "刷牙", "出門", "換衣服", "擺早餐", "去野餐", "過馬路", "去公園", "去看朋友", "再過一次"].filter(function (s) {
             return html.indexOf(s) >= 0;
           }),
           hasSink: html.indexOf("day-sink-art") >= 0,
+          hasVanity: html.indexOf("day-vanity-art") >= 0,
           hasDoor: html.indexOf("day-door-art") >= 0,
           hasBed: html.indexOf("day-bed-art") >= 0,
           hasHang: html.indexOf("day-hang-art") >= 0,
           hasLightPole: html.indexOf("day-light-art") >= 0,
           sinkNext: html.indexOf("place-sink is-next") >= 0,
+          vanityNext: html.indexOf("place-vanity is-next") >= 0,
           doorNext: html.indexOf("place-door is-next") >= 0,
           sinkUsed: html.indexOf("day-sink-art is-used") >= 0,
+          vanityUsed: html.indexOf("day-vanity-art is-used") >= 0,
+          vanityHasCup: html.indexOf("dv-cup") >= 0,
+          vanityHasBrush: html.indexOf("dv-brush") >= 0,
+          vanityHasFoam: html.indexOf("dv-foam") >= 0,
           doorOpen: html.indexOf("day-door-art is-open") >= 0,
           hasMatShoes: html.indexOf("dd-shoes") >= 0,
           hasOutfitWear: html.indexOf("has-outfit") >= 0,
@@ -8169,6 +8231,16 @@
         world.todayCompleted.wash = true;
         world.lastTask = "wash";
         growTodayPlan(world, "wash");
+        world.todayPlan = sanitizeTodayPlan(world.todayPlan);
+        world.todayHints = sanitizeTodayHints(world.todayHints);
+        return saveFoxWorld(world);
+      },
+      finishBrushForTest: function () {
+        var world = ensureFoxWorld();
+        world.brushedToday = true;
+        world.todayCompleted.brush = true;
+        world.lastTask = "brush";
+        growTodayPlan(world, "brush");
         world.todayPlan = sanitizeTodayPlan(world.todayPlan);
         world.todayHints = sanitizeTodayHints(world.todayHints);
         return saveFoxWorld(world);
@@ -8255,6 +8327,7 @@
           if (id === "friends") world.visitedFriends = true;
           else if (world.todayCompleted) world.todayCompleted[id] = true;
           if (id === "wash") world.washedToday = true;
+          if (id === "brush") world.brushedToday = true;
           if (id === "out") world.wentOut = true;
         }
         world.lastTask = plan[plan.length - 1] || world.lastTask;
@@ -8409,6 +8482,8 @@
           schoolOrder: makeOrderQuestions("").length,
           dayWash: makeOrderQuestions("wash").length,
           dayWashRoutine: (makeOrderQuestions("wash")[0] || {}).routine,
+          dayBrush: makeOrderQuestions("brush").length,
+          dayBrushRoutine: (makeOrderQuestions("brush")[0] || {}).routine,
           dayOut: makeOrderQuestions("out").length,
           dayOutRoutine: (makeOrderQuestions("out")[0] || {}).routine,
         };

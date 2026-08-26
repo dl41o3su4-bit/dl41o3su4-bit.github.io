@@ -609,6 +609,7 @@ button:focus-visible {
 }
 
 .day-banner-scene.at-sink .day-fox-wear.mini { left: 10%; }
+.day-banner-scene.at-vanity .day-fox-wear.mini { left: 14%; }
 .day-banner-scene.at-door .day-fox-wear.mini { left: 20%; }
 .day-banner-scene.at-table .day-fox-wear.mini { left: 26%; }
 .day-banner-scene.at-road .day-fox-wear.mini { left: 48%; }
@@ -708,6 +709,7 @@ button:focus-visible {
 }
 
 .day-world.at-sink { --fox-x: 11%; }
+.day-world.at-vanity { --fox-x: 16%; }
 .day-world.at-home { --fox-x: 18%; }
 .day-world.at-door { --fox-x: 24%; }
 .day-world.at-table { --fox-x: 32%; }
@@ -1157,6 +1159,14 @@ button.day-place:active {
   z-index: 3;
 }
 
+.furn-brush {
+  left: 12%;
+  bottom: 16%;
+  min-width: 44px;
+  min-height: 48px;
+  z-index: 4;
+}
+
 .furn-dress {
   left: 22%;
   bottom: 32%;
@@ -1199,6 +1209,7 @@ button.day-place:active {
 }
 
 .day-sink-art,
+.day-vanity-art,
 .day-door-art {
   position: relative;
   display: block;
@@ -1210,12 +1221,18 @@ button.day-place:active {
   height: clamp(50px, 12vmin, 78px);
 }
 
+.day-vanity-art {
+  width: clamp(40px, 9vmin, 62px);
+  height: clamp(44px, 10.4vmin, 68px);
+}
+
 .day-door-art {
   width: clamp(36px, 8.4vmin, 56px);
   height: clamp(58px, 15vmin, 90px);
 }
 
 .day-sink-art i,
+.day-vanity-art i,
 .day-door-art i {
   position: absolute;
   display: block;
@@ -1332,6 +1349,136 @@ button.day-place:active {
   bottom: 24%;
   height: 12%;
   background: rgba(77, 171, 247, 0.38);
+  border-radius: 50%;
+}
+
+.dv-counter {
+  left: 2%;
+  right: 2%;
+  bottom: 0;
+  height: 26%;
+  background: linear-gradient(#fff8ee, #f4d9b0);
+  border: 2px solid #c1864a;
+  border-radius: 5px 5px 3px 3px;
+  box-shadow: 0 3px 0 #8d5a2b;
+}
+
+.dv-basin {
+  left: 10%;
+  right: 28%;
+  bottom: 14%;
+  height: 36%;
+  background: radial-gradient(ellipse at 50% 26%, #ffffff 0 36%, #f1f3f5 64%, #dee2e6 100%);
+  border: 2px solid #f8f9fa;
+  outline: 2px solid #ced4da;
+  border-radius: 48% 48% 46% 46% / 58% 58% 42% 42%;
+  box-shadow:
+    inset 0 5px 6px rgba(134, 142, 150, 0.26),
+    inset 0 -2px 0 #fff;
+}
+
+.dv-well {
+  left: 22%;
+  right: 40%;
+  bottom: 20%;
+  height: 14%;
+  background: radial-gradient(ellipse at 50% 20%, #fff 0 30%, #e9ecef 100%);
+  border-radius: 50%;
+  box-shadow: inset 0 3px 4px rgba(73, 80, 87, 0.2);
+}
+
+.dv-tap {
+  left: 26%;
+  top: 8%;
+  width: 14%;
+  height: 36%;
+  background: linear-gradient(90deg, #f1f3f5, #adb5bd 46%, #868e96);
+  border: 2px solid #495057;
+  border-radius: 5px 5px 3px 3px;
+}
+
+.dv-tap::before {
+  content: "";
+  position: absolute;
+  left: 68%;
+  top: -2px;
+  width: 12px;
+  height: 10px;
+  border: 4px solid #868e96;
+  border-left-color: transparent;
+  border-bottom-color: transparent;
+  border-radius: 0 10px 0 0;
+}
+
+.dv-tap::after {
+  content: "";
+  position: absolute;
+  left: -5px;
+  top: 26%;
+  width: 6px;
+  height: 4px;
+  background: #ffd43b;
+  border: 2px solid #f59f00;
+  border-radius: 3px;
+}
+
+.dv-cup {
+  right: 6%;
+  bottom: 22%;
+  width: 20%;
+  height: 28%;
+  background: linear-gradient(#fffef8, #ffe8cc);
+  border: 2px solid #e8c48a;
+  border-radius: 3px 3px 6px 6px;
+  box-shadow: inset 0 3px 0 rgba(255, 253, 248, 0.45);
+}
+
+.dv-cup.is-home {
+  background: linear-gradient(#fffef8 0 38%, #d0ebff 38% 72%, #ffe8cc 72% 100%);
+}
+
+.dv-brush {
+  right: 10%;
+  bottom: 36%;
+  width: 12%;
+  height: 34%;
+  background: linear-gradient(#74c0fc, #1c7ed6);
+  border: 2px solid #1864ab;
+  border-radius: 3px 3px 2px 2px;
+  box-shadow: inset 0 2px 0 rgba(255, 253, 248, 0.28);
+}
+
+.dv-brush::before {
+  content: "";
+  position: absolute;
+  left: -18%;
+  right: -18%;
+  top: -10%;
+  height: 28%;
+  background: linear-gradient(#fff4e6, #ffd8a8);
+  border: 2px solid #e8590c;
+  border-radius: 2px 2px 3px 3px;
+}
+
+.dv-foam {
+  left: 22%;
+  right: 40%;
+  bottom: 22%;
+  height: 12%;
+  background: rgba(255, 255, 255, 0.78);
+  border-radius: 50%;
+  box-shadow:
+    6px -2px 0 rgba(255, 255, 255, 0.7),
+    -4px 1px 0 rgba(255, 248, 238, 0.65);
+}
+
+.dv-paste {
+  right: 8%;
+  top: 18%;
+  width: 16%;
+  height: 10%;
+  background: radial-gradient(circle at 40% 40%, #fff 0 30%, #ffc9c9 100%);
+  border: 1px solid #ffa8a8;
   border-radius: 50%;
 }
 
@@ -9044,6 +9191,11 @@ button.day-place:active {
     min-height: 48px;
   }
 
+  .furn-brush {
+    min-width: 40px;
+    min-height: 44px;
+  }
+
   .furn-dress {
     min-width: 64px;
     min-height: 44px;
@@ -9255,6 +9407,11 @@ button.day-place:active {
 
   .day-fox-wear.map .wear.face {
     font-size: 34px;
+  }
+
+  .day-vanity-art {
+    width: 36px;
+    height: 40px;
   }
 
   .day-bed-art {
