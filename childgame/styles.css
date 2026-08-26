@@ -4102,18 +4102,22 @@ button.day-place:active {
 }
 
 .dress-face {
-  font-size: min(24cqw, 40cqh, 58px);
+  font-size: min(26cqw, 42cqh, 64px);
   line-height: 1;
 }
 
 .dress-torso {
   position: relative;
-  width: min(42%, 88px);
-  height: 100%;
+  align-self: stretch;
+  justify-self: center;
+  width: min(38%, 80px);
+  height: calc(100% + 48px);
   min-height: 52px;
+  margin-top: -40px;
+  margin-bottom: -16px;
   background: #f4d9b0;
   border: 3px solid #e8c48a;
-  border-radius: 28px 28px 22px 22px;
+  border-radius: 22px 22px 18px 18px;
   box-shadow: inset 0 -6px 0 rgba(180, 120, 70, 0.12);
   overflow: visible;
 }
@@ -4122,26 +4126,26 @@ button.day-place:active {
 .dress-torso::after {
   content: "";
   position: absolute;
-  top: 16%;
-  width: 28px;
-  height: 16px;
+  top: 14%;
+  width: 36px;
+  height: 20px;
   background: inherit;
   border: inherit;
-  border-radius: 12px;
+  border-radius: 16px;
   pointer-events: none;
 }
 
 .dress-torso::before {
-  left: -22px;
-  border-radius: 14px 5px 8px 14px;
-  transform: rotate(-42deg);
+  left: -28px;
+  border-radius: 16px 6px 10px 16px;
+  transform: rotate(-38deg);
   transform-origin: 100% 30%;
 }
 
 .dress-torso::after {
-  right: -22px;
-  border-radius: 5px 14px 14px 8px;
-  transform: rotate(42deg);
+  right: -28px;
+  border-radius: 6px 16px 16px 10px;
+  transform: rotate(38deg);
   transform-origin: 0% 30%;
 }
 
@@ -4158,17 +4162,20 @@ button.day-place:active {
 }
 
 .dress-legs {
+  align-self: stretch;
+  justify-self: center;
   display: flex;
-  align-items: flex-end;
+  align-items: stretch;
   justify-content: center;
-  gap: 10px;
-  height: 100%;
+  gap: 12px;
+  height: calc(100% + 20px);
+  margin-top: -20px;
 }
 
 .dress-legs i {
   position: relative;
   display: block;
-  width: 18px;
+  width: 22px;
   height: 100%;
   min-height: 28px;
   background: #f4d9b0;
@@ -4180,9 +4187,9 @@ button.day-place:active {
   content: "";
   position: absolute;
   left: 50%;
-  bottom: -3px;
-  width: 22px;
-  height: 10px;
+  bottom: -2px;
+  width: 28px;
+  height: 13px;
   transform: translateX(-50%);
   background: #5c3310;
   border-radius: 50%;
