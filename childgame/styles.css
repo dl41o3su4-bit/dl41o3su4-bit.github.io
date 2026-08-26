@@ -2323,10 +2323,12 @@ button.day-place:active {
 
 .day-critter-feet {
   position: absolute;
-  left: 3px;
-  right: 3px;
-  bottom: -6px;
-  height: 7px;
+  left: 4px;
+  right: 4px;
+  bottom: 0;
+  height: 5px;
+  background: transparent;
+  box-shadow: none;
   pointer-events: none;
   z-index: 4;
 }
@@ -2337,14 +2339,15 @@ button.day-place:active {
   position: absolute;
   bottom: 0;
   width: 3px;
-  height: 7px;
-  background: #21140a;
-  border-radius: 1px 1px 0 0;
-  box-shadow: -2px 5px 0 0 #21140a, 2px 5px 0 0 #21140a;
+  height: 6px;
+  background:
+    linear-gradient(#7c2d12, #7c2d12) 50% 0 / 2px 5px no-repeat,
+    linear-gradient(#7c2d12, #7c2d12) 50% 100% / 3px 1px no-repeat;
+  box-shadow: none;
 }
 
-.day-critter-feet::before { left: 1px; }
-.day-critter-feet::after { right: 1px; }
+.day-critter-feet::before { left: 0; }
+.day-critter-feet::after { right: 0; }
 
 .day-critter.kind-owl {
   width: 16px;
