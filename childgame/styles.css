@@ -6417,15 +6417,30 @@ button.day-place:active {
     repeating-linear-gradient(transparent 0 46px, rgba(255, 253, 248, 0.45) 46px 48px);
 }
 
+.dw-mirror,
+.db-mirror {
+  display: grid !important;
+  place-items: center;
+  font-size: min(10cqw, 12cqh, 36px);
+  color: rgba(61, 42, 26, 0.28);
+}
+
+.dw-mirror::after,
+.db-mirror::after {
+  content: "🧒";
+}
+
 .dw-mirror {
   top: 6%;
   left: 28%;
-  width: 30%;
-  height: 22%;
-  background: linear-gradient(#d0ebff, #a5d8ff);
-  border: 4px solid #e8c48a;
-  border-radius: 16px;
-  box-shadow: inset 0 0 0 3px #fffdf8;
+  width: 26%;
+  height: 20%;
+  background:
+    linear-gradient(135deg, rgba(255, 253, 248, 0.7) 0 16%, transparent 28%),
+    linear-gradient(#a5d8ff, #74c0fc);
+  border: 6px solid #c1864a;
+  border-radius: 10px;
+  box-shadow: 0 6px 0 #8d5a2b;
 }
 
 .dw-basin {
@@ -6499,10 +6514,10 @@ button.day-place:active {
   bottom: 8%;
   width: 42%;
   height: 78%;
-  background: #f4d9b0;
-  border: 3px solid #c1864a;
-  border-radius: 40% 40% 36% 36%;
-  box-shadow: inset 0 -8px 0 rgba(180, 120, 70, 0.12);
+  background: #e8b86d;
+  border: 3px solid #8d5a2b;
+  border-radius: 46% 46% 38% 38%;
+  box-shadow: inset 0 -8px 0 rgba(141, 90, 43, 0.16);
 }
 
 .do-hands .palm.left { left: 4%; transform: rotate(-12deg); }
@@ -6575,11 +6590,14 @@ button.day-place:active {
 .db-mirror {
   top: 6%;
   right: 10%;
-  width: 22%;
-  height: 20%;
-  background: linear-gradient(#d0ebff, #a5d8ff);
-  border: 4px solid #e8c48a;
-  border-radius: 14px;
+  width: 20%;
+  height: 18%;
+  background:
+    linear-gradient(135deg, rgba(255, 253, 248, 0.7) 0 16%, transparent 28%),
+    linear-gradient(#a5d8ff, #74c0fc);
+  border: 6px solid #c1864a;
+  border-radius: 10px;
+  box-shadow: 0 6px 0 #8d5a2b;
 }
 
 .db-sink {
@@ -6593,19 +6611,21 @@ button.day-place:active {
 }
 
 .db-spout {
-  left: 46%;
-  top: 38%;
-  width: 8%;
-  height: 12%;
-  background: #868e96;
-  border-radius: 8px 8px 2px 2px;
+  left: 44%;
+  top: 34%;
+  width: 12%;
+  height: 16%;
+  background: #adb5bd;
+  border: 3px solid #868e96;
+  border-radius: 12px 12px 6px 6px;
+  box-shadow: inset 0 8px 0 #ced4da;
 }
 
 .do-brush .do-spot.spout {
-  left: 40%;
-  top: 32%;
-  width: 20%;
-  height: 22%;
+  left: 38%;
+  top: 28%;
+  width: 24%;
+  height: 26%;
 }
 
 .do-brush .do-prop.cup {
@@ -6815,11 +6835,12 @@ button.day-place:active {
 }
 
 .do-torso {
-  width: 46%;
-  height: 42%;
+  width: 48%;
+  height: 44%;
   background: #a5d8ff;
   border: 3px solid #74c0fc;
-  border-radius: 22px 22px 16px 16px;
+  border-radius: 28px 28px 22px 22px;
+  box-shadow: inset 0 -8px 0 rgba(28, 126, 214, 0.12);
 }
 
 .do-wear {
@@ -6944,9 +6965,10 @@ button.day-place:active {
 
 .do-eat .do-spot.hands {
   left: 4%;
-  top: 28%;
-  width: 26%;
-  height: 28%;
+  top: 22%;
+  width: 28%;
+  height: 34%;
+  background: rgba(255, 253, 248, 0.35);
 }
 
 .do-hands.tiny {
