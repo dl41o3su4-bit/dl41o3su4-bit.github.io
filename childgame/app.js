@@ -4315,7 +4315,10 @@
     var zone = it.zone || "grass";
     var kind = dayCritterKind(it);
     var motion = zone === "water" ? "swim" : zone === "tree" ? "perch" : "bob";
-    var feet = kind === "bird" || kind === "owl" ? '<i class="day-critter-feet"></i>' : "";
+    var inner = "";
+    if (kind === "bird" || kind === "owl") inner += '<i class="day-critter-feet"></i>';
+    if (kind === "bird") inner += '<i class="day-critter-tail"></i>';
+    if (kind === "rabbit" || kind === "bird") inner += '<i class="day-critter-eye"></i>';
     return (
       '<i class="day-critter in-' +
       zone +
@@ -4330,7 +4333,7 @@
       '" aria-label="' +
       escapeHtml(it.name) +
       '">' +
-      feet +
+      inner +
       "</i>"
     );
   }

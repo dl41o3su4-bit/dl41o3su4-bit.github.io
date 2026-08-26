@@ -2148,7 +2148,7 @@ button.day-place:active {
   right: auto;
   top: 76%;
   bottom: auto;
-  margin-top: -12px;
+  margin-top: -13px;
   z-index: 3;
 }
 
@@ -2229,50 +2229,99 @@ button.day-place:active {
 }
 
 .day-critter.kind-bird {
-  width: 16px;
-  height: 12px;
-  background: linear-gradient(#ffd8a8, #ff922b);
-  border: 2px solid #d9480f;
-  border-radius: 50% 50% 40% 40%;
-  box-shadow:
-    inset 7px 3px 0 -3px #fffef8,
-    inset 7px 3px 0 -6px #212529;
+  width: 18px;
+  height: 13px;
+  background: linear-gradient(#ffc078 0 38%, #f76707 100%);
+  border: 2px solid #7c2d12;
+  border-radius: 50% 48% 42% 46%;
+  box-shadow: inset 3px 7px 0 -5px #fff4e0;
   z-index: 3;
 }
 
 .day-critter.kind-bird::before {
   content: "";
   position: absolute;
-  right: -3px;
-  top: 3px;
-  width: 7px;
-  height: 5px;
-  background: #ff922b;
-  border: 1px solid #d9480f;
-  border-radius: 70% 40% 50% 40%;
+  right: -5px;
+  top: 1px;
+  width: 12px;
+  height: 9px;
+  background: #e8590c;
+  border: 2px solid #7c2d12;
+  border-radius: 70% 40% 60% 40%;
   transform-origin: left center;
   animation: bird-wing 1.2s ease-in-out infinite;
+  z-index: 1;
 }
 
 .day-critter.kind-bird::after {
   content: "";
   position: absolute;
-  left: -8px;
-  top: 2px;
+  left: -7px;
+  top: 3px;
   width: 0;
   height: 0;
   border-top: 4px solid transparent;
   border-bottom: 4px solid transparent;
-  border-right: 8px solid #ffd43b;
+  border-right: 8px solid #f59f00;
+  z-index: 2;
+}
+
+.day-critter-eye {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  background: #212529;
+  border-radius: 50%;
+  box-shadow: 1px 0 0 1px #fff;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.day-critter.kind-bird .day-critter-eye {
+  left: 3px;
+  top: 3px;
+  width: 4px;
+  height: 4px;
+}
+
+.day-critter.kind-rabbit .day-critter-eye {
+  left: 22px;
+  top: 9px;
+}
+
+.day-critter-tail {
+  position: absolute;
+  right: -10px;
+  top: 3px;
+  width: 0;
+  height: 0;
+  border-top: 4px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-left: 10px solid #7c2d12;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.day-critter-tail::after {
+  content: "";
+  position: absolute;
+  left: -10px;
+  top: -3px;
+  width: 0;
+  height: 0;
+  border-top: 3px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-left: 8px solid #e8590c;
 }
 
 .day-critter-feet {
   position: absolute;
-  left: 2px;
-  right: 2px;
-  bottom: -4px;
-  height: 5px;
+  left: 3px;
+  right: 3px;
+  bottom: -6px;
+  height: 7px;
   pointer-events: none;
+  z-index: 4;
 }
 
 .day-critter-feet::before,
@@ -2280,14 +2329,15 @@ button.day-place:active {
   content: "";
   position: absolute;
   bottom: 0;
-  width: 2px;
-  height: 5px;
-  background: #3d2a1a;
-  border-radius: 1px;
+  width: 3px;
+  height: 7px;
+  background: #21140a;
+  border-radius: 1px 1px 0 0;
+  box-shadow: -2px 5px 0 0 #21140a, 2px 5px 0 0 #21140a;
 }
 
-.day-critter-feet::before { left: 2px; }
-.day-critter-feet::after { right: 2px; }
+.day-critter-feet::before { left: 1px; }
+.day-critter-feet::after { right: 1px; }
 
 .day-critter.kind-owl {
   width: 16px;
@@ -2325,21 +2375,20 @@ button.day-place:active {
 }
 
 .day-critter.kind-rabbit {
-  width: 24px;
-  height: 20px;
-  background: linear-gradient(#fffef8, #fff4e0);
+  width: 36px;
+  height: 30px;
+  background: linear-gradient(#fffef8 0 46%, #f3d2a8 100%);
   border: 2px solid #8d6b4a;
   border-radius: 50%;
-  box-shadow: inset 14px 6px 0 -7px #212529;
 }
 
 .day-critter.kind-rabbit::before,
 .day-critter.kind-rabbit::after {
   content: "";
   position: absolute;
-  top: -22px;
-  width: 10px;
-  height: 28px;
+  top: -18px;
+  width: 8px;
+  height: 22px;
   background: #fffef8;
   border: 2px solid #8d6b4a;
   border-radius: 10px 10px 4px 4px;
@@ -2347,13 +2396,13 @@ button.day-place:active {
 }
 
 .day-critter.kind-rabbit::before {
-  left: 1px;
-  transform: rotate(-16deg);
+  left: 6px;
+  transform: rotate(-14deg);
 }
 
 .day-critter.kind-rabbit::after {
-  right: 1px;
-  transform: rotate(16deg);
+  right: 6px;
+  transform: rotate(14deg);
 }
 
 .day-critter.kind-sheep {
