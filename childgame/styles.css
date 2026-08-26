@@ -708,11 +708,11 @@ button:focus-visible {
   background: #fffdf8;
 }
 
-.day-world.at-sink { --fox-x: 11%; }
-.day-world.at-vanity { --fox-x: 8%; }
-.day-world.at-home { --fox-x: 18%; }
-.day-world.at-door { --fox-x: 24%; }
-.day-world.at-table { --fox-x: 32%; }
+.day-world.at-sink { --fox-x: 15%; }
+.day-world.at-vanity { --fox-x: 7%; }
+.day-world.at-home { --fox-x: 22%; }
+.day-world.at-door { --fox-x: 28%; }
+.day-world.at-table { --fox-x: 34%; }
 .day-world.at-road { --fox-x: 48%; }
 .day-world.at-park { --fox-x: 80%; }
 .day-world.at-road .day-marker.is-park-side { --fox-x: 58%; }
@@ -886,13 +886,37 @@ button:focus-visible {
 
 .live-house {
   position: absolute;
-  left: 4%;
+  left: 3%;
   bottom: 30%;
-  width: 56%;
+  width: 68%;
   height: 46%;
   background: #fff4d6;
   border: 3px solid #e8c48a;
   border-radius: 10px 10px 0 0;
+}
+
+.live-house::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 18%;
+  bottom: 0;
+  width: 46%;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(214, 168, 110, 0.28) 0 1px,
+      transparent 1px 13px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(214, 168, 110, 0.28) 0 1px,
+      transparent 1px 11px
+    ),
+    #fff8ee;
+  border-right: 2px solid #e8c48a;
+  border-radius: 0 8px 0 0;
+  pointer-events: none;
 }
 
 .live-roof {
@@ -907,9 +931,9 @@ button:focus-visible {
 
 .live-rail {
   position: absolute;
-  left: 10%;
+  left: 50%;
   top: 36%;
-  width: 46%;
+  width: 38%;
   height: 3px;
   background: #c4a574;
   border-radius: 2px;
@@ -927,9 +951,9 @@ button:focus-visible {
 
 .theme-wall {
   position: absolute;
-  left: 6%;
+  left: 50%;
   top: 42%;
-  width: 40%;
+  width: 42%;
   height: 30%;
   display: flex;
   flex-wrap: wrap;
@@ -1002,9 +1026,9 @@ button:focus-visible {
 
 .live-table {
   position: absolute;
-  left: 60%;
+  left: 70%;
   bottom: 22%;
-  width: 38%;
+  width: 28%;
   height: 22%;
   background: transparent;
   border-radius: 0;
@@ -1152,23 +1176,28 @@ button.day-place:active {
 }
 
 .furn-wash {
-  left: 6%;
-  bottom: 32%;
+  left: 30%;
+  bottom: 31%;
   min-width: 56px;
   min-height: 52px;
   z-index: 3;
 }
 
 .furn-brush {
-  left: 0;
-  bottom: 24%;
+  left: 5%;
+  bottom: 31%;
   min-width: 46px;
   min-height: 52px;
-  z-index: 4;
+  z-index: 3;
+}
+
+.furn-brush .day-go-bubble {
+  left: 62%;
+  transform: translateX(-40%);
 }
 
 .furn-dress {
-  left: 22%;
+  left: 52%;
   bottom: 32%;
   min-width: 72px;
   min-height: 48px;
@@ -1178,7 +1207,7 @@ button.day-place:active {
 }
 
 .furn-out {
-  left: 42%;
+  left: 64%;
   bottom: 18%;
   min-width: 48px;
   min-height: 64px;
@@ -1186,7 +1215,7 @@ button.day-place:active {
 }
 
 .furn-table {
-  left: 62%;
+  left: 74%;
   bottom: 36%;
   min-width: 56px;
   min-height: 28px;
@@ -9194,25 +9223,29 @@ button.day-place:active {
   }
 
   .live-house {
-    width: 58%;
+    width: 72%;
   }
 
   .furn-wash {
+    left: 28%;
     min-width: 52px;
     min-height: 48px;
   }
 
   .furn-brush {
+    left: 4%;
     min-width: 40px;
     min-height: 44px;
   }
 
   .furn-dress {
+    left: 50%;
     min-width: 64px;
     min-height: 44px;
   }
 
   .furn-out {
+    left: 62%;
     min-width: 44px;
     min-height: 58px;
   }
@@ -9351,8 +9384,9 @@ button.day-place:active {
 
 @media (orientation: landscape) {
   .theme-wall {
+    left: 50%;
     top: 42%;
-    width: 38%;
+    width: 40%;
     height: 30%;
     gap: 4px 5px;
   }
