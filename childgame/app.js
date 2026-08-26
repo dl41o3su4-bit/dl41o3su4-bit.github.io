@@ -1007,6 +1007,15 @@
     return false;
   }
 
+  function hungOutfitHint(world) {
+    var outfit = (world && world.outfit) || [];
+    if (!outfit.length) return "";
+    var last = outfit[outfit.length - 1] || {};
+    var blob = ((last.name || "") + " " + (last.id || "") + " " + (last.emoji || "")).toLowerCase();
+    var word = /帽|cap|🧢/.test(blob) ? "帽子" : "衣服";
+    return word + "掛好了，去擺早餐";
+  }
+
   function setTableHint(world) {
     var weather = (world && world.lastWeather) || "";
     if (weather === "rain") setHint(world, "table", "下雨了，在家吃早餐");
@@ -1117,7 +1126,9 @@
     }
     if (justFinished === "dress") {
       appendPlan(world, "table");
-      setTableHint(world);
+      var hung = hungOutfitHint(world);
+      if (hung) setHint(world, "table", hung);
+      else setTableHint(world);
       return;
     }
     if (justFinished === "table") {
@@ -1478,6 +1489,9 @@
       return washedTheHands(world) ? "手洗好了，去穿衣服" : "先穿好衣服";
     }
     if (next === "table") {
+      if (isTaskDone(world, "dress") && hasOutfit(world)) {
+        return hungOutfitHint(world) || "衣服好了，去擺早餐";
+      }
       if (brushedTheTeeth(world) && !isTaskDone(world, "dress")) return "牙齒刷好了，去擺早餐";
       return washedTheHands(world) && !isTaskDone(world, "dress") ? "手洗好了，去擺早餐" : "衣服好了，去擺早餐";
     }
@@ -4231,35 +4245,40 @@
 
   function renderDayTableBits(world) {
     var items = world.tableItems || [];
-    if (!items.length) {
-      return '<span class="day-table-empty" aria-hidden="true"></span>';
-    }
-    var vessels = [];
-    var seen = {};
-    var i;
-    for (i = 0; i < items.length && vessels.length < 3; i++) {
-      var kind = wareKindOf(items[i]);
-      if (kind === "side") {
-        if (!seen.bowl) {
-          seen.bowl = 1;
-          vessels.push("bowl");
+    var bits = "";
+    if (items.length) {
+      var vessels = [];
+      var seen = {};
+      var i;
+      for (i = 0; i < items.length && vessels.length < 3; i++) {
+        var kind = wareKindOf(items[i]);
+        if (kind === "side") {
+          if (!seen.bowl) {
+            seen.bowl = 1;
+            vessels.push("bowl");
+          }
+          continue;
         }
-        continue;
+        if (seen[kind]) continue;
+        seen[kind] = 1;
+        vessels.push(kind);
       }
-      if (seen[kind]) continue;
-      seen[kind] = 1;
-      vessels.push(kind);
+      if (!vessels.length) vessels.push("bowl");
+      bits =
+        '<span class="day-table-set">' +
+        '<span class="day-table-bits">' +
+        vessels
+          .map(function (kind) {
+            return '<i class="day-utensil ware-' + kind + '"></i>';
+          })
+          .join("") +
+        "</span></span>";
     }
-    if (!vessels.length) vessels.push("bowl");
     return (
-      '<span class="day-table-set">' +
-      '<span class="day-table-bits">' +
-      vessels
-        .map(function (kind) {
-          return '<i class="day-utensil ware-' + kind + '"></i>';
-        })
-        .join("") +
-      "</span></span>"
+      '<span class="day-table-art">' +
+      '<i class="dtb-top"></i><i class="dtb-leg a"></i><i class="dtb-leg b"></i>' +
+      bits +
+      "</span>"
     );
   }
 
@@ -4566,7 +4585,11 @@
     return outfit
       .slice(0, 3)
       .map(function (it) {
-        return '<i class="day-kept hang-' + hangKindOf(it) + " " + hangSeatOf(it) + '"></i>';
+        var kind = hangKindOf(it);
+        if (kind === "boot") {
+          return '<i class="day-kept hang-boot on-floor a"></i><i class="day-kept hang-boot on-floor b"></i>';
+        }
+        return '<i class="day-kept hang-' + kind + " " + hangSeatOf(it) + '"></i>';
       })
       .join("");
   }
@@ -4579,6 +4602,7 @@
       '<i class="dbd-frame"></i><i class="dbd-blanket"></i><i class="dbd-pillow"></i>' +
       "</span>" +
       '<span class="day-hang-art">' +
+      '<i class="dh-post a"></i><i class="dh-post b"></i>' +
       '<i class="dh-rail"></i><i class="dh-peg a"></i><i class="dh-peg b"></i><i class="dh-hanger"></i>' +
       renderDayHangBits(world) +
       "</span></span>"
@@ -8399,6 +8423,8 @@
           hasDoor: html.indexOf("day-door-art") >= 0,
           hasBed: html.indexOf("day-bed-art") >= 0,
           hasHang: html.indexOf("day-hang-art") >= 0,
+          hasHangPost: html.indexOf("dh-post") >= 0,
+          hasTableArt: html.indexOf("day-table-art") >= 0,
           hasLightPole: html.indexOf("day-light-art") >= 0,
           sinkNext: html.indexOf("place-sink is-next") >= 0,
           vanityNext: html.indexOf("place-vanity is-next") >= 0,

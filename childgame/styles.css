@@ -1025,39 +1025,7 @@ button:focus-visible {
 }
 
 .live-table {
-  position: absolute;
-  left: 70%;
-  bottom: 22%;
-  width: 28%;
-  height: 22%;
-  background: transparent;
-  border-radius: 0;
-  box-shadow: none;
-  z-index: 1;
-}
-
-.live-table::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 36%;
-  background: linear-gradient(#d59a5c, #c08552);
-  border-radius: 4px 4px 2px 2px;
-  box-shadow: 0 3px 0 #8d5b32, inset 0 2px 0 rgba(240, 196, 138, 0.55);
-}
-
-.live-table::after {
-  content: "";
-  position: absolute;
-  left: 14%;
-  right: 14%;
-  top: 34%;
-  height: 62%;
-  background:
-    linear-gradient(#a86a38, #7a4a28) left / 14% 100% no-repeat,
-    linear-gradient(#a86a38, #7a4a28) right / 14% 100% no-repeat;
+  display: none;
 }
 
 .day-world.is-evening .live-win {
@@ -1269,13 +1237,17 @@ button.day-place:active {
 }
 
 .furn-dress {
-  left: 58%;
+  left: 48%;
   bottom: 32%;
-  min-width: 64px;
-  min-height: 48px;
+  min-width: 118px;
+  min-height: 88px;
   flex-direction: row;
   align-items: flex-end;
   z-index: 2;
+}
+
+.furn-dress .day-go-bubble {
+  top: -30px;
 }
 
 .furn-out {
@@ -1287,11 +1259,16 @@ button.day-place:active {
 }
 
 .furn-table {
-  left: 74%;
-  bottom: 36%;
-  min-width: 56px;
-  min-height: 28px;
+  left: auto;
+  right: 2%;
+  bottom: 24%;
+  min-width: 88px;
+  min-height: 56px;
   z-index: 2;
+}
+
+.furn-table .day-go-bubble {
+  top: -28px;
 }
 
 .furn-road {
@@ -1808,6 +1785,7 @@ button.day-place:active {
 }
 
 .day-dress-art,
+.day-table-art,
 .day-light-art,
 .day-tree-art {
   position: relative;
@@ -1818,12 +1796,13 @@ button.day-place:active {
 .day-dress-art {
   display: flex;
   align-items: flex-end;
-  gap: 1px;
+  gap: 4px;
 }
 
 .day-dress-art i,
 .day-bed-art i,
 .day-hang-art i,
+.day-table-art i,
 .day-light-art i,
 .day-tree-art i {
   position: absolute;
@@ -1885,24 +1864,36 @@ button.day-place:active {
 
 .day-hang-art {
   position: relative;
-  width: clamp(22px, 5.4vmin, 34px);
-  height: clamp(36px, 9vmin, 52px);
+  width: clamp(76px, 15.6vmin, 96px);
+  height: clamp(88px, 18vmin, 112px);
 }
 
-.dh-rail {
-  left: 8%;
-  right: 8%;
-  top: 10%;
-  height: 5px;
-  background: #c1864a;
-  border: 1px solid #8d5a2b;
+.dh-post {
+  bottom: 0;
+  width: 10px;
+  height: 100%;
+  background: linear-gradient(#c1864a, #8d5a2b);
+  border: 2px solid #6d451c;
   border-radius: 3px;
+}
+
+.dh-post.a { left: 0; }
+.dh-post.b { right: 0; }
+
+.dh-rail {
+  left: 4%;
+  right: 4%;
+  top: 8%;
+  height: 8px;
+  background: #d59a5c;
+  border: 2px solid #8d5a2b;
+  border-radius: 4px;
 }
 
 .dh-peg {
   top: 14%;
-  width: 4px;
-  height: 8px;
+  width: 6px;
+  height: 12px;
   background: #868e96;
   border-radius: 0 0 3px 3px;
 }
@@ -1911,24 +1902,25 @@ button.day-place:active {
 .dh-peg.b { right: 28%; }
 
 .dh-hanger {
-  left: 18%;
-  right: 18%;
-  top: 22%;
-  height: 10px;
-  border: 2px solid #868e96;
+  left: 22%;
+  right: 22%;
+  top: 24%;
+  height: 16px;
+  border: 3px solid #868e96;
   border-top-color: transparent;
-  border-radius: 0 0 10px 10px;
+  border-radius: 0 0 14px 14px;
 }
 
 .day-hang-art .hang-tee,
 .day-hang-art .hang-coat,
 .day-hang-art .hang-rain,
 .day-hang-art .dh-shirt {
-  left: 16%;
-  right: 16%;
-  top: 30%;
-  height: 36%;
-  border-radius: 3px 3px 5px 5px;
+  left: 20%;
+  right: 20%;
+  top: 34%;
+  height: 38%;
+  min-height: 34px;
+  border-radius: 4px 4px 6px 6px;
 }
 
 .day-hang-art .hang-tee,
@@ -1941,26 +1933,40 @@ button.day-place:active {
 .day-hang-art .hang-tee::before,
 .day-hang-art .hang-tee::after,
 .day-hang-art .dh-shirt::before,
-.day-hang-art .dh-shirt::after {
+.day-hang-art .dh-shirt::after,
+.day-hang-art .hang-coat::before,
+.day-hang-art .hang-coat::after,
+.day-hang-art .hang-rain::before,
+.day-hang-art .hang-rain::after {
   content: "";
   position: absolute;
-  top: 8%;
-  width: 34%;
-  height: 28%;
+  top: 10%;
+  width: 16px;
+  height: 18px;
   background: inherit;
   border: 2px solid #1c7ed6;
-  border-radius: 4px;
+  border-radius: 5px;
 }
 
 .day-hang-art .hang-tee::before,
-.day-hang-art .dh-shirt::before { left: -32%; }
+.day-hang-art .dh-shirt::before,
+.day-hang-art .hang-coat::before,
+.day-hang-art .hang-rain::before { left: -14px; }
+
 .day-hang-art .hang-tee::after,
-.day-hang-art .dh-shirt::after { right: -32%; }
+.day-hang-art .dh-shirt::after,
+.day-hang-art .hang-coat::after,
+.day-hang-art .hang-rain::after { right: -14px; }
 
 .day-hang-art .hang-coat {
   height: 44%;
   background: linear-gradient(#e8c48a, #c1864a);
   border: 2px solid #8d5a2b;
+}
+
+.day-hang-art .hang-coat::before,
+.day-hang-art .hang-coat::after {
+  border-color: #8d5a2b;
 }
 
 .day-hang-art .hang-rain {
@@ -1969,66 +1975,78 @@ button.day-place:active {
   border: 2px solid #e67700;
 }
 
+.day-hang-art .hang-rain::before,
+.day-hang-art .hang-rain::after {
+  border-color: #e67700;
+}
+
 .day-hang-art .hang-cap.on-peg,
 .day-hang-art .hang-glass.on-peg,
 .day-hang-art .hang-scarf.on-peg,
 .day-hang-art .hang-umb.on-peg {
   left: auto;
-  right: 18%;
-  top: 16%;
-  width: 36%;
-  height: 18%;
+  right: 12%;
+  top: 12%;
 }
 
 .day-hang-art .hang-cap {
+  width: 32px;
+  height: 18px;
   background: #fa5252;
   border: 2px solid #c92a2a;
-  border-radius: 6px 6px 2px 2px;
+  border-radius: 8px 8px 2px 2px;
 }
 
 .day-hang-art .hang-cap::after {
   content: "";
   position: absolute;
-  left: -20%;
-  right: 20%;
-  bottom: -2px;
-  height: 4px;
-  background: #c92a2a;
-  border-radius: 2px;
+  left: -8px;
+  right: 18%;
+  bottom: -4px;
+  height: 7px;
+  background: #1c7ed6;
+  border: 2px solid #1864ab;
+  border-radius: 2px 6px 2px 2px;
 }
 
 .day-hang-art .hang-glass {
-  height: 10%;
+  width: 28px;
+  height: 10px;
   background: #3d2a1a;
   border-radius: 3px;
-  box-shadow: 8px 0 0 #3d2a1a;
+  box-shadow: 14px 0 0 #3d2a1a;
 }
 
 .day-hang-art .hang-scarf {
-  height: 28%;
+  width: 22px;
+  height: 28px;
   background: #fa5252;
   border: 2px solid #c92a2a;
   border-radius: 8px;
 }
 
 .day-hang-art .hang-umb {
-  height: 22%;
+  width: 28px;
+  height: 18px;
   background: #4dabf7;
   border: 2px solid #1c7ed6;
-  border-radius: 10px 10px 2px 2px;
+  border-radius: 12px 12px 2px 2px;
 }
 
 .day-hang-art .hang-boot.on-floor {
-  left: 18%;
+  left: 16%;
   right: auto;
   top: auto;
   bottom: 2%;
-  width: 28%;
-  height: 22%;
+  width: 22px;
+  height: 20px;
   background: #3d2a1a;
   border: 2px solid #2a1c12;
   border-radius: 4px 8px 3px 3px;
-  box-shadow: 10px 0 0 #2a1c12;
+}
+
+.day-hang-art .hang-boot.on-floor.b {
+  left: 42%;
 }
 
 .day-light-art {
@@ -2104,21 +2122,45 @@ button.day-place:active {
   pointer-events: none;
 }
 
-.day-spot-art .day-table-empty {
-  position: static;
-  display: block;
-  width: clamp(48px, 11vmin, 72px);
-  height: clamp(16px, 3.8vmin, 24px);
-  background: transparent;
+.day-table-art {
+  width: clamp(88px, 17vmin, 108px);
+  height: clamp(52px, 11vmin, 68px);
 }
 
+.dtb-top {
+  left: 2%;
+  right: 2%;
+  top: 28%;
+  height: 18px;
+  background: linear-gradient(#e8c48a, #c1864a);
+  border: 2px solid #8d5a2b;
+  border-radius: 5px;
+  box-shadow: 0 3px 0 #6d451c, inset 0 2px 0 rgba(255, 232, 204, 0.45);
+  z-index: 2;
+}
+
+.dtb-leg {
+  bottom: 0;
+  top: 52%;
+  width: 10px;
+  background: linear-gradient(#c1864a, #8d5a2b);
+  border: 2px solid #6d451c;
+  border-radius: 2px;
+}
+
+.dtb-leg.a { left: 14%; }
+.dtb-leg.b { right: 14%; }
+
 .day-table-set {
-  position: relative;
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  top: 2%;
+  height: 30px;
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  min-width: 52px;
-  min-height: 22px;
+  z-index: 3;
 }
 
 .day-table-bits {
@@ -2142,8 +2184,8 @@ button.day-place:active {
 }
 
 .ware-bowl {
-  width: clamp(14px, 3.4vmin, 20px);
-  height: clamp(9px, 2.2vmin, 13px);
+  width: clamp(22px, 4.8vmin, 28px);
+  height: clamp(14px, 3.2vmin, 18px);
   background: radial-gradient(ellipse at 50% 18%, #fffef8 0 28%, #ffe8cc 64%, #e8c48a 100%);
   border: 2px solid #c1864a;
   border-radius: 50% 50% 46% 46%;
@@ -2151,8 +2193,8 @@ button.day-place:active {
 }
 
 .ware-cup {
-  width: clamp(9px, 2.2vmin, 12px);
-  height: clamp(12px, 2.8vmin, 16px);
+  width: clamp(14px, 3.2vmin, 18px);
+  height: clamp(18px, 4vmin, 22px);
   background: linear-gradient(#d0ebff, #74c0fc);
   border: 2px solid #1c7ed6;
   border-radius: 3px 3px 5px 5px;
@@ -2162,18 +2204,18 @@ button.day-place:active {
 .ware-cup::after {
   content: "";
   position: absolute;
-  right: -5px;
+  right: -6px;
   top: 22%;
-  width: 5px;
+  width: 7px;
   height: 42%;
   border: 2px solid #1c7ed6;
   border-left-color: transparent;
-  border-radius: 0 6px 6px 0;
+  border-radius: 0 7px 7px 0;
 }
 
 .ware-plate {
-  width: clamp(16px, 3.8vmin, 22px);
-  height: clamp(6px, 1.5vmin, 8px);
+  width: clamp(22px, 4.8vmin, 28px);
+  height: clamp(8px, 2vmin, 11px);
   background: radial-gradient(ellipse at 50% 40%, #fff 0 40%, #f1f3f5 100%);
   border: 2px solid #adb5bd;
   border-radius: 50%;
@@ -10220,9 +10262,25 @@ button.day-place:active {
   }
 
   .furn-dress {
-    left: max(74%, calc(10% + 104px));
-    min-width: 52px;
-    min-height: 40px;
+    left: 44%;
+    min-width: 110px;
+    min-height: 80px;
+  }
+
+  .furn-table {
+    right: 1%;
+    min-width: 84px;
+    min-height: 50px;
+  }
+
+  .day-hang-art {
+    width: 72px;
+    height: 88px;
+  }
+
+  .day-table-art {
+    width: 84px;
+    height: 50px;
   }
 
   .furn-out {
@@ -10451,8 +10509,13 @@ button.day-place:active {
   }
 
   .day-hang-art {
-    width: 20px;
-    height: 32px;
+    width: 72px;
+    height: 84px;
+  }
+
+  .day-table-art {
+    width: 84px;
+    height: 50px;
   }
 
   .day-light-art {
