@@ -4177,19 +4177,42 @@
     );
   }
 
+  function wareKindOf(item) {
+    var blob = ((item && (item.name || "")) + " " + (item && (item.emoji || ""))).toLowerCase();
+    if (/杯|🥛|cup/.test(blob)) return "cup";
+    if (/盤|🍽️|plate/.test(blob)) return "plate";
+    if (/筷|🥢|匙|🥄|叉|🍴/.test(blob)) return "side";
+    return "bowl";
+  }
+
   function renderDayTableBits(world) {
     var items = world.tableItems || [];
     if (!items.length) {
       return '<span class="day-table-empty" aria-hidden="true"></span>';
     }
+    var vessels = [];
+    var seen = {};
+    var i;
+    for (i = 0; i < items.length && vessels.length < 3; i++) {
+      var kind = wareKindOf(items[i]);
+      if (kind === "side") {
+        if (!seen.bowl) {
+          seen.bowl = 1;
+          vessels.push("bowl");
+        }
+        continue;
+      }
+      if (seen[kind]) continue;
+      seen[kind] = 1;
+      vessels.push(kind);
+    }
+    if (!vessels.length) vessels.push("bowl");
     return (
       '<span class="day-table-set">' +
-      '<span class="day-table-empty" aria-hidden="true"></span>' +
       '<span class="day-table-bits">' +
-      items
-        .slice(0, 4)
-        .map(function (it) {
-          return '<i class="day-utensil">' + it.emoji + "</i>";
+      vessels
+        .map(function (kind) {
+          return '<i class="day-utensil ware-' + kind + '"></i>';
         })
         .join("") +
       "</span></span>"
@@ -4329,29 +4352,84 @@
       (open ? " is-open" : "") +
       '">' +
       '<i class="dd-frame"></i><i class="dd-leaf"></i><i class="dd-mat"></i>' +
-      (open ? "" : '<i class="dd-socks">🧦</i><i class="dd-shoes">👟</i>') +
+      (open ? "" : '<i class="dd-socks"></i><i class="dd-shoes"></i>') +
       "</span>"
     );
+  }
+
+  function hangKindOf(item) {
+    var blob = ((item && (item.name || "")) + " " + (item && (item.id || "")) + " " + (item && (item.emoji || ""))).toLowerCase();
+    if (/雨衣|rain/.test(blob)) return "rain";
+    if (/外套|coat|wind/.test(blob)) return "coat";
+    if (/雨靴|boot|👢/.test(blob)) return "boot";
+    if (/帽|cap|🧢/.test(blob)) return "cap";
+    if (/鏡|glass/.test(blob)) return "glass";
+    if (/圍巾|scarf|🧣/.test(blob)) return "scarf";
+    if (/傘|umb|☂️/.test(blob)) return "umb";
+    if (item && item.slot === "feet") return "boot";
+    if (item && item.slot === "head") return "cap";
+    return "tee";
+  }
+
+  function hangSeatOf(item) {
+    if (item && item.slot === "head") return "on-peg";
+    if (item && item.slot === "feet") return "on-floor";
+    return "on-hanger";
+  }
+
+  function renderDayHangBits(world) {
+    var outfit = (world && world.outfit) || [];
+    if (!outfit.length) {
+      return '<i class="dh-shirt hang-tee on-hanger"></i>';
+    }
+    return outfit
+      .slice(0, 3)
+      .map(function (it) {
+        return '<i class="day-kept hang-' + hangKindOf(it) + " " + hangSeatOf(it) + '"></i>';
+      })
+      .join("");
+  }
+
+  function renderDayDressArt(world) {
+    return (
+      '<span class="day-dress-art">' +
+      '<span class="day-bed-art">' +
+      '<i class="dbd-post a"></i><i class="dbd-post b"></i>' +
+      '<i class="dbd-frame"></i><i class="dbd-blanket"></i><i class="dbd-pillow"></i>' +
+      "</span>" +
+      '<span class="day-hang-art">' +
+      '<i class="dh-rail"></i><i class="dh-peg a"></i><i class="dh-peg b"></i><i class="dh-hanger"></i>' +
+      renderDayHangBits(world) +
+      "</span></span>"
+    );
+  }
+
+  function renderDayLightArt(evening) {
+    return (
+      '<span class="day-light-art' +
+      (evening ? " is-evening" : "") +
+      '">' +
+      '<i class="dl-housing">' +
+      '<i class="dl-lamp red"></i><i class="dl-lamp amber"></i><i class="dl-lamp green"></i>' +
+      "</i>" +
+      '<i class="dl-pole"></i><i class="dl-base"></i>' +
+      (evening ? '<i class="dl-glow"></i>' : "") +
+      "</span>"
+    );
+  }
+
+  function renderDayTreeArt() {
+    return '<span class="day-tree-art"><i class="dt-canopy"></i><i class="dt-trunk"></i></span>';
   }
 
   function dayPlaceArt(id, world, evening) {
     if (id === "wash") return renderDaySinkArt(world);
     if (id === "out") return renderDayDoorArt(world);
-    if (id === "dress") {
-      var kept = (world.outfit || []).length ? renderMiniIcons(world.outfit, "day-kept") : "";
-      return (
-        '<span class="art-bed">🛏️</span>' +
-        (kept || '<span class="art-shirt">👕</span>')
-      );
-    }
-    if (id === "table") {
-      return renderDayTableBits(world);
-    }
-    if (id === "light" || id === "retry") {
-      return '<span class="art-light">🚦</span>' + (evening ? '<span class="art-lamp">🏮</span>' : "");
-    }
+    if (id === "dress") return renderDayDressArt(world);
+    if (id === "table") return renderDayTableBits(world);
+    if (id === "light" || id === "retry") return renderDayLightArt(evening);
     if (id === "friends") return '<span class="art-paw">🐾</span>' + renderDayAnimals(world);
-    return '<span class="art-tree">🌳</span>' + renderDayAnimals(world);
+    return renderDayTreeArt() + renderDayAnimals(world);
   }
 
   function renderHomeCorner(world, evening) {
@@ -4419,7 +4497,7 @@
     var meta = dayTaskMeta(id, world);
     return (
       '<div class="day-corner corner-park">' +
-      '<span class="day-trees" aria-hidden="true"><i>🌳</i><i>🌲</i><i>🌳</i></span>' +
+      '<span class="day-trees" aria-hidden="true"><i class="day-tree"></i><i class="day-tree is-mid"></i><i class="day-tree"></i></span>' +
       renderDayPlace(world, {
         id: id,
         spot: id === "friends" ? "friends" : "park",
@@ -8051,6 +8129,9 @@
           }),
           hasSink: html.indexOf("day-sink-art") >= 0,
           hasDoor: html.indexOf("day-door-art") >= 0,
+          hasBed: html.indexOf("day-bed-art") >= 0,
+          hasHang: html.indexOf("day-hang-art") >= 0,
+          hasLightPole: html.indexOf("day-light-art") >= 0,
           sinkNext: html.indexOf("place-sink is-next") >= 0,
           doorNext: html.indexOf("place-door is-next") >= 0,
           sinkUsed: html.indexOf("day-sink-art is-used") >= 0,

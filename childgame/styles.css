@@ -1045,19 +1045,50 @@ button:focus-visible {
   bottom: 34%;
   display: flex;
   align-items: flex-end;
-  gap: 2px;
-  font-size: clamp(28px, 7vmin, 46px);
-  line-height: 1;
+  gap: 4px;
   pointer-events: none;
 }
 
-.day-trees i {
+.day-tree,
+.day-tree-art {
+  position: relative;
+  display: block;
+  width: clamp(18px, 4.4vmin, 28px);
+  height: clamp(28px, 7vmin, 42px);
   font-style: normal;
 }
 
-.day-trees i:nth-child(2) {
-  font-size: 0.78em;
-  transform: translateY(6px);
+.day-tree.is-mid {
+  width: clamp(14px, 3.6vmin, 22px);
+  height: clamp(22px, 5.6vmin, 34px);
+  transform: translateY(4px);
+}
+
+.day-tree::before,
+.day-tree-art .dt-canopy {
+  content: "";
+  position: absolute;
+  left: 4%;
+  right: 4%;
+  top: 0;
+  height: 62%;
+  background: radial-gradient(circle at 38% 34%, #8ce99a 0 28%, #2f9e44 72%, #2b8a3e 100%);
+  border: 2px solid #2b8a3e;
+  border-radius: 50%;
+  box-shadow: inset 0 3px 0 rgba(255, 253, 248, 0.18);
+}
+
+.day-tree::after,
+.day-tree-art .dt-trunk {
+  content: "";
+  position: absolute;
+  left: 38%;
+  right: 38%;
+  top: 54%;
+  bottom: 0;
+  background: linear-gradient(#c1864a, #8d5a2b);
+  border: 1px solid #6d451c;
+  border-radius: 2px;
 }
 
 .day-furn,
@@ -1127,10 +1158,13 @@ button.day-place:active {
 }
 
 .furn-dress {
-  left: 26%;
-  bottom: 38%;
+  left: 22%;
+  bottom: 32%;
+  min-width: 72px;
+  min-height: 48px;
   flex-direction: row;
   align-items: flex-end;
+  z-index: 2;
 }
 
 .furn-out {
@@ -1142,15 +1176,20 @@ button.day-place:active {
 }
 
 .furn-table {
-  left: 64%;
-  bottom: 34%;
+  left: 62%;
+  bottom: 36%;
+  min-width: 56px;
+  min-height: 28px;
+  z-index: 2;
 }
 
 .furn-road {
   left: 0;
   right: 0;
-  bottom: 30%;
+  bottom: 28%;
   width: max-content;
+  min-width: 28px;
+  min-height: 56px;
   margin-inline: auto;
 }
 
@@ -1347,12 +1386,50 @@ button.day-place:active {
 .dd-socks,
 .dd-shoes {
   bottom: 2%;
-  font-size: clamp(12px, 2.8vmin, 18px);
+  height: 20%;
+  width: 40%;
   z-index: 1;
+  font-size: 0;
+  color: transparent;
 }
 
-.dd-socks { left: 4%; }
-.dd-shoes { right: 2%; }
+.dd-socks { left: 6%; }
+.dd-shoes { right: 4%; }
+
+.dd-socks::before,
+.dd-socks::after,
+.dd-shoes::before,
+.dd-shoes::after {
+  content: "";
+  position: absolute;
+  bottom: 2%;
+}
+
+.dd-socks::before,
+.dd-socks::after {
+  width: 38%;
+  height: 86%;
+  background: linear-gradient(#ffa8a8, #fa5252);
+  border: 2px solid #c92a2a;
+  border-radius: 7px 7px 3px 3px;
+  box-shadow: inset 0 3px 0 rgba(255, 253, 248, 0.28);
+}
+
+.dd-socks::before { left: 6%; }
+.dd-socks::after { right: 6%; }
+
+.dd-shoes::before,
+.dd-shoes::after {
+  width: 42%;
+  height: 72%;
+  background: linear-gradient(#74c0fc, #1c7ed6);
+  border: 2px solid #1864ab;
+  border-radius: 8px 12px 4px 4px;
+  box-shadow: inset 0 3px 0 rgba(255, 253, 248, 0.28);
+}
+
+.dd-shoes::before { left: 2%; }
+.dd-shoes::after { right: 2%; }
 
 .day-go-bubble {
   position: absolute;
@@ -1393,58 +1470,384 @@ button.day-place:active {
   text-align: center;
 }
 
-.day-spot-art .art-bed,
-.day-spot-art .art-shirt,
-.day-spot-art .art-meal,
-.day-spot-art .art-light,
-.day-spot-art .art-lamp,
-.day-spot-art .art-tree,
-.day-spot-art .art-paw,
-.day-spot-art .day-kept {
+.day-spot-art .art-paw {
   position: static;
   font-style: normal;
   line-height: 1;
-  font-size: clamp(22px, 5.2vmin, 34px);
+  font-size: clamp(18px, 4.2vmin, 26px);
+}
+
+.day-dress-art,
+.day-light-art,
+.day-tree-art {
+  position: relative;
+  display: block;
+  pointer-events: none;
+}
+
+.day-dress-art {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+}
+
+.day-dress-art i,
+.day-bed-art i,
+.day-hang-art i,
+.day-light-art i,
+.day-tree-art i {
+  position: absolute;
+  display: block;
+  font-style: normal;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.day-bed-art {
+  position: relative;
+  width: clamp(46px, 10.4vmin, 70px);
+  height: clamp(26px, 6.6vmin, 40px);
+}
+
+.dbd-post {
+  bottom: 0;
+  width: 12%;
+  height: 86%;
+  background: linear-gradient(#c1864a, #8d5a2b);
+  border: 2px solid #6d451c;
+  border-radius: 3px 3px 2px 2px;
+}
+
+.dbd-post.a { left: 0; }
+.dbd-post.b { right: 0; }
+
+.dbd-frame {
+  left: 6%;
+  right: 6%;
+  bottom: 6%;
+  height: 42%;
+  background: linear-gradient(#d59a5c, #c08552);
+  border: 2px solid #8d5a2b;
+  border-radius: 3px;
+  box-shadow: 0 2px 0 #6d451c;
+}
+
+.dbd-blanket {
+  left: 14%;
+  right: 10%;
+  bottom: 22%;
+  height: 38%;
+  background: linear-gradient(#fff8ee, #f4d9b0);
+  border: 2px solid #e8c48a;
+  border-radius: 4px 10px 3px 3px;
+  box-shadow: inset 0 3px 0 rgba(255, 253, 248, 0.5);
+}
+
+.dbd-pillow {
+  left: 12%;
+  bottom: 48%;
+  width: 28%;
+  height: 22%;
+  background: #fffef8;
+  border: 2px solid #e8c48a;
+  border-radius: 6px;
+}
+
+.day-hang-art {
+  position: relative;
+  width: clamp(22px, 5.4vmin, 34px);
+  height: clamp(36px, 9vmin, 52px);
+}
+
+.dh-rail {
+  left: 8%;
+  right: 8%;
+  top: 10%;
+  height: 5px;
+  background: #c1864a;
+  border: 1px solid #8d5a2b;
+  border-radius: 3px;
+}
+
+.dh-peg {
+  top: 14%;
+  width: 4px;
+  height: 8px;
+  background: #868e96;
+  border-radius: 0 0 3px 3px;
+}
+
+.dh-peg.a { left: 28%; }
+.dh-peg.b { right: 28%; }
+
+.dh-hanger {
+  left: 18%;
+  right: 18%;
+  top: 22%;
+  height: 10px;
+  border: 2px solid #868e96;
+  border-top-color: transparent;
+  border-radius: 0 0 10px 10px;
+}
+
+.day-hang-art .hang-tee,
+.day-hang-art .hang-coat,
+.day-hang-art .hang-rain,
+.day-hang-art .dh-shirt {
+  left: 16%;
+  right: 16%;
+  top: 30%;
+  height: 36%;
+  border-radius: 3px 3px 5px 5px;
+}
+
+.day-hang-art .hang-tee,
+.day-hang-art .dh-shirt {
+  background: linear-gradient(#a5d8ff, #74c0fc);
+  border: 2px solid #1c7ed6;
+  box-shadow: inset 0 3px 0 rgba(255, 253, 248, 0.28);
+}
+
+.day-hang-art .hang-tee::before,
+.day-hang-art .hang-tee::after,
+.day-hang-art .dh-shirt::before,
+.day-hang-art .dh-shirt::after {
+  content: "";
+  position: absolute;
+  top: 8%;
+  width: 34%;
+  height: 28%;
+  background: inherit;
+  border: 2px solid #1c7ed6;
+  border-radius: 4px;
+}
+
+.day-hang-art .hang-tee::before,
+.day-hang-art .dh-shirt::before { left: -32%; }
+.day-hang-art .hang-tee::after,
+.day-hang-art .dh-shirt::after { right: -32%; }
+
+.day-hang-art .hang-coat {
+  height: 44%;
+  background: linear-gradient(#e8c48a, #c1864a);
+  border: 2px solid #8d5a2b;
+}
+
+.day-hang-art .hang-rain {
+  height: 44%;
+  background: linear-gradient(#ffe066, #f59f00);
+  border: 2px solid #e67700;
+}
+
+.day-hang-art .hang-cap.on-peg,
+.day-hang-art .hang-glass.on-peg,
+.day-hang-art .hang-scarf.on-peg,
+.day-hang-art .hang-umb.on-peg {
+  left: auto;
+  right: 18%;
+  top: 16%;
+  width: 36%;
+  height: 18%;
+}
+
+.day-hang-art .hang-cap {
+  background: #fa5252;
+  border: 2px solid #c92a2a;
+  border-radius: 6px 6px 2px 2px;
+}
+
+.day-hang-art .hang-cap::after {
+  content: "";
+  position: absolute;
+  left: -20%;
+  right: 20%;
+  bottom: -2px;
+  height: 4px;
+  background: #c92a2a;
+  border-radius: 2px;
+}
+
+.day-hang-art .hang-glass {
+  height: 10%;
+  background: #3d2a1a;
+  border-radius: 3px;
+  box-shadow: 8px 0 0 #3d2a1a;
+}
+
+.day-hang-art .hang-scarf {
+  height: 28%;
+  background: #fa5252;
+  border: 2px solid #c92a2a;
+  border-radius: 8px;
+}
+
+.day-hang-art .hang-umb {
+  height: 22%;
+  background: #4dabf7;
+  border: 2px solid #1c7ed6;
+  border-radius: 10px 10px 2px 2px;
+}
+
+.day-hang-art .hang-boot.on-floor {
+  left: 18%;
+  right: auto;
+  top: auto;
+  bottom: 2%;
+  width: 28%;
+  height: 22%;
+  background: #3d2a1a;
+  border: 2px solid #2a1c12;
+  border-radius: 4px 8px 3px 3px;
+  box-shadow: 10px 0 0 #2a1c12;
+}
+
+.day-light-art {
+  width: clamp(20px, 4.8vmin, 30px);
+  height: clamp(52px, 13vmin, 78px);
+}
+
+.dl-housing {
+  left: 12%;
+  right: 12%;
+  top: 0;
+  height: 52%;
+  background: #3d2a1a;
+  border: 2px solid #2a1c12;
+  border-radius: 7px;
+  box-shadow: inset 0 2px 0 rgba(255, 232, 204, 0.12), 0 2px 0 #2a1c12;
+}
+
+.dl-lamp {
+  left: 20%;
+  right: 20%;
+  height: 22%;
+  border-radius: 50%;
+  border: 1px solid #2a1c12;
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.18);
+}
+
+.dl-lamp.red {
+  top: 8%;
+  background: radial-gradient(circle at 32% 28%, #ff8787 0 28%, #fa5252 70%, #c92a2a 100%);
+}
+
+.dl-lamp.amber {
+  top: 38%;
+  background: radial-gradient(circle at 32% 28%, #ffe066 0 28%, #f59f00 70%, #e67700 100%);
+}
+
+.dl-lamp.green {
+  top: 68%;
+  background: radial-gradient(circle at 32% 28%, #8ce99a 0 28%, #2f9e44 70%, #2b8a3e 100%);
+}
+
+.dl-pole {
+  left: 42%;
+  right: 42%;
+  top: 50%;
+  bottom: 8%;
+  background: linear-gradient(#868e96, #495057);
+  border: 1px solid #343a40;
+}
+
+.dl-base {
+  left: 22%;
+  right: 22%;
+  bottom: 0;
+  height: 10%;
+  background: #495057;
+  border: 1px solid #343a40;
+  border-radius: 2px;
+}
+
+.day-light-art.is-evening .dl-housing {
+  box-shadow: 0 0 12px rgba(255, 212, 59, 0.85), inset 0 2px 0 rgba(255, 232, 204, 0.18);
+}
+
+.dl-glow {
+  left: 18%;
+  right: 18%;
+  top: -6%;
+  height: 22%;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffe066 0 35%, rgba(255, 160, 40, 0) 72%);
+  pointer-events: none;
 }
 
 .day-spot-art .day-table-empty {
   position: static;
   display: block;
-  width: clamp(44px, 10vmin, 68px);
-  height: clamp(18px, 4.2vmin, 26px);
+  width: clamp(48px, 11vmin, 72px);
+  height: clamp(16px, 3.8vmin, 24px);
   background: transparent;
 }
 
 .day-table-set {
   position: relative;
-  display: inline-grid;
-  place-items: end center;
-  min-width: 52px;
-  min-height: 40px;
-}
-
-.day-table-bits {
-  position: absolute;
-  left: 50%;
-  bottom: 70%;
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  gap: 0;
-  transform: translateX(-50%);
+  min-width: 52px;
+  min-height: 22px;
+}
+
+.day-table-bits {
+  position: static;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 4px;
+  transform: none;
   pointer-events: none;
   z-index: 1;
 }
 
 .day-table-bits .day-utensil {
+  position: relative;
+  display: block;
   font-style: normal;
   line-height: 1;
-  font-size: clamp(11px, 2.6vmin, 16px);
-  filter: drop-shadow(0 1px 0 rgba(80, 50, 20, 0.18));
+  font-size: 0;
+  color: transparent;
 }
 
-.day-kept {
-  font-size: clamp(18px, 4.2vmin, 26px);
+.ware-bowl {
+  width: clamp(14px, 3.4vmin, 20px);
+  height: clamp(9px, 2.2vmin, 13px);
+  background: radial-gradient(ellipse at 50% 18%, #fffef8 0 28%, #ffe8cc 64%, #e8c48a 100%);
+  border: 2px solid #c1864a;
+  border-radius: 50% 50% 46% 46%;
+  box-shadow: inset 0 3px 3px rgba(141, 90, 43, 0.2);
+}
+
+.ware-cup {
+  width: clamp(9px, 2.2vmin, 12px);
+  height: clamp(12px, 2.8vmin, 16px);
+  background: linear-gradient(#d0ebff, #74c0fc);
+  border: 2px solid #1c7ed6;
+  border-radius: 3px 3px 5px 5px;
+  box-shadow: inset 0 3px 0 rgba(255, 253, 248, 0.35);
+}
+
+.ware-cup::after {
+  content: "";
+  position: absolute;
+  right: -5px;
+  top: 22%;
+  width: 5px;
+  height: 42%;
+  border: 2px solid #1c7ed6;
+  border-left-color: transparent;
+  border-radius: 0 6px 6px 0;
+}
+
+.ware-plate {
+  width: clamp(16px, 3.8vmin, 22px);
+  height: clamp(6px, 1.5vmin, 8px);
+  background: radial-gradient(ellipse at 50% 40%, #fff 0 40%, #f1f3f5 100%);
+  border: 2px solid #adb5bd;
+  border-radius: 50%;
+  box-shadow: inset 0 2px 0 #fff;
 }
 
 .place-park .day-spot-art,
@@ -8641,6 +9044,11 @@ button.day-place:active {
     min-height: 48px;
   }
 
+  .furn-dress {
+    min-width: 64px;
+    min-height: 44px;
+  }
+
   .furn-out {
     min-width: 44px;
     min-height: 58px;
@@ -8847,6 +9255,21 @@ button.day-place:active {
 
   .day-fox-wear.map .wear.face {
     font-size: 34px;
+  }
+
+  .day-bed-art {
+    width: 42px;
+    height: 24px;
+  }
+
+  .day-hang-art {
+    width: 20px;
+    height: 32px;
+  }
+
+  .day-light-art {
+    width: 18px;
+    height: 46px;
   }
 
   .day-spot-label {
