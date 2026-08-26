@@ -4624,10 +4624,16 @@
     );
   }
 
-  function renderDayLightArt(evening) {
+  function roadIsCrossed(world) {
+    return isTaskDone(world, "light") || isTaskDone(world, "retry");
+  }
+
+  function renderDayLightArt(world, evening) {
+    var crossed = roadIsCrossed(world);
     return (
       '<span class="day-light-art' +
       (evening ? " is-evening" : "") +
+      (crossed ? " is-crossed" : "") +
       '">' +
       '<i class="dl-housing">' +
       '<i class="dl-lamp red"></i><i class="dl-lamp amber"></i><i class="dl-lamp green"></i>' +
@@ -4648,7 +4654,7 @@
     if (id === "out") return renderDayDoorArt(world);
     if (id === "dress") return renderDayDressArt(world);
     if (id === "table") return renderDayTableBits(world);
-    if (id === "light" || id === "retry") return renderDayLightArt(evening);
+    if (id === "light" || id === "retry") return renderDayLightArt(world, evening);
     if (id === "friends" || id === "habitat") return '<span class="park-go-hit" aria-hidden="true"></span>';
     return renderDayTreeArt();
   }
@@ -4707,9 +4713,14 @@
   function renderRoadCorner(world, evening) {
     var id = nextDayTask(world) === "retry" ? "retry" : "light";
     var meta = dayTaskMeta(id, world);
+    var crossed = roadIsCrossed(world);
     return (
-      '<div class="day-corner corner-road">' +
-      '<div class="day-zebra" aria-hidden="true"></div>' +
+      '<div class="day-corner corner-road' +
+      (crossed ? " is-crossed" : "") +
+      '">' +
+      '<div class="day-zebra" aria-hidden="true">' +
+      (crossed ? '<i class="dz-print a"></i><i class="dz-print b"></i><i class="dz-print c"></i>' : "") +
+      "</div>" +
       renderDayPlace(world, {
         id: id,
         spot: "road",
