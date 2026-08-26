@@ -711,7 +711,7 @@ button:focus-visible {
 .day-world.at-sink { --fox-x: 15%; }
 .day-world.at-vanity { --fox-x: 7%; }
 .day-world.at-home { --fox-x: 22%; }
-.day-world.at-door { --fox-x: 28%; }
+.day-world.at-door { --fox-x: 17%; }
 .day-world.at-table { --fox-x: 22%; }
 .day-world.at-road { --fox-x: 48%; }
 .day-world.at-park { --fox-x: 80%; }
@@ -1324,10 +1324,10 @@ button.day-place:active {
 }
 
 .furn-table .day-go-bubble {
-  top: -32px;
-  left: auto;
-  right: 0;
-  transform: none;
+  top: -36px;
+  left: 0;
+  right: auto;
+  transform: translateX(-44px);
 }
 
 .furn-road {
