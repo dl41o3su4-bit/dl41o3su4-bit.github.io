@@ -4315,6 +4315,7 @@
     var zone = it.zone || "grass";
     var kind = dayCritterKind(it);
     var motion = zone === "water" ? "swim" : zone === "tree" ? "perch" : "bob";
+    var feet = kind === "bird" || kind === "owl" ? '<i class="day-critter-feet"></i>' : "";
     return (
       '<i class="day-critter in-' +
       zone +
@@ -4328,7 +4329,9 @@
       seat +
       '" aria-label="' +
       escapeHtml(it.name) +
-      '"></i>'
+      '">' +
+      feet +
+      "</i>"
     );
   }
 

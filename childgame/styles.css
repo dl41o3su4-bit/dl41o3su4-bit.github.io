@@ -1066,7 +1066,7 @@ button:focus-visible {
 }
 
 .day-world.is-evening .park-pond {
-  background: radial-gradient(ellipse at 38% 34%, #74c0fc 0 20%, #3b5bdb 62%, #1c3d7a 100%);
+  background: radial-gradient(ellipse at 38% 34%, #a5d8ff 0 24%, #4dabf7 60%, #3b5bdb 100%);
 }
 
 .park-nature {
@@ -1091,9 +1091,9 @@ button:focus-visible {
   width: 34%;
   height: 12%;
   border-radius: 50%;
-  background: radial-gradient(ellipse at 38% 34%, #a5d8ff 0 22%, #4dabf7 58%, #1c7ed6 100%);
-  border: 2px solid #1971c2;
-  box-shadow: inset 0 3px 0 rgba(255, 253, 248, 0.35);
+  background: radial-gradient(ellipse at 38% 34%, #d0ebff 0 28%, #74c0fc 62%, #4dabf7 100%);
+  border: 2px solid #1c7ed6;
+  box-shadow: inset 0 3px 0 rgba(255, 253, 248, 0.45);
 }
 
 .park-grass {
@@ -1149,11 +1149,12 @@ button:focus-visible {
   left: 4%;
   right: 4%;
   top: 0;
-  height: 62%;
+  height: 54%;
   background: radial-gradient(circle at 38% 34%, #8ce99a 0 28%, #2f9e44 72%, #2b8a3e 100%);
   border: 2px solid #2b8a3e;
   border-radius: 50%;
   box-shadow: inset 0 3px 0 rgba(255, 253, 248, 0.18);
+  z-index: 0;
 }
 
 .day-tree::after,
@@ -1162,7 +1163,7 @@ button:focus-visible {
   position: absolute;
   left: 38%;
   right: 38%;
-  top: 54%;
+  top: 48%;
   bottom: 0;
   background: linear-gradient(#c1864a, #8d5a2b);
   border: 1px solid #6d451c;
@@ -1171,14 +1172,13 @@ button:focus-visible {
 
 .day-branch {
   position: absolute;
-  left: -42%;
-  top: 40%;
-  width: 58%;
+  left: -22px;
+  top: 76%;
+  width: 30px;
   height: 3px;
   background: #8d5a2b;
   border-radius: 2px;
-  transform: rotate(-20deg);
-  z-index: 1;
+  z-index: 2;
 }
 
 .day-furn,
@@ -2139,16 +2139,17 @@ button.day-place:active {
 }
 
 .day-critter.in-water {
-  left: calc(16% + var(--seat, 0) * 10%);
-  bottom: 25%;
+  left: calc(18% + var(--seat, 0) * 9%);
+  bottom: 24.5%;
 }
 
 .day-tree .day-critter.in-tree {
-  left: calc(-48% + var(--seat, 0) * 10px);
+  left: calc(-18px + var(--seat, 0) * 10px);
   right: auto;
-  top: auto;
-  bottom: 60%;
-  z-index: 2;
+  top: 76%;
+  bottom: auto;
+  margin-top: -12px;
+  z-index: 3;
 }
 
 .day-critter.in-grass {
@@ -2162,24 +2163,25 @@ button.day-place:active {
 }
 
 .day-critter.kind-fish {
-  width: 32px;
+  width: 34px;
   height: 16px;
-  background: linear-gradient(#7ee0e8 0 28%, #22b8cf 60%, #0c8599 100%);
+  background: linear-gradient(#fff 0 42%, #c5f6fa 70%, #66d9e8 100%);
   border: 2px solid #0b7285;
   border-radius: 50%;
-  box-shadow: inset 6px 3px 0 rgba(255, 253, 248, 0.42);
+  box-shadow: inset 5px 3px 0 #fff;
 }
 
 .day-critter.kind-fish::before {
   content: "";
   position: absolute;
-  left: 6px;
+  left: 5px;
   top: 4px;
-  width: 4px;
-  height: 4px;
-  background: #16324f;
+  width: 5px;
+  height: 5px;
+  background: #212529;
   border-radius: 50%;
-  box-shadow: 1px 0 0 1px #fffef8;
+  box-shadow: 1px 0 0 2px #fff;
+  z-index: 1;
 }
 
 .day-critter.kind-fish::after {
@@ -2187,12 +2189,11 @@ button.day-place:active {
   position: absolute;
   right: -11px;
   top: 1px;
-  width: 0;
-  height: 0;
-  border-top: 7px solid transparent;
-  border-bottom: 7px solid transparent;
-  border-left: 12px solid #0b7285;
-  filter: drop-shadow(-3px 0 0 #22b8cf);
+  width: 12px;
+  height: 14px;
+  background: #99e9f2;
+  border: 2px solid #0b7285;
+  clip-path: polygon(0 50%, 100% 6%, 70% 50%, 100% 94%);
 }
 
 .day-critter.kind-duck {
@@ -2228,38 +2229,65 @@ button.day-place:active {
 }
 
 .day-critter.kind-bird {
-  width: 15px;
-  height: 11px;
-  background: linear-gradient(#ffa94d, #f76707);
+  width: 16px;
+  height: 12px;
+  background: linear-gradient(#ffd8a8, #ff922b);
   border: 2px solid #d9480f;
-  border-radius: 50% 50% 45% 45%;
-  box-shadow: inset 4px 2px 0 -2px #3d2a1a;
-  z-index: 2;
+  border-radius: 50% 50% 40% 40%;
+  box-shadow:
+    inset 7px 3px 0 -3px #fffef8,
+    inset 7px 3px 0 -6px #212529;
+  z-index: 3;
 }
 
 .day-critter.kind-bird::before {
   content: "";
   position: absolute;
   right: -3px;
-  top: 2px;
-  width: 8px;
-  height: 6px;
+  top: 3px;
+  width: 7px;
+  height: 5px;
   background: #ff922b;
   border: 1px solid #d9480f;
   border-radius: 70% 40% 50% 40%;
+  transform-origin: left center;
+  animation: bird-wing 1.2s ease-in-out infinite;
 }
 
 .day-critter.kind-bird::after {
   content: "";
   position: absolute;
-  left: -6px;
+  left: -8px;
   top: 2px;
   width: 0;
   height: 0;
-  border-top: 3px solid transparent;
-  border-bottom: 3px solid transparent;
-  border-right: 6px solid #ffd43b;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-right: 8px solid #ffd43b;
 }
+
+.day-critter-feet {
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  bottom: -4px;
+  height: 5px;
+  pointer-events: none;
+}
+
+.day-critter-feet::before,
+.day-critter-feet::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  width: 2px;
+  height: 5px;
+  background: #3d2a1a;
+  border-radius: 1px;
+}
+
+.day-critter-feet::before { left: 2px; }
+.day-critter-feet::after { right: 2px; }
 
 .day-critter.kind-owl {
   width: 16px;
@@ -2297,35 +2325,35 @@ button.day-place:active {
 }
 
 .day-critter.kind-rabbit {
-  width: 20px;
-  height: 18px;
-  background: linear-gradient(#fffef8, #fff8ee);
-  border: 2px solid #d4b896;
+  width: 24px;
+  height: 20px;
+  background: linear-gradient(#fffef8, #fff4e0);
+  border: 2px solid #8d6b4a;
   border-radius: 50%;
-  box-shadow: inset 11px 5px 0 -6px #3d2a1a;
+  box-shadow: inset 14px 6px 0 -7px #212529;
 }
 
 .day-critter.kind-rabbit::before,
 .day-critter.kind-rabbit::after {
   content: "";
   position: absolute;
-  top: -16px;
-  width: 7px;
-  height: 22px;
-  background: linear-gradient(#fffef8, #fff4e6);
-  border: 2px solid #d4b896;
-  border-radius: 50% 50% 40% 40%;
-  box-shadow: inset 1px 2px 0 1px #ffc9c9;
+  top: -22px;
+  width: 10px;
+  height: 28px;
+  background: #fffef8;
+  border: 2px solid #8d6b4a;
+  border-radius: 10px 10px 4px 4px;
+  box-shadow: inset 0 0 0 2px #ffc9c9;
 }
 
 .day-critter.kind-rabbit::before {
-  left: 2px;
-  transform: rotate(-14deg);
+  left: 1px;
+  transform: rotate(-16deg);
 }
 
 .day-critter.kind-rabbit::after {
-  right: 2px;
-  transform: rotate(14deg);
+  right: 1px;
+  transform: rotate(16deg);
 }
 
 .day-critter.kind-sheep {
@@ -2420,8 +2448,11 @@ button.day-place:active {
 }
 
 .day-critter.perch {
-  animation: park-perch 1.4s ease-in-out infinite;
-  animation-delay: calc(var(--bob-i, 0) * 0.18s);
+  animation: none;
+}
+
+.day-tree .day-critter.in-tree.perch {
+  animation: none;
 }
 
 .day-critter.bob {
@@ -2436,7 +2467,12 @@ button.day-place:active {
 
 @keyframes park-perch {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-2px); }
+  50% { transform: translateY(0); }
+}
+
+@keyframes bird-wing {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-14deg); }
 }
 
 @keyframes critter-bob {
