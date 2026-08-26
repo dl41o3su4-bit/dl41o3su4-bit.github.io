@@ -7199,7 +7199,7 @@ button.day-place:active {
 .do-out .do-prop.door.is-open {
   transform: perspective(240px) rotateY(-48deg);
   transform-origin: left center;
-  background: linear-gradient(#ffe8cc, #e8c48a);
+  background: linear-gradient(#ffe8cc, #e8c48a) !important;
 }
 
 .do-out .do-spot.leave {
