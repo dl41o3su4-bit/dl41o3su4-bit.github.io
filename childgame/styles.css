@@ -6329,12 +6329,12 @@ button.day-place:active {
 
 .do-prop,
 .life-item.do-prop {
-  background: transparent;
-  border: 0;
-  box-shadow: none;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
   padding: 0;
   gap: 0;
-  filter: drop-shadow(0 4px 0 rgba(80, 40, 10, 0.14));
+  filter: drop-shadow(0 4px 0 rgba(80, 40, 10, 0.16));
 }
 
 .do-prop .do-art {
@@ -6351,19 +6351,7 @@ button.day-place:active {
 }
 
 .do-prop .life-name {
-  position: absolute;
-  left: 50%;
-  bottom: 2px;
-  z-index: 2;
-  transform: translateX(-50%);
-  max-width: 100%;
-  padding: 0 7px;
-  border-radius: 8px;
-  background: rgba(255, 253, 248, 0.9);
-  font-size: clamp(12px, 2.5vmin, 16px);
-  line-height: 1.25;
-  white-space: nowrap;
-  pointer-events: none;
+  display: none;
 }
 
 .do-place {
@@ -6501,23 +6489,26 @@ button.day-place:active {
   left: 16%;
   right: 24%;
   bottom: 16%;
-  height: 30%;
-  background: linear-gradient(#fff, #e9ecef 42%, #ced4da);
-  border: 4px solid #adb5bd;
-  border-radius: 50% 50% 46% 46% / 58% 58% 42% 42%;
+  height: 32%;
+  background:
+    radial-gradient(ellipse at 50% 28%, #ffffff 0 34%, #f1f3f5 62%, #dee2e6 100%);
+  border: 7px solid #f8f9fa;
+  outline: 3px solid #ced4da;
+  border-radius: 50% 50% 48% 48% / 60% 60% 40% 40%;
   box-shadow:
-    inset 0 16px 18px rgba(134, 142, 150, 0.28),
-    0 6px 0 rgba(141, 90, 43, 0.12);
+    inset 0 18px 20px rgba(134, 142, 150, 0.28),
+    inset 0 -10px 0 #fff,
+    0 8px 0 rgba(141, 90, 43, 0.12);
 }
 
 .dw-well {
   left: 22%;
   right: 30%;
-  bottom: 20%;
-  height: 16%;
-  background: radial-gradient(ellipse at 50% 30%, #f8f9fa 0 36%, #dee2e6 100%);
+  bottom: 21%;
+  height: 14%;
+  background: radial-gradient(ellipse at 50% 20%, #fff 0 30%, #e9ecef 100%);
   border-radius: 50%;
-  box-shadow: inset 0 10px 12px rgba(73, 80, 87, 0.22);
+  box-shadow: inset 0 12px 14px rgba(73, 80, 87, 0.2);
 }
 
 .dw-rail {
@@ -6546,17 +6537,17 @@ button.day-place:active {
 
 .dw-water,
 .db-water {
-  width: 14px;
+  width: 18px;
   height: 0;
-  background: linear-gradient(#4dabf7, #74c0fc);
-  clip-path: polygon(32% 0, 68% 0, 92% 100%, 8% 100%);
-  border-radius: 0 0 40% 40%;
+  background: linear-gradient(#4dabf7, #74c0fc 70%, #a5d8ff);
+  clip-path: polygon(38% 0, 62% 0, 96% 100%, 4% 100%);
+  border-radius: 0 0 50% 50%;
   opacity: 0;
 }
 
 .dw-water {
-  left: 39%;
-  top: 46%;
+  left: 41%;
+  top: 44%;
 }
 
 .dw-pool,
@@ -6576,8 +6567,8 @@ button.day-place:active {
 .do-wash.phase-1 .dw-water,
 .do-wash.phase-3 .dw-water,
 .do-brush.phase-1 .db-water {
-  height: 18%;
-  opacity: 0.95;
+  height: 22%;
+  opacity: 1;
 }
 
 .do-wash.phase-1 .dw-pool,
@@ -6586,10 +6577,10 @@ button.day-place:active {
 }
 
 .do-wash .do-prop.tap {
-  left: 32%;
-  top: 28%;
-  width: 88px;
-  height: 108px;
+  left: 34%;
+  top: 30%;
+  width: 96px;
+  height: 92px;
 }
 
 .do-prop.tap .life-emoji,
@@ -6723,9 +6714,9 @@ button.day-place:active {
 
 .do-hands .palm {
   position: absolute;
-  bottom: 4%;
-  width: 40%;
-  height: 58%;
+  bottom: 2%;
+  width: 38%;
+  height: 48%;
   background: #e8b86d;
   border: 3px solid #8d5a2b;
   border-radius: 42% 42% 36% 36%;
@@ -6745,16 +6736,16 @@ button.day-place:active {
 }
 
 .do-hands .f {
-  top: -38%;
-  width: 22%;
-  height: 48%;
+  top: -52%;
+  width: 20%;
+  height: 62%;
   border-radius: 40% 40% 16% 16%;
 }
 
-.do-hands .f1 { left: 4%; height: 40%; }
-.do-hands .f2 { left: 27%; height: 50%; }
-.do-hands .f3 { left: 50%; height: 48%; }
-.do-hands .f4 { left: 73%; height: 38%; }
+.do-hands .f1 { left: 2%; height: 50%; }
+.do-hands .f2 { left: 26%; height: 64%; }
+.do-hands .f3 { left: 50%; height: 62%; }
+.do-hands .f4 { left: 74%; height: 48%; }
 
 .do-hands .thumb {
   top: 28%;
@@ -6879,10 +6870,14 @@ button.day-place:active {
   right: 14%;
   bottom: 16%;
   height: 28%;
-  background: linear-gradient(#fff, #e9ecef 42%, #ced4da);
-  border: 4px solid #adb5bd;
-  border-radius: 50% 50% 46% 46% / 58% 58% 42% 42%;
-  box-shadow: inset 0 16px 18px rgba(134, 142, 150, 0.28);
+  background:
+    radial-gradient(ellipse at 50% 28%, #ffffff 0 34%, #f1f3f5 62%, #dee2e6 100%);
+  border: 7px solid #f8f9fa;
+  outline: 3px solid #ced4da;
+  border-radius: 50% 50% 48% 48% / 60% 60% 40% 40%;
+  box-shadow:
+    inset 0 16px 18px rgba(134, 142, 150, 0.28),
+    inset 0 -8px 0 #fff;
 }
 
 .db-well {
@@ -7179,10 +7174,10 @@ button.day-place:active {
 }
 
 .do-out .do-prop.door {
-  background: linear-gradient(#e8c48a, #c1864a);
-  border: 4px solid #8d5a2b;
+  background: linear-gradient(#e8c48a, #c1864a) !important;
+  border: 4px solid #8d5a2b !important;
   border-radius: 10px 10px 4px 4px;
-  box-shadow: inset -10px 0 0 rgba(61, 42, 26, 0.12), inset 0 0 0 10px rgba(255, 232, 204, 0.18);
+  box-shadow: inset -10px 0 0 rgba(61, 42, 26, 0.12), inset 0 0 0 10px rgba(255, 232, 204, 0.18) !important;
   filter: none;
 }
 
@@ -7395,10 +7390,14 @@ button.day-place:active {
   width: 22%;
   bottom: 22%;
   height: 22%;
-  background: linear-gradient(#fff, #e9ecef 42%, #ced4da);
-  border: 4px solid #adb5bd;
-  border-radius: 50% 50% 46% 46% / 58% 58% 42% 42%;
-  box-shadow: inset 0 12px 14px rgba(134, 142, 150, 0.28);
+  background:
+    radial-gradient(ellipse at 50% 28%, #ffffff 0 34%, #f1f3f5 62%, #dee2e6 100%);
+  border: 6px solid #f8f9fa;
+  outline: 3px solid #ced4da;
+  border-radius: 50% 50% 48% 48% / 60% 60% 40% 40%;
+  box-shadow:
+    inset 0 12px 14px rgba(134, 142, 150, 0.28),
+    inset 0 -6px 0 #fff;
 }
 
 .de-well {
