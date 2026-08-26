@@ -888,7 +888,7 @@ button:focus-visible {
   position: absolute;
   left: 3%;
   bottom: 30%;
-  width: 68%;
+  width: 72%;
   height: 46%;
   background: #fff4d6;
   border: 3px solid #e8c48a;
@@ -901,7 +901,7 @@ button:focus-visible {
   left: 0;
   top: 18%;
   bottom: 0;
-  width: 46%;
+  width: 68%;
   background:
     repeating-linear-gradient(
       90deg,
@@ -1176,7 +1176,7 @@ button.day-place:active {
 }
 
 .furn-wash {
-  left: 30%;
+  left: max(32%, calc(5% + 78px));
   bottom: 31%;
   min-width: 56px;
   min-height: 52px;
@@ -1197,9 +1197,9 @@ button.day-place:active {
 }
 
 .furn-dress {
-  left: 52%;
+  left: 58%;
   bottom: 32%;
-  min-width: 72px;
+  min-width: 64px;
   min-height: 48px;
   flex-direction: row;
   align-items: flex-end;
@@ -1207,7 +1207,7 @@ button.day-place:active {
 }
 
 .furn-out {
-  left: 64%;
+  left: 68%;
   bottom: 18%;
   min-width: 48px;
   min-height: 64px;
@@ -1675,7 +1675,7 @@ button.day-place:active {
 .day-dress-art {
   display: flex;
   align-items: flex-end;
-  gap: 3px;
+  gap: 1px;
 }
 
 .day-dress-art i,
@@ -9223,29 +9223,50 @@ button.day-place:active {
   }
 
   .live-house {
+    width: 86%;
+  }
+
+  .live-house::before {
     width: 72%;
   }
 
+  .day-vanity-art {
+    width: 34px;
+    height: 42px;
+  }
+
+  .day-sink-art {
+    width: 44px;
+    height: 44px;
+  }
+
   .furn-wash {
-    left: 28%;
-    min-width: 52px;
-    min-height: 48px;
+    left: max(50%, calc(10% + 52px));
+    min-width: 40px;
+    min-height: 40px;
   }
 
   .furn-brush {
-    left: 4%;
-    min-width: 40px;
-    min-height: 44px;
+    left: 10%;
+    min-width: 34px;
+    min-height: 40px;
+  }
+
+  .furn-brush .day-go-bubble {
+    left: 52%;
+    transform: translateX(-42%);
+    padding: 1px 6px;
+    font-size: 11px;
   }
 
   .furn-dress {
-    left: 50%;
-    min-width: 64px;
-    min-height: 44px;
+    left: max(74%, calc(10% + 104px));
+    min-width: 52px;
+    min-height: 40px;
   }
 
   .furn-out {
-    left: 62%;
+    left: 66%;
     min-width: 44px;
     min-height: 58px;
   }
