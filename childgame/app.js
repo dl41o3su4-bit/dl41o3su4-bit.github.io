@@ -4552,7 +4552,9 @@
       '<span class="day-door-art' +
       (open ? " is-open" : "") +
       '">' +
-      '<i class="dd-frame"></i><i class="dd-leaf"></i><i class="dd-mat"></i>' +
+      '<i class="dd-frame"></i>' +
+      '<i class="dd-leaf"><i class="dd-panel a"></i><i class="dd-panel b"></i><i class="dd-knob"></i></i>' +
+      '<i class="dd-mat"></i>' +
       (open ? "" : '<i class="dd-socks"></i><i class="dd-shoes"></i>') +
       "</span>"
     );
