@@ -712,7 +712,7 @@ button:focus-visible {
 .day-world.at-vanity { --fox-x: 7%; }
 .day-world.at-home { --fox-x: 22%; }
 .day-world.at-door { --fox-x: 28%; }
-.day-world.at-table { --fox-x: 34%; }
+.day-world.at-table { --fox-x: 22%; }
 .day-world.at-road { --fox-x: 48%; }
 .day-world.at-park { --fox-x: 80%; }
 .day-world.at-road .day-marker.is-park-side { --fox-x: 58%; }
@@ -865,11 +865,10 @@ button:focus-visible {
 }
 
 .dz-print {
-  width: 16px;
-  height: 13px;
-  background: #3d2a1a;
+  width: 18px;
+  height: 14px;
+  background: #2b2118;
   border-radius: 50% 50% 46% 46%;
-  opacity: 0.88;
 }
 
 .dz-print::before {
@@ -1325,7 +1324,7 @@ button.day-place:active {
 }
 
 .furn-table .day-go-bubble {
-  top: -28px;
+  top: -32px;
   left: auto;
   right: 0;
   transform: none;
@@ -2323,12 +2322,13 @@ button.day-place:active {
   position: absolute;
   left: 8%;
   right: 8%;
-  top: auto;
-  bottom: 58%;
+  top: calc(42% + 7px);
+  bottom: auto;
   height: 26px;
   display: flex;
   align-items: flex-end;
   justify-content: center;
+  transform: translateY(-100%);
   z-index: 3;
 }
 
@@ -2837,6 +2837,10 @@ button.day-place:active {
   transform: translateX(-50%);
   transition: left 0.5s ease;
   overflow: visible;
+}
+
+.day-world.at-table .day-marker {
+  bottom: 16%;
 }
 
 .day-fox-wear {
