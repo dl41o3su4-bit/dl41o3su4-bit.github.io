@@ -4061,8 +4061,9 @@ button.day-place:active {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2px;
+  gap: 0;
   padding: 6px 10px;
+  overflow: visible;
 }
 
 .dress-zone {
@@ -4076,16 +4077,23 @@ button.day-place:active {
 .dress-zone.head {
   flex: 0 0 30%;
   min-height: 64px;
+  z-index: 1;
+  margin-bottom: -7px;
 }
 
 .dress-zone.body {
   flex: 1 1 38%;
   min-height: 72px;
+  margin-top: -7px;
+  margin-bottom: -7px;
+  overflow: visible;
 }
 
 .dress-zone.feet {
   flex: 0 0 24%;
   min-height: 56px;
+  margin-top: -7px;
+  overflow: visible;
 }
 
 .dress-zone.aim {
@@ -4094,18 +4102,47 @@ button.day-place:active {
 }
 
 .dress-face {
-  font-size: min(18cqw, 16cqh, 56px);
+  font-size: min(24cqw, 40cqh, 58px);
   line-height: 1;
 }
 
 .dress-torso {
+  position: relative;
   width: min(42%, 88px);
-  height: 72%;
+  height: 100%;
   min-height: 52px;
   background: #f4d9b0;
   border: 3px solid #e8c48a;
   border-radius: 28px 28px 22px 22px;
   box-shadow: inset 0 -6px 0 rgba(180, 120, 70, 0.12);
+  overflow: visible;
+}
+
+.dress-torso::before,
+.dress-torso::after {
+  content: "";
+  position: absolute;
+  top: 16%;
+  width: 28px;
+  height: 16px;
+  background: inherit;
+  border: inherit;
+  border-radius: 12px;
+  pointer-events: none;
+}
+
+.dress-torso::before {
+  left: -22px;
+  border-radius: 14px 5px 8px 14px;
+  transform: rotate(-42deg);
+  transform-origin: 100% 30%;
+}
+
+.dress-torso::after {
+  right: -22px;
+  border-radius: 5px 14px 14px 8px;
+  transform: rotate(42deg);
+  transform-origin: 0% 30%;
 }
 
 .dress-kid.face-boy .dress-torso,
@@ -4125,10 +4162,11 @@ button.day-place:active {
   align-items: flex-end;
   justify-content: center;
   gap: 10px;
-  height: 80%;
+  height: 100%;
 }
 
 .dress-legs i {
+  position: relative;
   display: block;
   width: 18px;
   height: 100%;
@@ -4136,6 +4174,23 @@ button.day-place:active {
   background: #f4d9b0;
   border: 3px solid #e8c48a;
   border-radius: 12px;
+}
+
+.dress-legs i::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -3px;
+  width: 22px;
+  height: 10px;
+  transform: translateX(-50%);
+  background: #5c3310;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.dress-kid.face-girl .dress-legs i::after {
+  background: #a61e4d;
 }
 
 .dress-wear {
