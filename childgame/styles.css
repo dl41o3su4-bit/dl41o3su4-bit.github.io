@@ -2135,6 +2135,7 @@ button.day-place:active {
   font-style: normal;
   line-height: 1;
   pointer-events: none;
+  overflow: visible;
 }
 
 .day-critter.in-water {
@@ -2161,31 +2162,43 @@ button.day-place:active {
 }
 
 .day-critter.kind-fish {
-  width: 18px;
-  height: 8px;
-  overflow: visible;
-  background: linear-gradient(#74c0fc, #1c7ed6);
-  border: 2px solid #1864ab;
+  width: 32px;
+  height: 16px;
+  background: linear-gradient(#7ee0e8 0 28%, #22b8cf 60%, #0c8599 100%);
+  border: 2px solid #0b7285;
   border-radius: 50%;
-  box-shadow: inset 3px 1px 0 rgba(255, 253, 248, 0.55);
+  box-shadow: inset 6px 3px 0 rgba(255, 253, 248, 0.42);
+}
+
+.day-critter.kind-fish::before {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 4px;
+  width: 4px;
+  height: 4px;
+  background: #16324f;
+  border-radius: 50%;
+  box-shadow: 1px 0 0 1px #fffef8;
 }
 
 .day-critter.kind-fish::after {
   content: "";
   position: absolute;
-  right: -7px;
-  top: -1px;
+  right: -11px;
+  top: 1px;
   width: 0;
   height: 0;
-  border-top: 5px solid transparent;
-  border-bottom: 5px solid transparent;
-  border-left: 7px solid #1864ab;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-left: 12px solid #0b7285;
+  filter: drop-shadow(-3px 0 0 #22b8cf);
 }
 
 .day-critter.kind-duck {
-  width: 15px;
-  height: 10px;
-  background: linear-gradient(#fff8ee, #ffe066);
+  width: 24px;
+  height: 14px;
+  background: linear-gradient(#fffef8, #ffe066);
   border: 2px solid #f59f00;
   border-radius: 50%;
 }
@@ -2193,30 +2206,30 @@ button.day-place:active {
 .day-critter.kind-duck::before {
   content: "";
   position: absolute;
-  left: -4px;
-  top: -4px;
-  width: 8px;
-  height: 8px;
+  left: -7px;
+  top: -7px;
+  width: 13px;
+  height: 13px;
   background: #ffe066;
   border: 2px solid #f59f00;
   border-radius: 50%;
+  box-shadow: inset 4px 3px 0 -2px #3d2a1a;
 }
 
 .day-critter.kind-duck::after {
   content: "";
   position: absolute;
-  left: -8px;
-  top: -1px;
-  width: 5px;
-  height: 3px;
+  left: -14px;
+  top: -3px;
+  width: 9px;
+  height: 5px;
   background: #f76707;
-  border-radius: 2px;
+  border-radius: 3px 2px 2px 3px;
 }
 
 .day-critter.kind-bird {
-  width: 13px;
-  height: 10px;
-  overflow: visible;
+  width: 15px;
+  height: 11px;
   background: linear-gradient(#ffa94d, #f76707);
   border: 2px solid #d9480f;
   border-radius: 50% 50% 45% 45%;
@@ -2228,9 +2241,9 @@ button.day-place:active {
   content: "";
   position: absolute;
   right: -3px;
-  top: 1px;
-  width: 7px;
-  height: 5px;
+  top: 2px;
+  width: 8px;
+  height: 6px;
   background: #ff922b;
   border: 1px solid #d9480f;
   border-radius: 70% 40% 50% 40%;
@@ -2239,97 +2252,122 @@ button.day-place:active {
 .day-critter.kind-bird::after {
   content: "";
   position: absolute;
-  left: -5px;
+  left: -6px;
   top: 2px;
   width: 0;
   height: 0;
   border-top: 3px solid transparent;
   border-bottom: 3px solid transparent;
-  border-right: 5px solid #ffd43b;
+  border-right: 6px solid #ffd43b;
 }
 
 .day-critter.kind-owl {
-  width: 12px;
-  height: 12px;
+  width: 16px;
+  height: 16px;
   background: linear-gradient(#e8c48a, #c1864a);
   border: 2px solid #8d5a2b;
   border-radius: 50%;
   box-shadow:
-    inset 3px 3px 0 #fff8ee,
-    inset -3px 3px 0 #fff8ee;
+    inset 5px 5px 0 #fff8ee,
+    inset -5px 5px 0 #fff8ee,
+    inset 5px 6px 0 -2px #3d2a1a,
+    inset -5px 6px 0 -2px #3d2a1a;
+}
+
+.day-critter.kind-owl::before {
+  content: "";
+  position: absolute;
+  left: 1px;
+  top: -6px;
+  width: 5px;
+  height: 8px;
+  background: #c1864a;
+  border: 2px solid #8d5a2b;
+  border-radius: 50% 50% 20% 20%;
+  box-shadow: 7px 0 0 0 #c1864a, 7px 0 0 2px #8d5a2b;
 }
 
 .day-critter.kind-owl::after {
   content: "";
   position: absolute;
-  left: -4px;
-  top: 4px;
-  border: 3px solid transparent;
+  left: -5px;
+  top: 5px;
+  border: 4px solid transparent;
   border-right-color: #f59f00;
 }
 
 .day-critter.kind-rabbit {
-  width: 12px;
-  height: 10px;
-  background: linear-gradient(#fffef8, #f4d9b0);
-  border: 2px solid #e8c48a;
+  width: 20px;
+  height: 18px;
+  background: linear-gradient(#fffef8, #fff8ee);
+  border: 2px solid #d4b896;
   border-radius: 50%;
+  box-shadow: inset 11px 5px 0 -6px #3d2a1a;
 }
 
 .day-critter.kind-rabbit::before,
 .day-critter.kind-rabbit::after {
   content: "";
   position: absolute;
-  top: -7px;
-  width: 4px;
-  height: 8px;
-  background: #fff8ee;
-  border: 2px solid #e8c48a;
-  border-radius: 50%;
+  top: -16px;
+  width: 7px;
+  height: 22px;
+  background: linear-gradient(#fffef8, #fff4e6);
+  border: 2px solid #d4b896;
+  border-radius: 50% 50% 40% 40%;
+  box-shadow: inset 1px 2px 0 1px #ffc9c9;
 }
 
-.day-critter.kind-rabbit::before { left: 1px; }
-.day-critter.kind-rabbit::after { right: 1px; }
+.day-critter.kind-rabbit::before {
+  left: 2px;
+  transform: rotate(-14deg);
+}
+
+.day-critter.kind-rabbit::after {
+  right: 2px;
+  transform: rotate(14deg);
+}
 
 .day-critter.kind-sheep {
-  width: 14px;
-  height: 11px;
+  width: 22px;
+  height: 16px;
   background: #fffef8;
   border: 2px solid #e8c48a;
   border-radius: 50%;
   box-shadow:
-    -5px 1px 0 -1px #fffef8,
-    5px 1px 0 -1px #fffef8,
-    0 -4px 0 -2px #fffef8;
+    -7px 2px 0 -1px #fffef8,
+    7px 2px 0 -1px #fffef8,
+    0 -6px 0 -2px #fffef8;
 }
 
 .day-critter.kind-sheep::before {
   content: "";
   position: absolute;
-  left: -3px;
-  top: 2px;
-  width: 6px;
-  height: 6px;
+  left: -6px;
+  top: 3px;
+  width: 9px;
+  height: 9px;
   background: #f4d9b0;
   border: 2px solid #c1864a;
   border-radius: 50%;
+  box-shadow: inset 3px 2px 0 -2px #3d2a1a;
 }
 
 .day-critter.kind-camel {
-  width: 18px;
-  height: 10px;
+  width: 28px;
+  height: 14px;
   background: linear-gradient(#e8b86d, #c1864a);
   border: 2px solid #8d5a2b;
-  border-radius: 8px 10px 4px 4px;
+  border-radius: 10px 12px 5px 5px;
 }
 
 .day-critter.kind-camel::before {
   content: "";
   position: absolute;
-  left: 4px;
-  top: -6px;
-  width: 8px;
-  height: 8px;
+  left: 6px;
+  top: -8px;
+  width: 12px;
+  height: 12px;
   background: #e8b86d;
   border: 2px solid #8d5a2b;
   border-radius: 50% 50% 4px 4px;
@@ -2338,27 +2376,28 @@ button.day-place:active {
 .day-critter.kind-camel::after {
   content: "";
   position: absolute;
-  left: -5px;
-  top: -3px;
-  width: 6px;
-  height: 8px;
+  left: -8px;
+  top: -6px;
+  width: 9px;
+  height: 12px;
   background: #c1864a;
   border: 2px solid #8d5a2b;
-  border-radius: 4px;
+  border-radius: 5px;
+  box-shadow: inset 3px 3px 0 -2px #3d2a1a;
 }
 
 .day-critter.kind-crab {
-  width: 12px;
-  height: 8px;
+  width: 18px;
+  height: 12px;
   background: #f76707;
   border: 2px solid #d9480f;
   border-radius: 50%;
-  box-shadow: -6px 0 0 -2px #f76707, 6px 0 0 -2px #f76707;
+  box-shadow: -8px 0 0 -2px #f76707, 8px 0 0 -2px #f76707;
 }
 
 .day-critter.kind-lizard {
-  width: 16px;
-  height: 6px;
+  width: 24px;
+  height: 10px;
   background: #51cf66;
   border: 2px solid #2b8a3e;
   border-radius: 50%;
@@ -2367,10 +2406,10 @@ button.day-place:active {
 .day-critter.kind-lizard::after {
   content: "";
   position: absolute;
-  right: -6px;
-  top: 1px;
-  width: 7px;
-  height: 3px;
+  right: -9px;
+  top: 2px;
+  width: 11px;
+  height: 5px;
   background: #2f9e44;
   border-radius: 50%;
 }
@@ -2392,7 +2431,7 @@ button.day-place:active {
 
 @keyframes park-swim {
   0%, 100% { transform: translateX(0) translateY(0); }
-  50% { transform: translateX(5px) translateY(-2px); }
+  50% { transform: translateX(7px) translateY(-2px); }
 }
 
 @keyframes park-perch {
