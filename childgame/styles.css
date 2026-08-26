@@ -1237,8 +1237,8 @@ button.day-place:active {
 }
 
 .furn-dress {
-  left: 48%;
-  bottom: 32%;
+  left: 40%;
+  bottom: 34%;
   min-width: 118px;
   min-height: 88px;
   flex-direction: row;
@@ -1247,7 +1247,7 @@ button.day-place:active {
 }
 
 .furn-dress .day-go-bubble {
-  top: -30px;
+  top: -32px;
 }
 
 .furn-out {
@@ -1260,15 +1260,15 @@ button.day-place:active {
 
 .furn-table {
   left: auto;
-  right: 2%;
-  bottom: 24%;
-  min-width: 88px;
+  right: 1%;
+  bottom: 18%;
+  min-width: 84px;
   min-height: 56px;
   z-index: 2;
 }
 
 .furn-table .day-go-bubble {
-  top: -28px;
+  top: -32px;
 }
 
 .furn-road {
@@ -1864,8 +1864,9 @@ button.day-place:active {
 
 .day-hang-art {
   position: relative;
-  width: clamp(76px, 15.6vmin, 96px);
-  height: clamp(88px, 18vmin, 112px);
+  overflow: visible;
+  width: clamp(72px, 14.5vmin, 88px);
+  height: clamp(84px, 17vmin, 104px);
 }
 
 .dh-post {
@@ -2123,15 +2124,16 @@ button.day-place:active {
 }
 
 .day-table-art {
-  width: clamp(88px, 17vmin, 108px);
-  height: clamp(52px, 11vmin, 68px);
+  overflow: visible;
+  width: clamp(84px, 16vmin, 100px);
+  height: clamp(54px, 11.5vmin, 70px);
 }
 
 .dtb-top {
   left: 2%;
   right: 2%;
-  top: 28%;
-  height: 18px;
+  top: 36%;
+  height: 16px;
   background: linear-gradient(#e8c48a, #c1864a);
   border: 2px solid #8d5a2b;
   border-radius: 5px;
@@ -2141,22 +2143,22 @@ button.day-place:active {
 
 .dtb-leg {
   bottom: 0;
-  top: 52%;
-  width: 10px;
-  background: linear-gradient(#c1864a, #8d5a2b);
-  border: 2px solid #6d451c;
-  border-radius: 2px;
+  top: 56%;
+  width: 12px;
+  background: linear-gradient(#a86a38, #6d451c);
+  border: 2px solid #5c3d1e;
+  border-radius: 2px 2px 1px 1px;
 }
 
-.dtb-leg.a { left: 14%; }
-.dtb-leg.b { right: 14%; }
+.dtb-leg.a { left: 16%; }
+.dtb-leg.b { right: 16%; }
 
 .day-table-set {
   position: absolute;
-  left: 8%;
-  right: 8%;
-  top: 2%;
-  height: 30px;
+  left: 6%;
+  right: 6%;
+  top: 0;
+  height: 38%;
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -10262,25 +10264,26 @@ button.day-place:active {
   }
 
   .furn-dress {
-    left: 44%;
-    min-width: 110px;
-    min-height: 80px;
+    left: 16%;
+    min-width: 96px;
+    min-height: 72px;
   }
 
   .furn-table {
-    right: 1%;
-    min-width: 84px;
-    min-height: 50px;
+    right: 0;
+    bottom: 16%;
+    min-width: 76px;
+    min-height: 48px;
   }
 
   .day-hang-art {
-    width: 72px;
-    height: 88px;
+    width: 56px;
+    height: 72px;
   }
 
   .day-table-art {
-    width: 84px;
-    height: 50px;
+    width: 76px;
+    height: 48px;
   }
 
   .furn-out {
@@ -10509,13 +10512,13 @@ button.day-place:active {
   }
 
   .day-hang-art {
-    width: 72px;
-    height: 84px;
+    width: 68px;
+    height: 80px;
   }
 
   .day-table-art {
-    width: 84px;
-    height: 50px;
+    width: 76px;
+    height: 48px;
   }
 
   .day-light-art {
