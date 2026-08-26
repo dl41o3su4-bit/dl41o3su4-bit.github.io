@@ -1247,11 +1247,14 @@ button.day-place:active {
 }
 
 .furn-dress .day-go-bubble {
-  top: -36px;
-  left: 0;
+  /* Above the rail, over the bed — not over the tee/cap. */
+  top: auto;
+  bottom: calc(100% + 10px);
+  left: 22%;
   right: auto;
-  transform: none;
+  transform: translateX(-50%);
   padding: 2px 8px;
+  z-index: 8;
 }
 
 .furn-out {
@@ -1959,6 +1962,29 @@ button.day-place:active {
 
 .day-hang-art .dh-sleeve.a { left: -14px; }
 .day-hang-art .dh-sleeve.b { right: -14px; }
+
+.day-hang-art .hang-tee .dh-sleeve,
+.day-hang-art .dh-shirt .dh-sleeve {
+  top: -2px;
+  width: 28px;
+  height: 16px;
+}
+
+.day-hang-art .hang-tee .dh-sleeve.a,
+.day-hang-art .dh-shirt .dh-sleeve.a {
+  left: -24px;
+  border-radius: 12px 3px 9px 12px;
+  transform: rotate(-48deg);
+  transform-origin: 100% 20%;
+}
+
+.day-hang-art .hang-tee .dh-sleeve.b,
+.day-hang-art .dh-shirt .dh-sleeve.b {
+  right: -24px;
+  border-radius: 3px 12px 12px 9px;
+  transform: rotate(48deg);
+  transform-origin: 0% 20%;
+}
 
 .day-hang-art .dh-neck {
   left: 26%;
