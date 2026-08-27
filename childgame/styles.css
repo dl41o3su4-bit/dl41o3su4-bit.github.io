@@ -3999,38 +3999,64 @@ button.day-place:active {
   flex: 1 1 0;
   min-width: 0;
   min-height: 0;
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  align-items: center;
-  justify-items: center;
-  gap: 10px;
-  padding: 4px;
-}
-
-.dress-weather {
-  flex: 0 0 auto;
-  min-width: 72px;
-  max-width: 120px;
-  padding: 10px 8px;
+  position: relative;
+  isolation: isolate;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  background: #fffdf8;
-  border: 2px solid #f0c49a;
-  border-radius: 22px;
-  box-shadow: 0 8px 16px rgba(180, 120, 70, 0.12);
+  padding: 4px;
+  border-radius: 24px;
+}
+
+.dress-scenery {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.dress-weather {
+  position: absolute;
+  top: 6px;
+  right: 10%;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
 }
 
 .dress-weather .life-emoji {
-  font-size: min(16cqw, 14cqh, 48px);
+  font-size: min(12cqw, 10cqh, 40px);
   line-height: 1;
+  filter: drop-shadow(0 2px 0 rgba(180, 120, 70, 0.14));
 }
 
 .dress-place-prop {
-  font-size: min(14cqw, 12cqh, 36px);
+  position: absolute;
+  left: 5%;
+  bottom: 26%;
+  z-index: 0;
+  font-size: min(16cqw, 14cqh, 48px);
   line-height: 1;
+  pointer-events: none;
+  opacity: 0.92;
+}
+
+.dress-place-name {
+  position: absolute;
+  left: 50%;
+  bottom: 6px;
+  z-index: 3;
+  transform: translateX(-50%);
+  font-size: clamp(16px, 3.6vmin, 22px);
+  color: #3d2a14;
+  text-shadow: 0 1px 0 #fff8ee, 0 0 8px #fff8ee;
+  pointer-events: none;
+  white-space: nowrap;
 }
 
 .dress-board.place-park {
@@ -4038,9 +4064,47 @@ button.day-place:active {
   border-radius: 24px;
 }
 
+.dress-board.place-park .dress-scenery::before {
+  content: "";
+  position: absolute;
+  right: 11%;
+  bottom: 16%;
+  width: 16px;
+  height: 38px;
+  background: linear-gradient(#c1864a, #8d5a2b);
+  border: 2px solid #6d451c;
+  border-radius: 2px;
+}
+
+.dress-board.place-park .dress-scenery::after {
+  content: "";
+  position: absolute;
+  right: 5%;
+  bottom: 36%;
+  width: 52px;
+  height: 52px;
+  background: radial-gradient(circle at 38% 34%, #8ce99a 0 28%, #2f9e44 72%, #2b8a3e 100%);
+  border: 3px solid #2b8a3e;
+  border-radius: 50%;
+  box-shadow: inset 0 3px 0 rgba(255, 253, 248, 0.18);
+}
+
 .dress-board.place-beach {
   background: linear-gradient(#9ad0f5 0 48%, #f6e1b5 48% 100%);
   border-radius: 24px;
+}
+
+.dress-board.place-beach .dress-scenery::before {
+  content: "";
+  position: absolute;
+  top: 8%;
+  right: 10%;
+  width: 36px;
+  height: 36px;
+  background: radial-gradient(circle at 40% 36%, #fff6c2, #ffd43b 62%, #f59f00);
+  border: 3px solid #f08c00;
+  border-radius: 50%;
+  box-shadow: 0 0 16px rgba(255, 212, 59, 0.5);
 }
 
 .dress-board.place-mountain {
@@ -4048,12 +4112,72 @@ button.day-place:active {
   border-radius: 24px;
 }
 
+.dress-board.place-mountain .dress-scenery::before,
+.dress-board.place-mountain .dress-scenery::after {
+  content: "";
+  position: absolute;
+  bottom: 18%;
+  width: 0;
+  height: 0;
+  border-left-style: solid;
+  border-right-style: solid;
+  border-bottom-style: solid;
+  border-left-color: transparent;
+  border-right-color: transparent;
+}
+
+.dress-board.place-mountain .dress-scenery::before {
+  left: 4%;
+  border-left-width: 46px;
+  border-right-width: 46px;
+  border-bottom-width: 88px;
+  border-bottom-color: #9aa3c7;
+}
+
+.dress-board.place-mountain .dress-scenery::after {
+  left: 16%;
+  border-left-width: 34px;
+  border-right-width: 34px;
+  border-bottom-width: 66px;
+  border-bottom-color: #b8bfd6;
+}
+
 .dress-board.place-street {
   background: linear-gradient(#dee2e6 0 52%, #adb5bd 52% 100%);
   border-radius: 24px;
 }
 
+.dress-board.place-street .dress-scenery::before {
+  content: "";
+  position: absolute;
+  right: 7%;
+  bottom: 16%;
+  width: 34px;
+  height: 72px;
+  background: #868e96;
+  border: 2px solid #495057;
+  border-radius: 4px 4px 0 0;
+  box-shadow:
+    -26px 18px 0 -8px #adb5bd,
+    20px 24px 0 -12px #6c757d;
+}
+
+.dress-board.place-street.wx-rain .dress-scenery::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 22% 0;
+  background: repeating-linear-gradient(
+    112deg,
+    transparent 0 12px,
+    rgba(235, 245, 255, 0.55) 12px 14px,
+    transparent 14px 26px
+  );
+  opacity: 0.72;
+}
+
 .dress-kid {
+  position: relative;
+  z-index: 2;
   width: min(100%, 280px);
   height: auto;
   max-height: 100%;
@@ -11190,10 +11314,6 @@ button.day-place:active {
 
   .shell.is-life .dress-kid {
     width: min(100%, 320px);
-  }
-
-  .shell.is-life .dress-weather {
-    max-width: 110px;
   }
 
   .shell.is-life .life-tray {

@@ -5759,6 +5759,13 @@
     return '<span class="dress-wear" aria-hidden="true">' + item.emoji + "</span>";
   }
 
+  function dressWxClass(emoji) {
+    if (emoji === "🌧️") return "wx-rain";
+    if (emoji === "💨") return "wx-wind";
+    if (emoji === "❄️") return "wx-snow";
+    return "wx-sun";
+  }
+
   function renderDress(q) {
     var tray = q.items
       .filter(function (item) {
@@ -5776,14 +5783,16 @@
       '<div class="life-stage is-place dress-play">' +
       '<div class="dress-board place-' +
       (q.place || "park") +
+      " " +
+      dressWxClass(q.sceneEmoji) +
       '">' +
+      '<div class="dress-scenery" aria-hidden="true"></div>' +
       '<div class="dress-weather"><span class="life-emoji">' +
       q.sceneEmoji +
-      '</span><span class="dress-place-prop" aria-hidden="true">' +
-      (q.prop || "") +
-      '</span><span class="life-name">' +
-      escapeHtml(q.sceneLabel) +
       "</span></div>" +
+      '<span class="dress-place-prop" aria-hidden="true">' +
+      (q.prop || "") +
+      "</span>" +
       '<div class="dress-kid face-' +
       (q.face === "👦" ? "boy" : q.face === "👧" ? "girl" : "child") +
       '" aria-label="' +
@@ -5802,7 +5811,10 @@
       '<div class="dress-zone feet" data-life-slot="feet" aria-label="腳">' +
       '<span class="dress-legs" aria-hidden="true"><i></i><i></i></span>' +
       renderDressWear("feet") +
-      "</div></div></div>" +
+      "</div></div>" +
+      '<span class="life-name dress-place-name">' +
+      escapeHtml(q.sceneLabel) +
+      "</span></div>" +
       '<div class="life-tray">' +
       tray +
       "</div></div></div>"
