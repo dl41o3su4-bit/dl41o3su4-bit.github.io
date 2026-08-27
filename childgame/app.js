@@ -6596,6 +6596,25 @@
     );
   }
 
+  function orderWornBagSvg() {
+    return (
+      '<svg class="do-bag-svg" viewBox="0 0 64 72" role="img" aria-hidden="true">' +
+      '<path d="M14 22 C12 20 14 16 20 16 L44 16 C50 16 52 20 50 22 L50 58 C50 64 44 66 32 66 C20 66 14 64 14 58 Z"' +
+      crayonFill("#fa5252") +
+      "></path>" +
+      '<path d="M20 22 L20 16 C20 10 26 8 32 8 C38 8 44 10 44 16 L44 22"' +
+      crayonInk(3) +
+      "></path>" +
+      '<rect x="24" y="30" width="16" height="12" rx="3"' +
+      crayonFill("#fff1d6") +
+      "></rect>" +
+      '<path d="M18 24 C8 32 8 50 16 56"' +
+      crayonInk(3) +
+      "></path>" +
+      "</svg>"
+    );
+  }
+
   function renderOrderOut(q, phase) {
     return (
       '<div class="do-land" aria-hidden="true">' +
@@ -6606,16 +6625,11 @@
       (phase < 3 ? renderDoProp(orderItem(q, "bag")) : "") +
       renderDoProp(orderItem(q, "door"), phase >= 4 ? "is-open" : "", 'data-life-slot="leave"') +
       '<div class="do-kid" aria-label="小朋友">' +
+      standingKidSvg("kid") +
       '<div class="do-spot body" data-life-slot="body" aria-label="身體">' +
-      '<i class="do-kid-hair" aria-hidden="true"></i>' +
-      '<i class="do-kid-head" aria-hidden="true"></i>' +
-      '<i class="do-kid-eye a" aria-hidden="true"></i><i class="do-kid-eye b" aria-hidden="true"></i>' +
-      '<i class="do-torso" aria-hidden="true"></i>' +
-      '<i class="do-arm a" aria-hidden="true"></i><i class="do-arm b" aria-hidden="true"></i>' +
-      (phase >= 3 ? '<i class="do-pack" aria-hidden="true"></i><span class="do-wear bag">🎒</span>' : "") +
+      (phase >= 3 ? orderWornBagSvg() : "") +
       "</div>" +
       '<div class="do-spot feet" data-life-slot="feet" aria-label="腳">' +
-      '<i class="do-leg a" aria-hidden="true"></i><i class="do-leg b" aria-hidden="true"></i>' +
       (phase >= 1 ? '<i class="do-sock a" aria-hidden="true"></i><i class="do-sock b" aria-hidden="true"></i>' : "") +
       (phase >= 2 ? '<i class="do-shoe a" aria-hidden="true"></i><i class="do-shoe b" aria-hidden="true"></i>' : "") +
       "</div></div>" +

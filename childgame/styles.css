@@ -10315,154 +10315,83 @@ button.day-place:active {
 
 .do-kid {
   position: absolute;
-  left: 32%;
-  top: 10%;
-  width: 28%;
-  height: 78%;
-  z-index: 4;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.do-out .do-spot.body {
-  position: relative;
-  width: 100%;
-  flex: 1 1 62%;
-}
-
-.do-kid-hair {
-  position: absolute;
-  left: 28%;
-  right: 28%;
-  top: 2%;
-  height: 16%;
-  background: #8d5a2b;
-  border: 3px solid #6d451c;
-  border-radius: 50% 50% 20% 20%;
-}
-
-.do-kid-head {
-  position: absolute;
-  left: 28%;
-  right: 28%;
-  top: 8%;
-  height: 28%;
-  background: #f4d9b0;
-  border: 3px solid #c1864a;
-  border-radius: 50%;
-}
-
-.do-kid-eye {
-  position: absolute;
-  top: 20%;
-  width: 7px;
-  height: 7px;
-  background: #3d2a1a;
-  border-radius: 50%;
-}
-
-.do-kid-eye.a { left: 38%; }
-.do-kid-eye.b { right: 38%; }
-
-.do-torso {
-  position: absolute;
   left: 26%;
-  right: 26%;
-  top: 34%;
-  height: 40%;
-  background: #a5d8ff;
-  border: 3px solid #74c0fc;
-  border-radius: 28px 28px 22px 22px;
-  box-shadow: inset 0 -8px 0 rgba(28, 126, 214, 0.12);
+  bottom: 6%;
+  z-index: 4;
+  width: auto;
+  height: min(76cqh, 300px);
+  max-width: min(36cqw, 200px);
+  aspect-ratio: 160 / 240;
+  line-height: 0;
+  filter: drop-shadow(0 4px 0 rgba(80, 40, 10, 0.16));
 }
 
-.do-arm {
-  position: absolute;
-  top: 38%;
-  width: 12px;
-  height: 28%;
-  background: #f4d9b0;
-  border: 3px solid #e8c48a;
-  border-radius: 10px;
-}
-
-.do-arm.a { left: 16%; transform: rotate(12deg); }
-.do-arm.b { right: 16%; transform: rotate(-12deg); }
-
-.do-pack {
-  position: absolute;
-  right: 10%;
-  top: 36%;
-  width: 22%;
-  height: 28%;
-  background: #fa5252;
-  border: 3px solid #c92a2a;
-  border-radius: 10px;
-}
-
-.do-wear {
-  position: absolute;
-  z-index: 2;
-  line-height: 1;
-  font-size: min(14cqw, 12cqh, 40px);
-  filter: drop-shadow(0 3px 0 rgba(180, 120, 70, 0.16));
-  animation: pop 0.35s ease;
+.do-out .do-kid .dress-kid-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
   pointer-events: none;
 }
 
-.do-wear.bag {
-  top: 32%;
-  right: 4%;
+.do-out .do-spot.body {
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  top: 30%;
+  width: auto;
+  height: 40%;
+  min-width: 0;
+}
+
+.do-out .do-bag-svg {
+  position: absolute;
+  right: 0;
+  top: 10%;
+  width: 42%;
+  height: auto;
+  z-index: 2;
+  pointer-events: none;
+  animation: pop 0.35s ease;
 }
 
 .do-out .do-spot.feet {
-  position: relative;
-  width: 100%;
-  flex: 0 0 30%;
-  min-height: 64px;
-}
-
-.do-leg {
   position: absolute;
-  bottom: 18%;
-  width: 16px;
-  height: 48%;
-  background: #f4d9b0;
-  border: 3px solid #e8c48a;
-  border-radius: 10px;
+  left: 12%;
+  right: 12%;
+  bottom: 0;
+  width: auto;
+  height: 24%;
+  min-width: 0;
+  min-height: 56px;
 }
-
-.do-leg.a { left: 32%; }
-.do-leg.b { right: 32%; }
 
 .do-sock {
   position: absolute;
-  bottom: 10%;
-  width: 20px;
-  height: 18px;
+  bottom: 36%;
+  width: 20%;
+  height: 28%;
   background: #ffa8a8;
   border: 3px solid #fa5252;
   border-radius: 8px 8px 4px 4px;
   animation: pop 0.35s ease;
 }
 
-.do-sock.a { left: 30%; }
-.do-sock.b { right: 30%; }
+.do-sock.a { left: 16%; }
+.do-sock.b { right: 16%; }
 
 .do-shoe {
   position: absolute;
-  bottom: 2%;
-  width: 26px;
-  height: 16px;
+  bottom: 4%;
+  width: 30%;
+  height: 34%;
   background: #4dabf7;
   border: 3px solid #1c7ed6;
   border-radius: 10px 16px 8px 8px;
   animation: pop 0.35s ease;
 }
 
-.do-shoe.a { left: 28%; }
-.do-shoe.b { right: 28%; }
+.do-shoe.a { left: 8%; }
+.do-shoe.b { right: 8%; }
 
 .do-eat {
   background: linear-gradient(#fff4e0 0 52%, #e8d4b0 52%);
