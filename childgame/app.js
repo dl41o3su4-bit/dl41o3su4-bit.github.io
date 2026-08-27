@@ -4628,7 +4628,7 @@
   function shouldDrawHabitatCritter(item) {
     if (!isHabitatAnimalItem(item)) return false;
     if (state.levelId === "habitat") return true;
-    if (state.levelId === "dress" || state.levelId === "table") return false;
+    if (state.levelId === "dress" || state.levelId === "table" || state.levelId === "sort") return false;
     return true;
   }
 
@@ -4746,12 +4746,494 @@
     return '<i class="table-ware ware-' + kind + '" aria-hidden="true"></i>';
   }
 
+  function sortGoodsKind(item) {
+    var blob = (
+      ((item && (item.name || "")) + " " + (item && (item.id || "")) + " " + (item && (item.emoji || "")))
+    ).toLowerCase();
+    if (/香蕉皮|peel/.test(blob)) return "peel";
+    if (/落葉|leaf-p|🍂/.test(blob)) return "leaf";
+    if (/青菜|leafy|🥬/.test(blob)) return "greens";
+    if (/紅蘿蔔|carrot|🥕/.test(blob)) return "carrot";
+    if (/香蕉|banana-m|🍌/.test(blob)) return "banana";
+    if (/蘋果|apple|🍎/.test(blob)) return "apple";
+    if (/牛奶|milk-k/.test(blob)) return "milk";
+    if (/娃娃|doll|🧸/.test(blob)) return "doll";
+    if (/小鴨|duck|🦆/.test(blob)) return "duck";
+    if (/小船|boat|🚤/.test(blob)) return "boat";
+    if (/襪子|sock|🧦/.test(blob)) return "sock";
+    if (/瓶子|bottle|🍼/.test(blob)) return "bottle";
+    if (/紙盒|box-p/.test(blob)) return "box";
+    if (/骨頭|bone|🦴/.test(blob)) return "bone";
+    if (/魚|fish-a|🐟/.test(blob)) return "fish";
+    if (/球|ball|⚽|🎾/.test(blob)) return "ball";
+    if (/帽|hat|🧢/.test(blob)) return "hat";
+    if (/衣|shirt|tee|👕/.test(blob)) return "shirt";
+    if (/筷|chop|🥢/.test(blob)) return "sticks";
+    if (/碗|bowl-k|🥣|🍚/.test(blob)) return "bowl";
+    if (/杯|cup/.test(blob)) return "cup";
+    return "";
+  }
+
+  function crayonSortMark(viewBox, body) {
+    return (
+      '<svg class="sort-goods-svg" viewBox="' +
+      (viewBox || "0 0 120 120") +
+      '" role="img" aria-hidden="true">' +
+      body +
+      "</svg>"
+    );
+  }
+
+  function crayonSortSvg(kind, item) {
+    if (kind === "ball") {
+      if (item && /🎾/.test(item.emoji || "")) {
+        return crayonSortMark(
+          "0 0 120 120",
+          '<circle cx="60" cy="60" r="36"' +
+            crayonFill("#ffe066") +
+            "></circle>" +
+            '<path d="M28 46 C48 28 78 28 92 50"' +
+            crayonInk(3) +
+            "></path>" +
+            '<path d="M28 74 C48 92 82 90 92 70"' +
+            crayonInk(3) +
+            "></path>" +
+            '<ellipse cx="44" cy="42" rx="10" ry="6" fill="#fff8ee"></ellipse>'
+        );
+      }
+      return crayonSortMark(
+        "0 0 120 120",
+        '<circle cx="60" cy="62" r="36"' +
+          crayonFill("#ff922b") +
+          "></circle>" +
+          '<path d="M60 26 C48 44 48 80 60 98"' +
+          crayonInk(2.8) +
+          "></path>" +
+          '<path d="M28 50 C46 58 74 58 92 50"' +
+          crayonInk(2.8) +
+          "></path>" +
+          '<path d="M28 74 C46 66 74 66 92 74"' +
+          crayonInk(2.8) +
+          "></path>" +
+          '<ellipse cx="46" cy="46" rx="10" ry="6" fill="#fff1d6"></ellipse>'
+      );
+    }
+    if (kind === "doll") {
+      return crayonSortMark(
+        "0 0 120 120",
+        '<ellipse cx="36" cy="34" rx="12" ry="14"' +
+          crayonFill("#c1864a") +
+          "></ellipse>" +
+          '<ellipse cx="84" cy="34" rx="12" ry="14"' +
+          crayonFill("#c1864a") +
+          "></ellipse>" +
+          '<ellipse cx="36" cy="36" rx="6" ry="7"' +
+          crayonFill("#fff1d6") +
+          "></ellipse>" +
+          '<ellipse cx="84" cy="36" rx="6" ry="7"' +
+          crayonFill("#fff1d6") +
+          "></ellipse>" +
+          '<ellipse cx="60" cy="86" rx="28" ry="24"' +
+          crayonFill("#c1864a") +
+          "></ellipse>" +
+          '<ellipse cx="60" cy="88" rx="16" ry="12"' +
+          crayonFill("#fff1d6") +
+          "></ellipse>" +
+          '<circle cx="60" cy="50" r="26"' +
+          crayonFill("#c1864a") +
+          "></circle>" +
+          '<ellipse cx="60" cy="56" rx="16" ry="12"' +
+          crayonFill("#fff1d6") +
+          "></ellipse>" +
+          '<circle cx="50" cy="48" r="3.4" fill="#3b2412"></circle>' +
+          '<circle cx="70" cy="48" r="3.4" fill="#3b2412"></circle>' +
+          '<ellipse cx="60" cy="58" rx="5" ry="3.6"' +
+          crayonFill("#3b2412") +
+          "></ellipse>" +
+          '<path d="M52 66 Q60 72 68 66"' +
+          crayonInk(2.6) +
+          "></path>"
+      );
+    }
+    if (kind === "apple") {
+      return crayonSortMark(
+        "0 0 120 120",
+        '<path d="M60 34 C36 34 26 56 28 78 C30 102 48 110 60 108 C72 110 90 102 92 78 C94 56 84 34 60 34Z"' +
+          crayonFill("#fa5252") +
+          "></path>" +
+          '<path d="M58 28 C58 18 64 12 72 16"' +
+          crayonInk(3.2) +
+          "></path>" +
+          '<path d="M62 30 C72 18 92 22 88 38 C80 30 70 32 62 30Z"' +
+          crayonFill("#69db7c") +
+          "></path>" +
+          '<ellipse cx="46" cy="58" rx="8" ry="5" fill="#fff1d6"></ellipse>'
+      );
+    }
+    if (kind === "milk") {
+      return crayonSortMark(
+        "0 0 110 130",
+        '<path d="M30 36 L40 18 L70 18 L80 36 L80 112 C80 118 74 122 55 122 C36 122 30 118 30 112Z"' +
+          crayonFill("#fff8ee") +
+          "></path>" +
+          '<path d="M40 18 L70 18 L66 8 L44 8 Z"' +
+          crayonFill("#d0ebff") +
+          "></path>" +
+          '<rect x="30" y="52" width="50" height="22" rx="3"' +
+          crayonFill("#74c0fc") +
+          "></rect>" +
+          '<ellipse cx="55" cy="80" rx="10" ry="12"' +
+          crayonFill("#a5d8ff") +
+          "></ellipse>"
+      );
+    }
+    if (kind === "peel") {
+      return crayonSortMark(
+        "0 0 120 120",
+        '<path d="M58 22 C86 28 96 70 88 102 C78 88 70 56 58 28Z"' +
+          crayonFill("#ffe066") +
+          "></path>" +
+          '<path d="M58 22 C30 30 20 72 28 104 C40 88 48 56 58 28Z"' +
+          crayonFill("#ffd43b") +
+          "></path>" +
+          '<path d="M58 22 C70 48 62 86 50 108 C56 86 58 52 58 28Z"' +
+          crayonFill("#fab005") +
+          "></path>" +
+          '<ellipse cx="58" cy="20" rx="10" ry="8"' +
+          crayonFill("#8d5a2b") +
+          "></ellipse>"
+      );
+    }
+    if (kind === "leaf") {
+      return crayonSortMark(
+        "0 0 120 120",
+        '<path d="M28 86 C22 54 46 22 78 20 C92 34 100 62 86 90 C70 104 46 104 28 86Z"' +
+          crayonFill("#f76707") +
+          "></path>" +
+          '<path d="M36 80 C48 58 70 40 92 32"' +
+          crayonInk(2.6) +
+          "></path>" +
+          '<path d="M50 88 C58 70 74 56 90 50"' +
+          crayonInk(2.4) +
+          "></path>" +
+          '<path d="M78 20 L102 10"' +
+          crayonInk(3) +
+          "></path>"
+      );
+    }
+    if (kind === "bottle") {
+      return crayonSortMark(
+        "0 0 110 130",
+        '<rect x="44" y="10" width="22" height="16" rx="4"' +
+          crayonFill("#74c0fc") +
+          "></rect>" +
+          '<path d="M40 26 L70 26 L74 40 L74 112 C74 118 68 122 55 122 C42 122 36 118 36 112 L36 40 Z"' +
+          crayonFill("#b2f2bb") +
+          "></path>" +
+          '<rect x="36" y="58" width="38" height="22" rx="3"' +
+          crayonFill("#fff8ee") +
+          "></rect>"
+      );
+    }
+    if (kind === "box") {
+      return crayonSortMark(
+        "0 0 130 110",
+        '<path d="M18 46 L65 30 L112 46 L112 92 L18 92 Z"' +
+          crayonFill("#e8c48a") +
+          "></path>" +
+          '<path d="M18 46 L65 62 L112 46 L65 30 Z"' +
+          crayonFill("#fff1d6") +
+          "></path>" +
+          '<path d="M65 62 L65 92"' +
+          crayonInk(2.8) +
+          "></path>" +
+          '<path d="M40 20 L65 30 L78 16 L52 10 Z"' +
+          crayonFill("#f4d9b0") +
+          "></path>"
+      );
+    }
+    if (kind === "sock") {
+      return crayonSortMark(
+        "0 0 120 130",
+        '<path d="M46 14 C36 14 34 28 36 44 L36 70 C36 86 18 96 22 110 C26 122 52 124 64 114 C78 102 86 86 78 70 L70 44 C68 24 60 14 46 14Z"' +
+          crayonFill("#74c0fc") +
+          "></path>" +
+          '<path d="M36 40 H74"' +
+          crayonInk(3) +
+          "></path>" +
+          '<path d="M36 22 H62"' +
+          crayonInk(3) +
+          "></path>" +
+          '<ellipse cx="50" cy="20" rx="14" ry="8"' +
+          crayonFill("#fff8ee") +
+          "></ellipse>"
+      );
+    }
+    if (kind === "duck") {
+      return crayonSortMark(
+        "0 0 130 110",
+        '<ellipse cx="62" cy="70" rx="36" ry="24"' +
+          crayonFill("#ffe066") +
+          "></ellipse>" +
+          '<circle cx="92" cy="46" r="20"' +
+          crayonFill("#ffe066") +
+          "></circle>" +
+          '<path d="M108 46 C126 42 126 56 110 56 C108 52 108 48 108 46Z"' +
+          crayonFill("#ff922b") +
+          "></path>" +
+          '<circle cx="98" cy="40" r="3.2" fill="#3b2412"></circle>' +
+          '<path d="M40 70 C28 58 46 48 58 60"' +
+          crayonFill("#fab005") +
+          "></path>" +
+          '<ellipse cx="48" cy="94" rx="10" ry="5"' +
+          crayonFill("#ff922b") +
+          "></ellipse>"
+      );
+    }
+    if (kind === "boat") {
+      return crayonSortMark(
+        "0 0 130 110",
+        '<path d="M18 70 L112 70 L96 94 L34 94 Z"' +
+          crayonFill("#fa5252") +
+          "></path>" +
+          '<path d="M48 70 L48 28 L84 70 Z"' +
+          crayonFill("#fff8ee") +
+          "></path>" +
+          '<path d="M48 28 L48 16"' +
+          crayonInk(3) +
+          "></path>" +
+          '<path d="M48 16 L68 22 L48 28 Z"' +
+          crayonFill("#74c0fc") +
+          "></path>"
+      );
+    }
+    if (kind === "banana") {
+      return crayonSortMark(
+        "0 0 130 110",
+        '<path d="M24 36 C48 20 92 28 112 62 C86 52 52 52 30 70 C20 54 18 42 24 36Z"' +
+          crayonFill("#ffe066") +
+          "></path>" +
+          '<ellipse cx="26" cy="38" rx="8" ry="7"' +
+          crayonFill("#8d5a2b") +
+          "></ellipse>" +
+          '<path d="M48 40 C70 36 90 44 102 58"' +
+          crayonInk(2.4) +
+          "></path>"
+      );
+    }
+    if (kind === "carrot") {
+      return crayonSortMark(
+        "0 0 110 130",
+        '<path d="M44 46 C20 86 28 118 55 122 C82 118 90 86 66 46 Z"' +
+          crayonFill("#ff922b") +
+          "></path>" +
+          '<path d="M44 46 C40 28 30 18 42 12 C50 22 52 34 54 46"' +
+          crayonFill("#69db7c") +
+          "></path>" +
+          '<path d="M54 46 C58 26 70 16 80 14 C70 28 66 38 64 46"' +
+          crayonFill("#51cf66") +
+          "></path>" +
+          '<path d="M50 46 C52 30 60 20 70 16"' +
+          crayonFill("#40c057") +
+          "></path>"
+      );
+    }
+    if (kind === "greens") {
+      return crayonSortMark(
+        "0 0 120 120",
+        '<ellipse cx="60" cy="78" rx="34" ry="22"' +
+          crayonFill("#69db7c") +
+          "></ellipse>" +
+          '<path d="M40 70 C28 40 48 22 62 40 C54 52 48 62 40 70Z"' +
+          crayonFill("#51cf66") +
+          "></path>" +
+          '<path d="M80 70 C92 38 70 18 58 40 C66 52 74 62 80 70Z"' +
+          crayonFill("#40c057") +
+          "></path>" +
+          '<path d="M60 78 C60 48 72 28 84 22"' +
+          crayonInk(2.6) +
+          "></path>"
+      );
+    }
+    if (kind === "bone") {
+      return crayonSortMark(
+        "0 0 130 90",
+        '<circle cx="28" cy="28" r="14"' +
+          crayonFill("#fff8ee") +
+          "></circle>" +
+          '<circle cx="28" cy="58" r="14"' +
+          crayonFill("#fff8ee") +
+          "></circle>" +
+          '<circle cx="102" cy="28" r="14"' +
+          crayonFill("#fff8ee") +
+          "></circle>" +
+          '<circle cx="102" cy="58" r="14"' +
+          crayonFill("#fff8ee") +
+          "></circle>" +
+          '<path d="M28 30 H102 V56 H28 Z"' +
+          crayonFill("#fff8ee") +
+          "></path>"
+      );
+    }
+    if (kind === "fish") {
+      return crayonSortMark(
+        "0 0 140 100",
+        '<ellipse cx="68" cy="50" rx="40" ry="24"' +
+          crayonFill("#74c0fc") +
+          "></ellipse>" +
+          '<path d="M104 50 L132 26 L124 50 L132 74 Z"' +
+          crayonFill("#4dabf7") +
+          "></path>" +
+          '<path d="M68 28 C78 36 78 40 68 46"' +
+          crayonFill("#a5d8ff") +
+          "></path>" +
+          '<circle cx="48" cy="46" r="4.2" fill="#3b2412"></circle>' +
+          '<circle cx="47" cy="44" r="1.4" fill="#fffaf1"></circle>'
+      );
+    }
+    return "";
+  }
+
+  function renderSortGoodsArt(item) {
+    var kind = sortGoodsKind(item);
+    if (kind === "shirt" || kind === "hat") {
+      return renderDressChipArt(item);
+    }
+    if (kind === "bowl" || kind === "cup" || kind === "sticks") {
+      return '<span class="life-chip-art">' + renderTableWare(item) + "</span>";
+    }
+    var svg = crayonSortSvg(kind, item);
+    if (svg) {
+      return (
+        '<span class="life-chip-art"><span class="sort-goods good-' +
+        kind +
+        ' is-crayon" aria-hidden="true">' +
+        svg +
+        "</span></span>"
+      );
+    }
+    return '<span class="life-emoji">' + ((item && item.emoji) || "") + "</span>";
+  }
+
+  function crayonSortBinSvg(id) {
+    if (id === "toybox" || id === "toybin") {
+      return crayonSortMark(
+        "0 0 120 90",
+        '<path d="M16 36 L104 36 L98 82 L22 82 Z"' +
+          crayonFill("#ff922b") +
+          "></path>" +
+          '<path d="M10 28 L60 14 L110 28 L104 36 L16 36 Z"' +
+          crayonFill("#ffc078") +
+          "></path>"
+      );
+    }
+    if (id === "closet") {
+      return crayonSortMark(
+        "0 0 100 120",
+        '<path d="M18 10 H82 V110 H18 Z"' +
+          crayonFill("#e8c48a") +
+          "></path>" +
+          '<path d="M50 10 V110"' +
+          crayonInk(3) +
+          "></path>" +
+          '<circle cx="42" cy="62" r="4"' +
+          crayonFill("#8d5a2b") +
+          "></circle>" +
+          '<circle cx="58" cy="62" r="4"' +
+          crayonFill("#8d5a2b") +
+          "></circle>"
+      );
+    }
+    if (id === "fridge") {
+      return crayonSortMark(
+        "0 0 90 120",
+        '<path d="M20 8 H70 V112 H20 Z"' +
+          crayonFill("#f1f3f5") +
+          "></path>" +
+          '<path d="M20 48 H70"' +
+          crayonInk(3) +
+          "></path>" +
+          '<path d="M60 22 V40"' +
+          crayonInk(4) +
+          "></path>" +
+          '<path d="M60 62 V90"' +
+          crayonInk(4) +
+          "></path>"
+      );
+    }
+    if (id === "cupboard") {
+      return crayonSortMark(
+        "0 0 110 100",
+        '<path d="M12 18 H98 V88 H12 Z"' +
+          crayonFill("#c1864a") +
+          "></path>" +
+          '<path d="M55 18 V88"' +
+          crayonInk(3) +
+          "></path>" +
+          '<circle cx="46" cy="54" r="4"' +
+          crayonFill("#fff1d6") +
+          "></circle>" +
+          '<circle cx="64" cy="54" r="4"' +
+          crayonFill("#fff1d6") +
+          "></circle>"
+      );
+    }
+    if (id === "trash" || id === "recycle") {
+      return crayonSortMark(
+        "0 0 110 120",
+        '<path d="M28 36 L36 108 H74 L82 36 Z"' +
+          crayonFill(id === "recycle" ? "#69db7c" : "#adb5bd") +
+          "></path>" +
+          '<path d="M20 28 H90 L84 36 H26 Z"' +
+          crayonFill(id === "recycle" ? "#40c057" : "#868e96") +
+          "></path>" +
+          '<path d="M48 16 H62 L66 28 H44 Z"' +
+          crayonFill(id === "recycle" ? "#2b8a3e" : "#495057") +
+          "></path>"
+      );
+    }
+    if (id === "laundry" || id === "fruit" || id === "veg") {
+      return crayonSortMark(
+        "0 0 120 90",
+        '<path d="M18 30 C18 70 28 82 60 82 C92 82 102 70 102 30 C86 38 34 38 18 30Z"' +
+          crayonFill(id === "veg" ? "#69db7c" : "#ffc078") +
+          "></path>" +
+          '<ellipse cx="60" cy="28" rx="42" ry="14"' +
+          crayonFill(id === "veg" ? "#b2f2bb" : "#fff1d6") +
+          "></ellipse>"
+      );
+    }
+    if (id === "bowl") {
+      return crayonSortMark(
+        "0 0 120 80",
+        '<path d="M16 28 C20 62 36 72 60 72 C84 72 100 62 104 28 C84 40 36 40 16 28Z"' +
+          crayonFill("#e8c48a") +
+          "></path>" +
+          '<ellipse cx="60" cy="28" rx="44" ry="14"' +
+          crayonFill("#fff8ee") +
+          "></ellipse>"
+      );
+    }
+    return "";
+  }
+
+  function renderSortBinArt(bin) {
+    var svg = crayonSortBinSvg(bin && bin.id);
+    if (svg) {
+      return '<span class="sort-bin-ico" aria-hidden="true">' + svg + "</span>";
+    }
+    return '<span class="life-emoji">' + ((bin && bin.emoji) || "") + "</span>";
+  }
+
   function renderHabitatChipArt(item) {
     if (state.levelId === "table") {
       return '<span class="life-chip-art">' + renderTableWare(item) + "</span>";
     }
     if (state.levelId === "dress") {
       return renderDressChipArt(item);
+    }
+    if (state.levelId === "sort") {
+      return renderSortGoodsArt(item);
     }
     if (shouldDrawHabitatCritter(item)) {
       return (
@@ -7213,17 +7695,16 @@
           bin.id +
           '" aria-label="' +
           escapeHtml(bin.label) +
-          '"><span class="sort-label"><span class="life-emoji">' +
-          bin.emoji +
-          "</span>" +
+          '"><span class="sort-label">' +
+          renderSortBinArt(bin) +
           escapeHtml(bin.label) +
           '</span><div class="sort-holds">' +
           many
             .map(function (item) {
               return (
-                '<span class="sort-put"><span class="life-emoji">' +
-                item.emoji +
-                '</span><span class="life-name">' +
+                '<span class="sort-put">' +
+                renderSortGoodsArt(item) +
+                '<span class="life-name">' +
                 escapeHtml(item.name) +
                 "</span></span>"
               );
