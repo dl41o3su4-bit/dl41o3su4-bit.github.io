@@ -7148,7 +7148,9 @@
       '<div class="day-house" aria-hidden="true"><i class="day-roof"></i><i class="day-win w1"></i><i class="day-win w2"></i></div>' +
       '<div class="day-kid pose-' +
       kidPose +
-      '" aria-hidden="true">🧒</div>' +
+      '" aria-hidden="true">' +
+      standingKidSvg("kid") +
+      "</div>" +
       '<div class="day-times">' +
       timeSpot("morning", "早上", "🌅") +
       timeSpot("day", "白天", "☀️") +

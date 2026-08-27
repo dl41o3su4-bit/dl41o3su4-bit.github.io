@@ -9105,9 +9105,15 @@ button.day-place:active {
 
 .day-kid {
   position: absolute;
-  right: 16%;
-  bottom: 30%;
-  font-size: clamp(36px, 10vmin, 56px);
+  right: 14%;
+  bottom: calc(8% + 68px);
+  z-index: 2;
+  width: min(24%, 20vmin, 88px);
+  height: auto;
+  aspect-ratio: 160 / 240;
+  line-height: 0;
+  pointer-events: none;
+  filter: drop-shadow(0 3px 0 rgba(0, 0, 0, 0.18));
   transition: transform 0.4s ease;
 }
 
