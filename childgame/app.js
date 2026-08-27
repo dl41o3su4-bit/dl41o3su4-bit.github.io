@@ -6128,7 +6128,7 @@
         a1.y +
         ") rotate(" +
         ang +
-        ')"><path d="M -9.5 -6.8 C -12.2 -2.2 -12.2 2.2 -9.5 6.8 C -2.4 4.6 5.6 2 13.2 0 C 5.6 -2 -2.4 -4.6 -9.5 -6.8 Z"></path></g>';
+        ')"><path d="M -12.6 -5.1 Q -12.6 -7.5 -10.1 -7.5 L 2.2 -7.5 Q 8.4 -5.6 14 0 Q 8.4 5.6 2.2 7.5 L -10.1 7.5 Q -12.6 7.5 -12.6 5.1 Z"></path></g>';
       guide += '<circle class="start-dot" cx="' + start.x + '" cy="' + start.y + '" r="12"></circle>';
       guide +=
         '<circle class="start-shine" cx="' +
