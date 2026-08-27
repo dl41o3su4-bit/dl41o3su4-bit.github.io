@@ -6294,7 +6294,22 @@
     return "who-kid";
   }
 
-  function renderTableSeat(person) {
+  function renderTableWho(person) {
+    var kind = personKindOf((person && person.id) || (person && person.name) || (person && person.face));
+    return (
+      '<div class="table-who ' +
+      tableWhoClass(person) +
+      '">' +
+      '<div class="table-figure">' +
+      sittingPersonSvg(kind) +
+      "</div>" +
+      '<span class="table-name">' +
+      escapeHtml(person.name) +
+      "</span></div>"
+    );
+  }
+
+  function renderTableSetting(person) {
     var have = (person.have || [])
       .map(function (u) {
         return '<span class="table-have" title="' + escapeHtml(u.name) + '">' + renderTableWare(u) + "</span>";
@@ -6305,22 +6320,13 @@
         return renderTableNeed(person, u);
       })
       .join("");
-    var kind = personKindOf((person && person.id) || (person && person.name) || (person && person.face));
     return (
-      '<div class="table-seat ' +
+      '<div class="table-setting ' +
       tableWhoClass(person) +
       '">' +
-      '<div class="table-who">' +
-      '<div class="table-figure">' +
-      sittingPersonSvg(kind) +
-      "</div>" +
-      '<span class="table-name">' +
-      escapeHtml(person.name) +
-      "</span></div>" +
-      '<div class="table-setting">' +
       have +
       need +
-      "</div></div>"
+      "</div>"
     );
   }
 
@@ -6333,11 +6339,9 @@
         return renderLifeChip(item, "");
       })
       .join("");
-    var seats = (q.people || [])
-      .map(function (person) {
-        return renderTableSeat(person);
-      })
-      .join("");
+    var people = q.people || [];
+    var sitters = people.map(renderTableWho).join("");
+    var settings = people.map(renderTableSetting).join("");
     return (
       '<div class="play-col">' +
       '<div class="prompt">' +
@@ -6347,10 +6351,13 @@
       '<div class="table-scene meal-' +
       (q.scene || "home") +
       '" data-seats="' +
-      (q.people || []).length +
+      people.length +
       '">' +
+      '<div class="table-sit-row">' +
+      sitters +
+      "</div>" +
       '<div class="table-wood">' +
-      seats +
+      settings +
       "</div></div>" +
       '<div class="life-tray">' +
       tray +
