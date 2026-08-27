@@ -6128,15 +6128,17 @@
         a1.y +
         ") rotate(" +
         ang +
-        ')"><path d="M -10 -8 L 12 0 L -10 8 Z"></path></g>';
-      guide += '<circle class="start-dot" cx="' + start.x + '" cy="' + start.y + '" r="11"></circle>';
+        ')"><path d="M -9.5 -6.8 C -12.2 -2.2 -12.2 2.2 -9.5 6.8 C -2.4 4.6 5.6 2 13.2 0 C 5.6 -2 -2.4 -4.6 -9.5 -6.8 Z"></path></g>';
+      guide += '<circle class="start-dot" cx="' + start.x + '" cy="' + start.y + '" r="12"></circle>';
+      guide +=
+        '<circle class="start-shine" cx="' +
+        (start.x - 3.4) +
+        '" cy="' +
+        (start.y - 3.4) +
+        '" r="3.2"></circle>';
     }
     var prompt = "用手指描一描";
     var promptCls = "prompt";
-    if (state.levelId === "trace" && q && NUM_TIPS[q.n]) {
-      prompt = NUM_TIPS[q.n];
-      promptCls = "prompt trace-tip";
-    }
     if (state.levelId === "abc-trace" && q && LETTER_TIPS[q.letter]) {
       prompt = LETTER_TIPS[q.letter];
       promptCls = "prompt trace-tip";
@@ -6145,14 +6147,14 @@
       prompt = q.sym + "，從亮點開始，描一描";
       promptCls = "prompt trace-tip";
     }
+    var promptHtml =
+      state.levelId === "trace"
+        ? ""
+        : '<div class="' + promptCls + '">' + escapeHtml(prompt) + "</div>";
     return (
       '<div class="play-col">' +
-      '<div class="' +
-      promptCls +
-      '">' +
-      escapeHtml(prompt) +
-      "</div>" +
-      '<div class="trace-stage is-write"><svg class="trace-svg" viewBox="' +
+      promptHtml +
+      '<div class="trace-stage is-write"><div class="trace-desk"><svg class="trace-svg" viewBox="' +
       spec.viewBox +
       '" role="img" aria-label="' +
       (state.levelId === "bpm-trace" ? "注音 " : state.levelId === "abc-trace" ? "字母 " : "數字 ") +
@@ -6161,7 +6163,7 @@
       paths +
       guide +
       '<path class="crayon-live" d=""></path>' +
-      "</svg></div></div>"
+      "</svg></div></div></div>"
     );
   }
 
