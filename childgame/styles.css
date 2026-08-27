@@ -6954,7 +6954,7 @@ button.day-place:active {
   background: linear-gradient(#9a9a9a, #7a7a7a);
   border: 3px solid #5c5c5c;
   border-radius: 22px;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .street-cross {
@@ -6987,13 +6987,12 @@ button.day-place:active {
 
 .street-kid {
   position: absolute;
-  left: 4%;
-  bottom: 4%;
+  left: 3%;
+  bottom: 2%;
   z-index: 3;
-  width: min(22%, 14cqw, 58px);
+  width: min(24%, 20cqw, 84px);
   height: auto;
   aspect-ratio: 160 / 240;
-  max-height: 88%;
   line-height: 0;
   touch-action: none;
   transition: left 0.75s ease;
