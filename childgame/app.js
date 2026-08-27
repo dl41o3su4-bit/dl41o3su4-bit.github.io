@@ -4218,42 +4218,53 @@
     var shoe = kind === "mom" ? "#c2255c" : "#6b451c";
     return (
       '<svg class="dress-kid-svg" viewBox="0 0 160 240" role="img" aria-hidden="true">' +
+      '<g class="body-svg-arm left">' +
       '<path d="M56 108 C36 114 26 134 24 154 C24 162 32 164 38 158 C46 144 52 128 60 116Z"' +
-      crayonFill(skin) +
-      "></path>" +
-      '<path d="M104 108 C124 114 134 134 136 154 C136 162 128 164 122 158 C114 144 108 128 100 116Z"' +
       crayonFill(skin) +
       "></path>" +
       '<ellipse cx="32" cy="158" rx="9" ry="7"' +
       crayonFill(skin) +
       "></ellipse>" +
+      '<path d="M60 86 C44 90 30 100 28 114 C30 122 44 122 56 110 C60 100 64 88 60 86Z"' +
+      crayonFill(shirt) +
+      "></path>" +
+      "</g>" +
+      '<g class="body-svg-arm right">' +
+      '<path d="M104 108 C124 114 134 134 136 154 C136 162 128 164 122 158 C114 144 108 128 100 116Z"' +
+      crayonFill(skin) +
+      "></path>" +
       '<ellipse cx="128" cy="158" rx="9" ry="7"' +
       crayonFill(skin) +
       "></ellipse>" +
-      '<path d="M60 168 L58 208 C58 216 70 218 78 210 L78 172Z"' +
-      crayonFill(skin) +
+      '<path d="M100 86 C116 90 130 100 132 114 C130 122 116 122 104 110 C100 100 96 88 100 86Z"' +
+      crayonFill(shirt) +
       "></path>" +
-      '<path d="M100 168 L102 208 C102 216 90 218 82 210 L82 172Z"' +
+      "</g>" +
+      '<g class="body-svg-leg left">' +
+      '<path d="M60 168 L58 208 C58 216 70 218 78 210 L78 172Z"' +
       crayonFill(skin) +
       "></path>" +
       '<ellipse cx="68" cy="216" rx="16" ry="8"' +
       crayonFill(shoe) +
       "></ellipse>" +
+      "</g>" +
+      '<g class="body-svg-leg right">' +
+      '<path d="M100 168 L102 208 C102 216 90 218 82 210 L82 172Z"' +
+      crayonFill(skin) +
+      "></path>" +
       '<ellipse cx="92" cy="216" rx="16" ry="8"' +
       crayonFill(shoe) +
       "></ellipse>" +
-      '<path d="M60 86 C44 90 30 100 28 114 C30 122 44 122 56 110 C60 100 64 88 60 86Z"' +
-      crayonFill(shirt) +
-      "></path>" +
-      '<path d="M100 86 C116 90 130 100 132 114 C130 122 116 122 104 110 C100 100 96 88 100 86Z"' +
-      crayonFill(shirt) +
-      "></path>" +
+      "</g>" +
+      '<g class="body-svg-shirt">' +
       '<path d="M58 86 C54 92 52 112 52 142 C52 160 60 174 80 174 C100 174 108 160 108 142 C108 112 106 92 102 86 C94 78 66 78 58 86Z"' +
       crayonFill(shirt) +
       "></path>" +
+      "</g>" +
       '<path d="M54 150 C50 158 50 178 54 194 C58 202 68 204 80 204 C92 204 102 202 106 194 C110 178 110 158 106 150 C98 156 62 156 54 150Z"' +
       crayonFill(shorts) +
       "></path>" +
+      '<g class="body-svg-head">' +
       standingBackHair(kind) +
       '<path d="M72 74 C72 84 74 88 80 88 C86 88 88 84 88 74Z"' +
       crayonFill(skin) +
@@ -4263,7 +4274,7 @@
       "></circle>" +
       standingTopHair(kind) +
       personFaceBits(80, 48) +
-      "</svg>"
+      "</g></svg>"
     );
   }
 
@@ -7096,20 +7107,14 @@
       '<div class="body-kid' +
       (anim ? " anim-" + anim : "") +
       '" aria-label="小朋友">' +
+      '<div class="body-draw" aria-hidden="true">' +
+      standingKidSvg("kid") +
+      "</div>" +
       partBtn("head", "頭") +
-      '<div class="body-head" aria-hidden="true"><i class="hair"></i><i class="ear left"></i><i class="ear right"></i><div class="body-face"><i class="eye"></i><i class="eye"></i><i class="blush l"></i><i class="blush r"></i><i class="smile"></i></div></div>' +
-      '<i class="body-neck" aria-hidden="true"></i>' +
       partBtn("hand", "手", "left") +
       partBtn("hand", "手", "right") +
-      '<span class="body-arm left" aria-hidden="true"><i class="palm"></i></span>' +
-      '<span class="body-arm right" aria-hidden="true"><i class="palm"></i></span>' +
       partBtn("belly", "肚子") +
-      '<div class="body-shirt" aria-hidden="true"><i class="sleeve left"></i><i class="sleeve right"></i><i class="collar"></i><i class="pocket"></i></div>' +
-      '<div class="body-shorts" aria-hidden="true"></div>' +
       partBtn("foot", "腳") +
-      '<span class="body-leg left" aria-hidden="true"><i class="shoe"></i></span>' +
-      '<span class="body-leg right" aria-hidden="true"><i class="shoe"></i></span>' +
-      '<i class="body-shadow" aria-hidden="true"></i>' +
       "</div></div></div></div>"
     );
   }
