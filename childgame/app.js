@@ -4026,6 +4026,241 @@
     );
   }
 
+  function crayonInk(width) {
+    return (
+      ' fill="none" stroke="#3b2412" stroke-width="' +
+      (width || 3) +
+      '" stroke-linejoin="round" stroke-linecap="round"'
+    );
+  }
+
+  function crayonFill(color, width) {
+    return (
+      ' fill="' +
+      color +
+      '" stroke="#3b2412" stroke-width="' +
+      (width || 3) +
+      '" stroke-linejoin="round" stroke-linecap="round"'
+    );
+  }
+
+  function personKindOf(faceOrName) {
+    var key = String(faceOrName || "");
+    if (key === "👨" || key === "爸爸" || key.indexOf("dad") === 0 || key === "boy" || key === "👦") return "dad";
+    if (key === "👩" || key === "媽媽" || key.indexOf("mom") === 0 || key === "girl" || key === "👧") return "mom";
+    return "kid";
+  }
+
+  function personShirtColor(kind) {
+    if (kind === "dad") return "#74c0fc";
+    if (kind === "mom") return "#ff8a8a";
+    return "#ffe066";
+  }
+
+  function personShortsColor(kind) {
+    if (kind === "dad") return "#4dabf7";
+    if (kind === "mom") return "#f783ac";
+    return "#fab005";
+  }
+
+  function personHairColor(kind) {
+    if (kind === "mom") return "#8d5a2b";
+    if (kind === "dad") return "#6b451c";
+    return "#c1864a";
+  }
+
+  function personFaceBits(cx, cy) {
+    return (
+      '<circle cx="' +
+      (cx - 9) +
+      '" cy="' +
+      cy +
+      '" r="3.4" fill="#3b2412"></circle>' +
+      '<circle cx="' +
+      (cx + 9) +
+      '" cy="' +
+      cy +
+      '" r="3.4" fill="#3b2412"></circle>' +
+      '<circle cx="' +
+      (cx - 10) +
+      '" cy="' +
+      (cy - 1.2) +
+      '" r="1.15" fill="#fffaf1"></circle>' +
+      '<circle cx="' +
+      (cx + 8) +
+      '" cy="' +
+      (cy - 1.2) +
+      '" r="1.15" fill="#fffaf1"></circle>' +
+      '<ellipse cx="' +
+      (cx - 14) +
+      '" cy="' +
+      (cy + 7) +
+      '" rx="4" ry="2.4" fill="#ffc9c9"></ellipse>' +
+      '<ellipse cx="' +
+      (cx + 14) +
+      '" cy="' +
+      (cy + 7) +
+      '" rx="4" ry="2.4" fill="#ffc9c9"></ellipse>' +
+      '<path d="M ' +
+      (cx - 8) +
+      " " +
+      (cy + 11) +
+      " Q " +
+      cx +
+      " " +
+      (cy + 17) +
+      " " +
+      (cx + 8) +
+      " " +
+      (cy + 11) +
+      '"' +
+      crayonInk(2.6) +
+      "></path>"
+    );
+  }
+
+  function sittingBackHair(kind) {
+    if (kind !== "mom") return "";
+    return (
+      '<path d="M46 34 C44 14 96 14 94 34 C100 52 96 70 88 74 C84 56 56 56 52 74 C44 70 40 52 46 34Z"' +
+      crayonFill(personHairColor(kind)) +
+      "></path>"
+    );
+  }
+
+  function sittingTopHair(kind) {
+    var hair = personHairColor(kind);
+    if (kind === "mom") {
+      return (
+        '<path d="M50 26 C58 16 82 16 90 26 C82 24 58 24 50 26Z"' + crayonFill(hair) + "></path>"
+      );
+    }
+    if (kind === "dad") {
+      return (
+        '<path d="M48 28 C50 10 90 10 92 28 C84 18 56 18 48 28Z"' + crayonFill(hair) + "></path>"
+      );
+    }
+    return (
+      '<path d="M58 16 C62 4 70 8 70 16 C74 4 86 6 82 18 C78 10 62 10 58 16Z"' +
+      crayonFill(hair) +
+      "></path>"
+    );
+  }
+
+  function standingBackHair(kind) {
+    if (kind !== "mom") return "";
+    return (
+      '<path d="M50 48 C48 18 112 18 110 48 C116 70 112 92 102 96 C98 72 62 72 58 96 C48 92 44 70 50 48Z"' +
+      crayonFill(personHairColor(kind)) +
+      "></path>"
+    );
+  }
+
+  function standingTopHair(kind) {
+    var hair = personHairColor(kind);
+    if (kind === "mom") {
+      return (
+        '<path d="M54 34 C66 22 94 22 106 34 C94 30 66 30 54 34Z"' + crayonFill(hair) + "></path>"
+      );
+    }
+    if (kind === "dad") {
+      return (
+        '<path d="M52 38 C54 14 106 14 108 38 C98 24 62 24 52 38Z"' + crayonFill(hair) + "></path>"
+      );
+    }
+    return (
+      '<path d="M66 18 C70 4 80 8 80 18 C86 4 100 6 94 20 C90 10 70 10 66 18Z"' +
+      crayonFill(hair) +
+      "></path>"
+    );
+  }
+
+  function sittingPersonSvg(kind) {
+    var shirt = personShirtColor(kind);
+    var skin = "#ffd8a8";
+    var kid = kind === "kid";
+    var wrap = kid ? '<g transform="translate(10,12) scale(0.86)">' : "<g>";
+    return (
+      '<svg class="table-person-svg" viewBox="0 0 140 120" role="img" aria-hidden="true">' +
+      wrap +
+      '<path d="M50 72 C34 78 22 90 20 104 C20 110 28 112 34 108 C40 100 48 88 56 80Z"' +
+      crayonFill(skin) +
+      "></path>" +
+      '<path d="M90 72 C106 78 118 90 120 104 C120 110 112 112 106 108 C100 100 92 88 84 80Z"' +
+      crayonFill(skin) +
+      "></path>" +
+      '<ellipse cx="28" cy="108" rx="9" ry="7"' +
+      crayonFill(skin) +
+      "></ellipse>" +
+      '<ellipse cx="112" cy="108" rx="9" ry="7"' +
+      crayonFill(skin) +
+      "></ellipse>" +
+      '<path d="M50 64 C46 70 46 84 48 98 C50 112 58 116 70 116 C82 116 90 112 92 98 C94 84 94 70 90 64 C82 58 58 58 50 64Z"' +
+      crayonFill(shirt) +
+      "></path>" +
+      sittingBackHair(kind) +
+      '<path d="M61 54 C61 64 64 70 70 70 C76 70 79 64 79 54Z"' +
+      crayonFill(skin) +
+      "></path>" +
+      '<circle cx="70" cy="36" r="22"' +
+      crayonFill(skin) +
+      "></circle>" +
+      sittingTopHair(kind) +
+      personFaceBits(70, 38) +
+      "</g></svg>"
+    );
+  }
+
+  function standingKidSvg(kind) {
+    var shirt = personShirtColor(kind);
+    var shorts = personShortsColor(kind);
+    var skin = "#ffd8a8";
+    var shoe = kind === "mom" ? "#c2255c" : "#6b451c";
+    return (
+      '<svg class="dress-kid-svg" viewBox="0 0 160 240" role="img" aria-hidden="true">' +
+      '<path d="M62 96 C40 104 32 128 30 150 C30 158 38 160 44 154 C52 140 58 124 66 110Z"' +
+      crayonFill(skin) +
+      "></path>" +
+      '<path d="M98 96 C120 104 128 128 130 150 C130 158 122 160 116 154 C108 140 102 124 94 110Z"' +
+      crayonFill(skin) +
+      "></path>" +
+      '<ellipse cx="38" cy="156" rx="9" ry="7"' +
+      crayonFill(skin) +
+      "></ellipse>" +
+      '<ellipse cx="122" cy="156" rx="9" ry="7"' +
+      crayonFill(skin) +
+      "></ellipse>" +
+      '<path d="M60 162 L60 208 C60 216 70 218 78 210 L78 164Z"' +
+      crayonFill(skin) +
+      "></path>" +
+      '<path d="M100 162 L100 208 C100 216 90 218 82 210 L82 164Z"' +
+      crayonFill(skin) +
+      "></path>" +
+      '<ellipse cx="68" cy="216" rx="16" ry="8"' +
+      crayonFill(shoe) +
+      "></ellipse>" +
+      '<ellipse cx="92" cy="216" rx="16" ry="8"' +
+      crayonFill(shoe) +
+      "></ellipse>" +
+      '<path d="M58 148 C56 156 58 168 80 168 C102 168 104 156 102 148 C96 152 64 152 58 148Z"' +
+      crayonFill(shorts) +
+      "></path>" +
+      '<path d="M62 86 C58 90 56 104 58 132 C60 148 66 154 80 154 C94 154 100 148 102 132 C104 104 102 90 98 86 C92 80 68 80 62 86Z"' +
+      crayonFill(shirt) +
+      "></path>" +
+      standingBackHair(kind) +
+      '<path d="M72 74 C72 84 74 88 80 88 C86 88 88 84 88 74Z"' +
+      crayonFill(skin) +
+      "></path>" +
+      '<circle cx="80" cy="46" r="30"' +
+      crayonFill(skin) +
+      "></circle>" +
+      standingTopHair(kind) +
+      personFaceBits(80, 48) +
+      "</svg>"
+    );
+  }
+
   function starChip(n, extraClass) {
     return (
       '<div class="star-chip' +
@@ -5848,21 +6083,16 @@
       '" aria-label="' +
       escapeHtml(q.who || "小朋友") +
       '">' +
+      '<div class="dress-person" aria-hidden="true">' +
+      standingKidSvg(personKindOf(q.face)) +
+      "</div>" +
       '<div class="dress-zone head" data-life-slot="head" aria-label="頭">' +
-      '<span class="dress-base dress-face">' +
-      (q.face || "🙂") +
-      "</span>" +
       renderDressWear("head") +
       "</div>" +
       '<div class="dress-zone body" data-life-slot="body" aria-label="衣服">' +
-      '<span class="dress-neck" aria-hidden="true"></span>' +
-      '<span class="dress-torso" aria-hidden="true"></span>' +
-      '<span class="dress-arm left" aria-hidden="true"><i class="up"></i><i class="fore"></i><i class="hand"></i></span>' +
-      '<span class="dress-arm right" aria-hidden="true"><i class="up"></i><i class="fore"></i><i class="hand"></i></span>' +
       renderDressWear("body") +
       "</div>" +
       '<div class="dress-zone feet" data-life-slot="feet" aria-label="腳">' +
-      '<span class="dress-legs" aria-hidden="true"><i class="dress-hip"></i><i class="dress-leg a"></i><i class="dress-leg b"></i></span>' +
       renderDressWear("feet") +
       "</div></div>" +
       '<span class="life-name dress-place-name">' +
@@ -6058,10 +6288,9 @@
   }
 
   function tableWhoClass(person) {
-    var id = String((person && person.id) || "");
-    var name = String((person && person.name) || "");
-    if (id.indexOf("dad") === 0 || name === "爸爸") return "who-dad";
-    if (id.indexOf("mom") === 0 || name === "媽媽") return "who-mom";
+    var kind = personKindOf((person && person.id) || (person && person.name) || (person && person.face));
+    if (kind === "dad") return "who-dad";
+    if (kind === "mom") return "who-mom";
     return "who-kid";
   }
 
@@ -6076,19 +6305,15 @@
         return renderTableNeed(person, u);
       })
       .join("");
+    var kind = personKindOf((person && person.id) || (person && person.name) || (person && person.face));
     return (
       '<div class="table-seat ' +
       tableWhoClass(person) +
       '">' +
       '<div class="table-who">' +
       '<div class="table-figure">' +
-      '<span class="table-face">' +
-      person.face +
-      '</span><span class="table-neck" aria-hidden="true"></span>' +
-      '<span class="table-torso" aria-hidden="true">' +
-      '<i class="table-arm left"><i class="up"></i><i class="fore"></i><i class="hand"></i></i>' +
-      '<i class="table-arm right"><i class="up"></i><i class="fore"></i><i class="hand"></i></i>' +
-      "</span></div>" +
+      sittingPersonSvg(kind) +
+      "</div>" +
       '<span class="table-name">' +
       escapeHtml(person.name) +
       "</span></div>" +
