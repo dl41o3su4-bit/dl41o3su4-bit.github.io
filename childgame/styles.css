@@ -6124,11 +6124,11 @@ button.day-place:active {
   display: flex;
   flex-direction: column;
   justify-content: stretch;
-  padding: 8px 8px 10px;
+  padding: 6px 6px 8px;
   border: 3px solid #e8c48a;
   border-radius: 28px;
   overflow: hidden;
-  background: linear-gradient(#fff6e5 0 18%, #f0c49a 18% 22%, #e8c48a 22% 100%);
+  background: linear-gradient(#fff6e5 0 12%, #f0c49a 12% 16%, #e8c48a 16% 100%);
   box-shadow: 0 8px 16px rgba(180, 120, 70, 0.12);
 }
 
@@ -6136,16 +6136,16 @@ button.day-place:active {
   display: flex;
   align-items: stretch;
   justify-content: space-around;
-  gap: 8px;
+  gap: 6px;
   min-height: 0;
   flex: 1 1 auto;
-  padding: 6px 10px 16px;
+  padding: 8px 8px 22px;
   background:
-    linear-gradient(90deg, rgba(141, 90, 43, 0.08) 0 2px, transparent 2px 18px) 0 0 / 18px 100%,
-    linear-gradient(#e8c48a, #c1864a);
+    linear-gradient(90deg, rgba(141, 90, 43, 0.1) 0 2px, transparent 2px 20px) 0 0 / 20px 100%,
+    linear-gradient(#efd3a4 0 8%, #e8c48a 28%, #c1864a 100%);
   border: 3px solid #8d5a2b;
   border-radius: 22px 22px 14px 14px;
-  box-shadow: 0 10px 0 #6d451c, inset 0 4px 0 rgba(255, 232, 204, 0.38);
+  box-shadow: 0 12px 0 #6d451c, inset 0 5px 0 rgba(255, 232, 204, 0.4);
 }
 
 .table-seat {
@@ -6190,12 +6190,12 @@ button.day-place:active {
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  align-content: flex-start;
-  gap: 8px;
+  align-content: center;
+  gap: 10px 12px;
   width: 100%;
   flex: 1 1 auto;
   min-height: 0;
-  padding: 8px 2px 4px;
+  padding: 10px 2px 8px;
   background: none;
   border-radius: 0;
 }
@@ -6204,14 +6204,14 @@ button.day-place:active {
 .table-put {
   display: grid;
   place-items: center;
-  min-width: 44px;
-  min-height: 44px;
+  min-width: 52px;
+  min-height: 52px;
   line-height: 1;
 }
 
 .table-need {
-  min-width: 48px;
-  min-height: 48px;
+  min-width: 56px;
+  min-height: 56px;
   display: grid;
   place-items: center;
   border: 3px dashed rgba(61, 42, 26, 0.45);
@@ -6310,20 +6310,20 @@ button.day-place:active {
 
 .table-play .table-have .ware-bowl,
 .table-play .table-put .ware-bowl {
-  width: clamp(36px, 7.2vmin, 48px);
-  height: clamp(22px, 4.4vmin, 28px);
+  width: clamp(44px, 8.6vmin, 58px);
+  height: clamp(26px, 5.2vmin, 34px);
 }
 
 .table-play .table-have .ware-cup,
 .table-play .table-put .ware-cup {
-  width: clamp(18px, 3.8vmin, 24px);
-  height: clamp(26px, 5.2vmin, 34px);
+  width: clamp(22px, 4.4vmin, 28px);
+  height: clamp(32px, 6.2vmin, 40px);
 }
 
 .table-play .table-have .ware-plate,
 .table-play .table-put .ware-plate {
-  width: clamp(38px, 7.4vmin, 50px);
-  height: clamp(12px, 2.4vmin, 16px);
+  width: clamp(46px, 8.8vmin, 60px);
+  height: clamp(14px, 2.8vmin, 20px);
 }
 
 .table-play .table-have .ware-sticks,
@@ -6332,8 +6332,8 @@ button.day-place:active {
 .table-play .table-put .ware-spoon,
 .table-play .table-have .ware-fork,
 .table-play .table-put .ware-fork {
-  width: clamp(22px, 4.6vmin, 30px);
-  height: clamp(32px, 6.4vmin, 42px);
+  width: clamp(26px, 5.4vmin, 36px);
+  height: clamp(38px, 7.6vmin, 50px);
 }
 
 .table-play .life-chip-art {
