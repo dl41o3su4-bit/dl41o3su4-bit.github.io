@@ -4236,10 +4236,22 @@
   }
 
   function wareKindOf(item) {
-    var blob = ((item && (item.name || "")) + " " + (item && (item.emoji || ""))).toLowerCase();
+    var key = (item && item.key) || "";
+    if (key === "bowl" || key === "cup" || key === "plate" || key === "sticks" || key === "spoon" || key === "fork") {
+      return key;
+    }
+    var blob = (
+      ((item && (item.name || "")) + " " + (item && (item.emoji || "")) + " " + (item && (item.id || "")))
+    ).toLowerCase();
     if (/杯|🥛|cup/.test(blob)) return "cup";
     if (/盤|🍽️|plate/.test(blob)) return "plate";
-    if (/筷|🥢|匙|🥄|叉|🍴/.test(blob)) return "side";
+    if (/筷|🥢/.test(blob)) return "sticks";
+    if (/匙|🥄|spoon/.test(blob)) return "spoon";
+    if (/叉|🍴|fork/.test(blob)) return "fork";
+    if (/書|📖|book/.test(blob)) return "book";
+    if (/球|⚽|ball/.test(blob)) return "ball";
+    if (/鞋|👟|shoe/.test(blob)) return "shoe";
+    if (/碗|🍚|bowl/.test(blob)) return "bowl";
     return "bowl";
   }
 
@@ -4252,7 +4264,7 @@
       var i;
       for (i = 0; i < items.length && vessels.length < 3; i++) {
         var kind = wareKindOf(items[i]);
-        if (kind === "side") {
+        if (kind !== "bowl" && kind !== "cup" && kind !== "plate") {
           if (!seen.bowl) {
             seen.bowl = 1;
             vessels.push("bowl");
@@ -4396,7 +4408,14 @@
     );
   }
 
+  function renderTableWare(item) {
+    return '<i class="table-ware ware-' + wareKindOf(item) + '" aria-hidden="true"></i>';
+  }
+
   function renderHabitatChipArt(item) {
+    if (state.levelId === "table") {
+      return '<span class="life-chip-art">' + renderTableWare(item) + "</span>";
+    }
     if (state.levelId === "dress") {
       return renderDressChipArt(item);
     }
@@ -6030,9 +6049,7 @@
       '" aria-label="' +
       escapeHtml(u.name) +
       '">' +
-      (filled
-        ? '<span class="table-put">' + filled.emoji + "</span>"
-        : '<span class="table-ghost">' + u.emoji + "</span>") +
+      (filled ? '<span class="table-put">' + renderTableWare(filled) + "</span>" : "") +
       "</div>"
     );
   }
@@ -6040,7 +6057,7 @@
   function renderTableSeat(person) {
     var have = (person.have || [])
       .map(function (u) {
-        return '<span class="table-have" title="' + escapeHtml(u.name) + '">' + u.emoji + "</span>";
+        return '<span class="table-have" title="' + escapeHtml(u.name) + '">' + renderTableWare(u) + "</span>";
       })
       .join("");
     var need = (person.need || [])

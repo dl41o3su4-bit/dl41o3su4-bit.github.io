@@ -6123,22 +6123,29 @@ button.day-place:active {
   min-height: 0;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: stretch;
+  padding: 8px 8px 10px;
   border: 3px solid #e8c48a;
   border-radius: 28px;
   overflow: hidden;
-  background: linear-gradient(#fff6e5 0 42%, #f0c49a 42% 48%, #c1864a 48% 100%);
+  background: linear-gradient(#fff6e5 0 18%, #f0c49a 18% 22%, #e8c48a 22% 100%);
   box-shadow: 0 8px 16px rgba(180, 120, 70, 0.12);
 }
 
 .table-wood {
   display: flex;
-  align-items: flex-end;
+  align-items: stretch;
   justify-content: space-around;
   gap: 8px;
   min-height: 0;
   flex: 1 1 auto;
-  padding: 8px 10px 14px;
+  padding: 6px 10px 16px;
+  background:
+    linear-gradient(90deg, rgba(141, 90, 43, 0.08) 0 2px, transparent 2px 18px) 0 0 / 18px 100%,
+    linear-gradient(#e8c48a, #c1864a);
+  border: 3px solid #8d5a2b;
+  border-radius: 22px 22px 14px 14px;
+  box-shadow: 0 10px 0 #6d451c, inset 0 4px 0 rgba(255, 232, 204, 0.38);
 }
 
 .table-seat {
@@ -6147,28 +6154,35 @@ button.day-place:active {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-end;
-  gap: 4px;
+  justify-content: flex-start;
+  gap: 6px;
 }
 
 .table-who {
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 4px;
   line-height: 1;
+  flex: 0 0 auto;
 }
 
 .table-face {
-  font-size: min(16cqw, 16cqh, 52px);
+  font-size: min(14cqw, 12cqh, 48px);
   line-height: 1;
   filter: drop-shadow(0 2px 0 rgba(0, 0, 0, 0.08));
 }
 
 .table-name {
-  font-size: clamp(14px, 3.2vmin, 20px);
+  font-size: clamp(16px, 3.8vmin, 24px);
   font-weight: 900;
-  color: #fffdf8;
-  text-shadow: 0 1px 0 rgba(80, 40, 10, 0.35);
+  color: #3d2a1a;
+  background: #fffdf8;
+  border: 2px solid #8d5a2b;
+  border-radius: 999px;
+  padding: 2px 10px;
+  line-height: 1.2;
+  text-shadow: none;
 }
 
 .table-setting {
@@ -6176,27 +6190,33 @@ button.day-place:active {
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  align-content: flex-start;
+  gap: 8px;
   width: 100%;
-  min-height: 52px;
-  padding: 6px 4px;
-  background: rgba(255, 253, 248, 0.18);
-  border-radius: 16px;
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 8px 2px 4px;
+  background: none;
+  border-radius: 0;
 }
 
-.table-have {
-  font-size: min(12cqw, 13cqh, 36px);
+.table-have,
+.table-put {
+  display: grid;
+  place-items: center;
+  min-width: 44px;
+  min-height: 44px;
   line-height: 1;
 }
 
 .table-need {
-  min-width: 44px;
-  min-height: 44px;
+  min-width: 48px;
+  min-height: 48px;
   display: grid;
   place-items: center;
-  border: 2px dashed rgba(255, 253, 248, 0.75);
+  border: 3px dashed rgba(61, 42, 26, 0.45);
   border-radius: 50%;
-  background: rgba(255, 253, 248, 0.22);
+  background: rgba(255, 253, 248, 0.28);
 }
 
 .table-need.aim {
@@ -6206,69 +6226,357 @@ button.day-place:active {
 
 .table-need.filled {
   border-style: solid;
-  border-color: #fffdf8;
+  border-color: #2b8a3e;
   background: rgba(178, 242, 187, 0.55);
 }
 
 .table-ghost {
-  font-size: min(12cqw, 13cqh, 34px);
-  line-height: 1;
-  opacity: 0.34;
+  display: none;
 }
 
 .table-put {
-  font-size: min(13cqw, 14cqh, 38px);
-  line-height: 1;
   animation: pop 0.35s ease;
 }
 
 .table-scene.meal-home .table-wood {
-  border-radius: 40px 40px 18px 18px;
+  border-radius: 28px 28px 14px 14px;
 }
 
 .table-scene.meal-picnic {
-  background: linear-gradient(#b2f2bb 0 40%, #69db7c 40% 48%, #51cf66 48% 100%);
+  background: linear-gradient(#b2f2bb 0 18%, #69db7c 18% 22%, #51cf66 22% 100%);
 }
 
 .table-scene.meal-picnic .table-wood {
-  background: repeating-linear-gradient(45deg, #fffdf8 0 10px, #fa5252 10px 20px);
-  border-radius: 10px;
+  background: repeating-linear-gradient(45deg, #fffdf8 0 12px, #fa5252 12px 24px);
+  border-color: #c22525;
+  box-shadow: 0 10px 0 #a51111, inset 0 3px 0 rgba(255, 253, 248, 0.35);
+  border-radius: 14px;
 }
 
 .table-scene.meal-sushi {
-  background: linear-gradient(#2c3e5c, #1b2a4a);
+  background: linear-gradient(#4c6a92 0 18%, #2c3e5c 18% 100%);
 }
 
 .table-scene.meal-sushi .table-wood {
-  background: #3d2a1a;
-  border-radius: 8px;
+  background: linear-gradient(#5a3d28, #3d2a1a);
+  border-color: #2b1a10;
+  box-shadow: 0 10px 0 #1a1008, inset 0 3px 0 rgba(255, 220, 180, 0.18);
+  border-radius: 10px;
 }
 
 .table-scene.meal-breakfast {
-  background: linear-gradient(#fff3bf, #ffe066);
+  background: linear-gradient(#fff3bf 0 18%, #ffe066 18% 22%, #fcc419 22% 100%);
 }
 
 .table-scene.meal-breakfast .table-wood {
-  background: #e8d4b0;
-  border-radius: 6px;
+  background:
+    linear-gradient(90deg, rgba(141, 90, 43, 0.1) 0 2px, transparent 2px 18px) 0 0 / 18px 100%,
+    linear-gradient(#efd3a4, #d4a574);
+  border-radius: 16px;
 }
 
 .table-scene.meal-night {
-  background: linear-gradient(#1b2a4a, #3d2a1a);
+  background: linear-gradient(#3d2a4a 0 18%, #1b2a4a 18% 100%);
 }
 
 .table-scene.meal-night .table-wood {
-  background: #6b4f2a;
-  border-radius: 12px;
+  background: linear-gradient(#8d6a3b, #6b4f2a);
+  border-color: #3d2a1a;
+  box-shadow: 0 10px 0 #2b1a10, inset 0 3px 0 rgba(255, 220, 180, 0.2);
+  border-radius: 14px;
 }
 
 .table-scene.meal-school {
-  background: linear-gradient(#d0ebff, #a5d8ff);
+  background: linear-gradient(#d0ebff 0 18%, #a5d8ff 18% 100%);
 }
 
 .table-scene.meal-school .table-wood {
-  background: #e8d4b0;
-  border-radius: 8px;
+  background:
+    linear-gradient(90deg, rgba(141, 90, 43, 0.1) 0 2px, transparent 2px 18px) 0 0 / 18px 100%,
+    linear-gradient(#efd3a4, #d4a574);
+  border-radius: 12px;
+}
+
+.table-play .table-ware,
+.life-ghost .table-ware {
+  position: relative;
+  display: block;
+  font-style: normal;
+  line-height: 1;
+  font-size: 0;
+  color: transparent;
+  overflow: visible;
+}
+
+.table-play .table-have .ware-bowl,
+.table-play .table-put .ware-bowl {
+  width: clamp(36px, 7.2vmin, 48px);
+  height: clamp(22px, 4.4vmin, 28px);
+}
+
+.table-play .table-have .ware-cup,
+.table-play .table-put .ware-cup {
+  width: clamp(18px, 3.8vmin, 24px);
+  height: clamp(26px, 5.2vmin, 34px);
+}
+
+.table-play .table-have .ware-plate,
+.table-play .table-put .ware-plate {
+  width: clamp(38px, 7.4vmin, 50px);
+  height: clamp(12px, 2.4vmin, 16px);
+}
+
+.table-play .table-have .ware-sticks,
+.table-play .table-put .ware-sticks,
+.table-play .table-have .ware-spoon,
+.table-play .table-put .ware-spoon,
+.table-play .table-have .ware-fork,
+.table-play .table-put .ware-fork {
+  width: clamp(22px, 4.6vmin, 30px);
+  height: clamp(32px, 6.4vmin, 42px);
+}
+
+.table-play .life-chip-art {
+  width: 88px;
+  height: 70px;
+}
+
+.table-play .life-chip-art .ware-bowl,
+.life-ghost .ware-bowl {
+  width: 54px;
+  height: 32px;
+}
+
+.table-play .life-chip-art .ware-cup,
+.life-ghost .ware-cup {
+  width: 26px;
+  height: 38px;
+}
+
+.table-play .life-chip-art .ware-plate,
+.life-ghost .ware-plate {
+  width: 58px;
+  height: 18px;
+}
+
+.table-play .life-chip-art .ware-sticks,
+.table-play .life-chip-art .ware-spoon,
+.table-play .life-chip-art .ware-fork,
+.table-play .life-chip-art .ware-book,
+.table-play .life-chip-art .ware-ball,
+.table-play .life-chip-art .ware-shoe,
+.life-ghost .ware-sticks,
+.life-ghost .ware-spoon,
+.life-ghost .ware-fork,
+.life-ghost .ware-book,
+.life-ghost .ware-ball,
+.life-ghost .ware-shoe {
+  width: 36px;
+  height: 46px;
+}
+
+.table-play .life-chip-art .ware-book,
+.life-ghost .ware-book {
+  width: 44px;
+  height: 34px;
+}
+
+.table-play .life-chip-art .ware-ball,
+.life-ghost .ware-ball {
+  width: 40px;
+  height: 40px;
+}
+
+.table-play .life-chip-art .ware-shoe,
+.life-ghost .ware-shoe {
+  width: 48px;
+  height: 26px;
+}
+
+.table-play .ware-bowl,
+.life-ghost .ware-bowl {
+  background: radial-gradient(ellipse at 50% 18%, #fffef8 0 28%, #ffe8cc 64%, #e8c48a 100%);
+  border: 3px solid #c1864a;
+  border-radius: 50% 50% 46% 46%;
+  box-shadow: inset 0 4px 4px rgba(141, 90, 43, 0.22);
+}
+
+.table-play .ware-bowl::before,
+.life-ghost .ware-bowl::before {
+  content: "";
+  position: absolute;
+  left: 16%;
+  right: 16%;
+  top: -36%;
+  height: 62%;
+  background: radial-gradient(ellipse at 50% 60%, #fff 0 58%, #fff8ee 100%);
+  border: 2px solid #e8d4b0;
+  border-radius: 50% 50% 42% 42%;
+}
+
+.table-play .ware-cup,
+.life-ghost .ware-cup {
+  background: linear-gradient(#d0ebff, #74c0fc);
+  border: 3px solid #1c7ed6;
+  border-radius: 4px 4px 8px 8px;
+  box-shadow: inset 0 4px 0 rgba(255, 253, 248, 0.35);
+}
+
+.table-play .ware-cup::after,
+.life-ghost .ware-cup::after {
+  content: "";
+  position: absolute;
+  right: -11px;
+  top: 20%;
+  width: 12px;
+  height: 46%;
+  border: 3px solid #1c7ed6;
+  border-left-color: transparent;
+  border-radius: 0 10px 10px 0;
+}
+
+.table-play .ware-plate,
+.life-ghost .ware-plate {
+  background: radial-gradient(ellipse at 50% 40%, #fff 0 42%, #f1f3f5 100%);
+  border: 3px solid #868e96;
+  border-radius: 50%;
+  box-shadow: inset 0 2px 0 #fff, 0 2px 0 #ced4da;
+}
+
+.table-play .ware-sticks,
+.life-ghost .ware-sticks {
+  background: none;
+  border: 0;
+}
+
+.table-play .ware-sticks::before,
+.table-play .ware-sticks::after,
+.life-ghost .ware-sticks::before,
+.life-ghost .ware-sticks::after {
+  content: "";
+  position: absolute;
+  top: 4%;
+  width: 6px;
+  height: 92%;
+  background: linear-gradient(#c1864a, #8d5a2b);
+  border: 2px solid #6d451c;
+  border-radius: 3px;
+}
+
+.table-play .ware-sticks::before,
+.life-ghost .ware-sticks::before {
+  left: 28%;
+  transform: rotate(-16deg);
+}
+
+.table-play .ware-sticks::after,
+.life-ghost .ware-sticks::after {
+  right: 28%;
+  transform: rotate(-16deg);
+}
+
+.table-play .ware-spoon,
+.life-ghost .ware-spoon {
+  background: none;
+  border: 0;
+}
+
+.table-play .ware-spoon::before,
+.life-ghost .ware-spoon::before {
+  content: "";
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  top: 0;
+  height: 48%;
+  background: radial-gradient(circle at 50% 40%, #fff 0 42%, #dee2e6 100%);
+  border: 3px solid #495057;
+  border-radius: 50%;
+}
+
+.table-play .ware-spoon::after,
+.life-ghost .ware-spoon::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 42%;
+  width: 8px;
+  height: 56%;
+  margin-left: -4px;
+  background: linear-gradient(#f1f3f5, #adb5bd);
+  border: 2px solid #495057;
+  border-radius: 0 0 5px 5px;
+}
+
+.table-play .ware-fork,
+.life-ghost .ware-fork {
+  background:
+    linear-gradient(#868e96, #868e96) 12% 0 / 16% 40% no-repeat,
+    linear-gradient(#868e96, #868e96) 42% 0 / 16% 40% no-repeat,
+    linear-gradient(#868e96, #868e96) 72% 0 / 16% 40% no-repeat,
+    linear-gradient(#ced4da, #ced4da) 12% 36% / 76% 12% no-repeat;
+  border: 0;
+}
+
+.table-play .ware-fork::after,
+.life-ghost .ware-fork::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 8px;
+  height: 56%;
+  margin-left: -4px;
+  background: linear-gradient(#f1f3f5, #adb5bd);
+  border: 2px solid #495057;
+  border-radius: 0 0 5px 5px;
+}
+
+.table-play .ware-book,
+.life-ghost .ware-book {
+  background: linear-gradient(#ff6b6b, #e03131);
+  border: 3px solid #c22525;
+  border-radius: 3px 7px 7px 3px;
+}
+
+.table-play .ware-book::before,
+.life-ghost .ware-book::before {
+  content: "";
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  bottom: 4px;
+  width: 68%;
+  background: #fffef8;
+  border-left: 2px solid #ffc9c9;
+  border-radius: 0 3px 3px 0;
+}
+
+.table-play .ware-ball,
+.life-ghost .ware-ball {
+  background: radial-gradient(circle at 32% 28%, #fff 0 14%, #51cf66 30%, #2f9e44 100%);
+  border: 3px solid #2b8a3e;
+  border-radius: 50%;
+}
+
+.table-play .ware-shoe,
+.life-ghost .ware-shoe {
+  background: linear-gradient(#4dabf7, #1c7ed6);
+  border: 3px solid #1864ab;
+  border-radius: 40% 55% 8px 8px;
+}
+
+.table-play .ware-shoe::before,
+.life-ghost .ware-shoe::before {
+  content: "";
+  position: absolute;
+  left: 8%;
+  top: 18%;
+  width: 38%;
+  height: 42%;
+  background: #d0ebff;
+  border: 2px solid #1864ab;
+  border-radius: 40% 50% 20% 20%;
 }
 
 .life-scene,
@@ -11386,12 +11694,16 @@ button.day-place:active {
   }
 
   .table-face {
-    font-size: 32px;
+    font-size: 34px;
+  }
+
+  .table-name {
+    font-size: 16px;
   }
 
   .table-need {
-    min-width: 36px;
-    min-height: 36px;
+    min-width: 40px;
+    min-height: 40px;
   }
 
   .more-beam {
