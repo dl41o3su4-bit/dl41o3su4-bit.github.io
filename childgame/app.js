@@ -6690,7 +6690,9 @@
       (q.car || "🚗") +
       "</div>" +
       '<div class="street-cross" data-life-slot="cross" aria-label="斑馬線"></div>' +
-      '<div class="street-kid" data-life-item="kid" role="img" aria-label="小朋友">🧒</div>' +
+      '<div class="street-kid" data-life-item="kid" role="img" aria-label="小朋友">' +
+      standingKidSvg("kid") +
+      "</div>" +
       '<div class="street-far" data-life-slot="far" aria-label="對面"></div>' +
       "</div>" +
       '<div class="light-word">' +

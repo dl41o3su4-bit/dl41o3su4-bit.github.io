@@ -6987,11 +6987,14 @@ button.day-place:active {
 
 .street-kid {
   position: absolute;
-  left: 5%;
-  bottom: 10%;
+  left: 4%;
+  bottom: 4%;
   z-index: 3;
-  font-size: min(16cqw, 22cqh, 56px);
-  line-height: 1;
+  width: min(22%, 14cqw, 58px);
+  height: auto;
+  aspect-ratio: 160 / 240;
+  max-height: 88%;
+  line-height: 0;
   touch-action: none;
   transition: left 0.75s ease;
   filter: drop-shadow(0 3px 0 rgba(0, 0, 0, 0.18));
