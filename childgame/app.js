@@ -4218,22 +4218,22 @@
     var shoe = kind === "mom" ? "#c2255c" : "#6b451c";
     return (
       '<svg class="dress-kid-svg" viewBox="0 0 160 240" role="img" aria-hidden="true">' +
-      '<path d="M62 96 C40 104 32 128 30 150 C30 158 38 160 44 154 C52 140 58 124 66 110Z"' +
+      '<path d="M56 108 C36 114 26 134 24 154 C24 162 32 164 38 158 C46 144 52 128 60 116Z"' +
       crayonFill(skin) +
       "></path>" +
-      '<path d="M98 96 C120 104 128 128 130 150 C130 158 122 160 116 154 C108 140 102 124 94 110Z"' +
+      '<path d="M104 108 C124 114 134 134 136 154 C136 162 128 164 122 158 C114 144 108 128 100 116Z"' +
       crayonFill(skin) +
       "></path>" +
-      '<ellipse cx="38" cy="156" rx="9" ry="7"' +
+      '<ellipse cx="32" cy="158" rx="9" ry="7"' +
       crayonFill(skin) +
       "></ellipse>" +
-      '<ellipse cx="122" cy="156" rx="9" ry="7"' +
+      '<ellipse cx="128" cy="158" rx="9" ry="7"' +
       crayonFill(skin) +
       "></ellipse>" +
-      '<path d="M60 162 L60 208 C60 216 70 218 78 210 L78 164Z"' +
+      '<path d="M60 168 L58 208 C58 216 70 218 78 210 L78 172Z"' +
       crayonFill(skin) +
       "></path>" +
-      '<path d="M100 162 L100 208 C100 216 90 218 82 210 L82 164Z"' +
+      '<path d="M100 168 L102 208 C102 216 90 218 82 210 L82 172Z"' +
       crayonFill(skin) +
       "></path>" +
       '<ellipse cx="68" cy="216" rx="16" ry="8"' +
@@ -4242,11 +4242,17 @@
       '<ellipse cx="92" cy="216" rx="16" ry="8"' +
       crayonFill(shoe) +
       "></ellipse>" +
-      '<path d="M58 148 C56 156 58 168 80 168 C102 168 104 156 102 148 C96 152 64 152 58 148Z"' +
-      crayonFill(shorts) +
-      "></path>" +
-      '<path d="M62 86 C58 90 56 104 58 132 C60 148 66 154 80 154 C94 154 100 148 102 132 C104 104 102 90 98 86 C92 80 68 80 62 86Z"' +
+      '<path d="M60 86 C44 90 30 100 28 114 C30 122 44 122 56 110 C60 100 64 88 60 86Z"' +
       crayonFill(shirt) +
+      "></path>" +
+      '<path d="M100 86 C116 90 130 100 132 114 C130 122 116 122 104 110 C100 100 96 88 100 86Z"' +
+      crayonFill(shirt) +
+      "></path>" +
+      '<path d="M58 86 C54 92 52 112 52 142 C52 160 60 174 80 174 C100 174 108 160 108 142 C108 112 106 92 102 86 C94 78 66 78 58 86Z"' +
+      crayonFill(shirt) +
+      "></path>" +
+      '<path d="M54 150 C50 158 50 178 54 194 C58 202 68 204 80 204 C92 204 102 202 106 194 C110 178 110 158 106 150 C98 156 62 156 54 150Z"' +
+      crayonFill(shorts) +
       "></path>" +
       standingBackHair(kind) +
       '<path d="M72 74 C72 84 74 88 80 88 C86 88 88 84 88 74Z"' +
