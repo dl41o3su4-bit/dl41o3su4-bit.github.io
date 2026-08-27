@@ -4651,38 +4651,38 @@
 
   function crayonCupSvg() {
     return (
-      '<svg class="table-ware-svg" viewBox="0 0 100 110" role="img" aria-hidden="true">' +
-      '<path d="M70 44 C96 42 100 82 68 86 C88 78 88 52 70 44Z"' +
+      '<svg class="table-ware-svg" viewBox="0 0 110 120" role="img" aria-hidden="true">' +
+      '<path d="M76 48 C106 50 108 92 74 96 C102 88 102 56 76 48Z"' +
+      crayonFill("#74c0fc") +
+      "></path>" +
+      '<path d="M24 42 C20 48 16 80 22 96 C26 110 38 114 50 114 C62 114 76 110 80 96 C86 80 80 48 76 42 C70 36 30 36 24 42Z"' +
       crayonFill("#a5d8ff") +
       "></path>" +
-      '<path d="M26 38 C22 42 18 84 20 92 C22 100 32 104 42 104 H60 C72 104 80 100 82 92 C84 84 78 42 74 38 C70 36 30 36 26 38Z"' +
-      crayonFill("#d0ebff") +
-      "></path>" +
-      '<ellipse cx="50" cy="36" rx="26" ry="11"' +
+      '<ellipse cx="50" cy="40" rx="32" ry="14"' +
       crayonFill("#fff8ee") +
       "></ellipse>" +
-      '<ellipse cx="50" cy="38" rx="19" ry="7.5"' +
-      crayonFill("#fffef8") +
+      '<ellipse cx="50" cy="42" rx="22" ry="8"' +
+      crayonFill("#e8c48a") +
       "></ellipse>" +
-      '<ellipse cx="44" cy="36.5" rx="6" ry="2.2" fill="#ffffff"></ellipse>' +
+      '<ellipse cx="42" cy="40" rx="7" ry="2.6" fill="#fff4d6"></ellipse>' +
       "</svg>"
     );
   }
 
   function crayonPlateSvg() {
     return (
-      '<svg class="table-ware-svg" viewBox="0 0 130 86" role="img" aria-hidden="true">' +
-      '<ellipse cx="65" cy="50" rx="56" ry="26"' +
-      crayonFill("#e8c48a") +
+      '<svg class="table-ware-svg" viewBox="0 0 130 90" role="img" aria-hidden="true">' +
+      '<ellipse cx="65" cy="54" rx="54" ry="24"' +
+      crayonFill("#c1864a") +
       "></ellipse>" +
-      '<ellipse cx="65" cy="42" rx="56" ry="26"' +
+      '<ellipse cx="65" cy="40" rx="54" ry="24"' +
       crayonFill("#fffef8") +
       "></ellipse>" +
-      '<ellipse cx="65" cy="42" rx="38" ry="16"' +
-      crayonFill("#ffe8cc") +
+      '<ellipse cx="65" cy="42" rx="36" ry="14"' +
+      crayonFill("#f0c49a") +
       "></ellipse>" +
-      '<ellipse cx="65" cy="41" rx="26" ry="10"' +
-      crayonFill("#fff8ee") +
+      '<ellipse cx="65" cy="40" rx="26" ry="9"' +
+      crayonFill("#fff4d6") +
       "></ellipse>" +
       "</svg>"
     );
@@ -4690,29 +4690,29 @@
 
   function crayonShoeSvg() {
     return (
-      '<svg class="table-ware-svg" viewBox="0 0 130 86" role="img" aria-hidden="true">' +
-      '<path d="M16 58 L16 70 C16 76 24 78 34 76 L104 68 C118 66 122 58 114 52 L20 60 Z"' +
+      '<svg class="table-ware-svg" viewBox="0 0 130 90" role="img" aria-hidden="true">' +
+      '<path d="M14 60 L14 72 C14 78 24 80 36 78 L100 70 C116 68 122 60 114 54 L18 62 Z"' +
       crayonFill("#6b451c") +
       "></path>" +
-      '<path d="M22 56 C20 38 34 24 56 22 L74 22 C88 22 92 32 90 42 L112 50 C120 54 118 60 106 60 L24 58 Z"' +
+      '<path d="M22 58 C18 38 36 22 58 22 L72 22 C86 22 90 34 88 44 L110 52 C120 56 118 62 104 62 L24 60 Z"' +
       crayonFill("#fa5252") +
       "></path>" +
-      '<path d="M22 40 C18 30 24 22 36 24 C32 34 28 48 26 56 C22 54 22 46 22 40Z"' +
+      '<path d="M20 44 C16 32 26 20 40 24 C34 34 30 48 28 58 C22 56 20 50 20 44Z"' +
       crayonFill("#e03131") +
       "></path>" +
-      '<ellipse cx="62" cy="26" rx="18" ry="9"' +
+      '<ellipse cx="62" cy="26" rx="20" ry="10"' +
       crayonFill("#fff1d6") +
       "></ellipse>" +
-      '<path d="M50 26 C54 14 74 14 78 26 C70 22 58 22 50 26Z"' +
+      '<path d="M48 26 C54 12 76 12 82 26 C72 20 58 20 48 26Z"' +
       crayonFill("#ff8787") +
       "></path>" +
-      '<ellipse cx="62" cy="28" rx="11" ry="4.5"' +
+      '<ellipse cx="62" cy="28" rx="12" ry="5"' +
       crayonFill("#e8c48a") +
       "></ellipse>" +
-      '<circle cx="56" cy="40" r="3"' +
+      '<circle cx="56" cy="42" r="3.2"' +
       crayonFill("#fff8ee") +
       "></circle>" +
-      '<circle cx="68" cy="42" r="3"' +
+      '<circle cx="68" cy="44" r="3.2"' +
       crayonFill("#fff8ee") +
       "></circle>" +
       "</svg>"

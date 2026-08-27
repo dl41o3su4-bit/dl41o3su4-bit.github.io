@@ -6256,8 +6256,8 @@ button.day-place:active {
 
 .table-play .table-have .ware-cup,
 .table-play .table-put .ware-cup {
-  width: clamp(42px, 8.4vmin, 58px);
-  height: clamp(50px, 10vmin, 66px);
+  width: clamp(48px, 9.2vmin, 64px);
+  height: clamp(54px, 10.6vmin, 72px);
 }
 
 .table-play .table-have .ware-plate,
@@ -6289,8 +6289,8 @@ button.day-place:active {
 
 .table-play .life-chip-art .ware-cup,
 .life-ghost .ware-cup {
-  width: 44px;
-  height: 52px;
+  width: 48px;
+  height: 56px;
 }
 
 .table-play .life-chip-art .ware-plate,
