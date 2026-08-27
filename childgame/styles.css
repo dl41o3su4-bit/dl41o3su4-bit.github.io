@@ -6119,8 +6119,9 @@ button.day-place:active {
   justify-content: center;
   align-content: center;
   gap: 12px 14px;
-  flex: 1 1 0;
+  flex: 0 1 auto;
   width: min(100%, 196px);
+  max-width: 196px;
   min-height: 0;
   padding: 4px;
   background: none;
