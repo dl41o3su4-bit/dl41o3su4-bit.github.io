@@ -5094,6 +5094,153 @@
     return "";
   }
 
+  function fruitKindOf(emoji) {
+    var e = String(emoji || "");
+    if (e === "🍊" || e === "🍋" || e === "🥭") return "orange";
+    if (e === "🍓") return "strawberry";
+    if (e === "🍌") return "banana";
+    if (e === "🍍") return "pineapple";
+    if (e === "🍇" || e === "🥝" || e === "🍈") return "grape";
+    if (e === "⭐") return "star";
+    if (e === "🍉") return "melon";
+    return "apple";
+  }
+
+  function crayonFruitSvg(kind) {
+    if (kind === "apple") return crayonSortSvg("apple");
+    if (kind === "banana") return crayonSortSvg("banana");
+    if (kind === "orange") {
+      return crayonSortMark(
+        "0 0 120 120",
+        '<circle cx="60" cy="64" r="36"' +
+          crayonFill("#ff922b") +
+          "></circle>" +
+          '<path d="M60 28 C60 20 64 14 70 16"' +
+          crayonInk(3) +
+          "></path>" +
+          '<path d="M62 30 C74 18 92 24 86 40 C78 32 68 32 62 30Z"' +
+          crayonFill("#69db7c") +
+          "></path>" +
+          '<ellipse cx="46" cy="54" rx="9" ry="6" fill="#fff1d6"></ellipse>' +
+          '<path d="M54 90 C58 96 62 96 66 90"' +
+          crayonInk(2.4) +
+          "></path>"
+      );
+    }
+    if (kind === "strawberry") {
+      return crayonSortMark(
+        "0 0 120 120",
+        '<path d="M60 30 C34 30 24 54 28 76 C34 102 50 112 60 114 C70 112 86 102 92 76 C96 54 86 30 60 30Z"' +
+          crayonFill("#fa5252") +
+          "></path>" +
+          '<path d="M38 36 C46 16 74 16 82 36 C70 30 50 30 38 36Z"' +
+          crayonFill("#69db7c") +
+          "></path>" +
+          '<path d="M60 18 L60 34"' +
+          crayonInk(2.8) +
+          "></path>" +
+          '<ellipse cx="46" cy="64" rx="3" ry="2.2" fill="#fff1d6"></ellipse>' +
+          '<ellipse cx="70" cy="58" rx="3" ry="2.2" fill="#fff1d6"></ellipse>' +
+          '<ellipse cx="56" cy="82" rx="3" ry="2.2" fill="#fff1d6"></ellipse>' +
+          '<ellipse cx="74" cy="80" rx="2.6" ry="2" fill="#fff1d6"></ellipse>'
+      );
+    }
+    if (kind === "grape") {
+      return crayonSortMark(
+        "0 0 120 120",
+        '<path d="M60 16 L60 34"' +
+          crayonInk(3) +
+          "></path>" +
+          '<path d="M60 22 C70 16 80 22 78 30"' +
+          crayonFill("#69db7c") +
+          "></path>" +
+          '<circle cx="46" cy="48" r="14"' +
+          crayonFill("#845ef7") +
+          "></circle>" +
+          '<circle cx="74" cy="48" r="14"' +
+          crayonFill("#7950f2") +
+          "></circle>" +
+          '<circle cx="60" cy="62" r="14"' +
+          crayonFill("#7048e8") +
+          "></circle>" +
+          '<circle cx="42" cy="74" r="13"' +
+          crayonFill("#845ef7") +
+          "></circle>" +
+          '<circle cx="78" cy="74" r="13"' +
+          crayonFill("#7950f2") +
+          "></circle>" +
+          '<circle cx="60" cy="88" r="13"' +
+          crayonFill("#5f3dc4") +
+          "></circle>" +
+          '<ellipse cx="40" cy="42" rx="5" ry="3.4" fill="#e5dbff"></ellipse>'
+      );
+    }
+    if (kind === "star") {
+      return crayonSortMark(
+        "0 0 120 120",
+        '<path d="M60 18 L70 48 L102 48 L76 68 L86 100 L60 80 L34 100 L44 68 L18 48 L50 48 Z"' +
+          crayonFill("#ffe066") +
+          "></path>" +
+          '<ellipse cx="54" cy="44" rx="7" ry="4" fill="#fff8ee"></ellipse>'
+      );
+    }
+    if (kind === "pineapple") {
+      return crayonSortMark(
+        "0 0 120 130",
+        '<path d="M60 18 L48 42 L72 42 Z"' +
+          crayonFill("#40c057") +
+          "></path>" +
+          '<path d="M48 28 L40 50 L58 44 Z"' +
+          crayonFill("#69db7c") +
+          "></path>" +
+          '<path d="M72 28 L80 50 L62 44 Z"' +
+          crayonFill("#51cf66") +
+          "></path>" +
+          '<ellipse cx="60" cy="86" rx="30" ry="36"' +
+          crayonFill("#fab005") +
+          "></ellipse>" +
+          '<path d="M40 70 L80 102"' +
+          crayonInk(2.2) +
+          "></path>" +
+          '<path d="M80 70 L40 102"' +
+          crayonInk(2.2) +
+          "></path>" +
+          '<path d="M36 86 H84"' +
+          crayonInk(2.2) +
+          "></path>"
+      );
+    }
+    if (kind === "melon") {
+      return crayonSortMark(
+        "0 0 130 110",
+        '<path d="M18 86 A52 52 0 0 1 112 86 L65 102 Z"' +
+          crayonFill("#40c057") +
+          "></path>" +
+          '<path d="M26 84 A44 44 0 0 1 104 84 L65 96 Z"' +
+          crayonFill("#fff8ee") +
+          "></path>" +
+          '<path d="M32 82 A38 38 0 0 1 98 82 L65 92 Z"' +
+          crayonFill("#fa5252") +
+          "></path>" +
+          '<ellipse cx="52" cy="70" rx="3" ry="4" fill="#3b2412"></ellipse>' +
+          '<ellipse cx="72" cy="64" rx="3" ry="4" fill="#3b2412"></ellipse>' +
+          '<ellipse cx="64" cy="78" rx="2.6" ry="3.4" fill="#3b2412"></ellipse>'
+      );
+    }
+    return crayonSortSvg("apple");
+  }
+
+  function fruitMark(emoji) {
+    var kind = fruitKindOf(emoji);
+    return (
+      '<span class="count-fruit fruit-' +
+      kind +
+      ' is-crayon" aria-hidden="true">' +
+      crayonFruitSvg(kind) +
+      "</span>"
+    );
+  }
+
   function renderSortGoodsArt(item) {
     var kind = sortGoodsKind(item);
     if (kind === "shirt" || kind === "hat") {
@@ -5752,18 +5899,16 @@
 
   function renderCount(q) {
     var n = state.countNum || 0;
+    var badge = n
+      ? '<div class="count-badge" aria-live="polite">' + n + "</div>"
+      : "";
     return (
       '<div class="play-col">' +
-      '<div class="prompt">一顆一顆點</div>' +
       '<div class="count-stage">' +
+      badge +
       '<div class="count-wrap">' +
-      '<div class="big-num count-num' +
-      (n ? "" : " is-empty") +
-      '">' +
-      (n ? n : "") +
-      "</div>" +
       '<div class="count-board">' +
-      scatterIcons(q.fruit, q.count, "scatter-lg", 0, 0, state.countTapped) +
+      scatterIcons(fruitMark(q.fruit), q.count, "scatter-lg", 0, 0, state.countTapped) +
       "</div></div></div></div>"
     );
   }
