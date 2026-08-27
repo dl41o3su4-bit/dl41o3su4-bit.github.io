@@ -4397,6 +4397,9 @@
   }
 
   function renderHabitatChipArt(item) {
+    if (state.levelId === "dress") {
+      return renderDressChipArt(item);
+    }
     if (shouldDrawHabitatCritter(item)) {
       return (
         '<span class="life-chip-art">' +
@@ -4562,16 +4565,39 @@
 
   function hangKindOf(item) {
     var blob = ((item && (item.name || "")) + " " + (item && (item.id || "")) + " " + (item && (item.emoji || ""))).toLowerCase();
+    if (/雨靴|boot|👢/.test(blob)) return "boot";
     if (/雨衣|rain/.test(blob)) return "rain";
     if (/外套|coat|wind/.test(blob)) return "coat";
-    if (/雨靴|boot|👢/.test(blob)) return "boot";
     if (/帽|cap|🧢/.test(blob)) return "cap";
     if (/鏡|glass/.test(blob)) return "glass";
     if (/圍巾|scarf|🧣/.test(blob)) return "scarf";
     if (/傘|umb|☂️/.test(blob)) return "umb";
+    if (/拖|sandal|👡/.test(blob)) return "sandal";
     if (item && item.slot === "feet") return "boot";
     if (item && item.slot === "head") return "cap";
     return "tee";
+  }
+
+  function renderDressKindMark(item, extraClass) {
+    var kind = hangKindOf(item);
+    var inner = "";
+    if (kind === "tee" || kind === "coat" || kind === "rain") {
+      inner = hangBodyInner();
+    } else if (kind === "cap") {
+      inner = '<i class="dh-brim"></i>';
+    }
+    return (
+      '<i class="dress-chip hang-' +
+      kind +
+      (extraClass ? " " + extraClass : "") +
+      '">' +
+      inner +
+      "</i>"
+    );
+  }
+
+  function renderDressChipArt(item) {
+    return '<span class="life-chip-art">' + renderDressKindMark(item) + "</span>";
   }
 
   function hangSeatOf(item) {
@@ -5756,7 +5782,12 @@
   function renderDressWear(slotId) {
     var item = itemInSlot(slotId);
     if (!item) return "";
-    return '<span class="dress-wear" aria-hidden="true">' + item.emoji + "</span>";
+    var kind = hangKindOf(item);
+    var art =
+      kind === "boot" || kind === "sandal"
+        ? renderDressKindMark(item, "a") + renderDressKindMark(item, "b")
+        : renderDressKindMark(item);
+    return '<span class="dress-wear kind-' + kind + '" aria-hidden="true">' + art + "</span>";
   }
 
   function dressWxClass(emoji) {

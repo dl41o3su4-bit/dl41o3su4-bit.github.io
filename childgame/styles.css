@@ -4348,6 +4348,429 @@ button.day-place:active {
   bottom: -4%;
 }
 
+.dress-play .life-chip-art {
+  position: relative;
+  width: 74px;
+  height: 54px;
+}
+
+.dress-play .dress-chip,
+.dress-play .dress-chip .dh-sleeve,
+.dress-play .dress-chip .dh-neck,
+.dress-play .dress-chip .dh-brim {
+  position: absolute;
+  display: block;
+  font-style: normal;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.dress-play .dress-chip.hang-tee,
+.dress-play .dress-chip.hang-coat,
+.dress-play .dress-chip.hang-rain {
+  left: 28%;
+  right: 28%;
+  top: 20%;
+  height: 58%;
+  min-height: 22px;
+  border-radius: 3px 3px 6px 6px;
+}
+
+.dress-play .dress-chip.hang-tee {
+  background: #74c0fc;
+  border: 2px solid #1c7ed6;
+}
+
+.dress-play .dress-chip.hang-tee .dh-sleeve {
+  top: -2px;
+  width: 22px;
+  height: 13px;
+  background: inherit;
+  border: 2px solid #1c7ed6;
+}
+
+.dress-play .dress-chip.hang-tee .dh-sleeve.a {
+  left: -18px;
+  border-radius: 12px 3px 9px 12px;
+  transform: rotate(-48deg);
+  transform-origin: 100% 20%;
+}
+
+.dress-play .dress-chip.hang-tee .dh-sleeve.b {
+  right: -18px;
+  border-radius: 3px 12px 12px 9px;
+  transform: rotate(48deg);
+  transform-origin: 0% 20%;
+}
+
+.dress-play .dress-chip.hang-tee .dh-neck,
+.dress-play .dress-chip.hang-coat .dh-neck,
+.dress-play .dress-chip.hang-rain .dh-neck {
+  left: 24%;
+  right: 24%;
+  top: -5px;
+  height: 8px;
+  background: #fff4d6;
+  border: 2px solid #1c7ed6;
+  border-bottom: 0;
+  border-radius: 8px 8px 0 0;
+}
+
+.dress-play .dress-chip.hang-coat {
+  top: 16%;
+  height: 66%;
+  background: #c1864a;
+  border: 2px solid #8d5a2b;
+}
+
+.dress-play .dress-chip.hang-coat .dh-sleeve,
+.dress-play .dress-chip.hang-rain .dh-sleeve {
+  top: 4%;
+  width: 12px;
+  height: 72%;
+  background: inherit;
+  border: 2px solid #8d5a2b;
+  border-radius: 6px;
+}
+
+.dress-play .dress-chip.hang-coat .dh-sleeve.a,
+.dress-play .dress-chip.hang-rain .dh-sleeve.a {
+  left: -11px;
+}
+
+.dress-play .dress-chip.hang-coat .dh-sleeve.b,
+.dress-play .dress-chip.hang-rain .dh-sleeve.b {
+  right: -11px;
+}
+
+.dress-play .dress-chip.hang-coat .dh-neck {
+  border-color: #8d5a2b;
+}
+
+.dress-play .dress-chip.hang-rain {
+  top: 16%;
+  height: 66%;
+  background: #f59f00;
+  border: 2px solid #e67700;
+}
+
+.dress-play .dress-chip.hang-rain .dh-sleeve {
+  border-color: #e67700;
+}
+
+.dress-play .dress-chip.hang-rain .dh-neck {
+  top: -9px;
+  height: 12px;
+  background: #f59f00;
+  border-color: #e67700;
+  border-bottom: 0;
+  border-radius: 10px 10px 0 0;
+}
+
+.dress-play .dress-chip.hang-cap {
+  left: 50%;
+  top: 50%;
+  width: 30px;
+  height: 16px;
+  background: #fa5252;
+  border: 2px solid #c92a2a;
+  border-radius: 10px 10px 2px 2px;
+  transform: translate(-50%, -62%);
+}
+
+.dress-play .dress-chip.hang-cap .dh-brim {
+  left: -6px;
+  width: 36px;
+  right: auto;
+  bottom: -5px;
+  height: 7px;
+  background: #1c7ed6;
+  border: 2px solid #1864ab;
+  border-radius: 2px 7px 2px 2px;
+}
+
+.dress-play .dress-chip.hang-scarf {
+  left: 50%;
+  top: 38%;
+  width: 22px;
+  height: 16px;
+  background: #fa5252;
+  border: 2px solid #c92a2a;
+  border-radius: 10px;
+  transform: translate(-50%, -50%);
+}
+
+.dress-play .dress-chip.hang-scarf::before,
+.dress-play .dress-chip.hang-scarf::after {
+  content: "";
+  position: absolute;
+  top: 12px;
+  width: 8px;
+  height: 16px;
+  background: #fa5252;
+  border: 2px solid #c92a2a;
+  border-radius: 4px;
+}
+
+.dress-play .dress-chip.hang-scarf::before {
+  left: 1px;
+  transform: rotate(14deg);
+}
+
+.dress-play .dress-chip.hang-scarf::after {
+  right: 1px;
+  transform: rotate(-18deg);
+}
+
+.dress-play .dress-chip.hang-glass {
+  left: 50%;
+  top: 50%;
+  width: 32px;
+  height: 12px;
+  background: transparent;
+  border: 0;
+  transform: translate(-50%, -50%);
+}
+
+.dress-play .dress-chip.hang-glass::before,
+.dress-play .dress-chip.hang-glass::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 13px;
+  height: 12px;
+  background: rgba(116, 192, 252, 0.38);
+  border: 2px solid #3d2a1a;
+  border-radius: 4px;
+}
+
+.dress-play .dress-chip.hang-glass::before {
+  left: 0;
+}
+
+.dress-play .dress-chip.hang-glass::after {
+  right: 0;
+}
+
+.dress-play .dress-chip.hang-umb {
+  left: 50%;
+  top: 42%;
+  width: 32px;
+  height: 16px;
+  background: #4dabf7;
+  border: 2px solid #1c7ed6;
+  border-radius: 16px 16px 2px 2px;
+  transform: translate(-50%, -50%);
+}
+
+.dress-play .dress-chip.hang-umb::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  width: 3px;
+  height: 14px;
+  background: #8d5a2b;
+  border-radius: 2px;
+  transform: translateX(-50%);
+}
+
+.dress-play .dress-chip.hang-boot {
+  left: 50%;
+  top: 50%;
+  width: 22px;
+  height: 22px;
+  background: #3d2a1a;
+  border: 2px solid #2a1c12;
+  border-radius: 4px 8px 3px 3px;
+  transform: translate(-50%, -50%);
+}
+
+.dress-play .dress-chip.hang-sandal {
+  left: 50%;
+  top: 56%;
+  width: 26px;
+  height: 12px;
+  background: #e8c48a;
+  border: 2px solid #c1864a;
+  border-radius: 4px 12px 4px 4px;
+  transform: translate(-50%, -50%);
+}
+
+.dress-play .dress-chip.hang-sandal::before {
+  content: "";
+  position: absolute;
+  left: 16%;
+  right: 22%;
+  top: -8px;
+  height: 10px;
+  border: 2px solid #c1864a;
+  border-bottom: 0;
+  border-radius: 10px 10px 0 0;
+  background: transparent;
+}
+
+.dress-play .dress-wear {
+  font-size: 0;
+  overflow: visible;
+}
+
+.dress-play .dress-zone.body .dress-wear.kind-tee,
+.dress-play .dress-zone.body .dress-wear.kind-coat,
+.dress-play .dress-zone.body .dress-wear.kind-rain {
+  left: 50%;
+  top: 8%;
+  width: 86px;
+  height: 86%;
+  transform: translateX(-50%);
+}
+
+.dress-play .dress-zone.body .dress-wear.kind-tee {
+  top: 14%;
+  height: 62%;
+}
+
+.dress-play .dress-zone.body .dress-wear .dress-chip.hang-tee,
+.dress-play .dress-zone.body .dress-wear .dress-chip.hang-coat,
+.dress-play .dress-zone.body .dress-wear .dress-chip.hang-rain {
+  left: 10%;
+  right: 10%;
+  top: 6%;
+  height: 86%;
+}
+
+.dress-play .dress-zone.body .dress-wear .dress-chip.hang-tee {
+  top: 4%;
+  height: 78%;
+}
+
+.dress-play .dress-zone.body .dress-wear .dress-chip.hang-tee .dh-sleeve {
+  width: 30px;
+  height: 16px;
+}
+
+.dress-play .dress-zone.body .dress-wear .dress-chip.hang-tee .dh-sleeve.a {
+  left: -24px;
+}
+
+.dress-play .dress-zone.body .dress-wear .dress-chip.hang-tee .dh-sleeve.b {
+  right: -24px;
+}
+
+.dress-play .dress-zone.body .dress-wear .dress-chip.hang-coat .dh-sleeve,
+.dress-play .dress-zone.body .dress-wear .dress-chip.hang-rain .dh-sleeve {
+  width: 16px;
+  height: 78%;
+}
+
+.dress-play .dress-zone.body .dress-wear .dress-chip.hang-coat .dh-sleeve.a,
+.dress-play .dress-zone.body .dress-wear .dress-chip.hang-rain .dh-sleeve.a {
+  left: -14px;
+}
+
+.dress-play .dress-zone.body .dress-wear .dress-chip.hang-coat .dh-sleeve.b,
+.dress-play .dress-zone.body .dress-wear .dress-chip.hang-rain .dh-sleeve.b {
+  right: -14px;
+}
+
+.dress-play .dress-zone.head .dress-wear.kind-cap {
+  top: -8px;
+}
+
+.dress-play .dress-zone.head .dress-wear.kind-cap .dress-chip.hang-cap {
+  width: 42px;
+  height: 20px;
+}
+
+.dress-play .dress-zone.head .dress-wear.kind-cap .dh-brim {
+  width: 50px;
+  left: -8px;
+}
+
+.dress-play .dress-zone.head .dress-wear.kind-scarf {
+  top: auto;
+  bottom: -10px;
+}
+
+.dress-play .dress-zone.head .dress-wear.kind-scarf .dress-chip.hang-scarf {
+  width: 36px;
+  height: 18px;
+}
+
+.dress-play .dress-zone.head .dress-wear.kind-scarf .dress-chip.hang-scarf::before,
+.dress-play .dress-zone.head .dress-wear.kind-scarf .dress-chip.hang-scarf::after {
+  width: 10px;
+  height: 22px;
+}
+
+.dress-play .dress-zone.head .dress-wear.kind-glass {
+  top: 36%;
+}
+
+.dress-play .dress-zone.head .dress-wear.kind-glass .dress-chip.hang-glass {
+  width: 44px;
+  height: 14px;
+}
+
+.dress-play .dress-zone.head .dress-wear.kind-glass .dress-chip.hang-glass::before,
+.dress-play .dress-zone.head .dress-wear.kind-glass .dress-chip.hang-glass::after {
+  width: 18px;
+  height: 14px;
+}
+
+.dress-play .dress-zone.head .dress-wear.kind-umb {
+  top: -22px;
+}
+
+.dress-play .dress-zone.head .dress-wear.kind-umb .dress-chip.hang-umb {
+  width: 54px;
+  height: 22px;
+}
+
+.dress-play .dress-zone.head .dress-wear.kind-umb .dress-chip.hang-umb::after {
+  height: 20px;
+}
+
+.dress-play .dress-zone.feet .dress-wear.kind-boot,
+.dress-play .dress-zone.feet .dress-wear.kind-sandal {
+  left: 50%;
+  bottom: 0;
+  width: 70px;
+  height: 28px;
+  transform: translateX(-50%);
+}
+
+.dress-play .dress-zone.feet .dress-chip.hang-boot,
+.dress-play .dress-zone.feet .dress-chip.hang-sandal {
+  transform: none;
+  top: auto;
+  bottom: 0;
+}
+
+.dress-play .dress-zone.feet .dress-chip.hang-boot {
+  width: 24px;
+  height: 26px;
+}
+
+.dress-play .dress-zone.feet .dress-chip.hang-sandal {
+  width: 26px;
+  height: 12px;
+}
+
+.dress-play .dress-zone.feet .dress-chip.a {
+  left: 6px;
+}
+
+.dress-play .dress-zone.feet .dress-chip.b {
+  left: auto;
+  right: 6px;
+}
+
+.dress-play .life-item .life-name {
+  position: relative;
+  z-index: 1;
+}
+
 .habitat-play .life-item {
   min-height: 110px;
   padding-top: 18px;
