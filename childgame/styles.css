@@ -6256,14 +6256,14 @@ button.day-place:active {
 
 .table-play .table-have .ware-cup,
 .table-play .table-put .ware-cup {
-  width: clamp(30px, 6.2vmin, 42px);
-  height: clamp(44px, 8.8vmin, 58px);
+  width: clamp(42px, 8.4vmin, 58px);
+  height: clamp(50px, 10vmin, 66px);
 }
 
 .table-play .table-have .ware-plate,
 .table-play .table-put .ware-plate {
-  width: clamp(64px, 13.2vmin, 92px);
-  height: clamp(20px, 4.4vmin, 32px);
+  width: clamp(68px, 14vmin, 96px);
+  height: clamp(38px, 7.6vmin, 54px);
 }
 
 .table-play .table-have .ware-sticks,
@@ -6289,14 +6289,14 @@ button.day-place:active {
 
 .table-play .life-chip-art .ware-cup,
 .life-ghost .ware-cup {
-  width: 26px;
-  height: 38px;
+  width: 44px;
+  height: 52px;
 }
 
 .table-play .life-chip-art .ware-plate,
 .life-ghost .ware-plate {
-  width: 58px;
-  height: 18px;
+  width: 64px;
+  height: 42px;
 }
 
 .table-play .life-chip-art .ware-sticks,
@@ -6329,8 +6329,8 @@ button.day-place:active {
 
 .table-play .life-chip-art .ware-shoe,
 .life-ghost .ware-shoe {
-  width: 48px;
-  height: 26px;
+  width: 64px;
+  height: 44px;
 }
 
 .table-play .ware-bowl,
@@ -6517,6 +6517,30 @@ button.day-place:active {
   background: #d0ebff;
   border: 2px solid #1864ab;
   border-radius: 40% 50% 20% 20%;
+}
+
+.table-play .table-ware.is-crayon,
+.life-ghost .table-ware.is-crayon {
+  background: none;
+  border: 0;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+.table-play .table-ware.is-crayon::before,
+.table-play .table-ware.is-crayon::after,
+.life-ghost .table-ware.is-crayon::before,
+.life-ghost .table-ware.is-crayon::after {
+  content: none;
+  display: none;
+}
+
+.table-play .table-ware.is-crayon svg,
+.life-ghost .table-ware.is-crayon svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
 }
 
 .life-scene,

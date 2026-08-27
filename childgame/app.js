@@ -4649,8 +4649,90 @@
     );
   }
 
+  function crayonCupSvg() {
+    return (
+      '<svg class="table-ware-svg" viewBox="0 0 100 110" role="img" aria-hidden="true">' +
+      '<path d="M70 44 C96 42 100 82 68 86 C88 78 88 52 70 44Z"' +
+      crayonFill("#a5d8ff") +
+      "></path>" +
+      '<path d="M26 38 C22 42 18 84 20 92 C22 100 32 104 42 104 H60 C72 104 80 100 82 92 C84 84 78 42 74 38 C70 36 30 36 26 38Z"' +
+      crayonFill("#d0ebff") +
+      "></path>" +
+      '<ellipse cx="50" cy="36" rx="26" ry="11"' +
+      crayonFill("#fff8ee") +
+      "></ellipse>" +
+      '<ellipse cx="50" cy="38" rx="19" ry="7.5"' +
+      crayonFill("#fffef8") +
+      "></ellipse>" +
+      '<ellipse cx="44" cy="36.5" rx="6" ry="2.2" fill="#ffffff"></ellipse>' +
+      "</svg>"
+    );
+  }
+
+  function crayonPlateSvg() {
+    return (
+      '<svg class="table-ware-svg" viewBox="0 0 130 86" role="img" aria-hidden="true">' +
+      '<ellipse cx="65" cy="50" rx="56" ry="26"' +
+      crayonFill("#e8c48a") +
+      "></ellipse>" +
+      '<ellipse cx="65" cy="42" rx="56" ry="26"' +
+      crayonFill("#fffef8") +
+      "></ellipse>" +
+      '<ellipse cx="65" cy="42" rx="38" ry="16"' +
+      crayonFill("#ffe8cc") +
+      "></ellipse>" +
+      '<ellipse cx="65" cy="41" rx="26" ry="10"' +
+      crayonFill("#fff8ee") +
+      "></ellipse>" +
+      "</svg>"
+    );
+  }
+
+  function crayonShoeSvg() {
+    return (
+      '<svg class="table-ware-svg" viewBox="0 0 130 86" role="img" aria-hidden="true">' +
+      '<path d="M16 58 L16 70 C16 76 24 78 34 76 L104 68 C118 66 122 58 114 52 L20 60 Z"' +
+      crayonFill("#6b451c") +
+      "></path>" +
+      '<path d="M22 56 C20 38 34 24 56 22 L74 22 C88 22 92 32 90 42 L112 50 C120 54 118 60 106 60 L24 58 Z"' +
+      crayonFill("#fa5252") +
+      "></path>" +
+      '<path d="M22 40 C18 30 24 22 36 24 C32 34 28 48 26 56 C22 54 22 46 22 40Z"' +
+      crayonFill("#e03131") +
+      "></path>" +
+      '<ellipse cx="62" cy="26" rx="18" ry="9"' +
+      crayonFill("#fff1d6") +
+      "></ellipse>" +
+      '<path d="M50 26 C54 14 74 14 78 26 C70 22 58 22 50 26Z"' +
+      crayonFill("#ff8787") +
+      "></path>" +
+      '<ellipse cx="62" cy="28" rx="11" ry="4.5"' +
+      crayonFill("#e8c48a") +
+      "></ellipse>" +
+      '<circle cx="56" cy="40" r="3"' +
+      crayonFill("#fff8ee") +
+      "></circle>" +
+      '<circle cx="68" cy="42" r="3"' +
+      crayonFill("#fff8ee") +
+      "></circle>" +
+      "</svg>"
+    );
+  }
+
+  function crayonTableWareSvg(kind) {
+    if (kind === "cup") return crayonCupSvg();
+    if (kind === "plate") return crayonPlateSvg();
+    if (kind === "shoe") return crayonShoeSvg();
+    return "";
+  }
+
   function renderTableWare(item) {
-    return '<i class="table-ware ware-' + wareKindOf(item) + '" aria-hidden="true"></i>';
+    var kind = wareKindOf(item);
+    var svg = crayonTableWareSvg(kind);
+    if (svg) {
+      return '<span class="table-ware ware-' + kind + ' is-crayon" aria-hidden="true">' + svg + "</span>";
+    }
+    return '<i class="table-ware ware-' + kind + '" aria-hidden="true"></i>';
   }
 
   function renderHabitatChipArt(item) {
