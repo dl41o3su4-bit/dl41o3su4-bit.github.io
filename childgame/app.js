@@ -5855,11 +5855,14 @@
       renderDressWear("head") +
       "</div>" +
       '<div class="dress-zone body" data-life-slot="body" aria-label="衣服">' +
+      '<span class="dress-neck" aria-hidden="true"></span>' +
       '<span class="dress-torso" aria-hidden="true"></span>' +
+      '<span class="dress-arm left" aria-hidden="true"><i class="up"></i><i class="fore"></i><i class="hand"></i></span>' +
+      '<span class="dress-arm right" aria-hidden="true"><i class="up"></i><i class="fore"></i><i class="hand"></i></span>' +
       renderDressWear("body") +
       "</div>" +
       '<div class="dress-zone feet" data-life-slot="feet" aria-label="腳">' +
-      '<span class="dress-legs" aria-hidden="true"><i></i><i></i></span>' +
+      '<span class="dress-legs" aria-hidden="true"><i class="dress-hip"></i><i class="dress-leg a"></i><i class="dress-leg b"></i></span>' +
       renderDressWear("feet") +
       "</div></div>" +
       '<span class="life-name dress-place-name">' +
@@ -6054,6 +6057,14 @@
     );
   }
 
+  function tableWhoClass(person) {
+    var id = String((person && person.id) || "");
+    var name = String((person && person.name) || "");
+    if (id.indexOf("dad") === 0 || name === "爸爸") return "who-dad";
+    if (id.indexOf("mom") === 0 || name === "媽媽") return "who-mom";
+    return "who-kid";
+  }
+
   function renderTableSeat(person) {
     var have = (person.have || [])
       .map(function (u) {
@@ -6066,10 +6077,19 @@
       })
       .join("");
     return (
-      '<div class="table-seat">' +
-      '<div class="table-who"><span class="table-face">' +
+      '<div class="table-seat ' +
+      tableWhoClass(person) +
+      '">' +
+      '<div class="table-who">' +
+      '<div class="table-figure">' +
+      '<span class="table-face">' +
       person.face +
-      '</span><span class="table-name">' +
+      '</span><span class="table-neck" aria-hidden="true"></span>' +
+      '<span class="table-torso" aria-hidden="true">' +
+      '<i class="table-arm left"><i class="up"></i><i class="fore"></i><i class="hand"></i></i>' +
+      '<i class="table-arm right"><i class="up"></i><i class="fore"></i><i class="hand"></i></i>' +
+      "</span></div>" +
+      '<span class="table-name">' +
       escapeHtml(person.name) +
       "</span></div>" +
       '<div class="table-setting">' +

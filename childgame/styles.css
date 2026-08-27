@@ -4187,7 +4187,7 @@ button.day-place:active {
   align-items: center;
   justify-content: center;
   gap: 0;
-  padding: 8px 12px 16px;
+  padding: 8px 28px 16px;
   overflow: visible;
 }
 
@@ -4202,24 +4202,24 @@ button.day-place:active {
 .dress-zone.head {
   flex: 0 0 auto;
   min-height: 0;
-  z-index: 1;
-  margin-bottom: -7px;
+  z-index: 3;
+  margin-bottom: -4px;
 }
 
 .dress-zone.body {
   flex: 0 0 auto;
   min-height: 0;
-  height: 96px;
-  margin-top: -7px;
-  margin-bottom: -7px;
+  height: 118px;
+  margin-top: 0;
+  margin-bottom: -4px;
   overflow: visible;
 }
 
 .dress-zone.feet {
   flex: 0 0 auto;
   min-height: 0;
-  height: 68px;
-  margin-top: -7px;
+  height: 78px;
+  margin-top: 0;
   overflow: visible;
 }
 
@@ -4229,99 +4229,201 @@ button.day-place:active {
 }
 
 .dress-face {
+  position: relative;
+  z-index: 2;
+  display: block;
   font-size: 56px;
   line-height: 1;
 }
 
-.dress-torso {
+.dress-neck {
   position: relative;
-  align-self: stretch;
-  justify-self: center;
-  width: 86px;
-  height: 100%;
-  min-height: 0;
+  z-index: 2;
+  width: 16px;
+  height: 13px;
+  margin: 0 auto 0;
   background: #f4d9b0;
   border: 3px solid #e8c48a;
-  border-radius: 22px 22px 18px 18px;
-  box-shadow: inset 0 -6px 0 rgba(180, 120, 70, 0.12);
+  border-bottom: 0;
+  border-radius: 7px 7px 0 0;
+  justify-self: center;
+}
+
+.dress-torso {
+  position: relative;
+  z-index: 2;
+  align-self: stretch;
+  justify-self: center;
+  width: 50px;
+  height: calc(100% - 13px);
+  min-height: 0;
+  margin-top: 0;
+  background: #ffe066;
+  border: 3px solid #fab005;
+  border-radius: 16px 16px 18px 22px / 14px 14px 26px 22px;
+  box-shadow: inset 0 -6px 0 rgba(180, 120, 70, 0.1);
   overflow: visible;
 }
 
-.dress-torso::before,
-.dress-torso::after {
+.dress-torso::before {
   content: "";
   position: absolute;
-  top: 18%;
-  width: 34px;
-  height: 18px;
-  background: inherit;
-  border: inherit;
-  border-radius: 16px;
+  left: 50%;
+  top: -2px;
+  width: 18px;
+  height: 7px;
+  transform: translateX(-50%);
+  background: #f4d9b0;
+  border: 3px solid #e8c48a;
+  border-bottom: 0;
+  border-radius: 8px 8px 0 0;
   pointer-events: none;
 }
 
-.dress-torso::before {
-  left: -26px;
-  border-radius: 16px 6px 10px 16px;
-  transform: rotate(-36deg);
-  transform-origin: 100% 30%;
-}
-
 .dress-torso::after {
-  right: -26px;
-  border-radius: 6px 16px 16px 10px;
-  transform: rotate(36deg);
-  transform-origin: 0% 30%;
+  content: "";
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  height: 4px;
+  background: rgba(255, 253, 248, 0.45);
+  border-radius: 4px;
+  pointer-events: none;
 }
 
-.dress-kid.face-boy .dress-torso,
-.dress-kid.face-boy .dress-legs i {
-  background: #a5d8ff;
-  border-color: #74c0fc;
+.dress-arm {
+  position: absolute;
+  top: 20px;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 20px;
+  pointer-events: none;
 }
 
-.dress-kid.face-girl .dress-torso,
-.dress-kid.face-girl .dress-legs i {
-  background: #ffc9c9;
-  border-color: #ffa8a8;
+.dress-arm.left {
+  left: calc(50% - 25px - 20px);
+  transform: rotate(14deg);
+  transform-origin: 70% 8%;
+}
+
+.dress-arm.right {
+  right: calc(50% - 25px - 20px);
+  transform: rotate(-14deg);
+  transform-origin: 30% 8%;
+}
+
+.dress-arm .up,
+.dress-arm .fore,
+.dress-arm .hand {
+  display: block;
+  background: #f4d9b0;
+  border: 3px solid #e8c48a;
+}
+
+.dress-arm .up {
+  width: 16px;
+  height: 26px;
+  border-radius: 12px 12px 8px 8px;
+  border-bottom-width: 0;
+}
+
+.dress-arm .fore {
+  width: 15px;
+  height: 24px;
+  margin-top: -3px;
+  border-radius: 8px;
+  border-top-width: 0;
+  border-bottom-width: 0;
+}
+
+.dress-arm .hand {
+  width: 16px;
+  height: 14px;
+  margin-top: -3px;
+  border-radius: 50%;
+}
+
+.dress-kid.face-boy .dress-torso {
+  background: #74c0fc;
+  border-color: #4dabf7;
+}
+
+.dress-kid.face-girl .dress-torso {
+  background: #ffa8a8;
+  border-color: #ff8787;
+}
+
+.dress-kid.face-boy .dress-hip {
+  background: #4dabf7;
+  border-color: #339af0;
+}
+
+.dress-kid.face-girl .dress-hip {
+  background: #ff8787;
+  border-color: #ff6b6b;
+}
+
+.dress-kid.face-child .dress-hip {
+  background: #fab005;
+  border-color: #f08c00;
 }
 
 .dress-legs {
+  position: relative;
   align-self: stretch;
   justify-self: center;
-  display: flex;
-  align-items: stretch;
-  justify-content: center;
-  gap: 12px;
-  width: 54px;
+  width: 58px;
   height: 100%;
 }
 
-.dress-legs i {
-  position: relative;
-  display: block;
-  width: 20px;
-  height: 100%;
+.dress-hip {
+  position: absolute;
+  top: -6px;
+  left: 4px;
+  width: 50px;
+  height: 22px;
+  z-index: 2;
+  background: #fcc419;
+  border: 3px solid #f08c00;
+  border-radius: 10px 10px 8px 8px;
+}
+
+.dress-leg {
+  position: absolute;
+  top: 8px;
+  width: 22px;
+  height: calc(100% - 8px);
   min-height: 0;
   background: #f4d9b0;
   border: 3px solid #e8c48a;
   border-radius: 12px;
 }
 
-.dress-legs i::after {
+.dress-leg.a {
+  left: 4px;
+}
+
+.dress-leg.b {
+  right: 4px;
+}
+
+.dress-leg::after {
   content: "";
   position: absolute;
   left: 50%;
   bottom: 1px;
-  width: 26px;
-  height: 12px;
+  width: 28px;
+  height: 13px;
   transform: translateX(-50%);
   background: #5c3310;
   border-radius: 50%;
   pointer-events: none;
 }
 
-.dress-kid.face-girl .dress-legs i::after {
+.dress-kid.face-girl .dress-leg::after {
   background: #a61e4d;
 }
 
@@ -4747,16 +4849,16 @@ button.day-place:active {
 .dress-play .dress-zone.body .dress-wear.kind-coat,
 .dress-play .dress-zone.body .dress-wear.kind-rain {
   left: 50%;
-  top: 4%;
+  top: 14px;
   width: 96px;
-  height: 92%;
+  height: calc(100% - 14px);
   transform: translateX(-50%);
   overflow: visible;
 }
 
 .dress-play .dress-zone.body .dress-wear.kind-tee {
-  top: 12%;
-  height: 64%;
+  top: 22px;
+  height: 62%;
 }
 
 .dress-play .dress-zone.body .dress-wear .dress-chip.hang-tee,
@@ -6139,7 +6241,8 @@ button.day-place:active {
   gap: 6px;
   min-height: 0;
   flex: 1 1 auto;
-  padding: 8px 8px 22px;
+  padding: 4px 8px 18px;
+  overflow: visible;
   background:
     linear-gradient(90deg, rgba(141, 90, 43, 0.1) 0 2px, transparent 2px 20px) 0 0 / 20px 100%,
     linear-gradient(#efd3a4 0 8%, #e8c48a 28%, #c1864a 100%);
@@ -6155,25 +6258,166 @@ button.day-place:active {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  gap: 6px;
+  gap: 4px;
+  overflow: visible;
 }
 
 .table-who {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   line-height: 1;
-  flex: 0 0 auto;
+  flex: 0 1 auto;
+  min-height: 36%;
+  padding-top: 2px;
+}
+
+.table-figure {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: min(92px, 28cqw);
 }
 
 .table-face {
-  font-size: min(14cqw, 12cqh, 48px);
+  position: relative;
+  z-index: 3;
+  font-size: min(16cqw, 13cqh, 52px);
   line-height: 1;
+  margin-bottom: -6px;
   filter: drop-shadow(0 2px 0 rgba(0, 0, 0, 0.08));
 }
 
+.table-neck {
+  position: relative;
+  z-index: 2;
+  width: 14px;
+  height: 12px;
+  margin-bottom: -2px;
+  background: #f4d9b0;
+  border: 3px solid #e8c48a;
+  border-bottom: 0;
+  border-radius: 6px 6px 0 0;
+}
+
+.table-torso {
+  position: relative;
+  z-index: 2;
+  width: 48px;
+  height: min(52px, 12cqh);
+  background: #ffe066;
+  border: 3px solid #fab005;
+  border-radius: 16px 16px 20px 22px / 14px 14px 24px 20px;
+  box-shadow: inset 0 -5px 0 rgba(180, 120, 70, 0.1);
+}
+
+.table-torso::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -2px;
+  width: 16px;
+  height: 6px;
+  transform: translateX(-50%);
+  background: #f4d9b0;
+  border: 3px solid #e8c48a;
+  border-bottom: 0;
+  border-radius: 7px 7px 0 0;
+  pointer-events: none;
+}
+
+.table-arm {
+  position: absolute;
+  top: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  pointer-events: none;
+}
+
+.table-arm.left {
+  right: calc(100% - 8px);
+  transform: rotate(28deg);
+  transform-origin: 100% 30%;
+  flex-direction: row-reverse;
+}
+
+.table-arm.right {
+  left: calc(100% - 8px);
+  transform: rotate(-28deg);
+  transform-origin: 0% 30%;
+}
+
+.table-arm .up,
+.table-arm .fore,
+.table-arm .hand {
+  display: block;
+  background: #f4d9b0;
+  border: 3px solid #e8c48a;
+}
+
+.table-arm .up {
+  width: 18px;
+  height: 14px;
+  border-radius: 10px;
+}
+
+.table-arm.left .up {
+  border-left-width: 0;
+  border-radius: 10px 4px 4px 10px;
+}
+
+.table-arm.right .up {
+  border-right-width: 0;
+  border-radius: 4px 10px 10px 4px;
+}
+
+.table-arm .fore {
+  width: 16px;
+  height: 13px;
+  margin: 0 -3px;
+  border-radius: 8px;
+}
+
+.table-arm .hand {
+  width: 14px;
+  height: 13px;
+  border-radius: 50%;
+}
+
+.table-seat.who-dad .table-torso {
+  background: #74c0fc;
+  border-color: #4dabf7;
+}
+
+.table-seat.who-mom .table-torso {
+  background: #ffa8a8;
+  border-color: #ff8787;
+}
+
+.table-seat.who-kid .table-torso {
+  background: #ffe066;
+  border-color: #fab005;
+}
+
+.table-seat.who-kid .table-figure {
+  width: min(84px, 25cqw);
+}
+
+.table-seat.who-kid .table-face {
+  font-size: min(15cqw, 12cqh, 46px);
+}
+
+.table-seat.who-kid .table-torso {
+  width: 42px;
+  height: min(46px, 11cqh);
+}
+
 .table-name {
+  position: relative;
+  z-index: 4;
   font-size: clamp(16px, 3.8vmin, 24px);
   font-weight: 900;
   color: #3d2a1a;
@@ -6190,12 +6434,12 @@ button.day-place:active {
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  align-content: center;
+  align-content: flex-start;
   gap: 10px 12px;
   width: 100%;
   flex: 1 1 auto;
   min-height: 0;
-  padding: 10px 2px 8px;
+  padding: 4px 2px 8px;
   background: none;
   border-radius: 0;
 }
@@ -11697,8 +11941,45 @@ button.day-place:active {
     font-size: 34px;
   }
 
+  .table-neck {
+    width: 12px;
+    height: 10px;
+  }
+
+  .table-torso {
+    width: 40px;
+    height: 40px;
+  }
+
+  .table-seat.who-kid .table-torso {
+    width: 36px;
+    height: 36px;
+  }
+
+  .table-arm .up {
+    width: 14px;
+    height: 12px;
+  }
+
+  .table-arm .fore {
+    width: 13px;
+    height: 11px;
+  }
+
   .table-name {
     font-size: 16px;
+  }
+
+  .dress-zone.body {
+    height: 96px;
+  }
+
+  .dress-zone.feet {
+    height: 64px;
+  }
+
+  .dress-face {
+    font-size: 48px;
   }
 
   .table-need {
