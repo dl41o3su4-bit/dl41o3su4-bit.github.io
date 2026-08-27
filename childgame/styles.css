@@ -4348,21 +4348,33 @@ button.day-place:active {
   bottom: -4%;
 }
 
-.dress-play .life-item {
+.dress-play,
+.dress-play .life-tray,
+.dress-play .life-item,
+.dress-play .life-chip-art,
+.dress-play .dress-chip,
+.dress-play .dress-wear,
+.life-ghost .life-chip-art,
+.life-ghost .dress-chip {
   overflow: visible;
 }
 
-.dress-play .life-chip-art {
+.dress-play .life-chip-art,
+.life-ghost .life-chip-art {
   position: relative;
-  width: 78px;
-  height: 58px;
-  overflow: visible;
+  flex: 0 0 auto;
+  width: 88px;
+  height: 70px;
 }
 
 .dress-play .dress-chip,
 .dress-play .dress-chip .dh-sleeve,
 .dress-play .dress-chip .dh-neck,
-.dress-play .dress-chip .dh-brim {
+.dress-play .dress-chip .dh-brim,
+.life-ghost .dress-chip,
+.life-ghost .dress-chip .dh-sleeve,
+.life-ghost .dress-chip .dh-neck,
+.life-ghost .dress-chip .dh-brim {
   position: absolute;
   display: block;
   font-style: normal;
@@ -4370,248 +4382,353 @@ button.day-place:active {
   pointer-events: none;
 }
 
-.dress-play .dress-chip.hang-tee,
-.dress-play .dress-chip.hang-coat,
-.dress-play .dress-chip.hang-rain {
-  left: 28%;
-  right: 28%;
-  top: 20%;
-  height: 58%;
-  min-height: 22px;
-  border-radius: 3px 3px 6px 6px;
+.dress-play .life-chip-art .dress-chip.hang-tee,
+.dress-play .life-chip-art .dress-chip.hang-coat,
+.dress-play .life-chip-art .dress-chip.hang-rain,
+.life-ghost .life-chip-art .dress-chip.hang-tee,
+.life-ghost .life-chip-art .dress-chip.hang-coat,
+.life-ghost .life-chip-art .dress-chip.hang-rain {
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
 }
 
-.dress-play .dress-chip.hang-tee {
+.dress-play .dress-chip.hang-tee,
+.life-ghost .dress-chip.hang-tee {
+  background: #74c0fc;
+  border: 2px solid #1c7ed6;
+  border-radius: 4px 4px 6px 6px;
+}
+
+.dress-play .life-chip-art .dress-chip.hang-tee,
+.life-ghost .life-chip-art .dress-chip.hang-tee {
+  top: 20px;
+  width: 24px;
+  height: 30px;
+}
+
+.dress-play .dress-chip.hang-tee .dh-sleeve,
+.life-ghost .dress-chip.hang-tee .dh-sleeve {
+  top: 2px;
+  width: 22px;
+  height: 13px;
   background: #74c0fc;
   border: 2px solid #1c7ed6;
 }
 
-.dress-play .dress-chip.hang-tee .dh-sleeve {
-  top: -2px;
-  width: 22px;
-  height: 13px;
-  background: inherit;
-  border: 2px solid #1c7ed6;
+.dress-play .dress-chip.hang-tee .dh-sleeve.a,
+.life-ghost .dress-chip.hang-tee .dh-sleeve.a {
+  left: -22px;
+  border-radius: 8px 2px 4px 8px;
+  transform: none;
 }
 
-.dress-play .dress-chip.hang-tee .dh-sleeve.a {
-  left: -18px;
-  border-radius: 12px 3px 9px 12px;
-  transform: rotate(-48deg);
-  transform-origin: 100% 20%;
-}
-
-.dress-play .dress-chip.hang-tee .dh-sleeve.b {
-  right: -18px;
-  border-radius: 3px 12px 12px 9px;
-  transform: rotate(48deg);
-  transform-origin: 0% 20%;
+.dress-play .dress-chip.hang-tee .dh-sleeve.b,
+.life-ghost .dress-chip.hang-tee .dh-sleeve.b {
+  right: -22px;
+  border-radius: 2px 8px 8px 4px;
+  transform: none;
 }
 
 .dress-play .dress-chip.hang-tee .dh-neck,
-.dress-play .dress-chip.hang-coat .dh-neck,
-.dress-play .dress-chip.hang-rain .dh-neck {
-  left: 24%;
-  right: 24%;
-  top: -5px;
+.life-ghost .dress-chip.hang-tee .dh-neck {
+  left: 50%;
+  right: auto;
+  width: 12px;
+  top: -2px;
   height: 8px;
-  background: #fff4d6;
+  background: #fffaf1;
   border: 2px solid #1c7ed6;
-  border-bottom: 0;
-  border-radius: 8px 8px 0 0;
+  border-top: 0;
+  border-radius: 0 0 8px 8px;
+  transform: translateX(-50%);
 }
 
-.dress-play .dress-chip.hang-coat {
-  top: 16%;
-  height: 66%;
+.dress-play .dress-chip.hang-coat,
+.life-ghost .dress-chip.hang-coat {
   background: #c1864a;
   border: 2px solid #8d5a2b;
+  border-radius: 5px 5px 7px 7px;
+}
+
+.dress-play .life-chip-art .dress-chip.hang-coat,
+.life-ghost .life-chip-art .dress-chip.hang-coat {
+  top: 14px;
+  width: 24px;
+  height: 44px;
 }
 
 .dress-play .dress-chip.hang-coat .dh-sleeve,
-.dress-play .dress-chip.hang-rain .dh-sleeve {
-  top: 4%;
-  width: 12px;
-  height: 72%;
+.dress-play .dress-chip.hang-rain .dh-sleeve,
+.life-ghost .dress-chip.hang-coat .dh-sleeve,
+.life-ghost .dress-chip.hang-rain .dh-sleeve {
+  top: 4px;
+  width: 13px;
+  height: 32px;
   background: inherit;
   border: 2px solid #8d5a2b;
-  border-radius: 6px;
+  border-radius: 7px;
+  transform: none;
 }
 
 .dress-play .dress-chip.hang-coat .dh-sleeve.a,
-.dress-play .dress-chip.hang-rain .dh-sleeve.a {
-  left: -11px;
+.dress-play .dress-chip.hang-rain .dh-sleeve.a,
+.life-ghost .dress-chip.hang-coat .dh-sleeve.a,
+.life-ghost .dress-chip.hang-rain .dh-sleeve.a {
+  left: -12px;
 }
 
 .dress-play .dress-chip.hang-coat .dh-sleeve.b,
-.dress-play .dress-chip.hang-rain .dh-sleeve.b {
-  right: -11px;
+.dress-play .dress-chip.hang-rain .dh-sleeve.b,
+.life-ghost .dress-chip.hang-coat .dh-sleeve.b,
+.life-ghost .dress-chip.hang-rain .dh-sleeve.b {
+  right: -12px;
 }
 
-.dress-play .dress-chip.hang-coat .dh-neck {
-  border-color: #8d5a2b;
+.dress-play .dress-chip.hang-coat .dh-neck,
+.life-ghost .dress-chip.hang-coat .dh-neck {
+  left: 50%;
+  right: auto;
+  width: 12px;
+  top: -2px;
+  height: 10px;
+  background: #fffaf1;
+  border: 2px solid #8d5a2b;
+  border-top: 0;
+  border-radius: 0 0 8px 8px;
+  transform: translateX(-50%);
 }
 
-.dress-play .dress-chip.hang-rain {
-  top: 16%;
-  height: 66%;
+.dress-play .dress-chip.hang-rain,
+.life-ghost .dress-chip.hang-rain {
   background: #f59f00;
   border: 2px solid #e67700;
+  border-radius: 5px 5px 7px 7px;
 }
 
-.dress-play .dress-chip.hang-rain .dh-sleeve {
+.dress-play .life-chip-art .dress-chip.hang-rain,
+.life-ghost .life-chip-art .dress-chip.hang-rain {
+  top: 16px;
+  width: 24px;
+  height: 40px;
+}
+
+.dress-play .dress-chip.hang-rain .dh-sleeve,
+.life-ghost .dress-chip.hang-rain .dh-sleeve {
   border-color: #e67700;
 }
 
-.dress-play .dress-chip.hang-rain .dh-neck {
-  top: -9px;
-  height: 12px;
+.dress-play .dress-chip.hang-rain .dh-neck,
+.life-ghost .dress-chip.hang-rain .dh-neck {
+  left: 2px;
+  right: 2px;
+  top: -14px;
+  height: 16px;
   background: #f59f00;
-  border-color: #e67700;
+  border: 2px solid #e67700;
   border-bottom: 0;
-  border-radius: 10px 10px 0 0;
+  border-radius: 14px 14px 0 0;
 }
 
-.dress-play .dress-chip.hang-cap {
+.dress-play .dress-chip.hang-cap,
+.life-ghost .dress-chip.hang-cap {
+  background: #fa5252;
+  border: 2px solid #c92a2a;
+  border-radius: 12px 12px 2px 2px;
+}
+
+.dress-play .life-chip-art .dress-chip.hang-cap,
+.life-ghost .life-chip-art .dress-chip.hang-cap {
   left: 50%;
   top: 50%;
-  width: 30px;
-  height: 16px;
-  background: #fa5252;
-  border: 2px solid #c92a2a;
-  border-radius: 10px 10px 2px 2px;
-  transform: translate(-50%, -62%);
+  width: 34px;
+  height: 18px;
+  transform: translate(-42%, -70%);
 }
 
-.dress-play .dress-chip.hang-cap .dh-brim {
-  left: -6px;
-  width: 36px;
+.dress-play .dress-chip.hang-cap .dh-brim,
+.life-ghost .dress-chip.hang-cap .dh-brim {
+  left: -12px;
+  width: 18px;
   right: auto;
-  bottom: -5px;
-  height: 7px;
+  bottom: -2px;
+  height: 8px;
   background: #1c7ed6;
   border: 2px solid #1864ab;
-  border-radius: 2px 7px 2px 2px;
+  border-radius: 2px 8px 2px 2px;
 }
 
-.dress-play .dress-chip.hang-scarf {
+.dress-play .dress-chip.hang-scarf,
+.life-ghost .dress-chip.hang-scarf {
+  background: transparent;
+  border: 5px solid #fa5252;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px #c92a2a;
+}
+
+.dress-play .life-chip-art .dress-chip.hang-scarf,
+.life-ghost .life-chip-art .dress-chip.hang-scarf {
   left: 50%;
-  top: 38%;
-  width: 22px;
-  height: 16px;
-  background: #fa5252;
-  border: 2px solid #c92a2a;
-  border-radius: 10px;
-  transform: translate(-50%, -50%);
+  top: 6px;
+  width: 24px;
+  height: 24px;
+  transform: translateX(-50%);
 }
 
 .dress-play .dress-chip.hang-scarf::before,
-.dress-play .dress-chip.hang-scarf::after {
+.dress-play .dress-chip.hang-scarf::after,
+.life-ghost .dress-chip.hang-scarf::before,
+.life-ghost .dress-chip.hang-scarf::after {
   content: "";
   position: absolute;
-  top: 12px;
-  width: 8px;
-  height: 16px;
+  top: 18px;
+  width: 9px;
+  height: 34px;
   background: #fa5252;
   border: 2px solid #c92a2a;
-  border-radius: 4px;
+  border-radius: 5px;
 }
 
-.dress-play .dress-chip.hang-scarf::before {
-  left: 1px;
-  transform: rotate(14deg);
+.dress-play .dress-chip.hang-scarf::before,
+.life-ghost .dress-chip.hang-scarf::before {
+  left: -1px;
+  transform: rotate(10deg);
 }
 
-.dress-play .dress-chip.hang-scarf::after {
-  right: 1px;
-  transform: rotate(-18deg);
+.dress-play .dress-chip.hang-scarf::after,
+.life-ghost .dress-chip.hang-scarf::after {
+  right: -1px;
+  transform: rotate(-14deg);
 }
 
-.dress-play .dress-chip.hang-glass {
+.dress-play .dress-chip.hang-glass,
+.life-ghost .dress-chip.hang-glass {
+  background: #3d2a1a;
+  border: 0;
+  border-radius: 2px;
+}
+
+.dress-play .life-chip-art .dress-chip.hang-glass,
+.life-ghost .life-chip-art .dress-chip.hang-glass {
   left: 50%;
   top: 50%;
-  width: 32px;
-  height: 12px;
-  background: transparent;
-  border: 0;
+  width: 12px;
+  height: 5px;
   transform: translate(-50%, -50%);
 }
 
 .dress-play .dress-chip.hang-glass::before,
-.dress-play .dress-chip.hang-glass::after {
+.dress-play .dress-chip.hang-glass::after,
+.life-ghost .dress-chip.hang-glass::before,
+.life-ghost .dress-chip.hang-glass::after {
   content: "";
   position: absolute;
-  top: 0;
-  width: 13px;
-  height: 12px;
-  background: rgba(116, 192, 252, 0.38);
+  top: 50%;
+  width: 18px;
+  height: 18px;
+  background: rgba(116, 192, 252, 0.42);
   border: 2px solid #3d2a1a;
-  border-radius: 4px;
+  border-radius: 50%;
+  transform: translateY(-50%);
 }
 
-.dress-play .dress-chip.hang-glass::before {
-  left: 0;
+.dress-play .dress-chip.hang-glass::before,
+.life-ghost .dress-chip.hang-glass::before {
+  right: 100%;
+  margin-right: -1px;
 }
 
-.dress-play .dress-chip.hang-glass::after {
-  right: 0;
+.dress-play .dress-chip.hang-glass::after,
+.life-ghost .dress-chip.hang-glass::after {
+  left: 100%;
+  margin-left: -1px;
 }
 
-.dress-play .dress-chip.hang-umb {
-  left: 50%;
-  top: 42%;
-  width: 32px;
-  height: 16px;
+.dress-play .dress-chip.hang-umb,
+.life-ghost .dress-chip.hang-umb {
   background: #4dabf7;
   border: 2px solid #1c7ed6;
-  border-radius: 16px 16px 2px 2px;
-  transform: translate(-50%, -50%);
+  border-radius: 20px 20px 2px 2px;
 }
 
-.dress-play .dress-chip.hang-umb::after {
+.dress-play .life-chip-art .dress-chip.hang-umb,
+.life-ghost .life-chip-art .dress-chip.hang-umb {
+  left: 50%;
+  top: 16px;
+  width: 40px;
+  height: 20px;
+  transform: translateX(-50%);
+}
+
+.dress-play .dress-chip.hang-umb::after,
+.life-ghost .dress-chip.hang-umb::after {
   content: "";
   position: absolute;
   left: 50%;
   top: 100%;
   width: 3px;
-  height: 14px;
+  height: 18px;
   background: #8d5a2b;
   border-radius: 2px;
   transform: translateX(-50%);
 }
 
-.dress-play .dress-chip.hang-boot {
-  left: 50%;
-  top: 50%;
-  width: 22px;
-  height: 22px;
+.dress-play .dress-chip.hang-boot,
+.life-ghost .dress-chip.hang-boot {
   background: #3d2a1a;
   border: 2px solid #2a1c12;
-  border-radius: 4px 8px 3px 3px;
-  transform: translate(-50%, -50%);
+  border-radius: 5px 5px 3px 3px;
 }
 
-.dress-play .dress-chip.hang-sandal {
+.dress-play .life-chip-art .dress-chip.hang-boot,
+.life-ghost .life-chip-art .dress-chip.hang-boot {
   left: 50%;
-  top: 58%;
-  width: 30px;
-  height: 9px;
-  background: #f3d2a6;
-  border: 2px solid #c1864a;
-  border-radius: 4px 12px 5px 4px;
-  transform: translate(-50%, -50%);
+  top: 16px;
+  width: 16px;
+  height: 30px;
+  transform: translateX(-62%);
 }
 
-.dress-play .dress-chip.hang-sandal::before {
+.dress-play .dress-chip.hang-boot::after,
+.life-ghost .dress-chip.hang-boot::after {
   content: "";
   position: absolute;
-  left: 7px;
-  right: 9px;
-  top: -6px;
-  height: 7px;
+  right: -11px;
+  bottom: -2px;
+  width: 14px;
+  height: 11px;
+  background: #3d2a1a;
+  border: 2px solid #2a1c12;
+  border-radius: 3px 9px 4px 2px;
+}
+
+.dress-play .dress-chip.hang-sandal,
+.life-ghost .dress-chip.hang-sandal {
+  background: #f3d2a6;
+  border: 2px solid #c1864a;
+  border-radius: 3px 10px 4px 3px;
+}
+
+.dress-play .life-chip-art .dress-chip.hang-sandal,
+.life-ghost .life-chip-art .dress-chip.hang-sandal {
+  left: 50%;
+  top: 30px;
+  width: 34px;
+  height: 8px;
+  transform: translateX(-50%);
+}
+
+.dress-play .dress-chip.hang-sandal::before,
+.life-ghost .dress-chip.hang-sandal::before {
+  content: "";
+  position: absolute;
+  left: 8px;
+  right: 10px;
+  top: -8px;
+  height: 8px;
   background: #e8a06a;
   border: 2px solid #c1864a;
-  border-radius: 6px;
+  border-radius: 6px 6px 2px 2px;
 }
 
 .dress-play .dress-wear {
@@ -4621,8 +4738,8 @@ button.day-place:active {
 
 .dress-play .dress-zone.head .dress-wear {
   left: 50%;
-  width: 88px;
-  height: 58px;
+  width: 96px;
+  height: 62px;
   transform: translateX(-50%);
 }
 
@@ -4631,69 +4748,100 @@ button.day-place:active {
 .dress-play .dress-zone.body .dress-wear.kind-rain {
   left: 50%;
   top: 4%;
-  width: 90px;
+  width: 96px;
   height: 92%;
   transform: translateX(-50%);
+  overflow: visible;
 }
 
 .dress-play .dress-zone.body .dress-wear.kind-tee {
   top: 12%;
-  height: 66%;
+  height: 64%;
 }
 
 .dress-play .dress-zone.body .dress-wear .dress-chip.hang-tee,
 .dress-play .dress-zone.body .dress-wear .dress-chip.hang-coat,
 .dress-play .dress-zone.body .dress-wear .dress-chip.hang-rain {
-  left: 8%;
-  right: 8%;
-  top: 8%;
-  height: 86%;
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
 }
 
 .dress-play .dress-zone.body .dress-wear .dress-chip.hang-tee {
-  top: 6%;
-  height: 76%;
-}
-
-.dress-play .dress-zone.body .dress-wear .dh-neck {
-  background: inherit;
-  height: 6px;
-  top: -3px;
-}
-
-.dress-play .dress-zone.body .dress-wear .dress-chip.hang-rain .dh-neck {
-  top: -11px;
-  height: 14px;
-  background: #f59f00;
+  top: 10px;
+  width: 52px;
+  height: 44px;
 }
 
 .dress-play .dress-zone.body .dress-wear .dress-chip.hang-tee .dh-sleeve {
-  width: 30px;
+  width: 28px;
   height: 16px;
 }
 
 .dress-play .dress-zone.body .dress-wear .dress-chip.hang-tee .dh-sleeve.a {
-  left: -24px;
+  left: -26px;
 }
 
 .dress-play .dress-zone.body .dress-wear .dress-chip.hang-tee .dh-sleeve.b {
-  right: -24px;
+  right: -26px;
+}
+
+.dress-play .dress-zone.body .dress-wear .dress-chip.hang-tee .dh-neck {
+  left: 50%;
+  right: auto;
+  width: 16px;
+  top: -2px;
+  height: 10px;
+  background: #f4d9b0;
+  border-top: 0;
+  transform: translateX(-50%);
+}
+
+.dress-play .dress-zone.body .dress-wear .dress-chip.hang-coat {
+  top: 6px;
+  width: 54px;
+  height: 78px;
+}
+
+.dress-play .dress-zone.body .dress-wear .dress-chip.hang-rain {
+  top: 10px;
+  width: 54px;
+  height: 74px;
 }
 
 .dress-play .dress-zone.body .dress-wear .dress-chip.hang-coat .dh-sleeve,
 .dress-play .dress-zone.body .dress-wear .dress-chip.hang-rain .dh-sleeve {
-  width: 16px;
-  height: 78%;
+  width: 18px;
+  height: 58px;
 }
 
 .dress-play .dress-zone.body .dress-wear .dress-chip.hang-coat .dh-sleeve.a,
 .dress-play .dress-zone.body .dress-wear .dress-chip.hang-rain .dh-sleeve.a {
-  left: -14px;
+  left: -16px;
 }
 
 .dress-play .dress-zone.body .dress-wear .dress-chip.hang-coat .dh-sleeve.b,
 .dress-play .dress-zone.body .dress-wear .dress-chip.hang-rain .dh-sleeve.b {
-  right: -14px;
+  right: -16px;
+}
+
+.dress-play .dress-zone.body .dress-wear .dress-chip.hang-coat .dh-neck {
+  left: 50%;
+  right: auto;
+  width: 16px;
+  top: -2px;
+  height: 12px;
+  background: #f4d9b0;
+  border-top: 0;
+  transform: translateX(-50%);
+}
+
+.dress-play .dress-zone.body .dress-wear .dress-chip.hang-rain .dh-neck {
+  left: 12px;
+  right: 12px;
+  top: -14px;
+  height: 16px;
+  background: #f59f00;
 }
 
 .dress-play .dress-zone.head .dress-wear.kind-cap {
@@ -4701,56 +4849,70 @@ button.day-place:active {
 }
 
 .dress-play .dress-zone.head .dress-wear.kind-cap .dress-chip.hang-cap {
+  left: 50%;
+  top: 18px;
   width: 48px;
   height: 22px;
+  transform: translate(-38%, 0);
 }
 
 .dress-play .dress-zone.head .dress-wear.kind-cap .dh-brim {
-  width: 56px;
-  left: -8px;
+  left: -16px;
+  width: 22px;
+  height: 9px;
 }
 
 .dress-play .dress-zone.head .dress-wear.kind-scarf {
   top: auto;
-  bottom: -14px;
-  height: 46px;
+  bottom: -18px;
+  height: 56px;
 }
 
 .dress-play .dress-zone.head .dress-wear.kind-scarf .dress-chip.hang-scarf {
-  width: 44px;
-  height: 18px;
+  left: 50%;
+  top: 4px;
+  width: 36px;
+  height: 28px;
+  transform: translateX(-50%);
 }
 
 .dress-play .dress-zone.head .dress-wear.kind-scarf .dress-chip.hang-scarf::before,
 .dress-play .dress-zone.head .dress-wear.kind-scarf .dress-chip.hang-scarf::after {
-  width: 11px;
-  height: 24px;
+  top: 20px;
+  width: 10px;
+  height: 32px;
 }
 
 .dress-play .dress-zone.head .dress-wear.kind-glass {
   top: 34%;
-  height: 22px;
+  height: 28px;
 }
 
 .dress-play .dress-zone.head .dress-wear.kind-glass .dress-chip.hang-glass {
-  width: 48px;
-  height: 15px;
+  left: 50%;
+  top: 50%;
+  width: 14px;
+  height: 5px;
+  transform: translate(-50%, -50%);
 }
 
 .dress-play .dress-zone.head .dress-wear.kind-glass .dress-chip.hang-glass::before,
 .dress-play .dress-zone.head .dress-wear.kind-glass .dress-chip.hang-glass::after {
-  width: 20px;
-  height: 15px;
+  width: 22px;
+  height: 22px;
 }
 
 .dress-play .dress-zone.head .dress-wear.kind-umb {
-  top: -26px;
-  height: 48px;
+  top: -28px;
+  height: 52px;
 }
 
 .dress-play .dress-zone.head .dress-wear.kind-umb .dress-chip.hang-umb {
-  width: 64px;
+  left: 50%;
+  top: 8px;
+  width: 68px;
   height: 26px;
+  transform: translateX(-50%);
 }
 
 .dress-play .dress-zone.head .dress-wear.kind-umb .dress-chip.hang-umb::after {
@@ -4761,26 +4923,27 @@ button.day-place:active {
 .dress-play .dress-zone.feet .dress-wear.kind-sandal {
   left: 50%;
   bottom: 0;
-  width: 70px;
-  height: 28px;
+  width: 78px;
+  height: 34px;
   transform: translateX(-50%);
+  overflow: visible;
 }
 
 .dress-play .dress-zone.feet .dress-chip.hang-boot,
 .dress-play .dress-zone.feet .dress-chip.hang-sandal {
   transform: none;
   top: auto;
-  bottom: 0;
+  bottom: 2px;
 }
 
 .dress-play .dress-zone.feet .dress-chip.hang-boot {
-  width: 24px;
-  height: 26px;
+  width: 16px;
+  height: 28px;
 }
 
 .dress-play .dress-zone.feet .dress-chip.hang-sandal {
-  width: 30px;
-  height: 10px;
+  width: 32px;
+  height: 8px;
 }
 
 .dress-play .dress-zone.feet .dress-chip.a {
