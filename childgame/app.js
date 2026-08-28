@@ -6238,7 +6238,7 @@
     var bounce = state.sceneAnim === "scale-bounce" ? " is-bounce" : "";
     var nestGuest = ready ? itemInSlot("same") : null;
     var scene = q.scene === "picnic" ? "picnic" : "kitchen";
-    var tray = ready ? renderTrayItems(q) : '<div class="more-tray-wait" aria-hidden="true">兩邊都點完</div>';
+    var tray = ready ? renderTrayItems(q) : "";
     var kidL = scene === "picnic" ? '<span class="more-kid" aria-hidden="true">🧒</span>' : "";
     var kidR = scene === "picnic" ? '<span class="more-kid" aria-hidden="true">👧</span>' : "";
     var deco =
@@ -6280,7 +6280,9 @@
         ? '<span class="more-prize" aria-hidden="true">' + nestGuest.emoji + "</span>"
         : '<span class="more-nest-lab">一樣多</span>') +
       "</div></div></div></div></div>" +
-      '<div class="life-tray more-tray">' +
+      '<div class="life-tray more-tray' +
+      (ready ? "" : " is-wait") +
+      '">' +
       tray +
       "</div></div></div>"
     );
@@ -9969,6 +9971,7 @@
         goHome();
         return {
           moreNoBoardPrompt: fruitHtml.indexOf('class="prompt"') < 0,
+          moreNoTrayWait: fruitHtml.indexOf("more-tray-wait") < 0,
           moreFruitCrayon: fruitHtml.indexOf("count-fruit") >= 0 && fruitHtml.indexOf("is-crayon") >= 0,
           moreAnimalEmoji: !animalIcon || animalHtml.indexOf(animalIcon.icon) >= 0,
           moreAnimalNotCrayon: !animalIcon || animalHtml.indexOf("count-fruit") < 0,

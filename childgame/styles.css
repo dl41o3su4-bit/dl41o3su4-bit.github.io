@@ -3318,17 +3318,11 @@ button.day-place:active {
 }
 
 .more-tray-wait {
-  min-height: var(--tap);
-  display: grid;
-  place-items: center;
-  padding: 8px;
-  background: #fffaf1;
-  border: 3px dashed #f0c49a;
-  border-radius: 24px;
-  font-size: clamp(16px, 3.4vmin, 20px);
-  font-weight: 900;
-  color: #c1864a;
-  text-align: center;
+  display: none;
+}
+
+.more-tray.is-wait {
+  display: none;
 }
 
 .more-tray .life-item {
