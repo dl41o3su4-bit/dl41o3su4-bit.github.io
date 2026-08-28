@@ -4296,7 +4296,12 @@
       );
     }
     if (id === "match") {
-      return '<span class="preview-art preview-match preview-cubby" aria-hidden="true"><span>🍎🍎</span><b>2</b></span>';
+      return (
+        '<span class="preview-art preview-match preview-cubby" aria-hidden="true">' +
+        fruitMark("🍎") +
+        fruitMark("🍎") +
+        "<b>2</b></span>"
+      );
     }
     if (id === "next") {
       return '<span class="preview-art preview-path" aria-hidden="true"><i>3</i><i>4</i><i>5</i><em>□</em></span>';
@@ -5241,6 +5246,12 @@
     );
   }
 
+  function matchPileMark(item) {
+    var icon = (item && (item.icon || item.emoji)) || "";
+    if (icon && FRUITS.indexOf(icon) !== -1) return fruitMark(icon);
+    return icon;
+  }
+
   function renderSortGoodsArt(item) {
     var kind = sortGoodsKind(item);
     if (kind === "shirt" || kind === "hat") {
@@ -5939,7 +5950,7 @@
       style +
       ' role="img" aria-label="這一盤">' +
       '<span class="pile-dish">' +
-      scatterIcons(item.icon || item.emoji, item.count, "scatter-sm", item.id) +
+      scatterIcons(matchPileMark(item), item.count, "scatter-sm", item.id) +
       "</span></div>"
     );
   }
@@ -7967,7 +7978,7 @@
       g.className = "life-ghost cubby-toy match-pile";
       g.innerHTML =
         '<span class="pile-dish">' +
-        scatterIcons(item.icon || item.emoji, item.count, "scatter-sm", item.id) +
+        scatterIcons(matchPileMark(item), item.count, "scatter-sm", item.id) +
         "</span>";
     } else if (item.kind === "letter") {
       g.className = "life-ghost cubby-toy is-letter";
