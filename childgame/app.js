@@ -7247,7 +7247,7 @@
     if (state.choiceMark && state.choiceMark.value === item.id) mark += " " + state.choiceMark.cls;
     if (state.levelId === "bpm-train") mark += " train-ticket";
     if (state.levelId === "bond") mark += " bond-fruit";
-    if (state.levelId === "dress" || state.levelId === "table") mark += " life-toy";
+    if (state.levelId === "dress" || state.levelId === "table" || state.levelId === "habitat" || state.levelId === "sort") mark += " life-toy";
     var placed = extraClass === "in-slot";
     return (
       '<div class="life-item' +
@@ -8387,9 +8387,6 @@
       .join("");
     return (
       '<div class="play-col">' +
-      '<div class="prompt">' +
-      escapeHtml(q.ask) +
-      "</div>" +
       '<div class="life-stage is-place sort-play">' +
       '<div class="sort-scene scene-' +
       scene +
@@ -8508,7 +8505,7 @@
       g.className = "life-ghost bond-fruit";
       g.innerHTML = fruitMark(item.emoji);
     } else {
-      if (state.levelId === "dress" || state.levelId === "table") g.className = "life-ghost life-toy";
+      if (state.levelId === "dress" || state.levelId === "table" || state.levelId === "habitat" || state.levelId === "sort") g.className = "life-ghost life-toy";
       g.innerHTML =
         renderHabitatChipArt(item) +
         (item.name ? '<span class="life-name">' + escapeHtml(item.name) + "</span>" : "");
@@ -10320,6 +10317,10 @@
         var dressHtml = app.innerHTML;
         startLevel("table");
         var tableHtml = app.innerHTML;
+        startLevel("habitat");
+        var habitatHtml = app.innerHTML;
+        startLevel("sort");
+        var sortHtml = app.innerHTML;
         goHome();
         var habitat = makeHabitatQuestions(true);
         var light = makeLightQuestions(true);
@@ -10347,6 +10348,9 @@
           dressToy: dressHtml.indexOf("life-toy") >= 0 && dressHtml.indexOf("data-life-item") >= 0,
           tableNoBoardPrompt: tableHtml.indexOf('class="prompt"') < 0,
           tableToy: tableHtml.indexOf("life-toy") >= 0 && tableHtml.indexOf("data-life-item") >= 0,
+          habitatToy: habitatHtml.indexOf("life-toy") >= 0 && habitatHtml.indexOf("data-life-item") >= 0,
+          sortToy: sortHtml.indexOf("life-toy") >= 0 && sortHtml.indexOf("data-life-item") >= 0,
+          sortNoBoardPrompt: sortHtml.indexOf('class="prompt"') < 0,
           schoolDress: makeDressQuestions().length,
           schoolTable: makeTableQuestions().length,
           schoolHabitat: makeHabitatQuestions().length,
