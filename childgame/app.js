@@ -7246,6 +7246,7 @@
     var mark = extraClass ? " " + extraClass : "";
     if (state.choiceMark && state.choiceMark.value === item.id) mark += " " + state.choiceMark.cls;
     if (state.levelId === "bpm-train") mark += " train-ticket";
+    if (state.levelId === "bond") mark += " bond-fruit";
     var placed = extraClass === "in-slot";
     return (
       '<div class="life-item' +
@@ -10489,6 +10490,7 @@
           bondFox: bondFox,
           bondFoxHasN: !!(bondQ && String(bondFox || "").indexOf(String(bondQ.target)) >= 0),
           bondHasSlot: bondHtml.indexOf("data-life-slot") >= 0 && bondHtml.indexOf("bond-slot") >= 0,
+          bondFruit: bondHtml.indexOf("bond-fruit") >= 0 && bondHtml.indexOf("data-life-item") >= 0,
           bondOnTable: bondTopMin >= 28,
           extraId: extra && extra.id,
           okId: ok && ok.id,
