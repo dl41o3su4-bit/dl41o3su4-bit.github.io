@@ -1813,7 +1813,7 @@
           '<span class="bond-slot' +
           (filledItem ? " filled" : "") +
           '" aria-hidden="true">' +
-          (filledItem ? filledItem.emoji : "") +
+          (filledItem ? matchPileMark(filledItem) : "") +
           "</span>";
       }
       var tapOn = tapMap && typeof tapMap === "object";
@@ -3583,7 +3583,9 @@
       return (step && step.say) || (q && q.ask) || "做一遍";
     }
     if (state.levelId === "missing") return (q && q.ask) || "少了誰？拖上去";
-    if (state.levelId === "bond") return "拖進去，湊滿";
+    if (state.levelId === "bond") {
+      return q && q.target ? "拖進去，湊成" + q.target : "拖進去，湊滿";
+    }
     if (state.levelId === "bpm-trace") {
       return q && q.sym ? q.sym + "，從亮點開始，描一描" : "從亮點開始，描一描";
     }
@@ -4316,7 +4318,16 @@
       );
     }
     if (id === "more") {
-      return '<span class="preview-art preview-more" aria-hidden="true"><span class="mini-scale"><b>🍉🍉🍉</b><i></i><b>🍉🍉</b></span></span>';
+      return (
+        '<span class="preview-art preview-more" aria-hidden="true"><span class="mini-scale"><b>' +
+        fruitMark("🍉") +
+        fruitMark("🍉") +
+        fruitMark("🍉") +
+        "</b><i></i><b>" +
+        fruitMark("🍉") +
+        fruitMark("🍉") +
+        "</b></span></span>"
+      );
     }
     if (id === "ord") {
       return '<span class="preview-art preview-ord" aria-hidden="true"><b>左</b>🐶🐱🐰<em>3</em></span>';
@@ -4325,7 +4336,12 @@
       return '<span class="preview-art preview-path" aria-hidden="true"><i>3</i><em>□</em><i>5</i><i>6</i></span>';
     }
     if (id === "bond") {
-      return '<span class="preview-art preview-count" aria-hidden="true"><span>🍇</span><span>🍇</span><span class="slot">+</span></span>';
+      return (
+        '<span class="preview-art preview-count preview-bond" aria-hidden="true">' +
+        fruitMark("🍇") +
+        fruitMark("🍇") +
+        '<span class="slot">+</span></span>'
+      );
     }
     if (id === "match-draw") {
       return (
@@ -5412,6 +5428,9 @@
     if (state.levelId === "habitat" && item && (item.feed || item.name === "點心")) {
       return '<span class="life-apple" aria-hidden="true"></span>';
     }
+    if (state.levelId === "bond") {
+      return fruitMark(item && item.emoji);
+    }
     return '<span class="life-emoji">' + item.emoji + "</span>";
   }
 
@@ -6199,7 +6218,15 @@
       '">' +
       (n ? n : "") +
       "</span>" +
-      scatterIcons(icon, count, "scatter-lg", side === "left" ? 1 : 2, 0, state.moreTapped[side], "data-more-dot") +
+      scatterIcons(
+        matchPileMark({ emoji: icon }),
+        count,
+        "scatter-lg",
+        side === "left" ? 1 : 2,
+        0,
+        state.moreTapped[side],
+        "data-more-dot"
+      ) +
       (guest ? '<span class="more-prize" aria-hidden="true">' + guest.emoji + "</span>" : "") +
       "</div>"
     );
@@ -6211,7 +6238,6 @@
     var bounce = state.sceneAnim === "scale-bounce" ? " is-bounce" : "";
     var nestGuest = ready ? itemInSlot("same") : null;
     var scene = q.scene === "picnic" ? "picnic" : "kitchen";
-    var prompt = ready ? (q.equal ? "一樣多，放到中間" : "哪一盤比較多") : "兩邊都點完，再比";
     var tray = ready ? renderTrayItems(q) : '<div class="more-tray-wait" aria-hidden="true">兩邊都點完</div>';
     var kidL = scene === "picnic" ? '<span class="more-kid" aria-hidden="true">🧒</span>' : "";
     var kidR = scene === "picnic" ? '<span class="more-kid" aria-hidden="true">👧</span>' : "";
@@ -6221,9 +6247,6 @@
         : '<i class="more-window"></i><i class="more-jar"></i><i class="more-jar two"></i>';
     return (
       '<div class="play-col">' +
-      '<div class="prompt">' +
-      prompt +
-      "</div>" +
       '<div class="more-play is-place">' +
       '<div class="more-stage">' +
       '<div class="more-scene scene-' +
@@ -6325,12 +6348,9 @@
       .join("");
     return (
       '<div class="play-col">' +
-      '<div class="prompt">拖進去，湊成 <span class="prompt-num">' +
-      q.target +
-      "</span></div>" +
       '<div class="bond-play is-place">' +
       '<div class="bond-stage">' +
-      scatterIcons(q.fruit, q.shown, "scatter-lg", 3, q.target - q.shown) +
+      scatterIcons(fruitMark(q.fruit), q.shown, "scatter-lg", 3, q.target - q.shown) +
       "</div>" +
       '<div class="life-tray">' +
       tray +
@@ -7992,6 +8012,9 @@
         (item.name ? '<span class="life-name">' + escapeHtml(item.name) + "</span>" : "");
     } else if (isShareLevel()) {
       g.className = "life-ghost share-fruit";
+      g.innerHTML = fruitMark(item.emoji);
+    } else if (state.levelId === "bond") {
+      g.className = "life-ghost bond-fruit";
       g.innerHTML = fruitMark(item.emoji);
     } else {
       g.innerHTML =
@@ -9905,6 +9928,59 @@
           hasHabitatApple: app.innerHTML.indexOf("habitat-apple") >= 0,
           hasHabitatEmoji: app.innerHTML.indexOf("habitat-emoji") >= 0,
           hasSnackEmoji: app.innerHTML.indexOf(">🍎<") >= 0,
+        };
+      },
+      moreBondPlay: function () {
+        startLevel("more");
+        var moreFox = state.foxMsg;
+        var fruitIcon = null;
+        var animalIcon = null;
+        var i;
+        for (i = 0; i < state.questions.length; i++) {
+          if (FRUITS.indexOf(state.questions[i].icon) !== -1 && state.questions[i].icon !== "⭐") {
+            fruitIcon = state.questions[i];
+          }
+          if (ANIMALS.indexOf(state.questions[i].icon) !== -1) {
+            animalIcon = state.questions[i];
+          }
+        }
+        if (fruitIcon) {
+          state.qIndex = state.questions.indexOf(fruitIcon);
+          state.moreTapped = { left: {}, right: {} };
+          render();
+        }
+        var fruitHtml = app.innerHTML;
+        if (animalIcon) {
+          state.qIndex = state.questions.indexOf(animalIcon);
+          state.moreTapped = { left: {}, right: {} };
+          render();
+        }
+        var animalHtml = animalIcon ? app.innerHTML : "";
+        startLevel("bond");
+        var bondQ = state.questions[state.qIndex];
+        var bondFox = state.foxMsg;
+        var bondHtml = app.innerHTML;
+        var extra = (bondQ.items || []).filter(function (it) {
+          return !it.anySlot;
+        })[0];
+        var ok = (bondQ.items || []).filter(function (it) {
+          return it.anySlot;
+        })[0];
+        goHome();
+        return {
+          moreNoBoardPrompt: fruitHtml.indexOf('class="prompt"') < 0,
+          moreFruitCrayon: fruitHtml.indexOf("count-fruit") >= 0 && fruitHtml.indexOf("is-crayon") >= 0,
+          moreAnimalEmoji: !animalIcon || animalHtml.indexOf(animalIcon.icon) >= 0,
+          moreAnimalNotCrayon: !animalIcon || animalHtml.indexOf("count-fruit") < 0,
+          moreFox: moreFox,
+          bondNoBoardPrompt: bondHtml.indexOf('class="prompt"') < 0,
+          bondCrayon: bondHtml.indexOf("count-fruit") >= 0 && bondHtml.indexOf("is-crayon") >= 0,
+          bondPicnic: bondHtml.indexOf("bond-stage") >= 0,
+          bondFox: bondFox,
+          bondFoxHasN: !!(bondQ && String(bondFox || "").indexOf(String(bondQ.target)) >= 0),
+          bondHasSlot: bondHtml.indexOf("data-life-slot") >= 0 && bondHtml.indexOf("bond-slot") >= 0,
+          extraId: extra && extra.id,
+          okId: ok && ok.id,
         };
       },
     };
