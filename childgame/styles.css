@@ -11692,6 +11692,41 @@ button.day-place:active {
   box-shadow: inset 0 3px 0 rgba(255, 253, 248, 0.32), inset 0 -8px 0 rgba(109, 69, 28, 0.12);
 }
 
+.toy-home .cubby-tag {
+  background:
+    repeating-linear-gradient(90deg, transparent 0 8px, rgba(109, 69, 28, 0.1) 8px 9px),
+    linear-gradient(#e8c48a, #c1864a);
+  border-color: #8d5a2b;
+  border-radius: 14px 14px 8px 8px;
+  box-shadow: inset 0 3px 0 rgba(255, 253, 248, 0.22), 0 3px 0 rgba(109, 69, 28, 0.22);
+}
+
+.toy-home .cubby-label {
+  color: #fffdf8;
+  text-shadow: 0 2px 0 rgba(109, 69, 28, 0.28);
+}
+
+.toy-home .cubby-box,
+.toy-home .cubby.tone-0 .cubby-box,
+.toy-home .cubby.tone-1 .cubby-box,
+.toy-home .cubby.tone-2 .cubby-box,
+.toy-home .cubby.tone-3 .cubby-box {
+  background:
+    repeating-linear-gradient(90deg, transparent 0 7px, rgba(109, 69, 28, 0.08) 7px 8px),
+    linear-gradient(#f3e0c0, #d4a574);
+  border-color: #8d5a2b;
+  border-radius: 8px 8px 16px 16px;
+  box-shadow: inset 0 12px 16px rgba(109, 69, 28, 0.2), inset 0 -6px 0 rgba(255, 253, 248, 0.1);
+}
+
+.toy-home .cubby.filled .cubby-box {
+  background:
+    repeating-linear-gradient(90deg, transparent 0 7px, rgba(109, 69, 28, 0.06) 7px 8px),
+    linear-gradient(#fff6dc, #e8c48a);
+  border-color: #6d451c;
+  box-shadow: inset 0 3px 0 rgba(255, 253, 248, 0.32), inset 0 -8px 0 rgba(109, 69, 28, 0.12);
+}
+
 .case-home .toy-mat .cubby-toy.is-letter,
 .life-ghost.cubby-toy.is-letter {
   width: min(34%, 132px);

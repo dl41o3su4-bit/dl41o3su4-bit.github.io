@@ -7110,11 +7110,13 @@
       '<div class="play-col">' +
       '<div class="life-stage is-place cubby-play' +
       (state.levelId === "abc-case" ? " case-home" : "") +
+      (state.levelId === "bpm-draw" || state.levelId === "abc-draw" ? " toy-home" : "") +
       '">' +
       '<div class="playroom homes-' +
       ((q.homes && q.homes.length) || 3) +
       (popping ? " done" : "") +
       (state.levelId === "abc-case" ? " case-home" : "") +
+      (state.levelId === "bpm-draw" || state.levelId === "abc-draw" ? " toy-home" : "") +
       '">' +
       '<div class="playroom-land" aria-hidden="true"><i class="pr-window"></i><i class="pr-wall"></i><i class="pr-floor"></i></div>' +
       '<div class="cubby-shelf" aria-label="玩具的家">' +
@@ -10229,6 +10231,7 @@
         goHome();
         return {
           homeHasCubby: homeHtml.indexOf("match-home") >= 0 && homeHtml.indexOf("cubby-shelf") >= 0 && homeHtml.indexOf("match-pile") >= 0,
+          homeNotToyHome: homeHtml.indexOf("toy-home") < 0 && homeHtml.indexOf("case-home") < 0,
           homeNoBigNumQuiz: homeHtml.indexOf("哪一群一樣多") < 0 && homeHtml.indexOf('class="groups"') < 0,
           shareHasTable: shareHtml.indexOf("share-play") >= 0 && shareHtml.indexOf("share-plate") >= 0 && shareHtml.indexOf("share-fruit") >= 0,
           shareHasCrayon: shareHtml.indexOf("count-fruit") >= 0 && shareHtml.indexOf("is-crayon") >= 0,
@@ -10690,6 +10693,7 @@
           tryPlace(letterItem.id, letterItem.slot);
           letterHome = state.placed[letterItem.id] === letterItem.slot;
         }
+        var abcDraw = show("abc-draw");
         var listen = show("bpm-listen");
         startLevel("bpm-listen");
         state.questions[0].scene = "kitchen";
@@ -10789,7 +10793,10 @@
           cubbyKite: cubbyLifeArt.indexOf("crayon-kite") >= 0,
           cubbyPigEmoji: cubbyLifeArt.indexOf("🐷") >= 0,
           letterGlyph: /class="life-emoji">[a-z]</.test(letters.html),
+          toyHome: cubby.html.indexOf("toy-home") >= 0 && cubby.html.indexOf("cubby-shelf") >= 0,
+          abcDrawToyHome: abcDraw.html.indexOf("toy-home") >= 0,
           caseHome: letters.html.indexOf("case-home") >= 0 && letters.html.indexOf("cubby-shelf") >= 0,
+          caseNotToyHome: letters.html.indexOf("toy-home") < 0,
           cubbyNotCaseHome: cubby.html.indexOf("case-home") < 0,
           letterBounce: letterBounce,
           letterHome: letterHome,
