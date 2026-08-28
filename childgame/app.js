@@ -4328,7 +4328,13 @@
       return '<span class="preview-art preview-count" aria-hidden="true"><span>🍇</span><span>🍇</span><span class="slot">+</span></span>';
     }
     if (id === "match-draw") {
-      return '<span class="preview-art preview-match preview-share" aria-hidden="true"><span>👩🧒</span><span>🍎🍎</span></span>';
+      return (
+        '<span class="preview-art preview-match preview-share" aria-hidden="true">' +
+        "<span>👩🧒</span>" +
+        fruitMark("🍎") +
+        fruitMark("🍎") +
+        "</span>"
+      );
     }
     if (id === "bpm-trace") {
       return (
@@ -6021,7 +6027,7 @@
       '<div class="share-plate' +
       (guest ? " filled" : "") +
       '">' +
-      (guest ? '<span class="share-put">' + guest.emoji + "</span>" : "") +
+      (guest ? '<span class="share-put">' + fruitMark(guest.emoji) + "</span>" : "") +
       "</div></div>"
     );
   }
@@ -6035,9 +6041,9 @@
         return (
           '<div class="life-item share-fruit" data-life-item="' +
           item.id +
-          '" role="img" aria-label="水果"><span class="life-emoji">' +
-          item.emoji +
-          "</span></div>"
+          '" role="img" aria-label="水果">' +
+          fruitMark(item.emoji) +
+          "</div>"
         );
       })
       .join("");
@@ -6048,9 +6054,6 @@
       .join("");
     return (
       '<div class="play-col">' +
-      '<div class="prompt">' +
-      escapeHtml(q.ask || foxPrompt()) +
-      "</div>" +
       '<div class="life-stage is-place share-play">' +
       '<div class="share-scene' +
       (state.sceneAnim === "share-done" ? " done" : "") +
@@ -7989,7 +7992,7 @@
         (item.name ? '<span class="life-name">' + escapeHtml(item.name) + "</span>" : "");
     } else if (isShareLevel()) {
       g.className = "life-ghost share-fruit";
-      g.innerHTML = '<span class="life-emoji">' + item.emoji + "</span>";
+      g.innerHTML = fruitMark(item.emoji);
     } else {
       g.innerHTML =
         renderHabitatChipArt(item) +
@@ -9718,6 +9721,8 @@
           homeHasCubby: homeHtml.indexOf("match-home") >= 0 && homeHtml.indexOf("cubby-shelf") >= 0 && homeHtml.indexOf("match-pile") >= 0,
           homeNoBigNumQuiz: homeHtml.indexOf("哪一群一樣多") < 0 && homeHtml.indexOf('class="groups"') < 0,
           shareHasTable: shareHtml.indexOf("share-play") >= 0 && shareHtml.indexOf("share-plate") >= 0 && shareHtml.indexOf("share-fruit") >= 0,
+          shareHasCrayon: shareHtml.indexOf("count-fruit") >= 0 && shareHtml.indexOf("is-crayon") >= 0,
+          shareNoBoardPrompt: shareHtml.indexOf('class="prompt"') < 0,
           shareNoLines: shareHtml.indexOf("match-lines") < 0 && shareHtml.indexOf("match-board") < 0,
         };
       },
@@ -9759,6 +9764,10 @@
         }
         tryPlace(fruit.id, q.people[0].id);
         var fruitOk = state.placed[fruit.id] === q.people[0].id;
+        var sharePutCrayon =
+          app.innerHTML.indexOf("share-put") >= 0 &&
+          app.innerHTML.indexOf("count-fruit") >= 0 &&
+          app.innerHTML.indexOf("is-crayon") >= 0;
         var extraBounced = true;
         if (extra) {
           tryPlace(extra.id, q.people[1] ? q.people[1].id : q.people[0].id);
@@ -9778,6 +9787,7 @@
           bounced: bounced,
           piledHome: piledHome,
           fruitOk: fruitOk,
+          sharePutCrayon: sharePutCrayon,
           extraBounced: extraBounced,
           noDump: noDump,
         };
