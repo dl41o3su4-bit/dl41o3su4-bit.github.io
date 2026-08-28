@@ -10116,6 +10116,20 @@
           okId: ok && ok.id,
         };
       },
+      paintStickerDemo: function () {
+        startLevel("bpm-pic");
+        state.questions[0].objects = [
+          { id: "obj-0-0", emoji: "🍦", word: "冰淇淋", target: true, spot: "fridge" },
+          { id: "obj-0-1", emoji: "🐷", word: "豬", target: false, spot: "table" },
+          { id: "obj-0-2", emoji: "🧢", word: "帽子", target: false, spot: "counter" },
+        ];
+        state.questions[0].ask = "冰淇淋的第一個音貼上去";
+        state.qIndex = 0;
+        state.placed = {};
+        state.foxMsg = "冰淇淋的第一個音貼上去";
+        render();
+        return app.innerHTML;
+      },
       stickerCubbyPlay: function () {
         function show(id) {
           startLevel(id);
