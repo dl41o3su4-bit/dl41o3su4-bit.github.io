@@ -6398,12 +6398,12 @@
       .join("");
     var shop =
       scene === "train"
-        ? '<div class="ord-shop" aria-hidden="true"><i class="ord-window"></i><i class="ord-pane"></i><span class="ord-shop-ico">' +
+        ? '<div class="ord-shop" aria-hidden="true"><i class="ord-window"></i><i class="ord-pane"></i><span class="ord-shop-word">買票</span><span class="ord-shop-ico">' +
           crayonTicketSvg() +
-          '</span><span class="ord-shop-word">買票</span></div>'
-        : '<div class="ord-shop" aria-hidden="true"><i class="ord-awning"></i><span class="ord-shop-ico">' +
+          "</span></div>"
+        : '<div class="ord-shop" aria-hidden="true"><i class="ord-awning"></i><span class="ord-shop-word">冰淇淋</span><span class="ord-shop-ico">' +
           crayonIceCreamSvg() +
-          '</span><span class="ord-shop-word">冰淇淋</span></div>';
+          "</span></div>";
     return (
       '<div class="play-col">' +
       '<div class="life-stage is-place ord-play">' +
@@ -7726,7 +7726,7 @@
   function renderAbcPath(q) {
     var n = (q.stones || []).length;
     var dest = pathStoneSpot(q.miss || 0, n);
-    var start = { left: "9", rise: 18 };
+    var start = { left: "14", rise: 18 };
     var stones = (q.stones || [])
       .map(function (s, i) {
         var spot = pathStoneSpot(i, n);

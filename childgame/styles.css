@@ -8658,11 +8658,11 @@ button.day-place:active {
 
 .path-fox {
   position: absolute;
-  left: max(48px, var(--from-left, 9%));
+  left: max(72px, var(--from-left, 14%));
   bottom: calc(var(--from-rise, 18%) + 10%);
   z-index: 4;
   width: min(18cqw, 26cqh, 72px);
-  transform: translateX(-50%);
+  transform: translateX(-18%);
   pointer-events: none;
   text-align: center;
   transition: left 1.15s ease, bottom 1.15s ease;
@@ -8761,43 +8761,60 @@ button.day-place:active {
   z-index: 1;
   flex: 0 0 auto;
   align-self: flex-end;
-  width: min(30%, 148px);
-  height: 62%;
-  margin: 0 2px 3% 3%;
+  width: min(28%, 158px);
+  height: 44%;
+  margin: 0 4px 1.5% 2.5%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-end;
-  gap: 2px;
-  padding: 22px 8px 16px;
-  background:
-    linear-gradient(#fff1d6 0 74%, #c1864a 74%);
-  border: 3px solid #8d5a2b;
-  border-radius: 10px 10px 6px 6px;
-  box-shadow: 0 8px 0 rgba(141, 90, 43, 0.22);
+  justify-content: flex-start;
+  gap: 4px;
+  padding: 16px 8px 18px;
+  background: linear-gradient(#fff4d6, #f0c49a);
+  border: 3px solid #3b2412;
+  border-radius: 8px 8px 4px 4px;
+  box-shadow: 0 7px 0 rgba(61, 36, 18, 0.18);
   pointer-events: none;
 }
 
+.ord-shop::after {
+  content: "";
+  position: absolute;
+  left: -12%;
+  right: -12%;
+  bottom: -7px;
+  height: 20%;
+  background: #8d5a2b;
+  border: 3px solid #3b2412;
+  border-radius: 5px;
+}
+
 .ord-scene.scene-ice .ord-shop {
-  background:
-    linear-gradient(#ffe0ef 0 72%, #e8590c 72%);
-  border-color: #c2255c;
+  background: linear-gradient(#ffe0ef, #ffc9d9);
+  border-color: #3b2412;
+}
+
+.ord-scene.scene-ice .ord-shop::after {
+  background: #e8590c;
 }
 
 .ord-scene.scene-train .ord-shop {
-  background:
-    linear-gradient(#a5d8ff 0 28%, #fff8ee 28% 72%, #4dabf7 72%);
-  border-color: #1864ab;
+  background: linear-gradient(#fff8ee 0 100%);
+  border-color: #3b2412;
+}
+
+.ord-scene.scene-train .ord-shop::after {
+  background: #4dabf7;
 }
 
 .ord-awning,
 .ord-window {
   position: absolute;
-  left: -8%;
-  right: -8%;
-  top: -10px;
-  height: 18px;
-  border-radius: 10px 10px 4px 4px;
+  left: -10%;
+  right: -10%;
+  top: -12px;
+  height: 20px;
+  border-radius: 10px 10px 3px 3px;
 }
 
 .ord-awning {
@@ -8810,10 +8827,10 @@ button.day-place:active {
 
 .ord-pane {
   position: absolute;
-  left: 12%;
-  right: 12%;
-  top: 16%;
-  height: 30%;
+  left: 10%;
+  right: 10%;
+  top: 28%;
+  height: 34%;
   background: linear-gradient(#74c0fc, #d0ebff);
   border: 3px solid #3b2412;
   border-radius: 8px;
@@ -8825,9 +8842,19 @@ button.day-place:active {
   z-index: 1;
   display: grid;
   place-items: center;
-  width: min(72%, 78px);
-  height: min(46%, 72px);
+  flex: 1 1 auto;
+  width: 82%;
+  min-height: 0;
+  margin-top: 2px;
   line-height: 1;
+}
+
+.ord-scene.scene-train .ord-shop-ico {
+  flex: 0 0 auto;
+  width: 64%;
+  height: 26%;
+  margin-top: auto;
+  margin-bottom: 2px;
 }
 
 .ord-shop-ico svg {
@@ -8838,11 +8865,16 @@ button.day-place:active {
 
 .ord-shop-word {
   position: relative;
-  z-index: 1;
-  font-size: clamp(14px, 3.2vmin, 20px);
+  z-index: 2;
+  margin-top: 2px;
+  padding: 1px 7px;
+  background: #fff8ee;
+  border: 2px solid #3b2412;
+  border-radius: 8px;
+  font-size: clamp(13px, 2.8vmin, 18px);
   font-weight: 900;
   color: var(--ink);
-  line-height: 1.1;
+  line-height: 1.15;
 }
 
 .ord-line {
@@ -8960,8 +8992,8 @@ button.day-place:active {
 
 .ord-play .life-item,
 .life-ghost.ord-flag {
-  background: #fff8ee;
-  border-color: #e8c48a;
+  background: linear-gradient(#fff8ee, #f4d9b0);
+  border-color: #c1864a;
   border-radius: 22px;
   color: var(--ink);
   clip-path: none;
@@ -12608,12 +12640,12 @@ button.day-place:active {
 
   .shell.is-life .ord-shop {
     flex: 0 0 auto;
-    width: min(22%, 150px);
-    height: 66%;
-    margin: 0 2px 3% 3%;
+    width: min(24%, 160px);
+    height: 46%;
+    margin: 0 4px 1.5% 2.5%;
     flex-direction: column;
-    justify-content: flex-end;
-    border-radius: 10px 10px 6px 6px;
+    justify-content: flex-start;
+    border-radius: 8px 8px 4px 4px;
   }
 
   .shell.is-life .ord-who {
