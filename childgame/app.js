@@ -7695,6 +7695,22 @@
     );
   }
 
+  function orderPlaceLabel(q) {
+    var place = (q && q.place) || "";
+    var word =
+      q && q.routine === "wash"
+        ? "洗手"
+        : q && q.routine === "brush"
+          ? "刷牙"
+          : q && q.routine === "out"
+            ? "出門"
+            : q && q.routine === "eat"
+              ? "吃飯"
+              : "";
+    if (place && word) return place + " · " + word;
+    return place || word;
+  }
+
   function renderOrder(q) {
     var phase = state.stepIndex;
     var done = state.sceneAnim === "order-done" || orderStepDone(q);
@@ -7706,9 +7722,6 @@
     else scene = renderOrderWash(q, phase);
     return (
       '<div class="play-col">' +
-      '<div class="prompt">' +
-      escapeHtml(q.ask || "做一遍") +
-      "</div>" +
       '<div class="life-stage is-place order-play">' +
       '<div class="do-scene do-' +
       escapeHtml(q.routine || "wash") +
@@ -7717,7 +7730,7 @@
       (done ? " is-done" : "") +
       '">' +
       '<span class="do-place">' +
-      escapeHtml(q.place || "") +
+      escapeHtml(orderPlaceLabel(q)) +
       "</span>" +
       scene +
       "</div></div></div>"
@@ -10318,6 +10331,10 @@
         var bodyHtml = app.innerHTML;
         startLevel("daynight");
         var daynightHtml = app.innerHTML;
+        startLevel("order");
+        var orderHtml = app.innerHTML;
+        var orderPlace = app.querySelector(".do-place");
+        var orderPlaceStyle = orderPlace ? getComputedStyle(orderPlace) : null;
         goHome();
         var habitat = makeHabitatQuestions(true);
         var light = makeLightQuestions(true);
@@ -10353,6 +10370,10 @@
           bodyNoBoardPrompt: bodyHtml.indexOf('class="prompt"') < 0,
           daynightToy: daynightHtml.indexOf("life-toy") >= 0 && daynightHtml.indexOf("data-life-item") >= 0,
           daynightNoBoardPrompt: daynightHtml.indexOf('class="prompt"') < 0,
+          orderNoBoardPrompt: orderHtml.indexOf('class="prompt"') < 0,
+          orderWoodPlace:
+            !!(orderPlaceStyle && (orderPlaceStyle.backgroundImage || "").indexOf("repeating-linear-gradient") >= 0) &&
+            !!(orderPlace && / · (洗手|刷牙|出門|吃飯)/.test(orderPlace.textContent || "")),
           schoolDress: makeDressQuestions().length,
           schoolTable: makeTableQuestions().length,
           schoolHabitat: makeHabitatQuestions().length,
