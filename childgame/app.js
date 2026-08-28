@@ -7852,9 +7852,6 @@
     var carCls = color === "red" ? " drive" : color === "yellow" ? " slow" : " wait";
     return (
       '<div class="play-col">' +
-      '<div class="prompt">' +
-      escapeHtml(q.ask) +
-      "</div>" +
       '<div class="life-stage light-play is-place">' +
       '<div class="street-scene light-card place-' +
       (q.place || "city") +
@@ -7888,13 +7885,13 @@
       word +
       "</div></div>" +
       '<div class="light-choices">' +
-      '<button class="light-btn stop-btn' +
+      '<button class="light-btn light-sign stop-btn' +
       stopMark +
       '" type="button" data-action="answer" data-value="stop"><span class="light-btn-ico">🛑</span>停</button>' +
-      '<button class="light-btn wait-btn' +
+      '<button class="light-btn light-sign wait-btn' +
       waitMark +
       '" type="button" data-action="answer" data-value="wait"><span class="light-btn-ico">⏳</span>等一等</button>' +
-      '<button class="light-btn go-btn' +
+      '<button class="light-btn light-sign go-btn' +
       goMark +
       '" type="button" data-action="answer" data-value="go"><span class="light-btn-ico">🚶</span>走</button>' +
       "</div></div></div>"
@@ -8249,9 +8246,6 @@
     }
     return (
       '<div class="play-col">' +
-      '<div class="prompt">' +
-      escapeHtml(q.ask) +
-      "</div>" +
       progress +
       '<div class="life-stage body-play">' +
       '<div class="body-scene" data-need="' +
@@ -10321,6 +10315,10 @@
         var habitatHtml = app.innerHTML;
         startLevel("sort");
         var sortHtml = app.innerHTML;
+        startLevel("light");
+        var lightHtml = app.innerHTML;
+        startLevel("body");
+        var bodyHtml = app.innerHTML;
         goHome();
         var habitat = makeHabitatQuestions(true);
         var light = makeLightQuestions(true);
@@ -10351,6 +10349,9 @@
           habitatToy: habitatHtml.indexOf("life-toy") >= 0 && habitatHtml.indexOf("data-life-item") >= 0,
           sortToy: sortHtml.indexOf("life-toy") >= 0 && sortHtml.indexOf("data-life-item") >= 0,
           sortNoBoardPrompt: sortHtml.indexOf('class="prompt"') < 0,
+          lightNoBoardPrompt: lightHtml.indexOf('class="prompt"') < 0,
+          lightSign: lightHtml.indexOf("light-sign") >= 0 && lightHtml.indexOf('data-value="stop"') >= 0,
+          bodyNoBoardPrompt: bodyHtml.indexOf('class="prompt"') < 0,
           schoolDress: makeDressQuestions().length,
           schoolTable: makeTableQuestions().length,
           schoolHabitat: makeHabitatQuestions().length,

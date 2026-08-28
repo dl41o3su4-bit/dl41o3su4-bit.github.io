@@ -7154,16 +7154,22 @@ button.day-place:active {
   pointer-events: none;
 }
 
-.life-item.ok,
-.light-btn.ok {
+.life-item.ok {
   background: #b2f2bb;
   animation: pop 0.35s ease;
 }
 
-.life-item.bad,
-.light-btn.bad {
+.light-btn.ok {
+  animation: pop 0.35s ease;
+}
+
+.life-item.bad {
   animation: shake 0.4s ease;
   background: #fff3bf;
+}
+
+.light-btn.bad {
+  animation: shake 0.4s ease;
 }
 
 .dress-play .life-item.life-toy,
@@ -7277,7 +7283,7 @@ button.day-place:active {
   align-items: center;
   justify-content: center;
   gap: 4px;
-  border-radius: 28px;
+  border-radius: 22px 18px 24px 16px;
 }
 
 .light-btn-ico {
@@ -7285,19 +7291,69 @@ button.day-place:active {
   line-height: 1;
 }
 
-.light-btn.stop-btn {
-  background: #ffe3e3;
-  border-color: #fa5252;
+.light-play .light-btn.light-sign {
+  background:
+    repeating-linear-gradient(128deg, transparent 0 7px, rgba(141, 90, 43, 0.16) 7px 8px),
+    radial-gradient(ellipse at 32% 26%, #efd6a8 0 26%, #d4b07a 56%, #b88950);
+  border: 3px solid #8d5a2b;
+  border-radius: 22px 18px 24px 16px;
+  box-shadow: inset 0 3px 0 rgba(255, 253, 248, 0.4), 0 6px 0 rgba(109, 69, 28, 0.2);
+  color: #2a1c12;
 }
 
-.light-btn.go-btn {
-  background: #d3f9d8;
-  border-color: #2b8a3e;
+.light-play .light-btn.light-sign::before {
+  content: "";
+  display: block;
+  width: 46%;
+  height: 11px;
+  flex: 0 0 auto;
+  border-radius: 999px 8px 999px 10px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 1px 0 rgba(42, 28, 18, 0.18);
 }
 
-.light-btn.wait-btn {
-  background: #fff3bf;
-  border-color: #f59f00;
+.light-play .light-btn.stop-btn {
+  background:
+    repeating-linear-gradient(128deg, transparent 0 7px, rgba(141, 90, 43, 0.14) 7px 8px),
+    linear-gradient(180deg, rgba(201, 42, 42, 0.34) 0 38%, rgba(201, 42, 42, 0.08) 72%, transparent),
+    radial-gradient(ellipse at 32% 26%, #efd6a8 0 26%, #d4b07a 56%, #b88950);
+  box-shadow:
+    inset 0 3px 0 rgba(255, 248, 244, 0.28),
+    inset 0 0 0 5px rgba(184, 48, 40, 0.42),
+    0 6px 0 rgba(109, 69, 28, 0.2);
+}
+
+.light-play .light-btn.stop-btn::before {
+  background: linear-gradient(180deg, #ff8787, #c92a2a);
+}
+
+.light-play .light-btn.wait-btn {
+  background:
+    repeating-linear-gradient(128deg, transparent 0 7px, rgba(141, 90, 43, 0.14) 7px 8px),
+    linear-gradient(180deg, rgba(245, 159, 0, 0.36) 0 38%, rgba(245, 159, 0, 0.08) 72%, transparent),
+    radial-gradient(ellipse at 32% 26%, #efd6a8 0 26%, #d4b07a 56%, #b88950);
+  box-shadow:
+    inset 0 3px 0 rgba(255, 248, 244, 0.28),
+    inset 0 0 0 5px rgba(217, 119, 6, 0.42),
+    0 6px 0 rgba(109, 69, 28, 0.2);
+}
+
+.light-play .light-btn.wait-btn::before {
+  background: linear-gradient(180deg, #ffe066, #e67700);
+}
+
+.light-play .light-btn.go-btn {
+  background:
+    repeating-linear-gradient(128deg, transparent 0 7px, rgba(141, 90, 43, 0.14) 7px 8px),
+    linear-gradient(180deg, rgba(43, 138, 62, 0.34) 0 38%, rgba(43, 138, 62, 0.08) 72%, transparent),
+    radial-gradient(ellipse at 32% 26%, #efd6a8 0 26%, #d4b07a 56%, #b88950);
+  box-shadow:
+    inset 0 3px 0 rgba(255, 248, 244, 0.28),
+    inset 0 0 0 5px rgba(43, 138, 62, 0.42),
+    0 6px 0 rgba(109, 69, 28, 0.2);
+}
+
+.light-play .light-btn.go-btn::before {
+  background: linear-gradient(180deg, #8ce99a, #2b8a3e);
 }
 
 .street-scene {
