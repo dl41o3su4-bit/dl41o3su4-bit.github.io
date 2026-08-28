@@ -5348,6 +5348,57 @@
     );
   }
 
+  function lifeCrayonKind(emoji, word) {
+    var e = String(emoji || "");
+    var w = String(word || "")
+      .replace(/\s+/g, " ")
+      .trim()
+      .toLowerCase();
+    if (e === "🍦" || w === "冰淇淋" || w === "ice cream") return "icecream";
+    if (e === "🍎" || w === "蘋果" || w === "apple") return "apple";
+    if (e === "🍇" || w === "葡萄" || w === "grapes") return "grape";
+    if (e === "🍉" || w === "西瓜" || w === "watermelon") return "melon";
+    if (e === "🍌" || w === "banana") return "banana";
+    if (e === "🍊" || w === "orange") return "orange";
+    if (e === "🧢" || e === "🎩" || w === "帽子" || w === "hat") return "hat";
+    if (e === "🥛" || w === "牛奶" || w === "milk") return "milk";
+    if (e === "🐟" || w === "魚" || w === "fish") return "fish";
+    if (e === "🦆" || w === "小鴨" || w === "duck") return "duck";
+    if (e === "📦" || w === "box") return "box";
+    if (e === "🌿" || w === "草") return "greens";
+    if (e === "🍂" || w === "落葉") return "leaf";
+    return "";
+  }
+
+  function lifeCrayonMark(emoji, word) {
+    var kind = lifeCrayonKind(emoji, word);
+    if (!kind) return "";
+    if (kind === "icecream") {
+      return '<span class="life-crayon crayon-ice" aria-hidden="true">' + crayonIceCreamSvg() + "</span>";
+    }
+    if (kind === "hat") {
+      return (
+        '<span class="life-crayon crayon-hat" aria-hidden="true">' +
+        renderDressChipArt({ emoji: "🧢", name: "帽子" }) +
+        "</span>"
+      );
+    }
+    if (kind === "apple") return fruitMark("🍎");
+    if (kind === "grape") return fruitMark("🍇");
+    if (kind === "melon") return fruitMark("🍉");
+    if (kind === "banana") return fruitMark("🍌");
+    if (kind === "orange") return fruitMark("🍊");
+    var svg = crayonSortSvg(kind);
+    if (!svg) return "";
+    return (
+      '<span class="life-crayon crayon-' +
+      kind +
+      ' is-crayon" aria-hidden="true">' +
+      svg +
+      "</span>"
+    );
+  }
+
   function matchPileMark(item) {
     var icon = (item && (item.icon || item.emoji)) || "";
     if (icon && FRUITS.indexOf(icon) !== -1) return fruitMark(icon);
@@ -6493,7 +6544,7 @@
       '" aria-label="' +
       escapeHtml(obj.word) +
       '"><span class="sticker-pic">' +
-      obj.emoji +
+      (lifeCrayonMark(obj.emoji, obj.word) || obj.emoji) +
       '</span><span class="sticker-word">' +
       escapeHtml(obj.word) +
       '</span><div class="sticker-hold">' +
@@ -6578,9 +6629,6 @@
     var scene = q.scene || "table";
     return (
       '<div class="play-col">' +
-      '<div class="prompt">' +
-      escapeHtml(q.ask || foxPrompt()) +
-      "</div>" +
       '<div class="life-stage is-place sticker-play">' +
       '<div class="listen-scene sticker-scene scene-' +
       scene +
@@ -6591,9 +6639,11 @@
       "</span>" +
       renderStickerFurniture(q, popping) +
       "</div>" +
+      '<div class="sticker-box" aria-label="貼紙盒">' +
+      '<span class="sticker-box-lid" aria-hidden="true"></span>' +
       '<div class="life-tray sticker-tray">' +
       renderStickerTray(q) +
-      "</div></div></div>"
+      "</div></div></div></div>"
     );
   }
 
@@ -6626,6 +6676,15 @@
     );
   }
 
+  function renderCubbyToyArt(item) {
+    if (item && item.kind === "letter") {
+      return '<span class="life-emoji">' + escapeHtml(item.emoji) + "</span>";
+    }
+    var art = lifeCrayonMark(item && item.emoji, item && item.name);
+    if (art) return art;
+    return '<span class="life-emoji">' + escapeHtml((item && item.emoji) || "") + "</span>";
+  }
+
   function renderCubbyToy(item, extraClass) {
     var mark = extraClass ? " " + extraClass : "";
     var placed = extraClass === "in-slot";
@@ -6654,9 +6713,8 @@
       style +
       ' role="img" aria-label="' +
       escapeHtml(item.name || item.emoji) +
-      '"><span class="life-emoji">' +
-      escapeHtml(item.emoji) +
-      "</span>" +
+      '">' +
+      renderCubbyToyArt(item) +
       (item.kind === "letter"
         ? ""
         : '<span class="life-name">' + escapeHtml(item.name || "") + "</span>") +
@@ -6696,9 +6754,6 @@
       .join("");
     return (
       '<div class="play-col">' +
-      '<div class="prompt">' +
-      escapeHtml(q.prompt || foxPrompt()) +
-      "</div>" +
       '<div class="life-stage is-place cubby-play">' +
       '<div class="playroom homes-' +
       ((q.homes && q.homes.length) || 3) +
@@ -7612,9 +7667,6 @@
     }
     return (
       '<div class="play-col">' +
-      '<div class="prompt">' +
-      escapeHtml(state.stepIndex === 1 ? q.word + "的第一個音是誰？" : q.ask) +
-      "</div>" +
       '<div class="life-stage listen-play">' +
       '<div class="listen-scene scene-' +
       (q.scene || "park") +
@@ -7665,9 +7717,6 @@
       .join("");
     return (
       '<div class="play-col">' +
-      '<div class="prompt">' +
-      escapeHtml(q.ask) +
-      "</div>" +
       '<div class="life-stage is-place train-play">' +
       '<div class="train-scene' +
       (going ? " go" : "") +
@@ -7706,9 +7755,6 @@
       .join("");
     return (
       '<div class="play-col">' +
-      '<div class="prompt">' +
-      escapeHtml(q.ask) +
-      "</div>" +
       '<div class="life-stage pop-play"><div class="pop-scene">' +
       bubbles +
       "</div></div></div>"
@@ -8093,9 +8139,7 @@
     } else if (isCubbyLevel()) {
       g.className = "life-ghost cubby-toy";
       g.innerHTML =
-        '<span class="life-emoji">' +
-        item.emoji +
-        "</span>" +
+        renderCubbyToyArt(item) +
         (item.name ? '<span class="life-name">' + escapeHtml(item.name) + "</span>" : "");
     } else if (isShareLevel()) {
       g.className = "life-ghost share-fruit";
@@ -10070,6 +10114,115 @@
           bondHasSlot: bondHtml.indexOf("data-life-slot") >= 0 && bondHtml.indexOf("bond-slot") >= 0,
           extraId: extra && extra.id,
           okId: ok && ok.id,
+        };
+      },
+      stickerCubbyPlay: function () {
+        function show(id) {
+          startLevel(id);
+          state.placed = {};
+          state.stepIndex = 0;
+          state.foxMsg = foxPrompt();
+          render();
+          return { q: state.questions[state.qIndex], html: app.innerHTML, fox: state.foxMsg };
+        }
+        function paintSticker(objects) {
+          startLevel("bpm-pic");
+          state.questions[0].objects = objects;
+          state.qIndex = 0;
+          state.placed = {};
+          render();
+          return app.innerHTML;
+        }
+        var iceHtml = paintSticker([
+          { id: "obj-0-0", emoji: "🍦", word: "冰淇淋", target: true, spot: "fridge" },
+          { id: "obj-0-1", emoji: "🐷", word: "豬", target: false, spot: "table" },
+          { id: "obj-0-2", emoji: "🧢", word: "帽子", target: false, spot: "counter" },
+        ]);
+        var fruitHtml = paintSticker([
+          { id: "obj-0-0", emoji: "🍎", word: "蘋果", target: true, spot: "table" },
+          { id: "obj-0-1", emoji: "🍇", word: "葡萄", target: false, spot: "bowl" },
+          { id: "obj-0-2", emoji: "🐱", word: "貓", target: false, spot: "counter" },
+        ]);
+        var hanziHtml = (function () {
+          startLevel("hanzi");
+          state.questions[0].objects = [
+            { id: "obj-0-0", emoji: "🐟", word: "魚", target: true, spot: "table" },
+            { id: "obj-0-1", emoji: "🐴", word: "馬", target: false, spot: "counter" },
+            { id: "obj-0-2", emoji: "📖", word: "書", target: false, spot: "fridge" },
+          ];
+          state.qIndex = 0;
+          render();
+          return app.innerHTML;
+        })();
+        var abcHtml = (function () {
+          startLevel("abc-pic");
+          state.questions[0].objects = [
+            { id: "obj-0-0", emoji: "🍉", word: "Watermelon", target: true, spot: "fridge" },
+            { id: "obj-0-1", emoji: "🦁", word: "Lion", target: false, spot: "table" },
+            { id: "obj-0-2", emoji: "🍌", word: "Banana", target: false, spot: "table" },
+          ];
+          state.qIndex = 0;
+          render();
+          return app.innerHTML;
+        })();
+        var place = show("bpm-pic");
+        var target = (place.q.objects || []).filter(function (o) { return o.target; })[0];
+        var right = (place.q.items || []).filter(function (it) { return it.slot === (target && target.id); })[0];
+        var wrong = (place.q.items || []).filter(function (it) { return it !== right; })[0];
+        tryPlace(right.id, target.id);
+        var placedOk = state.placed[right.id] === target.id;
+        startLevel("bpm-pic");
+        state.qIndex = 0;
+        state.placed = {};
+        target = (state.questions[0].objects || []).filter(function (o) { return o.target; })[0];
+        right = (state.questions[0].items || []).filter(function (it) { return it.slot === (target && target.id); })[0];
+        wrong = (state.questions[0].items || []).filter(function (it) { return it !== right; })[0];
+        tryPlace(wrong.id, target.id);
+        var bounced = !state.placed[wrong.id];
+        var cubby = show("bpm-draw");
+        startLevel("bpm-draw");
+        state.questions[0].items = [
+          { id: "bpm-toy-0-0", emoji: "🍦", name: "冰淇淋", slot: "ㄅ", x: 8, y: 8, r: 0 },
+          { id: "bpm-toy-0-1", emoji: "🦖", name: "恐龍", slot: "ㄎ", x: 52, y: 6, r: 0 },
+          { id: "bpm-toy-0-2", emoji: "🐱", name: "貓", slot: "ㄇ", x: 26, y: 42, r: 0 },
+        ];
+        state.qIndex = 0;
+        render();
+        var cubbyArt = app.innerHTML;
+        var letters = show("abc-case");
+        var listen = show("bpm-listen");
+        var train = show("bpm-train");
+        var pop = show("abc-pop");
+        var stickerChip = iceHtml.match(/data-life-item="sticker-[^"]+"/);
+        var stickerGlyph = iceHtml.match(/sticker-glyph">([^<]+)</);
+        goHome();
+        return {
+          iceNoBoardPrompt: iceHtml.indexOf('class="prompt"') < 0,
+          iceFoxAsk: place.fox,
+          iceHasBox: iceHtml.indexOf("sticker-box") >= 0 && iceHtml.indexOf("sticker-tray") >= 0,
+          iceCrayon: iceHtml.indexOf("crayon-ice") >= 0 && iceHtml.indexOf('sticker-pic">🍦') < 0,
+          iceKeepAsk: !!(place.q && place.q.ask),
+          iceWord: iceHtml.indexOf("sticker-word") >= 0,
+          iceChipId: !!(stickerChip && stickerGlyph),
+          pigEmoji: iceHtml.indexOf('sticker-pic">🐷') >= 0,
+          hatCrayon: iceHtml.indexOf("crayon-hat") >= 0 && iceHtml.indexOf("hang-cap") >= 0,
+          fruitCrayon: fruitHtml.indexOf("count-fruit") >= 0 && fruitHtml.indexOf("is-crayon") >= 0,
+          catEmoji: fruitHtml.indexOf('sticker-pic">🐱') >= 0,
+          placeOk: placedOk,
+          placeBounce: bounced,
+          hanziFishCrayon: hanziHtml.indexOf("crayon-fish") >= 0,
+          hanziHorseEmoji: hanziHtml.indexOf('sticker-pic">🐴') >= 0,
+          hanziNoBoard: hanziHtml.indexOf('class="prompt"') < 0,
+          abcMelonCrayon: abcHtml.indexOf("count-fruit") >= 0 && abcHtml.indexOf("is-crayon") >= 0,
+          abcLionEmoji: abcHtml.indexOf('sticker-pic">🦁') >= 0,
+          cubbyNoBoard: cubby.html.indexOf('class="prompt"') < 0 && cubby.html.indexOf("送玩具回家") < 0,
+          cubbyFoxSpecific: cubby.fox !== "送玩具回家",
+          cubbyCrayon: cubbyArt.indexOf("crayon-ice") >= 0,
+          cubbyDinoEmoji: cubbyArt.indexOf("🦖") >= 0 && cubbyArt.indexOf("🐱") >= 0,
+          letterGlyph: /class="life-emoji">[a-z]</.test(letters.html),
+          listenNoBoard: listen.html.indexOf('class="prompt"') < 0,
+          trainNoBoard: train.html.indexOf('class="prompt"') < 0,
+          popNoBoard: pop.html.indexOf('class="prompt"') < 0,
         };
       },
     };

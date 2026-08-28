@@ -11215,8 +11215,75 @@ button.day-place:active {
   z-index: 2;
 }
 
+.toy-mat .cubby-toy:not(.match-pile),
+.life-ghost.cubby-toy:not(.match-pile) {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  filter: drop-shadow(0 3px 0 rgba(80, 40, 10, 0.16));
+}
+
 .cubby-toy .life-emoji {
   font-size: clamp(40px, 9vmin, 64px);
+}
+
+.cubby-toy .life-crayon,
+.cubby-toy .count-fruit,
+.life-ghost.cubby-toy .life-crayon,
+.life-ghost.cubby-toy .count-fruit {
+  display: block;
+  width: 1em;
+  height: 1em;
+  flex: none;
+  font-size: clamp(40px, 9vmin, 64px);
+}
+
+.cubby-toy .life-crayon svg,
+.cubby-toy .count-fruit svg,
+.life-ghost.cubby-toy .life-crayon svg,
+.life-ghost.cubby-toy .count-fruit svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.cubby-toy .life-chip-art,
+.life-ghost.cubby-toy .life-chip-art {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.cubby-toy .dress-chip,
+.cubby-toy .dress-chip .dh-brim {
+  position: absolute;
+  display: block;
+  font-style: normal;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.cubby-toy .dress-chip.hang-cap {
+  left: 50%;
+  top: 50%;
+  width: 70%;
+  height: 38%;
+  background: #fa5252;
+  border: 2px solid #c92a2a;
+  border-radius: 12px 12px 2px 2px;
+  transform: translate(-42%, -70%);
+}
+
+.cubby-toy .dress-chip.hang-cap .dh-brim {
+  left: -36%;
+  width: 52%;
+  right: auto;
+  bottom: -14%;
+  height: 46%;
+  background: #1c7ed6;
+  border: 2px solid #1864ab;
+  border-radius: 2px 8px 2px 2px;
 }
 
 .cubby-toy .life-name {
@@ -11243,7 +11310,9 @@ button.day-place:active {
   animation: pop 0.35s ease;
 }
 
-.cubby .cubby-toy.in-slot .life-emoji {
+.cubby .cubby-toy.in-slot .life-emoji,
+.cubby .cubby-toy.in-slot .life-crayon,
+.cubby .cubby-toy.in-slot .count-fruit {
   font-size: clamp(32px, 7vmin, 52px);
 }
 
@@ -11748,8 +11817,64 @@ button.day-place:active {
 }
 
 .sticker-pic {
+  display: grid;
+  place-items: center;
   font-size: clamp(28px, 7.4vmin, 48px);
   line-height: 1;
+  overflow: visible;
+}
+
+.sticker-pic .life-crayon,
+.sticker-pic .count-fruit {
+  display: block;
+  width: 1em;
+  height: 1em;
+  flex: none;
+}
+
+.sticker-pic .life-crayon svg,
+.sticker-pic .count-fruit svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.sticker-pic .life-chip-art {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.sticker-pic .dress-chip,
+.sticker-pic .dress-chip .dh-brim {
+  position: absolute;
+  display: block;
+  font-style: normal;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.sticker-pic .dress-chip.hang-cap {
+  left: 50%;
+  top: 50%;
+  width: 70%;
+  height: 38%;
+  background: #fa5252;
+  border: 2px solid #c92a2a;
+  border-radius: 12px 12px 2px 2px;
+  transform: translate(-42%, -70%);
+}
+
+.sticker-pic .dress-chip.hang-cap .dh-brim {
+  left: -36%;
+  width: 52%;
+  right: auto;
+  bottom: -14%;
+  height: 46%;
+  background: #1c7ed6;
+  border: 2px solid #1864ab;
+  border-radius: 2px 8px 2px 2px;
 }
 
 .sticker-word {
@@ -11776,12 +11901,32 @@ button.day-place:active {
 
 .sticker-chip,
 .life-ghost.sticker-chip {
-  min-width: 72px;
-  background: #fff8e1;
-  border: 3px dashed #f59f00;
-  border-radius: 16px;
-  transform: rotate(-2deg);
-  box-shadow: 0 6px 12px rgba(245, 159, 0, 0.16);
+  position: relative;
+  min-width: 68px;
+  min-height: 58px;
+  padding: 8px 10px 10px;
+  background:
+    linear-gradient(180deg, #fffef8 0 72%, #fff1d6 100%);
+  border: 2px solid #e8c48a;
+  border-radius: 12px 16px 11px 14px;
+  transform: rotate(-3deg);
+  box-shadow:
+    0 1px 0 #fffef8,
+    0 4px 0 rgba(141, 90, 43, 0.2);
+}
+
+.sticker-chip::after,
+.life-ghost.sticker-chip::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  background:
+    linear-gradient(135deg, transparent 48%, #f4d9b0 49%);
+  border-radius: 0 12px 0 0;
+  pointer-events: none;
 }
 
 .sticker-chip:nth-child(2),
@@ -11802,6 +11947,10 @@ button.day-place:active {
   animation: pop 0.35s ease;
 }
 
+.sticker-chip.in-slot::after {
+  display: none;
+}
+
 .sticker-glyph {
   font-size: clamp(30px, 7.4vmin, 46px);
   font-weight: 900;
@@ -11813,8 +11962,41 @@ button.day-place:active {
   font-size: clamp(22px, 5.2vmin, 32px);
 }
 
+.sticker-box {
+  flex: 0 0 auto;
+  position: relative;
+  z-index: 3;
+  margin: -6px 8px 4px;
+  padding: 10px 8px 8px;
+  background:
+    repeating-linear-gradient(90deg, #d4a574 0 14px, #c1864a 14px 18px),
+    linear-gradient(#e8c48a, #c1864a);
+  border: 3px solid #8d5a2b;
+  border-radius: 8px 8px 18px 18px;
+  box-shadow:
+    inset 0 8px 0 rgba(255, 253, 248, 0.16),
+    0 6px 0 rgba(141, 90, 43, 0.2);
+}
+
+.sticker-box-lid {
+  display: block;
+  height: 10px;
+  margin: -14px 10% 8px;
+  background: linear-gradient(#e8c48a, #c1864a);
+  border: 3px solid #8d5a2b;
+  border-bottom: 0;
+  border-radius: 10px 10px 0 0;
+  box-shadow: inset 0 3px 0 rgba(255, 253, 248, 0.22);
+}
+
 .sticker-tray {
+  display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  width: auto;
+  flex: none;
+  align-items: center;
+  justify-items: center;
 }
 
 @keyframes trainGo {
@@ -12369,6 +12551,19 @@ button.day-place:active {
     flex-direction: column;
   }
 
+  .sticker-play,
+  .life-stage.sticker-play {
+    flex-direction: column;
+  }
+
+  .sticker-play .sticker-box,
+  .sticker-play .sticker-tray,
+  .life-tray.sticker-tray {
+    width: auto;
+    flex: 0 0 auto;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
   .life-tray,
   .light-choices {
     width: min(38%, 220px);
@@ -12473,9 +12668,14 @@ button.day-place:active {
   .shell.is-life .day-play,
   .shell.is-life .sort-play,
   .shell.is-life .order-play,
-  .shell.is-life .sticker-play,
   .shell.is-life .share-play {
     flex-direction: row;
+    align-items: stretch;
+  }
+
+  .shell.is-life .sticker-play,
+  .life-stage.sticker-play {
+    flex-direction: column;
     align-items: stretch;
   }
 
@@ -12576,6 +12776,14 @@ button.day-place:active {
 
   .shell.is-life .sticker-pic {
     font-size: clamp(30px, 7.6vmin, 52px);
+  }
+
+  .shell.is-life .sticker-play .sticker-box,
+  .shell.is-life .sticker-play .sticker-tray,
+  .shell.is-life .life-tray.sticker-tray {
+    width: auto;
+    flex: 0 0 auto;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .shell.is-life .listen-scene.scene-table .listen-furn.family {
