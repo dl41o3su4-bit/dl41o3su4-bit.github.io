@@ -1775,13 +1775,18 @@
 
   function scatterIcons(icon, count, sizeClass, extraKey, emptyCount, tapMap, tapAttr) {
     var rand = scatterRand(scatterSeed(extraKey));
+    var onBondTable = state.levelId === "bond";
+    var minLeft = onBondTable ? 14 : 8;
+    var spanLeft = onBondTable ? 72 : 80;
+    var minTop = onBondTable ? 30 : 8;
+    var spanTop = onBondTable ? 52 : 80;
     var pts = [];
     var html = "";
     var total = count + (emptyCount || 0);
     var i;
     for (i = 0; i < total; i++) {
-      var left = 8 + rand() * 80;
-      var top = 8 + rand() * 80;
+      var left = minLeft + rand() * spanLeft;
+      var top = minTop + rand() * spanTop;
       var tries = 0;
       while (tries < 20) {
         var ok = true;
@@ -1795,8 +1800,8 @@
           }
         }
         if (ok) break;
-        left = 8 + rand() * 80;
-        top = 8 + rand() * 80;
+        left = minLeft + rand() * spanLeft;
+        top = minTop + rand() * spanTop;
         tries += 1;
       }
       pts.push({ left: left, top: top });
@@ -6705,6 +6710,7 @@
       ' aria-label="' +
       (side === "left" ? "左邊" : "右邊") +
       '">' +
+      '<span class="more-well" aria-hidden="true"></span>' +
       '<span class="more-total' +
       (n ? "" : " is-empty") +
       '">' +
@@ -10457,9 +10463,16 @@
         var ok = (bondQ.items || []).filter(function (it) {
           return it.anySlot;
         })[0];
+        var bondTopMin = 100;
+        var bondPos = /style="left:[\d.]+%;top:([\d.]+)%/g;
+        var bondHit;
+        while ((bondHit = bondPos.exec(bondHtml))) {
+          bondTopMin = Math.min(bondTopMin, Number(bondHit[1]));
+        }
         goHome();
         return {
           moreNoBoardPrompt: fruitHtml.indexOf('class="prompt"') < 0,
+          moreHasPan: fruitHtml.indexOf("more-pan") >= 0 && fruitHtml.indexOf("more-well") >= 0,
           moreNoTrayWait: fruitHtml.indexOf("more-tray-wait") < 0,
           moreFruitCrayon: fruitHtml.indexOf("count-fruit") >= 0 && fruitHtml.indexOf("is-crayon") >= 0,
           moreAnimalEmoji: !animalIcon || animalHtml.indexOf(animalIcon.icon) >= 0,
@@ -10471,6 +10484,7 @@
           bondFox: bondFox,
           bondFoxHasN: !!(bondQ && String(bondFox || "").indexOf(String(bondQ.target)) >= 0),
           bondHasSlot: bondHtml.indexOf("data-life-slot") >= 0 && bondHtml.indexOf("bond-slot") >= 0,
+          bondOnTable: bondTopMin >= 28,
           extraId: extra && extra.id,
           okId: ok && ok.id,
         };
