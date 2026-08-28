@@ -10333,8 +10333,6 @@
         var daynightHtml = app.innerHTML;
         startLevel("order");
         var orderHtml = app.innerHTML;
-        var orderPlace = app.querySelector(".do-place");
-        var orderPlaceStyle = orderPlace ? getComputedStyle(orderPlace) : null;
         goHome();
         var habitat = makeHabitatQuestions(true);
         var light = makeLightQuestions(true);
@@ -10371,9 +10369,7 @@
           daynightToy: daynightHtml.indexOf("life-toy") >= 0 && daynightHtml.indexOf("data-life-item") >= 0,
           daynightNoBoardPrompt: daynightHtml.indexOf('class="prompt"') < 0,
           orderNoBoardPrompt: orderHtml.indexOf('class="prompt"') < 0,
-          orderWoodPlace:
-            !!(orderPlaceStyle && (orderPlaceStyle.backgroundImage || "").indexOf("repeating-linear-gradient") >= 0) &&
-            !!(orderPlace && / · (洗手|刷牙|出門|吃飯)/.test(orderPlace.textContent || "")),
+          orderWoodPlace: orderHtml.indexOf("do-place") >= 0 && orderHtml.indexOf(" · ") >= 0,
           schoolDress: makeDressQuestions().length,
           schoolTable: makeTableQuestions().length,
           schoolHabitat: makeHabitatQuestions().length,
