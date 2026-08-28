@@ -8110,6 +8110,7 @@
     return (
       '<div class="play-col">' +
       '<div class="life-stage pop-play"><div class="pop-scene">' +
+      '<div class="pop-land" aria-hidden="true"><i class="pop-sun"></i><i class="pop-cloud c1"></i><i class="pop-cloud c2"></i><i class="pop-hill h1"></i><i class="pop-hill h2"></i><i class="pop-tree t1"></i><i class="pop-grass"></i><i class="pop-flower f1"></i><i class="pop-flower f2"></i><i class="pop-flower f3"></i></div>' +
       bubbles +
       "</div></div></div>"
     );
