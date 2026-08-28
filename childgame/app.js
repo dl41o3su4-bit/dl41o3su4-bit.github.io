@@ -5198,6 +5198,338 @@
           '<circle cx="47" cy="44" r="1.4" fill="#fffaf1"></circle>'
       );
     }
+    if (kind === "flower") {
+      return crayonSortMark(
+        "0 0 120 130",
+        '<path d="M60 62 L60 118"' +
+          crayonInk(4) +
+          "></path>" +
+          '<path d="M62 88 C80 78 96 92 88 108 C74 100 66 96 62 88Z"' +
+          crayonFill("#69db7c") +
+          "></path>" +
+          '<circle cx="36" cy="46" r="16"' +
+          crayonFill("#ffc9c9") +
+          "></circle>" +
+          '<circle cx="84" cy="46" r="16"' +
+          crayonFill("#ffc9c9") +
+          "></circle>" +
+          '<circle cx="48" cy="26" r="16"' +
+          crayonFill("#fa5252") +
+          "></circle>" +
+          '<circle cx="72" cy="26" r="16"' +
+          crayonFill("#fa5252") +
+          "></circle>" +
+          '<circle cx="60" cy="50" r="16"' +
+          crayonFill("#ff6b6b") +
+          "></circle>" +
+          '<circle cx="60" cy="40" r="10"' +
+          crayonFill("#ffe066") +
+          "></circle>"
+      );
+    }
+    if (kind === "kite") {
+      return crayonSortMark(
+        "0 0 120 130",
+        '<path d="M60 8 L98 50 L60 68 L22 50 Z"' +
+          crayonFill("#fa5252") +
+          "></path>" +
+          '<path d="M60 68 L98 50 L60 96 L22 50 Z"' +
+          crayonFill("#74c0fc") +
+          "></path>" +
+          '<path d="M60 8 L60 96"' +
+          crayonInk(2.6) +
+          "></path>" +
+          '<path d="M22 50 L98 50"' +
+          crayonInk(2.6) +
+          "></path>" +
+          '<path d="M60 96 Q72 106 56 114 Q70 120 62 128"' +
+          crayonInk(2.8) +
+          "></path>" +
+          '<path d="M70 102 L78 108 L70 114 L62 108 Z"' +
+          crayonFill("#ffe066") +
+          "></path>" +
+          '<path d="M50 112 L58 118 L50 124 L42 118 Z"' +
+          crayonFill("#ff6b6b") +
+          "></path>" +
+          '<path d="M66 118 L74 124 L66 128 L58 122 Z"' +
+          crayonFill("#69db7c") +
+          "></path>"
+      );
+    }
+    if (kind === "up") {
+      return crayonSortMark(
+        "0 0 120 120",
+        '<rect x="16" y="16" width="88" height="88" rx="22"' +
+          crayonFill("#fff1d6") +
+          "></rect>" +
+          '<path d="M60 28 L92 64 L74 64 L74 92 L46 92 L46 64 L28 64 Z"' +
+          crayonFill("#74c0fc") +
+          "></path>"
+      );
+    }
+    if (kind === "down") {
+      return crayonSortMark(
+        "0 0 120 120",
+        '<rect x="16" y="16" width="88" height="88" rx="22"' +
+          crayonFill("#fff1d6") +
+          "></rect>" +
+          '<path d="M60 92 L92 56 L74 56 L74 28 L46 28 L46 56 L28 56 Z"' +
+          crayonFill("#74c0fc") +
+          "></path>"
+      );
+    }
+    if (kind === "cake") {
+      return crayonSortMark(
+        "0 0 120 130",
+        '<path d="M24 78 H96 V110 C96 118 88 122 60 122 C32 122 24 118 24 110 Z"' +
+          crayonFill("#e8c48a") +
+          "></path>" +
+          '<path d="M22 54 H98 V82 C98 88 88 92 60 92 C32 92 22 88 22 82 Z"' +
+          crayonFill("#ffc9c9") +
+          "></path>" +
+          '<path d="M28 54 C36 64 44 50 52 60 C60 50 68 66 76 56 C84 66 92 52 98 60"' +
+          crayonInk(2.4) +
+          "></path>" +
+          '<path d="M56 28 L56 54"' +
+          crayonInk(3.2) +
+          "></path>" +
+          '<path d="M64 28 L64 54"' +
+          crayonInk(3.2) +
+          "></path>" +
+          '<ellipse cx="60" cy="24" rx="8" ry="10"' +
+          crayonFill("#ff922b") +
+          "></ellipse>" +
+          '<ellipse cx="60" cy="18" rx="4" ry="5"' +
+          crayonFill("#ffe066") +
+          "></ellipse>"
+      );
+    }
+    if (kind === "sun") {
+      return crayonSortMark(
+        "0 0 120 120",
+        '<path d="M60 10 L64 28 L56 28 Z"' +
+          crayonFill("#fab005") +
+          "></path>" +
+          '<path d="M60 110 L64 92 L56 92 Z"' +
+          crayonFill("#fab005") +
+          "></path>" +
+          '<path d="M10 60 L28 64 L28 56 Z"' +
+          crayonFill("#fab005") +
+          "></path>" +
+          '<path d="M110 60 L92 64 L92 56 Z"' +
+          crayonFill("#fab005") +
+          "></path>" +
+          '<path d="M24 24 L38 36 L30 40 Z"' +
+          crayonFill("#fab005") +
+          "></path>" +
+          '<path d="M96 24 L90 40 L82 36 Z"' +
+          crayonFill("#fab005") +
+          "></path>" +
+          '<path d="M24 96 L40 90 L36 82 Z"' +
+          crayonFill("#fab005") +
+          "></path>" +
+          '<path d="M96 96 L84 82 L80 90 Z"' +
+          crayonFill("#fab005") +
+          "></path>" +
+          '<circle cx="60" cy="60" r="28"' +
+          crayonFill("#ffe066") +
+          "></circle>" +
+          '<ellipse cx="50" cy="52" rx="6" ry="4" fill="#fff8ee"></ellipse>'
+      );
+    }
+    if (kind === "balloon") {
+      return crayonSortMark(
+        "0 0 110 130",
+        '<ellipse cx="55" cy="48" rx="30" ry="38"' +
+          crayonFill("#fa5252") +
+          "></ellipse>" +
+          '<ellipse cx="44" cy="36" rx="8" ry="10" fill="#ffc9c9"></ellipse>' +
+          '<path d="M55 86 L48 94 L62 94 Z"' +
+          crayonFill("#c92a2a") +
+          "></path>" +
+          '<path d="M55 94 C46 108 64 116 55 126"' +
+          crayonInk(2.6) +
+          "></path>"
+      );
+    }
+    if (kind === "door") {
+      return crayonSortMark(
+        "0 0 110 130",
+        '<path d="M18 14 H92 V118 H18 Z"' +
+          crayonFill("#e8c48a") +
+          "></path>" +
+          '<path d="M28 24 H82 V110 H28 Z"' +
+          crayonFill("#c1864a") +
+          "></path>" +
+          '<path d="M36 34 H54 V58 H36 Z"' +
+          crayonFill("#fff1d6") +
+          "></path>" +
+          '<path d="M56 34 H74 V58 H56 Z"' +
+          crayonFill("#fff1d6") +
+          "></path>" +
+          '<circle cx="70" cy="76" r="6"' +
+          crayonFill("#ffe066") +
+          "></circle>"
+      );
+    }
+    if (kind === "water") {
+      return crayonSortMark(
+        "0 0 110 130",
+        '<path d="M55 16 C78 48 92 72 92 90 C92 112 76 122 55 122 C34 122 18 112 18 90 C18 72 32 48 55 16Z"' +
+          crayonFill("#74c0fc") +
+          "></path>" +
+          '<ellipse cx="42" cy="70" rx="10" ry="14" fill="#d0ebff"></ellipse>'
+      );
+    }
+    if (kind === "fire") {
+      return crayonSortMark(
+        "0 0 110 130",
+        '<path d="M56 16 C86 52 96 78 88 102 C80 120 36 122 26 96 C18 74 34 60 44 70 C40 44 48 28 56 16Z"' +
+          crayonFill("#fa5252") +
+          "></path>" +
+          '<path d="M54 46 C72 68 74 86 66 100 C58 112 38 110 36 94 C34 80 44 74 50 80 C48 64 50 54 54 46Z"' +
+          crayonFill("#ff922b") +
+          "></path>" +
+          '<path d="M52 78 C60 88 60 96 54 104 C48 110 40 106 40 96 C40 88 46 88 50 92 C48 84 50 80 52 78Z"' +
+          crayonFill("#ffe066") +
+          "></path>"
+      );
+    }
+    if (kind === "rain") {
+      return crayonSortMark(
+        "0 0 130 120",
+        '<ellipse cx="52" cy="40" rx="26" ry="18"' +
+          crayonFill("#fff8ee") +
+          "></ellipse>" +
+          '<ellipse cx="78" cy="42" rx="24" ry="16"' +
+          crayonFill("#d0ebff") +
+          "></ellipse>" +
+          '<ellipse cx="64" cy="30" rx="22" ry="14"' +
+          crayonFill("#fff8ee") +
+          "></ellipse>" +
+          '<path d="M40 70 C36 84 44 90 48 80 C52 90 58 84 54 70Z"' +
+          crayonFill("#74c0fc") +
+          "></path>" +
+          '<path d="M64 76 C60 90 68 96 72 86 C76 96 82 90 78 76Z"' +
+          crayonFill("#4dabf7") +
+          "></path>" +
+          '<path d="M88 70 C84 84 92 90 96 80 C100 90 106 84 102 70Z"' +
+          crayonFill("#74c0fc") +
+          "></path>"
+      );
+    }
+    if (kind === "mountain") {
+      return crayonSortMark(
+        "0 0 130 110",
+        '<path d="M14 94 L48 28 L86 94 Z"' +
+          crayonFill("#c1864a") +
+          "></path>" +
+          '<path d="M48 28 L60 48 L40 50 Z"' +
+          crayonFill("#fff8ee") +
+          "></path>" +
+          '<path d="M54 94 L88 22 L122 94 Z"' +
+          crayonFill("#8d5a2b") +
+          "></path>" +
+          '<path d="M88 22 L100 42 L78 44 Z"' +
+          crayonFill("#fff8ee") +
+          "></path>"
+      );
+    }
+    if (kind === "egg") {
+      return crayonSortMark(
+        "0 0 110 130",
+        '<ellipse cx="55" cy="70" rx="32" ry="42"' +
+          crayonFill("#fff8ee") +
+          "></ellipse>" +
+          '<ellipse cx="44" cy="56" rx="10" ry="12" fill="#fff1d6"></ellipse>'
+      );
+    }
+    if (kind === "juice") {
+      return crayonSortMark(
+        "0 0 110 130",
+        '<path d="M72 14 L84 10 L88 22 L76 24 Z"' +
+          crayonFill("#74c0fc") +
+          "></path>" +
+          '<path d="M28 36 H82 V116 C82 122 74 126 55 126 C36 126 28 122 28 116 Z"' +
+          crayonFill("#ff922b") +
+          "></path>" +
+          '<rect x="28" y="52" width="54" height="22" rx="3"' +
+          crayonFill("#fff8ee") +
+          "></rect>" +
+          '<circle cx="55" cy="63" r="8"' +
+          crayonFill("#fa5252") +
+          "></circle>" +
+          '<path d="M72 18 L72 40"' +
+          crayonInk(3) +
+          "></path>"
+      );
+    }
+    if (kind === "moon") {
+      return crayonSortMark(
+        "0 0 120 120",
+        '<path d="M74 20 A38 38 0 1 0 74 100 A28 28 0 1 1 74 20Z"' +
+          crayonFill("#ffe066") +
+          "></path>" +
+          '<ellipse cx="58" cy="44" rx="6" ry="4" fill="#fff8ee"></ellipse>'
+      );
+    }
+    if (kind === "tree") {
+      return crayonSortMark(
+        "0 0 120 130",
+        '<path d="M50 78 H70 V118 C70 122 64 124 60 124 C56 124 50 122 50 118 Z"' +
+          crayonFill("#8d5a2b") +
+          "></path>" +
+          '<circle cx="42" cy="62" r="22"' +
+          crayonFill("#40c057") +
+          "></circle>" +
+          '<circle cx="78" cy="62" r="22"' +
+          crayonFill("#51cf66") +
+          "></circle>" +
+          '<circle cx="60" cy="40" r="24"' +
+          crayonFill("#69db7c") +
+          "></circle>"
+      );
+    }
+    if (kind === "umbrella") {
+      return crayonSortMark(
+        "0 0 130 120",
+        '<path d="M16 62 C20 28 48 18 65 18 C82 18 110 28 114 62 C90 54 78 56 65 56 C52 56 40 54 16 62Z"' +
+          crayonFill("#fa5252") +
+          "></path>" +
+          '<path d="M65 56 L65 96 C65 108 50 110 46 100"' +
+          crayonInk(3.2) +
+          "></path>" +
+          '<path d="M32 58 L36 48"' +
+          crayonInk(2.4) +
+          "></path>" +
+          '<path d="M65 56 L65 44"' +
+          crayonInk(2.4) +
+          "></path>" +
+          '<path d="M98 58 L94 48"' +
+          crayonInk(2.4) +
+          "></path>"
+      );
+    }
+    if (kind === "yoyo") {
+      return crayonSortMark(
+        "0 0 120 130",
+        '<path d="M60 12 L60 54"' +
+          crayonInk(2.8) +
+          "></path>" +
+          '<ellipse cx="46" cy="82" rx="22" ry="28"' +
+          crayonFill("#74c0fc") +
+          "></ellipse>" +
+          '<ellipse cx="74" cy="82" rx="22" ry="28"' +
+          crayonFill("#fa5252") +
+          "></ellipse>" +
+          '<ellipse cx="60" cy="82" rx="8" ry="16"' +
+          crayonFill("#ffe066") +
+          "></ellipse>" +
+          '<circle cx="60" cy="12" r="5"' +
+          crayonFill("#e8c48a") +
+          "></circle>"
+      );
+    }
     return "";
   }
 
@@ -5350,6 +5682,7 @@
 
   function lifeCrayonKind(emoji, word) {
     var e = String(emoji || "");
+    var e0 = e.replace(/\uFE0F/g, "");
     var w = String(word || "")
       .replace(/\s+/g, " ")
       .trim()
@@ -5367,6 +5700,24 @@
     if (e === "📦" || w === "box") return "box";
     if (e === "🌿" || w === "草") return "greens";
     if (e === "🍂" || w === "落葉") return "leaf";
+    if (e === "🌸" || w === "花朵" || w === "花" || w === "flower") return "flower";
+    if (e === "🪁" || w === "kite") return "kite";
+    if (e === "⬆️" || e0 === "⬆" || w === "上" || w === "up") return "up";
+    if (e === "⬇️" || e0 === "⬇" || w === "下" || w === "down") return "down";
+    if (e === "🎂" || w === "蛋糕" || w === "cake") return "cake";
+    if (e === "☀️" || e0 === "☀" || w === "太陽" || w === "sun") return "sun";
+    if (e === "🎈" || w === "氣球" || w === "balloon") return "balloon";
+    if (e === "🚪" || w === "門" || w === "door") return "door";
+    if (e === "💧" || w === "水" || w === "water") return "water";
+    if (e === "🔥" || w === "火" || w === "fire") return "fire";
+    if (e === "🌧️" || e0 === "🌧" || w === "雨" || w === "rain") return "rain";
+    if (e === "⛰️" || e0 === "⛰" || w === "山" || w === "mountain") return "mountain";
+    if (e === "🥚" || w === "egg") return "egg";
+    if (e === "🧃" || w === "juice") return "juice";
+    if (e === "🌙" || w === "moon") return "moon";
+    if (e === "🌳" || w === "tree") return "tree";
+    if (e === "☂️" || e0 === "☂" || w === "umbrella") return "umbrella";
+    if (e === "🪀" || w === "yo-yo" || w === "yoyo") return "yoyo";
     return "";
   }
 
@@ -10116,17 +10467,55 @@
           okId: ok && ok.id,
         };
       },
-      paintStickerDemo: function () {
-        startLevel("bpm-pic");
-        state.questions[0].objects = [
+      paintStickerDemo: function (kind) {
+        var level = "bpm-pic";
+        var ask = "冰淇淋的第一個音貼上去";
+        var scene = "";
+        var objects = [
           { id: "obj-0-0", emoji: "🍦", word: "冰淇淋", target: true, spot: "fridge" },
           { id: "obj-0-1", emoji: "🐷", word: "豬", target: false, spot: "table" },
           { id: "obj-0-2", emoji: "🧢", word: "帽子", target: false, spot: "counter" },
         ];
-        state.questions[0].ask = "冰淇淋的第一個音貼上去";
+        if (kind === "flower") {
+          ask = "花朵的第一個音貼上去";
+          objects = [
+            { id: "obj-0-0", emoji: "🌸", word: "花朵", target: true, spot: "table" },
+            { id: "obj-0-1", emoji: "🐷", word: "豬", target: false, spot: "counter" },
+            { id: "obj-0-2", emoji: "🐔", word: "雞", target: false, spot: "table" },
+          ];
+        } else if (kind === "hanzi") {
+          level = "hanzi";
+          ask = "哪個是上？把字貼上去";
+          objects = [
+            { id: "obj-0-0", emoji: "⬆️", word: "上", target: true, spot: "table" },
+            { id: "obj-0-1", emoji: "🌸", word: "花", target: false, spot: "table" },
+            { id: "obj-0-2", emoji: "🐦", word: "鳥", target: false, spot: "counter" },
+          ];
+        } else if (kind === "kite") {
+          level = "abc-pic";
+          ask = "Apple 的第一個字母貼上去";
+          objects = [
+            { id: "obj-0-0", emoji: "🍎", word: "Apple", target: true, spot: "table" },
+            { id: "obj-0-1", emoji: "🪁", word: "Kite", target: false, spot: "table" },
+            { id: "obj-0-2", emoji: "🍦", word: "Ice cream", target: false, spot: "fridge" },
+          ];
+        } else if (kind === "park-tree") {
+          level = "abc-pic";
+          scene = "park";
+          ask = "Tree 的第一個字母貼上去";
+          objects = [
+            { id: "obj-0-0", emoji: "🌳", word: "Tree", target: true, spot: "grass" },
+            { id: "obj-0-1", emoji: "☂️", word: "Umbrella", target: false, spot: "sky" },
+            { id: "obj-0-2", emoji: "🐦", word: "Bird", target: false, spot: "tree" },
+          ];
+        }
+        startLevel(level);
+        if (scene) state.questions[0].scene = scene;
+        state.questions[0].objects = objects;
+        state.questions[0].ask = ask;
         state.qIndex = 0;
         state.placed = {};
-        state.foxMsg = "冰淇淋的第一個音貼上去";
+        state.foxMsg = ask;
         render();
         return app.innerHTML;
       },
@@ -10179,6 +10568,75 @@
           render();
           return app.innerHTML;
         })();
+        var flowerHtml = paintSticker([
+          { id: "obj-0-0", emoji: "🌸", word: "花朵", target: true, spot: "table" },
+          { id: "obj-0-1", emoji: "🐷", word: "豬", target: false, spot: "counter" },
+          { id: "obj-0-2", emoji: "🐔", word: "雞", target: false, spot: "table" },
+        ]);
+        var hanziArrowHtml = (function () {
+          startLevel("hanzi");
+          state.questions[0].objects = [
+            { id: "obj-0-0", emoji: "⬆️", word: "上", target: true, spot: "table" },
+            { id: "obj-0-1", emoji: "🌸", word: "花", target: false, spot: "table" },
+            { id: "obj-0-2", emoji: "🐦", word: "鳥", target: false, spot: "counter" },
+          ];
+          state.qIndex = 0;
+          render();
+          return app.innerHTML;
+        })();
+        var downHtml = paintSticker([
+          { id: "obj-0-0", emoji: "⬇️", word: "下", target: true, spot: "table" },
+          { id: "obj-0-1", emoji: "🐷", word: "豬", target: false, spot: "counter" },
+          { id: "obj-0-2", emoji: "🐱", word: "貓", target: false, spot: "table" },
+        ]);
+        var abcKiteHtml = (function () {
+          startLevel("abc-pic");
+          state.questions[0].objects = [
+            { id: "obj-0-0", emoji: "🍎", word: "Apple", target: true, spot: "table" },
+            { id: "obj-0-1", emoji: "🪁", word: "Kite", target: false, spot: "table" },
+            { id: "obj-0-2", emoji: "🍦", word: "Ice cream", target: false, spot: "fridge" },
+          ];
+          state.qIndex = 0;
+          render();
+          return app.innerHTML;
+        })();
+        var cheapHtml = paintSticker([
+          { id: "obj-0-0", emoji: "🎂", word: "蛋糕", target: true, spot: "counter" },
+          { id: "obj-0-1", emoji: "☀️", word: "太陽", target: false, spot: "table" },
+          { id: "obj-0-2", emoji: "🎈", word: "氣球", target: false, spot: "table" },
+        ]);
+        var cheap2Html = paintSticker([
+          { id: "obj-0-0", emoji: "🚪", word: "門", target: true, spot: "table" },
+          { id: "obj-0-1", emoji: "💧", word: "水", target: false, spot: "bowl" },
+          { id: "obj-0-2", emoji: "🔥", word: "火", target: false, spot: "counter" },
+        ]);
+        var cheap3Html = paintSticker([
+          { id: "obj-0-0", emoji: "🌧️", word: "雨", target: true, spot: "table" },
+          { id: "obj-0-1", emoji: "⛰️", word: "山", target: false, spot: "table" },
+          { id: "obj-0-2", emoji: "🥚", word: "Egg", target: false, spot: "counter" },
+        ]);
+        var cheap4Html = paintSticker([
+          { id: "obj-0-0", emoji: "🧃", word: "Juice", target: true, spot: "fridge" },
+          { id: "obj-0-1", emoji: "🌙", word: "Moon", target: false, spot: "table" },
+          { id: "obj-0-2", emoji: "🪀", word: "Yo-yo", target: false, spot: "table" },
+        ]);
+        var parkTreeHtml = (function () {
+          startLevel("abc-pic");
+          state.questions[0].scene = "park";
+          state.questions[0].objects = [
+            { id: "obj-0-0", emoji: "🌳", word: "Tree", target: true, spot: "grass" },
+            { id: "obj-0-1", emoji: "☂️", word: "Umbrella", target: false, spot: "sky" },
+            { id: "obj-0-2", emoji: "🐦", word: "Bird", target: false, spot: "tree" },
+          ];
+          state.qIndex = 0;
+          render();
+          return app.innerHTML;
+        })();
+        var keepHtml = paintSticker([
+          { id: "obj-0-0", emoji: "🚗", word: "車", target: true, spot: "table" },
+          { id: "obj-0-1", emoji: "📖", word: "書", target: false, spot: "counter" },
+          { id: "obj-0-2", emoji: "✈️", word: "飛機", target: false, spot: "fridge" },
+        ]);
         var place = show("bpm-pic");
         var target = (place.q.objects || []).filter(function (o) { return o.target; })[0];
         var right = (place.q.items || []).filter(function (it) { return it.slot === (target && target.id); })[0];
@@ -10203,6 +10661,15 @@
         state.qIndex = 0;
         render();
         var cubbyArt = app.innerHTML;
+        startLevel("bpm-draw");
+        state.questions[0].items = [
+          { id: "bpm-toy-0-0", emoji: "🌸", name: "花朵", slot: "ㄏ", x: 8, y: 8, r: 0 },
+          { id: "bpm-toy-0-1", emoji: "🪁", name: "Kite", slot: "K", x: 52, y: 6, r: 0 },
+          { id: "bpm-toy-0-2", emoji: "🐷", name: "豬", slot: "ㄓ", x: 26, y: 42, r: 0 },
+        ];
+        state.qIndex = 0;
+        render();
+        var cubbyLifeArt = app.innerHTML;
         var letters = show("abc-case");
         var listen = show("bpm-listen");
         var train = show("bpm-train");
@@ -10233,6 +10700,38 @@
           cubbyFoxSpecific: cubby.fox !== "送玩具回家",
           cubbyCrayon: cubbyArt.indexOf("crayon-ice") >= 0,
           cubbyDinoEmoji: cubbyArt.indexOf("🦖") >= 0 && cubbyArt.indexOf("🐱") >= 0,
+          flowerCrayon: flowerHtml.indexOf("crayon-flower") >= 0 && flowerHtml.indexOf('sticker-pic">🌸') < 0,
+          flowerNotFruit: flowerHtml.indexOf("count-fruit") < 0 && flowerHtml.indexOf("crayon-greens") < 0,
+          flowerPigEmoji: flowerHtml.indexOf('sticker-pic">🐷') >= 0,
+          flowerChickenEmoji: flowerHtml.indexOf('sticker-pic">🐔') >= 0,
+          hanziUpCrayon: hanziArrowHtml.indexOf("crayon-up") >= 0 && hanziArrowHtml.indexOf('sticker-pic">⬆️') < 0,
+          hanziFlowerCrayon: hanziArrowHtml.indexOf("crayon-flower") >= 0 && hanziArrowHtml.indexOf('sticker-pic">🌸') < 0,
+          hanziBirdEmoji: hanziArrowHtml.indexOf('sticker-pic">🐦') >= 0,
+          downCrayon: downHtml.indexOf("crayon-down") >= 0 && downHtml.indexOf('sticker-pic">⬇️') < 0,
+          kiteCrayon: abcKiteHtml.indexOf("crayon-kite") >= 0 && abcKiteHtml.indexOf('sticker-pic">🪁') < 0,
+          kiteKeepsIce: abcKiteHtml.indexOf("crayon-ice") >= 0,
+          cheapCake: cheapHtml.indexOf("crayon-cake") >= 0,
+          cheapSun: cheapHtml.indexOf("crayon-sun") >= 0,
+          cheapBalloon: cheapHtml.indexOf("crayon-balloon") >= 0,
+          cheapDoor: cheap2Html.indexOf("crayon-door") >= 0,
+          cheapWater: cheap2Html.indexOf("crayon-water") >= 0,
+          cheapFire: cheap2Html.indexOf("crayon-fire") >= 0,
+          cheapRain: cheap3Html.indexOf("crayon-rain") >= 0,
+          cheapMountain: cheap3Html.indexOf("crayon-mountain") >= 0,
+          cheapEgg: cheap3Html.indexOf("crayon-egg") >= 0,
+          cheapJuice: cheap4Html.indexOf("crayon-juice") >= 0,
+          cheapMoon: cheap4Html.indexOf("crayon-moon") >= 0,
+          cheapYoyo: cheap4Html.indexOf("crayon-yoyo") >= 0,
+          treeCrayon: parkTreeHtml.indexOf("crayon-tree") >= 0 && parkTreeHtml.indexOf('sticker-pic">🌳') < 0,
+          treeFurnEmoji: parkTreeHtml.indexOf("lp-tree") >= 0 && /lp-tree[^>]*>🌳/.test(parkTreeHtml),
+          umbrellaCrayon: parkTreeHtml.indexOf("crayon-umbrella") >= 0,
+          parkBirdEmoji: parkTreeHtml.indexOf('sticker-pic">🐦') >= 0,
+          keepCarEmoji: keepHtml.indexOf('sticker-pic">🚗') >= 0,
+          keepBookEmoji: keepHtml.indexOf('sticker-pic">📖') >= 0,
+          keepPlaneEmoji: keepHtml.indexOf('sticker-pic">✈️') >= 0,
+          cubbyFlower: cubbyLifeArt.indexOf("crayon-flower") >= 0,
+          cubbyKite: cubbyLifeArt.indexOf("crayon-kite") >= 0,
+          cubbyPigEmoji: cubbyLifeArt.indexOf("🐷") >= 0,
           letterGlyph: /class="life-emoji">[a-z]</.test(letters.html),
           listenNoBoard: listen.html.indexOf('class="prompt"') < 0,
           trainNoBoard: train.html.indexOf('class="prompt"') < 0,
