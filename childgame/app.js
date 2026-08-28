@@ -7334,9 +7334,6 @@
       .join("");
     return (
       '<div class="play-col">' +
-      '<div class="prompt">' +
-      escapeHtml(q.ask) +
-      "</div>" +
       '<div class="life-stage is-place dress-play">' +
       '<div class="dress-board place-' +
       (q.place || "park") +
@@ -7613,9 +7610,6 @@
     var settings = people.map(renderTableSetting).join("");
     return (
       '<div class="play-col">' +
-      '<div class="prompt">' +
-      escapeHtml(q.ask) +
-      "</div>" +
       '<div class="life-stage is-place table-play">' +
       '<div class="table-scene meal-' +
       (q.scene || "home") +
@@ -10322,6 +10316,11 @@
       shortMissions: function () {
         var dress = makeDressQuestions(true);
         var table = makeTableQuestions(true);
+        startLevel("dress");
+        var dressHtml = app.innerHTML;
+        startLevel("table");
+        var tableHtml = app.innerHTML;
+        goHome();
         var habitat = makeHabitatQuestions(true);
         var light = makeLightQuestions(true);
         var retry = makeLightQuestions(true, true);
@@ -10344,6 +10343,10 @@
           retryHasRed: retry.some(function (q) {
             return q.color === "red";
           }),
+          dressNoBoardPrompt: dressHtml.indexOf('class="prompt"') < 0,
+          dressToy: dressHtml.indexOf("life-toy") >= 0 && dressHtml.indexOf("data-life-item") >= 0,
+          tableNoBoardPrompt: tableHtml.indexOf('class="prompt"') < 0,
+          tableToy: tableHtml.indexOf("life-toy") >= 0 && tableHtml.indexOf("data-life-item") >= 0,
           schoolDress: makeDressQuestions().length,
           schoolTable: makeTableQuestions().length,
           schoolHabitat: makeHabitatQuestions().length,
