@@ -10478,6 +10478,45 @@
           flag: !!(chip && (chip.textContent || "").indexOf("小旗") >= 0),
         };
       },
+      listenWoodPlace: function (level) {
+        var id =
+          level === "bpm-pic" || level === "abc-pic" || level === "hanzi" || level === "bpm-listen"
+            ? level
+            : "bpm-listen";
+        startLevel(id);
+        var place = app.querySelector(".listen-place");
+        var style = place ? getComputedStyle(place) : null;
+        var bg = style ? String(style.backgroundImage || "") : "";
+        var text = place ? String(place.textContent || "") : "";
+        return {
+          wood:
+            !!place &&
+            bg.indexOf("repeating-linear-gradient") >= 0 &&
+            (style.borderTopColor === "rgb(141, 90, 43)" ||
+              String(style.borderColor || "").indexOf("141, 90, 43") >= 0),
+          place:
+            text.indexOf("廚房") >= 0 ||
+            text.indexOf("公園") >= 0 ||
+            text.indexOf("房間") >= 0 ||
+            text.indexOf("餐桌") >= 0 ||
+            text.indexOf("街上") >= 0,
+        };
+      },
+      stickerWoodLid: function () {
+        startLevel("bpm-pic");
+        var box = app.querySelector(".sticker-box");
+        var style = box ? getComputedStyle(box, "::before") : null;
+        var bg = style ? String(style.backgroundImage || "") : "";
+        var content = style ? String(style.content || "") : "";
+        return {
+          wood:
+            !!box &&
+            bg.indexOf("repeating-linear-gradient") >= 0 &&
+            (style.borderTopColor === "rgb(141, 90, 43)" ||
+              String(style.borderColor || "").indexOf("141, 90, 43") >= 0),
+          lid: content.indexOf("貼紙") >= 0,
+        };
+      },
       moreWoodPrize: function () {
         startLevel("more");
         var q = state.questions[state.qIndex];
