@@ -7249,6 +7249,7 @@
     if (state.levelId === "bond") mark += " bond-fruit";
     if (state.levelId === "dress" || state.levelId === "table" || state.levelId === "habitat" || state.levelId === "sort" || state.levelId === "daynight") mark += " life-toy";
     if (state.levelId === "ord") mark += " ord-flag";
+    if (state.levelId === "more") mark += " more-prize";
     var placed = extraClass === "in-slot";
     return (
       '<div class="life-item' +
@@ -8516,6 +8517,7 @@
         (item.name ? '<span class="life-name">' + escapeHtml(item.name) + "</span>" : "");
     }
     if (state.levelId === "ord") g.classList.add("ord-flag");
+    if (state.levelId === "more") g.classList.add("more-prize");
     if (isPathLevel()) g.classList.add("path-token");
     if (state.levelId === "abc-path") g.classList.add("letter-path");
     if (state.levelId === "bpm-train") g.classList.add("train-ticket");
@@ -10476,6 +10478,32 @@
           flag: !!(chip && (chip.textContent || "").indexOf("小旗") >= 0),
         };
       },
+      moreWoodPrize: function () {
+        startLevel("more");
+        var q = state.questions[state.qIndex];
+        var left = {};
+        var right = {};
+        var i;
+        if (q) {
+          for (i = 0; i < q.left; i++) left[String(i)] = true;
+          for (i = 0; i < q.right; i++) right[String(i)] = true;
+        }
+        state.moreTapped = { left: left, right: right };
+        render();
+        var chip = app.querySelector(".more-play .life-item") || app.querySelector(".more-tray .life-item");
+        var style = chip ? getComputedStyle(chip) : null;
+        var bg = style ? String(style.backgroundImage || "") : "";
+        var text = chip ? chip.textContent || "" : "";
+        return {
+          wood:
+            !!chip &&
+            chip.classList.contains("more-prize") &&
+            chip.getAttribute("data-life-item") &&
+            bg.indexOf("repeating-linear-gradient") >= 0 &&
+            (style.borderTopColor === "rgb(141, 90, 43)" || String(style.borderColor || "").indexOf("141, 90, 43") >= 0),
+          label: text.indexOf("星星") >= 0 || text.indexOf("皇冠") >= 0,
+        };
+      },
       moreBondPlay: function () {
         startLevel("more");
         var moreFox = state.foxMsg;
@@ -10883,5 +10911,6 @@
         };
       },
     };
+    window.__debug = window.__foxWorld;
   } catch (e) {}
 })();
