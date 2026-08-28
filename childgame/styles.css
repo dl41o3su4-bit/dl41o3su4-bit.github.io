@@ -12003,14 +12003,32 @@ button.day-place:active {
   font-style: normal;
 }
 
-.sh-window {
-  top: 8%;
-  right: 10%;
-  width: 14%;
-  height: 16%;
-  background: linear-gradient(#a5d8ff, #d0ebff);
-  border: 3px solid #e8c48a;
+.share-land .sh-window {
+  top: 4%;
+  right: 7%;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 4px;
+  padding: 5px;
+  width: 17%;
+  max-width: 90px;
+  height: 20%;
+  max-height: 76px;
+  background: linear-gradient(#e8c48a, #c1864a);
+  border: 3px solid #8d5a2b;
   border-radius: 8px;
+  box-shadow: inset 0 2px 0 rgba(255, 253, 248, 0.28), 0 5px 0 #8d5a2b;
+}
+
+.sh-pane {
+  display: block;
+  min-width: 0;
+  min-height: 0;
+  background: linear-gradient(#74c0fc, #d0ebff);
+  border-radius: 2px;
+  box-shadow: inset 0 -8px 10px rgba(255, 255, 255, 0.28);
 }
 
 .sh-floor {
@@ -12030,14 +12048,17 @@ button.day-place:active {
   gap: 8px;
   min-height: 0;
   flex: 1 1 auto;
-  margin: 8% 6% 6%;
+  margin: 26% 6% 5%;
   padding: 18px 12px 16px;
   background:
-    repeating-linear-gradient(135deg, rgba(255, 253, 248, 0.22) 0 10px, rgba(255, 135, 135, 0.12) 10px 20px),
-    radial-gradient(ellipse at 50% 40%, #fff3bf 0 42%, #e8c48a 43% 100%);
+    repeating-linear-gradient(90deg, transparent 0 11px, rgba(109, 69, 28, 0.1) 11px 12px),
+    linear-gradient(#e8c48a 0 18%, #d4a574 48%, #c1864a 100%);
   border: 4px solid #8d5a2b;
   border-radius: 50% / 28%;
-  box-shadow: inset 0 10px 0 rgba(255, 253, 248, 0.2), 0 10px 0 rgba(141, 90, 43, 0.18);
+  box-shadow:
+    inset 0 10px 0 rgba(255, 253, 248, 0.18),
+    inset 0 -8px 0 rgba(109, 69, 28, 0.12),
+    0 10px 0 rgba(141, 90, 43, 0.22);
 }
 
 .share-seat {
@@ -12071,32 +12092,62 @@ button.day-place:active {
 }
 
 .share-plate {
+  position: relative;
   width: min(22cqw, 28cqh, 88px);
   height: min(22cqw, 28cqh, 88px);
   display: grid;
   place-items: center;
-  background: radial-gradient(circle at 50% 40%, #fffdf8 0 62%, #ffe8cc 63% 82%, #f0c49a 83%);
-  border: 3px solid #e8c48a;
+  background: radial-gradient(circle at 50% 38%, #fff8ee 0 46%, #f3dcc0 58%, #e0c09a 78%, #d4b48a 100%);
+  border: 7px solid #a06c42;
   border-radius: 50%;
-  box-shadow: inset 0 -6px 0 rgba(180, 120, 70, 0.12);
+  box-shadow:
+    inset 0 0 0 5px #e8d0b0,
+    inset 0 10px 14px rgba(109, 69, 28, 0.2),
+    inset 0 -6px 8px rgba(160, 108, 66, 0.2),
+    0 5px 0 rgba(109, 69, 28, 0.22);
+}
+
+.share-plate::after {
+  content: "";
+  position: absolute;
+  inset: 16%;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 2px rgba(141, 90, 43, 0.16);
+  pointer-events: none;
 }
 
 .share-seat.aim,
 .share-plate.aim {
   outline: 4px solid #ff922b;
-  outline-offset: 2px;
+  outline-offset: 3px;
 }
 
 .share-seat.filled .share-plate,
 .share-plate.filled {
-  background: radial-gradient(circle at 50% 40%, #d3f9d8 0 62%, #8ce99a 63%);
-  border-color: #2b8a3e;
+  background: radial-gradient(circle at 50% 38%, #fff6dc 0 46%, #f6e0b4 58%, #e8c48a 78%, #d4a05a 100%);
+  border-color: #8d5a2b;
+  box-shadow:
+    inset 0 0 0 5px #f0d4a0,
+    inset 0 10px 14px rgba(109, 69, 28, 0.16),
+    0 5px 0 rgba(109, 69, 28, 0.22);
 }
 
 .share-put {
+  position: relative;
+  z-index: 1;
   font-size: min(14cqw, 16cqh, 48px);
   line-height: 1;
   animation: pop 0.35s ease;
+}
+
+.share-play .life-item.share-fruit,
+.life-ghost.share-fruit {
+  background:
+    repeating-linear-gradient(128deg, transparent 0 7px, rgba(141, 90, 43, 0.12) 7px 8px),
+    radial-gradient(ellipse at 32% 26%, #f4e0c4 0 28%, #e0c49a 58%, #c4a06a);
+  border: 3px solid #8d5a2b;
+  border-radius: 22px 18px 24px 16px;
+  box-shadow: inset 0 3px 0 rgba(255, 253, 248, 0.4), 0 6px 0 rgba(109, 69, 28, 0.2);
 }
 
 .share-put .count-fruit,

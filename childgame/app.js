@@ -6576,7 +6576,7 @@
       '" data-seats="' +
       (q.people || []).length +
       '">' +
-      '<div class="share-land" aria-hidden="true"><i class="sh-window"></i><i class="sh-floor"></i></div>' +
+      '<div class="share-land" aria-hidden="true"><i class="sh-window"><b class="sh-pane"></b><b class="sh-pane"></b><b class="sh-pane"></b><b class="sh-pane"></b></i><i class="sh-floor"></i></div>' +
       '<div class="share-table">' +
       seats +
       "</div></div>" +
@@ -10241,6 +10241,7 @@
           homeNotToyHome: homeHtml.indexOf("toy-home") < 0 && homeHtml.indexOf("case-home") < 0,
           homeNoBigNumQuiz: homeHtml.indexOf("哪一群一樣多") < 0 && homeHtml.indexOf('class="groups"') < 0,
           shareHasTable: shareHtml.indexOf("share-play") >= 0 && shareHtml.indexOf("share-plate") >= 0 && shareHtml.indexOf("share-fruit") >= 0,
+          shareHasWindow: shareHtml.indexOf("sh-window") >= 0 && shareHtml.indexOf("sh-pane") >= 0,
           shareHasCrayon: shareHtml.indexOf("count-fruit") >= 0 && shareHtml.indexOf("is-crayon") >= 0,
           shareNoBoardPrompt: shareHtml.indexOf('class="prompt"') < 0,
           shareNoLines: shareHtml.indexOf("match-lines") < 0 && shareHtml.indexOf("match-board") < 0,
