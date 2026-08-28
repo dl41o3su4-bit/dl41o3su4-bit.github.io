@@ -7245,6 +7245,7 @@
   function renderLifeChip(item, extraClass) {
     var mark = extraClass ? " " + extraClass : "";
     if (state.choiceMark && state.choiceMark.value === item.id) mark += " " + state.choiceMark.cls;
+    if (state.levelId === "bpm-train") mark += " train-ticket";
     var placed = extraClass === "in-slot";
     return (
       '<div class="life-item' +
@@ -8518,6 +8519,7 @@
     if (state.levelId === "ord") g.classList.add("ord-flag");
     if (isPathLevel()) g.classList.add("path-token");
     if (state.levelId === "abc-path") g.classList.add("letter-path");
+    if (state.levelId === "bpm-train") g.classList.add("train-ticket");
     if (state.levelId === "next" || state.levelId === "missing") g.classList.add("num-path");
     document.body.appendChild(g);
     return g;
@@ -10831,6 +10833,7 @@
           trainCatEmoji: trainTray.indexOf('life-emoji">🐱') >= 0,
           trainRiderApple: trainRider.indexOf("train-rider") >= 0 && trainRider.indexOf("fruit-apple") >= 0,
           trainKeepSlots: trainTray.indexOf('data-life-slot="ㄅ"') >= 0 && trainTray.indexOf('data-life-item="train-hat"') >= 0,
+          trainTicket: trainTray.indexOf("train-ticket") >= 0 && trainTray.indexOf('data-life-item="train-hat"') >= 0,
           popNoBoard: pop.html.indexOf('class="prompt"') < 0,
         };
       },
