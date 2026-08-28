@@ -12097,7 +12097,7 @@ button.day-place:active {
   height: min(22cqw, 28cqh, 88px);
   display: grid;
   place-items: center;
-  background: radial-gradient(circle at 50% 38%, #fff8ee 0 46%, #f3dcc0 58%, #e0c09a 78%, #d4b48a 100%);
+  background: radial-gradient(circle at 50% 38%, #f6e4c4 0 42%, #f3dcc0 56%, #e0c09a 76%, #c9a06e 100%);
   border: 7px solid #a06c42;
   border-radius: 50%;
   box-shadow:
@@ -12142,9 +12142,12 @@ button.day-place:active {
 
 .share-play .life-item.share-fruit,
 .life-ghost.share-fruit {
+  width: min(100%, 140px);
+  max-width: 140px;
+  justify-self: center;
   background:
-    repeating-linear-gradient(128deg, transparent 0 7px, rgba(141, 90, 43, 0.12) 7px 8px),
-    radial-gradient(ellipse at 32% 26%, #f4e0c4 0 28%, #e0c49a 58%, #c4a06a);
+    repeating-linear-gradient(128deg, transparent 0 7px, rgba(141, 90, 43, 0.16) 7px 8px),
+    radial-gradient(ellipse at 32% 26%, #efd6a8 0 26%, #d4b07a 56%, #b88950);
   border: 3px solid #8d5a2b;
   border-radius: 22px 18px 24px 16px;
   box-shadow: inset 0 3px 0 rgba(255, 253, 248, 0.4), 0 6px 0 rgba(109, 69, 28, 0.2);
