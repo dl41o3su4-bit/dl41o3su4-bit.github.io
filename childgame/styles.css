@@ -11657,6 +11657,60 @@ button.day-place:active {
   border-radius: 8px 8px 16px 16px;
 }
 
+.case-home .cubby-tag {
+  background:
+    repeating-linear-gradient(90deg, transparent 0 8px, rgba(109, 69, 28, 0.1) 8px 9px),
+    linear-gradient(#e8c48a, #c1864a);
+  border-color: #8d5a2b;
+  border-radius: 14px 14px 8px 8px;
+  box-shadow: inset 0 3px 0 rgba(255, 253, 248, 0.22), 0 3px 0 rgba(109, 69, 28, 0.22);
+}
+
+.case-home .cubby-label {
+  color: #fffdf8;
+  text-shadow: 0 2px 0 rgba(109, 69, 28, 0.28);
+}
+
+.case-home .cubby-box,
+.case-home .cubby.tone-0 .cubby-box,
+.case-home .cubby.tone-1 .cubby-box,
+.case-home .cubby.tone-2 .cubby-box,
+.case-home .cubby.tone-3 .cubby-box {
+  background:
+    repeating-linear-gradient(90deg, transparent 0 7px, rgba(109, 69, 28, 0.08) 7px 8px),
+    linear-gradient(#f3e0c0, #d4a574);
+  border-color: #8d5a2b;
+  border-radius: 8px 8px 16px 16px;
+  box-shadow: inset 0 12px 16px rgba(109, 69, 28, 0.2), inset 0 -6px 0 rgba(255, 253, 248, 0.1);
+}
+
+.case-home .cubby.filled .cubby-box {
+  background:
+    repeating-linear-gradient(90deg, transparent 0 7px, rgba(109, 69, 28, 0.06) 7px 8px),
+    linear-gradient(#fff6dc, #e8c48a);
+  border-color: #6d451c;
+  box-shadow: inset 0 3px 0 rgba(255, 253, 248, 0.32), inset 0 -8px 0 rgba(109, 69, 28, 0.12);
+}
+
+.case-home .toy-mat .cubby-toy.is-letter,
+.life-ghost.cubby-toy.is-letter {
+  width: min(34%, 132px);
+  min-width: 88px;
+  min-height: 88px;
+  background:
+    repeating-linear-gradient(90deg, transparent 0 6px, rgba(141, 90, 43, 0.1) 6px 7px),
+    linear-gradient(#fff8ee, #e8c48a 70%, #d4a574);
+  border: 3px solid #8d5a2b;
+  border-radius: 22px 18px 24px 16px;
+  box-shadow: inset 0 3px 0 rgba(255, 253, 248, 0.45), 0 5px 0 rgba(109, 69, 28, 0.2);
+  filter: none;
+}
+
+.case-home .toy-mat .cubby-toy.is-letter .life-emoji,
+.life-ghost.cubby-toy.is-letter .life-emoji {
+  color: #2a1c12;
+}
+
 .match-home .playroom.is-kitchen .toy-mat.match-mat {
   background: repeating-linear-gradient(45deg, #fffdf8 0 12px, #ff8787 12px 24px);
   border: 4px solid #c22525;
@@ -13059,6 +13113,12 @@ button.day-place:active {
 
   .toy-mat .cubby-toy {
     width: min(32%, 140px);
+    min-width: 96px;
+    min-height: 96px;
+  }
+
+  .case-home .toy-mat .cubby-toy.is-letter {
+    width: min(34%, 140px);
     min-width: 96px;
     min-height: 96px;
   }
