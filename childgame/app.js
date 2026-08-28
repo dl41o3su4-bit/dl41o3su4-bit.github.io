@@ -7248,6 +7248,7 @@
     if (state.levelId === "bpm-train") mark += " train-ticket";
     if (state.levelId === "bond") mark += " bond-fruit";
     if (state.levelId === "dress" || state.levelId === "table" || state.levelId === "habitat" || state.levelId === "sort" || state.levelId === "daynight") mark += " life-toy";
+    if (state.levelId === "ord") mark += " ord-flag";
     var placed = extraClass === "in-slot";
     return (
       '<div class="life-item' +
@@ -10459,6 +10460,20 @@
           hasHabitatApple: app.innerHTML.indexOf("habitat-apple") >= 0,
           hasHabitatEmoji: app.innerHTML.indexOf("habitat-emoji") >= 0,
           hasSnackEmoji: app.innerHTML.indexOf(">🍎<") >= 0,
+        };
+      },
+      ordWoodFlag: function () {
+        startLevel("ord");
+        var chip = app.querySelector(".ord-play .life-item");
+        var style = chip ? getComputedStyle(chip) : null;
+        var bg = style ? String(style.backgroundImage || "") : "";
+        return {
+          wood:
+            !!chip &&
+            chip.classList.contains("ord-flag") &&
+            bg.indexOf("repeating-linear-gradient") >= 0 &&
+            (style.borderTopColor === "rgb(141, 90, 43)" || String(style.borderColor || "").indexOf("141, 90, 43") >= 0),
+          flag: !!(chip && (chip.textContent || "").indexOf("小旗") >= 0),
         };
       },
       moreBondPlay: function () {
