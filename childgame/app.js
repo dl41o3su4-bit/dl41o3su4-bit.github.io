@@ -5987,9 +5987,6 @@
       .join("");
     return (
       '<div class="play-col">' +
-      '<div class="prompt">' +
-      escapeHtml(q.prompt || "這盤有幾個？送回數字的家") +
-      "</div>" +
       '<div class="life-stage is-place cubby-play match-home">' +
       '<div class="playroom homes-' +
       ((q.homes && q.homes.length) || 3) +

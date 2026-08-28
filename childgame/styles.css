@@ -11083,6 +11083,34 @@ button.day-place:active {
   background: linear-gradient(#ffd8a8, #ffe8cc);
 }
 
+.match-home .pr-floor {
+  height: 40%;
+}
+
+.match-home .cubby-tag {
+  background: linear-gradient(#e8c48a, #c1864a);
+  border-color: #8d5a2b;
+  border-radius: 14px 14px 8px 8px;
+  box-shadow: inset 0 3px 0 rgba(255, 253, 248, 0.22), 0 3px 0 rgba(109, 69, 28, 0.22);
+}
+
+.match-home .cubby-label {
+  color: #fffdf8;
+  text-shadow: 0 2px 0 rgba(109, 69, 28, 0.28);
+}
+
+.match-home .cubby-box {
+  border-color: #8d5a2b;
+  border-radius: 8px 8px 16px 16px;
+}
+
+.match-home .playroom.is-kitchen .toy-mat.match-mat {
+  background: repeating-linear-gradient(45deg, #fffdf8 0 12px, #ff8787 12px 24px);
+  border: 4px solid #c22525;
+  border-radius: 20px;
+  box-shadow: inset 0 3px 0 rgba(255, 253, 248, 0.35), 0 6px 0 rgba(141, 90, 43, 0.16);
+}
+
 .match-pile {
   padding: 4px;
 }
@@ -11102,7 +11130,7 @@ button.day-place:active {
 
 .pile-dish .scatter {
   position: absolute;
-  inset: 12% 10%;
+  inset: 8%;
   width: auto;
   height: auto;
 }
@@ -11120,10 +11148,12 @@ button.day-place:active {
   left: auto;
   top: auto;
   transform: none;
-  width: min(32%, 220px);
-  min-width: 120px;
-  height: 78%;
-  min-height: 140px;
+  width: min(30%, 168px);
+  min-width: 112px;
+  height: auto;
+  aspect-ratio: 1;
+  min-height: 112px;
+  max-height: 72%;
   background: transparent;
   border: none;
   box-shadow: none;
@@ -11132,7 +11162,7 @@ button.day-place:active {
 .match-pile .scatter-item,
 .cubby .match-pile.in-slot .scatter-item,
 .life-ghost.match-pile .scatter-item {
-  font-size: clamp(32px, 6vmin, 44px);
+  font-size: clamp(42px, 8vmin, 56px);
 }
 
 .match-pile .count-fruit,
@@ -11163,9 +11193,9 @@ button.day-place:active {
 }
 
 .life-ghost.match-pile {
-  width: 140px;
-  min-width: 140px;
-  min-height: 140px;
+  width: 148px;
+  min-width: 148px;
+  min-height: 148px;
 }
 
 .share-play {
@@ -12301,10 +12331,12 @@ button.day-place:active {
   }
 
   .toy-mat .match-pile {
-    width: min(32%, 240px);
-    min-width: 140px;
-    height: 82%;
-    min-height: 160px;
+    width: min(30%, 176px);
+    min-width: 128px;
+    height: auto;
+    aspect-ratio: 1;
+    min-height: 128px;
+    max-height: 74%;
   }
 
   .match-home .playroom.is-kitchen {
