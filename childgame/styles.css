@@ -377,6 +377,19 @@ button:focus-visible {
   border-color: #ff922b;
 }
 
+.preview-ord .preview-flag {
+  display: inline-grid;
+  width: 1.55em;
+  height: 1.55em;
+  vertical-align: middle;
+}
+
+.preview-ord .preview-flag svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
 .preview-art .stars {
   font-size: 1.05em;
   filter: drop-shadow(0 1px 0 #e6a800);
@@ -8645,7 +8658,7 @@ button.day-place:active {
 
 .path-fox {
   position: absolute;
-  left: var(--from-left, 2%);
+  left: max(48px, var(--from-left, 9%));
   bottom: calc(var(--from-rise, 18%) + 10%);
   z-index: 4;
   width: min(18cqw, 26cqh, 72px);
@@ -8697,8 +8710,26 @@ button.day-place:active {
   animation: pathPaw 0.28s ease-in-out infinite reverse;
 }
 
-.path-play .life-item .life-emoji {
-  font-size: clamp(32px, 8vmin, 48px);
+.path-play .life-item,
+.life-ghost.path-token {
+  width: min(100%, 118px);
+  min-height: var(--tap);
+  height: min(86px, 22cqh);
+  justify-self: center;
+  padding: 6px 12px;
+  background:
+    radial-gradient(ellipse at 32% 28%, #f8f9fa, #ced4da 58%, #868e96);
+  border: 3px solid #868e96;
+  border-radius: 50% 46% 48% 52%;
+  box-shadow: 0 6px 0 rgba(73, 80, 87, 0.18);
+}
+
+.path-play .life-item .life-emoji,
+.life-ghost.path-token .life-emoji {
+  font-size: clamp(28px, 7vmin, 42px);
+  font-family: Nunito, "Noto Sans TC", sans-serif;
+  color: #212529;
+  line-height: 1;
 }
 
 .num-path .path-stone {
@@ -8710,7 +8741,8 @@ button.day-place:active {
 .ord-scene {
   container-type: size;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: flex-end;
   min-height: 0;
 }
 
@@ -8726,38 +8758,46 @@ button.day-place:active {
 
 .ord-shop {
   position: relative;
-  flex: 0 0 28%;
-  min-height: 56px;
-  margin: 6px 10px 0;
+  z-index: 1;
+  flex: 0 0 auto;
+  align-self: flex-end;
+  width: min(30%, 148px);
+  height: 62%;
+  margin: 0 2px 3% 3%;
   display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  gap: 8px;
-  padding: 10px 12px 8px;
-  background: #fffdf8;
-  border: 3px solid #e8c48a;
-  border-radius: 22px 22px 10px 10px;
-  box-shadow: 0 6px 0 rgba(180, 120, 70, 0.12);
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 2px;
+  padding: 22px 8px 16px;
+  background:
+    linear-gradient(#fff1d6 0 74%, #c1864a 74%);
+  border: 3px solid #8d5a2b;
+  border-radius: 10px 10px 6px 6px;
+  box-shadow: 0 8px 0 rgba(141, 90, 43, 0.22);
+  pointer-events: none;
 }
 
 .ord-scene.scene-ice .ord-shop {
-  background: #fff5f8;
-  border-color: #ffa8c5;
+  background:
+    linear-gradient(#ffe0ef 0 72%, #e8590c 72%);
+  border-color: #c2255c;
 }
 
 .ord-scene.scene-train .ord-shop {
-  background: #e7f5ff;
-  border-color: #4dabf7;
+  background:
+    linear-gradient(#a5d8ff 0 28%, #fff8ee 28% 72%, #4dabf7 72%);
+  border-color: #1864ab;
 }
 
 .ord-awning,
 .ord-window {
   position: absolute;
-  left: 8px;
-  right: 8px;
-  top: -8px;
-  height: 14px;
-  border-radius: 10px 10px 0 0;
+  left: -8%;
+  right: -8%;
+  top: -10px;
+  height: 18px;
+  border-radius: 10px 10px 4px 4px;
 }
 
 .ord-awning {
@@ -8768,20 +8808,48 @@ button.day-place:active {
   background: repeating-linear-gradient(90deg, #1c7ed6 0 14px, #a5d8ff 14px 28px);
 }
 
+.ord-pane {
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  top: 16%;
+  height: 30%;
+  background: linear-gradient(#74c0fc, #d0ebff);
+  border: 3px solid #3b2412;
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.35);
+}
+
 .ord-shop-ico {
-  font-size: min(12cqw, 18cqh, 52px);
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: min(72%, 78px);
+  height: min(46%, 72px);
   line-height: 1;
 }
 
+.ord-shop-ico svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
 .ord-shop-word {
-  font-size: clamp(18px, 4.2vmin, 26px);
+  position: relative;
+  z-index: 1;
+  font-size: clamp(14px, 3.2vmin, 20px);
   font-weight: 900;
   color: var(--ink);
+  line-height: 1.1;
 }
 
 .ord-line {
   flex: 1 1 0;
+  align-self: stretch;
   min-height: 0;
+  height: 100%;
   display: flex;
   align-items: flex-end;
   gap: 8px;
@@ -8793,17 +8861,17 @@ button.day-place:active {
   align-self: center;
   display: grid;
   place-items: center;
-  min-width: 48px;
-  min-height: 56px;
-  padding: 6px 8px;
-  background: #ffe066;
-  border: 3px solid #f59f00;
-  border-radius: 16px;
-  font-size: clamp(22px, 5vmin, 32px);
+  min-width: 36px;
+  min-height: 44px;
+  padding: 4px 6px;
+  background: rgba(255, 248, 238, 0.86);
+  border: 2px solid #e8c48a;
+  border-radius: 14px;
+  font-size: clamp(18px, 4.2vmin, 26px);
   font-weight: 900;
   color: #3d2a1a;
   line-height: 1.1;
-  box-shadow: 0 6px 0 rgba(245, 159, 0, 0.2);
+  box-shadow: 0 3px 0 rgba(180, 120, 70, 0.12);
 }
 
 .ord-scene .ord-start::after {
@@ -8866,18 +8934,24 @@ button.day-place:active {
 
 .ord-got {
   position: absolute;
-  top: 6px;
-  right: 4px;
-  min-width: 1.2em;
-  padding: 2px 6px;
-  background: #fa5252;
-  border-radius: 8px 14px 14px 8px;
-  color: #fff;
-  font-family: Nunito, "Noto Sans TC", sans-serif;
-  font-size: clamp(18px, 4.4vmin, 26px);
-  font-weight: 900;
-  line-height: 1.15;
-  box-shadow: 2px 3px 0 rgba(166, 37, 37, 0.28);
+  top: 0;
+  right: 0;
+  width: min(42px, 28%);
+  height: min(42px, 28%);
+  min-width: 0;
+  padding: 0;
+  background: transparent;
+  border-radius: 0;
+  color: inherit;
+  line-height: 0;
+  box-shadow: none;
+  pointer-events: none;
+}
+
+.ord-got svg {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
 .ord-scene.is-step .ord-person.filled {
@@ -8886,23 +8960,30 @@ button.day-place:active {
 
 .ord-play .life-item,
 .life-ghost.ord-flag {
-  background: #fa5252;
-  border-color: #c92a2a;
-  border-radius: 12px 22px 22px 12px;
-  color: #fff8ee;
-  clip-path: polygon(0 0, 86% 0, 100% 50%, 86% 100%, 0 100%);
-  padding-right: 16px;
+  background: #fff8ee;
+  border-color: #e8c48a;
+  border-radius: 22px;
+  color: var(--ink);
+  clip-path: none;
+  padding: 8px 10px;
 }
 
-.ord-play .life-item .life-emoji,
-.life-ghost.ord-flag .life-emoji {
-  font-size: clamp(36px, 9vmin, 56px);
-  font-family: Nunito, "Noto Sans TC", sans-serif;
+.ord-play .life-item .life-chip-art,
+.life-ghost.ord-flag .life-chip-art {
+  width: 88px;
+  height: 80px;
+}
+
+.ord-play .life-item .life-chip-art svg,
+.life-ghost.ord-flag .life-chip-art svg {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
 .ord-play .life-item .life-name,
 .life-ghost.ord-flag .life-name {
-  color: #fff8ee;
+  color: var(--ink);
   font-size: clamp(16px, 3.6vmin, 22px);
 }
 
@@ -12522,15 +12603,17 @@ button.day-place:active {
 
   .shell.is-life .ord-scene {
     flex-direction: row;
-    align-items: stretch;
+    align-items: flex-end;
   }
 
   .shell.is-life .ord-shop {
-    flex: 0 0 18%;
-    margin: 8px 0 8px 8px;
+    flex: 0 0 auto;
+    width: min(22%, 150px);
+    height: 66%;
+    margin: 0 2px 3% 3%;
     flex-direction: column;
-    justify-content: center;
-    border-radius: 18px;
+    justify-content: flex-end;
+    border-radius: 10px 10px 6px 6px;
   }
 
   .shell.is-life .ord-who {

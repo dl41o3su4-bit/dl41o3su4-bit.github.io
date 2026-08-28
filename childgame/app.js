@@ -4330,7 +4330,11 @@
       );
     }
     if (id === "ord") {
-      return '<span class="preview-art preview-ord" aria-hidden="true"><b>左</b>🐶🐱🐰<em>3</em></span>';
+      return (
+        '<span class="preview-art preview-ord" aria-hidden="true"><b>左</b>🐶🐱🐰<span class="preview-flag">' +
+        crayonFlagSvg(3) +
+        "</span></span>"
+      );
     }
     if (id === "missing") {
       return '<span class="preview-art preview-path" aria-hidden="true"><i>3</i><em>□</em><i>5</i><i>6</i></span>';
@@ -4808,6 +4812,82 @@
       '" role="img" aria-hidden="true">' +
       body +
       "</svg>"
+    );
+  }
+
+  function crayonFlagSvg(n) {
+    var label = escapeHtml(String(n == null ? "" : n));
+    return crayonSortMark(
+      "0 0 120 120",
+      '<path d="M20 12 L20 110"' +
+        crayonInk(8) +
+        "></path>" +
+        '<circle cx="20" cy="12" r="6"' +
+        crayonFill("#e8c48a") +
+        "></circle>" +
+        '<path d="M26 16 L112 46 L26 76 Z"' +
+        crayonFill("#fa5252") +
+        "></path>" +
+        '<path d="M26 22 L98 46 L26 70 Z"' +
+        crayonFill("#ff6b6b") +
+        "></path>" +
+        '<text x="56" y="50" text-anchor="middle" dominant-baseline="central" fill="#fff8ee" stroke="#3b2412" stroke-width="2.2" paint-order="stroke fill" font-family="Nunito, Noto Sans TC, sans-serif" font-size="30" font-weight="900">' +
+        label +
+        "</text>"
+    );
+  }
+
+  function crayonIceCreamSvg() {
+    return crayonSortMark(
+      "0 0 90 120",
+      '<circle cx="45" cy="36" r="24"' +
+        crayonFill("#ffc9c9") +
+        "></circle>" +
+        '<circle cx="30" cy="44" r="15"' +
+        crayonFill("#ffd6a5") +
+        "></circle>" +
+        '<circle cx="60" cy="44" r="15"' +
+        crayonFill("#fff1d6") +
+        "></circle>" +
+        '<path d="M28 56 L45 114 L62 56 Z"' +
+        crayonFill("#e8c48a") +
+        "></path>" +
+        '<path d="M33 72 L57 72"' +
+        crayonInk(2.2) +
+        "></path>" +
+        '<path d="M35 86 L55 86"' +
+        crayonInk(2.2) +
+        "></path>" +
+        '<path d="M38 100 L52 100"' +
+        crayonInk(2.2) +
+        "></path>" +
+        '<circle cx="45" cy="16" r="6"' +
+        crayonFill("#fa5252") +
+        "></circle>" +
+        '<path d="M45 10 C48 4 56 6 52 14"' +
+        crayonInk(2.2) +
+        "></path>"
+    );
+  }
+
+  function crayonTicketSvg() {
+    return crayonSortMark(
+      "0 0 110 70",
+      '<path d="M10 14 H100 V56 H10 Z"' +
+        crayonFill("#fff1d6") +
+        "></path>" +
+        '<path d="M10 28 C16 28 16 42 10 42"' +
+        crayonInk(2.6) +
+        "></path>" +
+        '<path d="M100 28 C94 28 94 42 100 42"' +
+        crayonInk(2.6) +
+        "></path>" +
+        '<path d="M32 20 V50"' +
+        crayonInk(2.4) +
+        "></path>" +
+        '<circle cx="64" cy="35" r="10"' +
+        crayonFill("#74c0fc") +
+        "></circle>"
     );
   }
 
@@ -5430,6 +5510,13 @@
     }
     if (state.levelId === "bond") {
       return fruitMark(item && item.emoji);
+    }
+    if (state.levelId === "ord" || (item && item.name === "小旗")) {
+      return (
+        '<span class="life-chip-art ord-flag-art" aria-hidden="true">' +
+        crayonFlagSvg(item && item.emoji) +
+        "</span>"
+      );
     }
     return '<span class="life-emoji">' + item.emoji + "</span>";
   }
@@ -6178,7 +6265,7 @@
       promptCls = "prompt trace-tip";
     }
     var promptHtml =
-      state.levelId === "trace"
+      state.levelId === "trace" || state.levelId === "bpm-trace" || state.levelId === "abc-trace"
         ? ""
         : '<div class="' + promptCls + '">' + escapeHtml(prompt) + "</div>";
     return (
@@ -6304,20 +6391,21 @@
           ' 個"><span class="ord-who">' +
           em +
           "</span>" +
-          (filled ? '<span class="ord-got">' + escapeHtml(filled.emoji) + "</span>" : "") +
+          (filled ? '<span class="ord-got">' + crayonFlagSvg(filled.emoji) + "</span>" : "") +
           "</div>"
         );
       })
       .join("");
     var shop =
       scene === "train"
-        ? '<div class="ord-shop" aria-hidden="true"><i class="ord-window"></i><span class="ord-shop-ico">🎫</span><span class="ord-shop-word">買票</span></div>'
-        : '<div class="ord-shop" aria-hidden="true"><i class="ord-awning"></i><span class="ord-shop-ico">🍦</span><span class="ord-shop-word">冰淇淋</span></div>';
+        ? '<div class="ord-shop" aria-hidden="true"><i class="ord-window"></i><i class="ord-pane"></i><span class="ord-shop-ico">' +
+          crayonTicketSvg() +
+          '</span><span class="ord-shop-word">買票</span></div>'
+        : '<div class="ord-shop" aria-hidden="true"><i class="ord-awning"></i><span class="ord-shop-ico">' +
+          crayonIceCreamSvg() +
+          '</span><span class="ord-shop-word">冰淇淋</span></div>';
     return (
       '<div class="play-col">' +
-      '<div class="prompt">從左邊數，請第 <span class="prompt-num">' +
-      q.target +
-      "</span> 個</div>" +
       '<div class="life-stage is-place ord-play">' +
       '<div class="ord-scene scene-' +
       scene +
@@ -7638,7 +7726,7 @@
   function renderAbcPath(q) {
     var n = (q.stones || []).length;
     var dest = pathStoneSpot(q.miss || 0, n);
-    var start = { left: "2", rise: 18 };
+    var start = { left: "9", rise: 18 };
     var stones = (q.stones || [])
       .map(function (s, i) {
         var spot = pathStoneSpot(i, n);
@@ -7678,9 +7766,6 @@
       "%";
     return (
       '<div class="play-col">' +
-      '<div class="prompt">' +
-      escapeHtml(q.ask) +
-      "</div>" +
       '<div class="life-stage is-place path-play' +
       (state.levelId === "abc-path" ? "" : " num-path") +
       '">' +
@@ -8024,6 +8109,7 @@
         (item.name ? '<span class="life-name">' + escapeHtml(item.name) + "</span>" : "");
     }
     if (state.levelId === "ord") g.classList.add("ord-flag");
+    if (isPathLevel()) g.classList.add("path-token");
     document.body.appendChild(g);
     return g;
   }
