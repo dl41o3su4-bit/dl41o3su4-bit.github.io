@@ -7176,6 +7176,7 @@ button.day-place:active {
 .table-play .life-item.life-toy,
 .habitat-play .life-item.life-toy,
 .sort-play .life-item.life-toy,
+.day-play .life-item.life-toy,
 .life-ghost.life-toy {
   min-height: var(--tap);
   background:
@@ -7191,6 +7192,7 @@ button.day-place:active {
 .table-play .life-item.life-toy .life-name,
 .habitat-play .life-item.life-toy .life-name,
 .sort-play .life-item.life-toy .life-name,
+.day-play .life-item.life-toy .life-name,
 .life-ghost.life-toy .life-name {
   font-weight: 900;
   color: #2a1c12;

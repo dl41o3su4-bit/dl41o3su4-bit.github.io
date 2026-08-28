@@ -7247,7 +7247,7 @@
     if (state.choiceMark && state.choiceMark.value === item.id) mark += " " + state.choiceMark.cls;
     if (state.levelId === "bpm-train") mark += " train-ticket";
     if (state.levelId === "bond") mark += " bond-fruit";
-    if (state.levelId === "dress" || state.levelId === "table" || state.levelId === "habitat" || state.levelId === "sort") mark += " life-toy";
+    if (state.levelId === "dress" || state.levelId === "table" || state.levelId === "habitat" || state.levelId === "sort" || state.levelId === "daynight") mark += " life-toy";
     var placed = extraClass === "in-slot";
     return (
       '<div class="life-item' +
@@ -8301,9 +8301,6 @@
     }
     return (
       '<div class="play-col">' +
-      '<div class="prompt">' +
-      escapeHtml(q.ask) +
-      "</div>" +
       '<div class="life-stage is-place day-play">' +
       '<div class="day-scene sky-' +
       sky +
@@ -8499,7 +8496,7 @@
       g.className = "life-ghost bond-fruit";
       g.innerHTML = fruitMark(item.emoji);
     } else {
-      if (state.levelId === "dress" || state.levelId === "table" || state.levelId === "habitat" || state.levelId === "sort") g.className = "life-ghost life-toy";
+      if (state.levelId === "dress" || state.levelId === "table" || state.levelId === "habitat" || state.levelId === "sort" || state.levelId === "daynight") g.className = "life-ghost life-toy";
       g.innerHTML =
         renderHabitatChipArt(item) +
         (item.name ? '<span class="life-name">' + escapeHtml(item.name) + "</span>" : "");
@@ -10319,6 +10316,8 @@
         var lightHtml = app.innerHTML;
         startLevel("body");
         var bodyHtml = app.innerHTML;
+        startLevel("daynight");
+        var daynightHtml = app.innerHTML;
         goHome();
         var habitat = makeHabitatQuestions(true);
         var light = makeLightQuestions(true);
@@ -10352,6 +10351,8 @@
           lightNoBoardPrompt: lightHtml.indexOf('class="prompt"') < 0,
           lightSign: lightHtml.indexOf("light-sign") >= 0 && lightHtml.indexOf('data-value="stop"') >= 0,
           bodyNoBoardPrompt: bodyHtml.indexOf('class="prompt"') < 0,
+          daynightToy: daynightHtml.indexOf("life-toy") >= 0 && daynightHtml.indexOf("data-life-item") >= 0,
+          daynightNoBoardPrompt: daynightHtml.indexOf('class="prompt"') < 0,
           schoolDress: makeDressQuestions().length,
           schoolTable: makeTableQuestions().length,
           schoolHabitat: makeHabitatQuestions().length,
