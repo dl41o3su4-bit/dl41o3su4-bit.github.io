@@ -7247,6 +7247,7 @@
     if (state.choiceMark && state.choiceMark.value === item.id) mark += " " + state.choiceMark.cls;
     if (state.levelId === "bpm-train") mark += " train-ticket";
     if (state.levelId === "bond") mark += " bond-fruit";
+    if (state.levelId === "dress" || state.levelId === "table") mark += " life-toy";
     var placed = extraClass === "in-slot";
     return (
       '<div class="life-item' +
@@ -8513,6 +8514,7 @@
       g.className = "life-ghost bond-fruit";
       g.innerHTML = fruitMark(item.emoji);
     } else {
+      if (state.levelId === "dress" || state.levelId === "table") g.className = "life-ghost life-toy";
       g.innerHTML =
         renderHabitatChipArt(item) +
         (item.name ? '<span class="life-name">' + escapeHtml(item.name) + "</span>" : "");

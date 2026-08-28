@@ -7166,6 +7166,26 @@ button.day-place:active {
   background: #fff3bf;
 }
 
+.dress-play .life-item.life-toy,
+.table-play .life-item.life-toy,
+.life-ghost.life-toy {
+  min-height: var(--tap);
+  background:
+    repeating-linear-gradient(128deg, transparent 0 7px, rgba(141, 90, 43, 0.16) 7px 8px),
+    radial-gradient(ellipse at 32% 26%, #efd6a8 0 26%, #d4b07a 56%, #b88950);
+  border: 3px solid #8d5a2b;
+  border-radius: 22px 18px 24px 16px;
+  box-shadow: inset 0 3px 0 rgba(255, 253, 248, 0.4), 0 6px 0 rgba(109, 69, 28, 0.2);
+  color: #2a1c12;
+}
+
+.dress-play .life-item.life-toy .life-name,
+.table-play .life-item.life-toy .life-name,
+.life-ghost.life-toy .life-name {
+  font-weight: 900;
+  color: #2a1c12;
+}
+
 .life-ghost {
   position: fixed;
   z-index: 40;
