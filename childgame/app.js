@@ -5920,6 +5920,9 @@
         "</span>"
       );
     }
+    if (state.levelId === "bpm-train") {
+      return lifeCrayonMark(item.emoji, item.name) || '<span class="life-emoji">' + item.emoji + "</span>";
+    }
     return '<span class="life-emoji">' + item.emoji + "</span>";
   }
 
@@ -7913,9 +7916,9 @@
       (found ? " found" : "") +
       '" type="button" data-action="listen-find" data-value="' +
       escapeHtml(obj.word) +
-      '"><span class="life-emoji">' +
-      obj.emoji +
-      '</span><span class="life-name">' +
+      '">' +
+      (lifeCrayonMark(obj.emoji, obj.word) || '<span class="life-emoji">' + obj.emoji + "</span>") +
+      '<span class="life-name">' +
       escapeHtml(obj.word) +
       "</span></button>"
     );
@@ -8042,9 +8045,9 @@
             return (
               '<span class="train-rider" title="' +
               escapeHtml(item.name) +
-              '"><span class="life-emoji">' +
-              item.emoji +
-              '</span><span class="life-name">' +
+              '">' +
+              (lifeCrayonMark(item.emoji, item.name) || '<span class="life-emoji">' + item.emoji + "</span>") +
+              '<span class="life-name">' +
               escapeHtml(item.name) +
               "</span></span>"
             );
@@ -10672,7 +10675,44 @@
         var cubbyLifeArt = app.innerHTML;
         var letters = show("abc-case");
         var listen = show("bpm-listen");
+        startLevel("bpm-listen");
+        state.questions[0].scene = "kitchen";
+        state.questions[0].sceneName = "廚房";
+        state.questions[0].word = "蛋糕";
+        state.questions[0].ask = "找找看，哪一個是蛋糕？";
+        state.questions[0].objects = [
+          { word: "西瓜", emoji: "🍉", bpm: "ㄒ", spot: "fridge" },
+          { word: "冰淇淋", emoji: "🍦", bpm: "ㄅ", spot: "counter" },
+          { word: "蛋糕", emoji: "🎂", bpm: "ㄉ", spot: "counter" },
+          { word: "牛奶", emoji: "🥛", bpm: "ㄋ", spot: "table" },
+          { word: "蘋果", emoji: "🍎", bpm: "ㄆ", spot: "bowl" },
+          { word: "葡萄", emoji: "🍇", bpm: "ㄆ", spot: "bowl" },
+        ];
+        state.qIndex = 0;
+        state.stepIndex = 0;
+        state.placed = {};
+        state.foxMsg = "找找看，哪一個是蛋糕？";
+        render();
+        var listenKitchen = app.innerHTML;
         var train = show("bpm-train");
+        startLevel("bpm-train");
+        state.questions[0].cars = [
+          { id: "ㄅ", bpm: "ㄅ", color: "berry" },
+          { id: "ㄆ", bpm: "ㄆ", color: "sky" },
+          { id: "ㄇ", bpm: "ㄇ", color: "grape" },
+        ];
+        state.questions[0].items = [
+          lifeItem("train-hat", "🧢", "帽子", "ㄇ"),
+          lifeItem("train-ice", "🍦", "冰淇淋", "ㄅ"),
+          lifeItem("train-apple", "🍎", "蘋果", "ㄆ"),
+          lifeItem("train-cat", "🐱", "貓", "ㄇ"),
+        ];
+        state.qIndex = 0;
+        state.placed = {};
+        render();
+        var trainTray = app.innerHTML;
+        tryPlace("train-apple", "ㄆ");
+        var trainRider = app.innerHTML;
         var pop = show("abc-pop");
         var stickerChip = iceHtml.match(/data-life-item="sticker-[^"]+"/);
         var stickerGlyph = iceHtml.match(/sticker-glyph">([^<]+)</);
@@ -10734,7 +10774,19 @@
           cubbyPigEmoji: cubbyLifeArt.indexOf("🐷") >= 0,
           letterGlyph: /class="life-emoji">[a-z]</.test(letters.html),
           listenNoBoard: listen.html.indexOf('class="prompt"') < 0,
+          listenKitchenCake: listenKitchen.indexOf("crayon-cake") >= 0 && listenKitchen.indexOf('life-emoji">🎂') < 0,
+          listenKitchenIce: listenKitchen.indexOf("crayon-ice") >= 0 && listenKitchen.indexOf('life-emoji">🍦') < 0,
+          listenKitchenMilk: listenKitchen.indexOf("crayon-milk") >= 0 && listenKitchen.indexOf('life-emoji">🥛') < 0,
+          listenKitchenFruit: listenKitchen.indexOf("count-fruit") >= 0 && listenKitchen.indexOf("fruit-apple") >= 0 && listenKitchen.indexOf("fruit-grape") >= 0 && listenKitchen.indexOf("fruit-melon") >= 0,
+          listenKitchenWords: listenKitchen.indexOf(">蛋糕<") >= 0 && listenKitchen.indexOf("data-action=\"listen-find\"") >= 0,
+          listenKitchenFoxOnly: listenKitchen.indexOf('class="prompt"') < 0 && listenKitchen.indexOf("找找看，哪一個是蛋糕？") >= 0,
           trainNoBoard: train.html.indexOf('class="prompt"') < 0,
+          trainHatCrayon: trainTray.indexOf("crayon-hat") >= 0 && trainTray.indexOf("hang-cap") >= 0,
+          trainIceCrayon: trainTray.indexOf("crayon-ice") >= 0 && trainTray.indexOf('life-emoji">🍦') < 0,
+          trainAppleCrayon: trainTray.indexOf("count-fruit") >= 0 && trainTray.indexOf("fruit-apple") >= 0,
+          trainCatEmoji: trainTray.indexOf('life-emoji">🐱') >= 0,
+          trainRiderApple: trainRider.indexOf("train-rider") >= 0 && trainRider.indexOf("fruit-apple") >= 0,
+          trainKeepSlots: trainTray.indexOf('data-life-slot="ㄅ"') >= 0 && trainTray.indexOf('data-life-item="train-hat"') >= 0,
           popNoBoard: pop.html.indexOf('class="prompt"') < 0,
         };
       },

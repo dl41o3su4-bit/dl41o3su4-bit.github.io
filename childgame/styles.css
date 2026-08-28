@@ -7470,6 +7470,61 @@ button.day-place:active {
   line-height: 1;
 }
 
+.listen-obj .life-crayon,
+.listen-obj .count-fruit {
+  display: block;
+  width: 1em;
+  height: 1em;
+  flex: none;
+  font-size: clamp(26px, 7.2vmin, 42px);
+  line-height: 1;
+}
+
+.listen-obj .life-crayon svg,
+.listen-obj .count-fruit svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.listen-obj .life-crayon .life-chip-art {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.listen-obj .dress-chip,
+.listen-obj .dress-chip .dh-brim {
+  position: absolute;
+  display: block;
+  font-style: normal;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.listen-obj .dress-chip.hang-cap {
+  left: 50%;
+  top: 50%;
+  width: 70%;
+  height: 38%;
+  background: #fa5252;
+  border: 2px solid #c92a2a;
+  border-radius: 12px 12px 2px 2px;
+  transform: translate(-42%, -70%);
+}
+
+.listen-obj .dress-chip.hang-cap .dh-brim {
+  left: -36%;
+  width: 52%;
+  right: auto;
+  bottom: -14%;
+  height: 46%;
+  background: #1c7ed6;
+  border: 2px solid #1864ab;
+  border-radius: 2px 8px 2px 2px;
+}
+
 .listen-obj .life-name {
   padding: 0 6px;
   border-radius: 8px;
@@ -8415,6 +8470,93 @@ button.day-place:active {
 .train-rider .life-emoji {
   font-size: clamp(22px, 7cqh, 36px);
   line-height: 1;
+}
+
+.train-rider .life-crayon,
+.train-rider .count-fruit {
+  display: block;
+  width: 1em;
+  height: 1em;
+  flex: none;
+  font-size: clamp(22px, 7cqh, 36px);
+  line-height: 1;
+}
+
+.train-rider .life-crayon svg,
+.train-rider .count-fruit svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.train-rider .life-crayon .life-chip-art,
+.train-play .life-item .life-crayon .life-chip-art,
+.life-ghost .life-crayon .life-chip-art {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.train-play .life-item .life-crayon,
+.train-play .life-item .count-fruit,
+.life-ghost .life-crayon,
+.life-ghost .count-fruit {
+  display: block;
+  width: 1em;
+  height: 1em;
+  flex: none;
+  font-size: clamp(26px, 7vmin, 42px);
+  line-height: 1;
+}
+
+.train-play .life-item .life-crayon svg,
+.train-play .life-item .count-fruit svg,
+.life-ghost .life-crayon svg,
+.life-ghost .count-fruit svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.train-rider .dress-chip,
+.train-rider .dress-chip .dh-brim,
+.train-play .life-item .dress-chip,
+.train-play .life-item .dress-chip .dh-brim,
+.life-ghost .life-crayon .dress-chip,
+.life-ghost .life-crayon .dress-chip .dh-brim {
+  position: absolute;
+  display: block;
+  font-style: normal;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.train-rider .dress-chip.hang-cap,
+.train-play .life-item .dress-chip.hang-cap,
+.life-ghost .life-crayon .dress-chip.hang-cap {
+  left: 50%;
+  top: 50%;
+  width: 70%;
+  height: 38%;
+  background: #fa5252;
+  border: 2px solid #c92a2a;
+  border-radius: 12px 12px 2px 2px;
+  transform: translate(-42%, -70%);
+}
+
+.train-rider .dress-chip.hang-cap .dh-brim,
+.train-play .life-item .dress-chip.hang-cap .dh-brim,
+.life-ghost .life-crayon .dress-chip.hang-cap .dh-brim {
+  left: -36%;
+  width: 52%;
+  right: auto;
+  bottom: -14%;
+  height: 46%;
+  background: #1c7ed6;
+  border: 2px solid #1864ab;
+  border-radius: 2px 8px 2px 2px;
 }
 
 .train-rider .life-name {
@@ -12362,7 +12504,9 @@ button.day-place:active {
     min-height: 52px;
   }
 
-  .listen-obj .life-emoji {
+  .listen-obj .life-emoji,
+  .listen-obj .life-crayon,
+  .listen-obj .count-fruit {
     font-size: 26px;
   }
 
@@ -12379,7 +12523,9 @@ button.day-place:active {
     height: min(36cqh, 96px);
   }
 
-  .train-rider .life-emoji {
+  .train-rider .life-emoji,
+  .train-rider .life-crayon,
+  .train-rider .count-fruit {
     font-size: clamp(18px, 6cqh, 26px);
   }
 }
