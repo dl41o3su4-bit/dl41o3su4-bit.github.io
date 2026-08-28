@@ -8518,6 +8518,7 @@
     if (state.levelId === "ord") g.classList.add("ord-flag");
     if (isPathLevel()) g.classList.add("path-token");
     if (state.levelId === "abc-path") g.classList.add("letter-path");
+    if (state.levelId === "next" || state.levelId === "missing") g.classList.add("num-path");
     document.body.appendChild(g);
     return g;
   }

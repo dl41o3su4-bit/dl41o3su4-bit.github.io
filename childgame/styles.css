@@ -9170,6 +9170,29 @@ button.day-place:active {
   font-size: clamp(28px, 7.4vmin, 44px);
 }
 
+.num-path .path-stone:not(.gap):not(.filled),
+.num-path .life-item,
+.life-ghost.path-token.num-path {
+  background:
+    repeating-linear-gradient(
+      128deg,
+      transparent 0 7px,
+      rgba(141, 90, 43, 0.1) 7px 8px
+    ),
+    radial-gradient(ellipse at 32% 26%, #fff8ee 0 26%, #e6d3b0 56%, #c4a574);
+  border-color: #8d5a2b;
+  box-shadow:
+    inset 0 3px 0 rgba(255, 253, 248, 0.45),
+    0 6px 0 rgba(109, 69, 28, 0.2);
+  color: #2a1c12;
+}
+
+.num-path .path-letter,
+.num-path .life-item .life-emoji,
+.life-ghost.path-token.num-path .life-emoji {
+  color: #2a1c12;
+}
+
 .ord-scene {
   container-type: size;
   display: flex;
