@@ -10543,6 +10543,31 @@
           word: text.indexOf("蛋糕") >= 0 || text.indexOf("冰淇淋") >= 0,
         };
       },
+      furnWoodName: function (level) {
+        var id =
+          level === "abc-pic" || level === "hanzi" || level === "bpm-listen"
+            ? level
+            : "bpm-pic";
+        startLevel(id);
+        var nodes = app.querySelectorAll(".furn-name");
+        var name = nodes[0];
+        var style = name ? getComputedStyle(name) : null;
+        var bg = style ? String(style.backgroundImage || "") : "";
+        var text = "";
+        var i;
+        for (i = 0; i < nodes.length; i++) text += String(nodes[i].textContent || "");
+        return {
+          wood:
+            !!name &&
+            bg.indexOf("repeating-linear-gradient") >= 0 &&
+            (style.borderTopColor === "rgb(141, 90, 43)" ||
+              String(style.borderColor || "").indexOf("141, 90, 43") >= 0),
+          name:
+            text.indexOf("冰箱") >= 0 ||
+            text.indexOf("流理台") >= 0 ||
+            text.indexOf("桌子") >= 0,
+        };
+      },
       stickerWoodLid: function () {
         startLevel("bpm-pic");
         var box = app.querySelector(".sticker-box");
