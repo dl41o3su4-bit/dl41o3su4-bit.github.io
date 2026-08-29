@@ -10609,6 +10609,42 @@
           label: text.indexOf("星星") >= 0 || text.indexOf("皇冠") >= 0,
         };
       },
+      moreWoodTotal: function () {
+        startLevel("more");
+        var emptyPlate = app.querySelector(".more-total");
+        var emptyStyle = emptyPlate ? getComputedStyle(emptyPlate) : null;
+        var emptyBg = emptyStyle ? String(emptyStyle.backgroundImage || "") : "";
+        var emptyText = emptyPlate ? String(emptyPlate.textContent || "").trim() : "x";
+        var emptyWood =
+          !!emptyPlate &&
+          emptyBg.indexOf("repeating-linear-gradient") >= 0 &&
+          (emptyStyle.borderTopStyle === "dashed" || String(emptyStyle.borderStyle || "").indexOf("dashed") >= 0) &&
+          (emptyStyle.borderTopColor === "rgb(193, 134, 74)" ||
+            String(emptyStyle.borderColor || "").indexOf("193, 134, 74") >= 0);
+        var q = state.questions[state.qIndex];
+        var left = {};
+        var right = {};
+        var i;
+        if (q) {
+          for (i = 0; i < q.left; i++) left[String(i)] = true;
+          for (i = 0; i < q.right; i++) right[String(i)] = true;
+        }
+        state.moreTapped = { left: left, right: right };
+        render();
+        var plate = app.querySelector(".more-total");
+        var style = plate ? getComputedStyle(plate) : null;
+        var bg = style ? String(style.backgroundImage || "") : "";
+        var text = plate ? String(plate.textContent || "").trim() : "";
+        return {
+          wood:
+            !!plate &&
+            bg.indexOf("repeating-linear-gradient") >= 0 &&
+            (style.borderTopColor === "rgb(141, 90, 43)" ||
+              String(style.borderColor || "").indexOf("141, 90, 43") >= 0),
+          digit: /^\d+$/.test(text),
+          empty: !!emptyPlate && emptyPlate.classList.contains("is-empty") && emptyText === "" && emptyWood,
+        };
+      },
       moreBondPlay: function () {
         startLevel("more");
         var moreFox = state.foxMsg;
