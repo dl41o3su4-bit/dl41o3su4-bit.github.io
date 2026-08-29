@@ -10502,6 +10502,47 @@
             text.indexOf("街上") >= 0,
         };
       },
+      stickerWoodWord: function (level) {
+        var id = level === "abc-pic" || level === "hanzi" ? level : "bpm-pic";
+        startLevel(id);
+        var nodes = app.querySelectorAll(".sticker-word");
+        var word = nodes[0];
+        var style = word ? getComputedStyle(word) : null;
+        var bg = style ? String(style.backgroundImage || "") : "";
+        var text = "";
+        var i;
+        for (i = 0; i < nodes.length; i++) text += String(nodes[i].textContent || "");
+        return {
+          wood:
+            !!word &&
+            bg.indexOf("repeating-linear-gradient") >= 0 &&
+            (style.borderTopColor === "rgb(141, 90, 43)" ||
+              String(style.borderColor || "").indexOf("141, 90, 43") >= 0),
+          word:
+            text.indexOf("西瓜") >= 0 ||
+            text.indexOf("蘋果") >= 0 ||
+            text.indexOf("下") >= 0 ||
+            text.replace(/\s/g, "").length > 0,
+        };
+      },
+      listenWoodWord: function () {
+        startLevel("bpm-listen");
+        var nodes = app.querySelectorAll(".listen-obj .life-name");
+        var name = nodes[0];
+        var style = name ? getComputedStyle(name) : null;
+        var bg = style ? String(style.backgroundImage || "") : "";
+        var text = "";
+        var i;
+        for (i = 0; i < nodes.length; i++) text += String(nodes[i].textContent || "");
+        return {
+          wood:
+            !!name &&
+            bg.indexOf("repeating-linear-gradient") >= 0 &&
+            (style.borderTopColor === "rgb(141, 90, 43)" ||
+              String(style.borderColor || "").indexOf("141, 90, 43") >= 0),
+          word: text.indexOf("蛋糕") >= 0 || text.indexOf("冰淇淋") >= 0,
+        };
+      },
       stickerWoodLid: function () {
         startLevel("bpm-pic");
         var box = app.querySelector(".sticker-box");
