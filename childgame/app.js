@@ -1464,7 +1464,7 @@
 
   function dayFoxGreeting(world) {
     if (isFirstDayVisit(world)) {
-      if (nextDayTask(world) === "wash") return (world.todayHints && world.todayHints.wash) || "首先去洗手";
+      if (nextDayTask(world) === "wash") return "先去那個水龍頭洗手";
       return "今天要一起去哪裡？";
     }
     if (foxWorldSession.rolled && !foxWorldSession.greeted) {
@@ -1480,9 +1480,9 @@
     }
     if (dayIsFinished(world)) return dayRecapLine(world);
     var next = nextDayTask(world);
+    if (next === "wash") return "先去那個水龍頭洗手";
     if (next && world.todayHints && world.todayHints[next]) return world.todayHints[next];
     if (next === "friends") return "魚還在河邊，要不要先去看看？";
-    if (next === "wash") return "首先去洗手";
     if (next === "brush") return "去刷牙";
     if (next === "dress") {
       if (brushedTheTeeth(world)) return "牙刷放杯子裡了，去穿衣服";
@@ -10176,6 +10176,8 @@
           trailStretch: html.indexOf("dt-paw is-stretch") >= 0,
           trailWashNow: html.indexOf("dt-paw is-now at-wash") >= 0,
           trailBrushNow: html.indexOf("dt-paw is-now at-brush") >= 0,
+          foxAtSink: /day-world[^"]*\bat-sink\b/.test(html),
+          foxAtVanity: /day-world[^"]*\bat-vanity\b/.test(html),
           emptyTrail: /<div class="day-trail"[^>]*><\/div>/.test(html),
         };
       },
