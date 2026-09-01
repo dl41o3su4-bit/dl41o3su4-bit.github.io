@@ -1013,7 +1013,7 @@
     var last = outfit[outfit.length - 1] || {};
     var blob = ((last.name || "") + " " + (last.id || "") + " " + (last.emoji || "")).toLowerCase();
     var word = /帽|cap|🧢/.test(blob) ? "帽子" : "衣服";
-    return word + "掛好了，去擺早餐";
+    return word + "掛好了，去吃飯";
   }
 
   function setTableHint(world) {
@@ -1490,10 +1490,10 @@
     }
     if (next === "table") {
       if (isTaskDone(world, "dress") && hasOutfit(world)) {
-        return hungOutfitHint(world) || "衣服好了，去擺早餐";
+        return hungOutfitHint(world) || "衣服好了，去吃飯";
       }
-      if (brushedTheTeeth(world) && !isTaskDone(world, "dress")) return "牙齒刷好了，去擺早餐";
-      return washedTheHands(world) && !isTaskDone(world, "dress") ? "手洗好了，去擺早餐" : "衣服好了，去擺早餐";
+      if (brushedTheTeeth(world) && !isTaskDone(world, "dress")) return "牙齒刷好了，去吃飯";
+      return washedTheHands(world) && !isTaskDone(world, "dress") ? "手洗好了，去吃飯" : "衣服好了，去吃飯";
     }
     if (next === "out") return "吃飽了，穿鞋出門";
     if (next === "light") return wentOutTheDoor(world) ? "門開了，過馬路" : "吃飽了，過馬路";
@@ -4592,12 +4592,16 @@
           .join("") +
         "</span></span>";
     }
+    var hints = nextDayTask(world) === "table"
+      ? '<span class="day-go-bubble">去這裡</span><span class="day-spot-label">吃飯</span>'
+      : "";
     return (
       '<span class="day-table-art' +
       (items.length ? " is-set" : "") +
       '">' +
       '<i class="dtb-top"></i><i class="dtb-leg a"></i><i class="dtb-leg b"></i>' +
       bits +
+      hints +
       "</span>"
     );
   }
@@ -6045,7 +6049,7 @@
       '<div class="day-spot-art" aria-hidden="true">' +
       spec.art +
       "</div>" +
-      (next && id !== "dress"
+      (next && id !== "dress" && id !== "table"
         ? '<span class="day-go-bubble">去這裡</span>' +
           '<span class="day-spot-label">' +
           spec.label +
@@ -6078,7 +6082,7 @@
       '">' +
       '<i class="dv-mirror"></i><i class="dv-counter"></i><i class="dv-basin"></i><i class="dv-well"></i><i class="dv-tap"></i>' +
       (used
-        ? '<i class="dv-cup is-home"></i><i class="dv-brush is-home"></i><i class="dv-head"></i><i class="dv-foam"></i><i class="dv-foam-b"></i><i class="dv-paste"></i>'
+        ? '<i class="dv-cup is-home"></i><i class="dv-brush is-home is-in-cup"></i><i class="dv-head"></i><i class="dv-foam is-in-basin"></i><i class="dv-foam-b is-in-basin"></i><i class="dv-paste is-beside"></i>'
         : '<i class="dv-cup"></i>') +
       "</span>"
     );
@@ -10122,7 +10126,7 @@
           hasWindow: html.indexOf("art-window") >= 0,
           hasZebra: html.indexOf("art-zebra") >= 0,
           hasEmptyBoxClass: /art-window|art-zebra|art-table/.test(html),
-          labels: ["洗手", "刷牙", "出門", "換衣服", "擺早餐", "去野餐", "過馬路", "去公園", "去看朋友", "再過一次"].filter(function (s) {
+          labels: ["洗手", "刷牙", "出門", "換衣服", "擺早餐", "去野餐", "吃飯", "過馬路", "去公園", "去看朋友", "再過一次"].filter(function (s) {
             return html.indexOf(s) >= 0;
           }),
           hasSink: html.indexOf("day-sink-art") >= 0,
@@ -10143,6 +10147,9 @@
           vanityHasHead: html.indexOf("dv-head") >= 0,
           vanityHasFoam: html.indexOf("dv-foam") >= 0,
           vanityHasPaste: html.indexOf("dv-paste") >= 0,
+          brushInCup: html.indexOf("dv-brush is-home is-in-cup") >= 0,
+          foamInBasin: html.indexOf("dv-foam is-in-basin") >= 0,
+          pasteBeside: html.indexOf("dv-paste is-beside") >= 0,
           sinkHasTowel: html.indexOf("ds-towel") >= 0,
           sinkHasSoap: html.indexOf("ds-soap") >= 0,
           doorOpen: html.indexOf("day-door-art is-open") >= 0,
@@ -10189,9 +10196,13 @@
           foxAtSink: /day-world[^"]*\bat-sink\b/.test(html),
           foxAtVanity: /day-world[^"]*\bat-vanity\b/.test(html),
           foxAtDress: /day-world[^"]*\bat-dress\b/.test(html),
+          foxAtTable: /day-world[^"]*\bat-table\b/.test(html),
           foxAtHome: /day-world[^"]*\bat-home\b/.test(html),
+          trailTableNow: html.indexOf("dt-paw is-now at-table") >= 0,
           dressGoOnHang: /day-hang-art[^>]*>[\s\S]*?去這裡/.test(html) && !/day-bed-art[^>]*>[\s\S]*?去這裡[\s\S]*?<\/span>\s*<span class="day-hang-art/.test(html),
           dressGoOnBed: /day-bed-art[^>]*>[\s\S]*?去這裡[\s\S]*?<\/span>\s*<span class="day-hang-art/.test(html),
+          tableGoOnTable: /day-table-art[^>]*>[\s\S]*?去這裡/.test(html),
+          tableEatLabel: /day-table-art[^>]*>[\s\S]*?吃飯/.test(html),
           emptyTrail: /<div class="day-trail"[^>]*><\/div>/.test(html),
         };
       },
