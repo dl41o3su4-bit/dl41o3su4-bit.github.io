@@ -1526,7 +1526,7 @@
     if (next === "out") return "door";
     if (next === "wash") return "sink";
     if (next === "brush") return "vanity";
-    if (next === "dress") return "home";
+    if (next === "dress") return "dress";
     if (crossedTheRoad(world) || isTaskDone(world, "habitat") || isTaskDone(world, "friends")) {
       return "park";
     }
@@ -6178,7 +6178,6 @@
       '<span class="day-bed-art">' +
       '<i class="dbd-post a"></i><i class="dbd-post b"></i>' +
       '<i class="dbd-frame"></i><i class="dbd-blanket"></i><i class="dbd-pillow"></i>' +
-      hints +
       "</span>" +
       '<span class="day-hang-art' +
       (hasOutfit(world) ? " is-hung" : "") +
@@ -6186,6 +6185,7 @@
       '<i class="dh-post a"></i><i class="dh-post b"></i>' +
       '<i class="dh-rail"></i><i class="dh-peg a"></i><i class="dh-peg b"></i><i class="dh-hanger"></i>' +
       renderDayHangBits(world) +
+      hints +
       "</span></span>"
     );
   }
@@ -6343,12 +6343,13 @@
   function renderDayTrail(world) {
     var next = nextDayTask(world);
     var stretchWash = (world && world.lastTask) === "wash" && next === "brush";
+    var stretchBrush = (world && world.lastTask) === "brush" && next === "dress";
     var paws = [
       { x: 6, w: -5, r: -14, id: "wash", up: 14 },
       { x: 8, w: 6, r: 10, after: "wash", up: 13, near: "wash" },
       { x: 16, w: -4, r: -8, id: "brush", up: 14 },
       { x: 22, w: 8, r: 12, after: "brush", up: 5 },
-      { x: 32, w: -7, r: -12, id: "dress" },
+      { x: 32, w: -7, r: -12, id: "dress", up: 12 },
       { x: 36, w: 6, r: 8, after: "dress" },
       { x: 40, w: -3, r: -6, id: "table" },
       { x: 44, w: 8, r: 12, after: "table" },
@@ -6362,9 +6363,13 @@
     if (stretchWash) {
       paws.splice(2, 0, { x: 13, w: 1, r: 4, kind: "stretch", up: 13 });
     }
+    if (stretchBrush) {
+      paws.splice(4, 0, { x: 26, w: 2, r: 6, kind: "stretch", up: 8 });
+    }
     return (
       '<div class="day-trail' +
       (stretchWash ? " just-wash" : "") +
+      (stretchBrush ? " just-brush" : "") +
       '" aria-hidden="true">' +
       paws
         .map(function (p) {
@@ -10180,8 +10185,13 @@
           trailStretch: html.indexOf("dt-paw is-stretch") >= 0,
           trailWashNow: html.indexOf("dt-paw is-now at-wash") >= 0,
           trailBrushNow: html.indexOf("dt-paw is-now at-brush") >= 0,
+          trailDressNow: html.indexOf("dt-paw is-now at-dress") >= 0,
           foxAtSink: /day-world[^"]*\bat-sink\b/.test(html),
           foxAtVanity: /day-world[^"]*\bat-vanity\b/.test(html),
+          foxAtDress: /day-world[^"]*\bat-dress\b/.test(html),
+          foxAtHome: /day-world[^"]*\bat-home\b/.test(html),
+          dressGoOnHang: /day-hang-art[^>]*>[\s\S]*?去這裡/.test(html) && !/day-bed-art[^>]*>[\s\S]*?去這裡[\s\S]*?<\/span>\s*<span class="day-hang-art/.test(html),
+          dressGoOnBed: /day-bed-art[^>]*>[\s\S]*?去這裡[\s\S]*?<\/span>\s*<span class="day-hang-art/.test(html),
           emptyTrail: /<div class="day-trail"[^>]*><\/div>/.test(html),
         };
       },
