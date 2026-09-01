@@ -1571,19 +1571,37 @@
     return null;
   }
 
+  function markerCornerOf(world) {
+    var spot = markerSpot(world);
+    if (spot === "park") return "park";
+    if (spot === "road") return "road";
+    return "home";
+  }
+
+  function renderDayMarker(world) {
+    return (
+      '<div class="day-marker' +
+      (crossedTheRoad(world) ? " is-park-side" : "") +
+      '" aria-hidden="true">' +
+      renderFoxWear(world, "map") +
+      "</div>"
+    );
+  }
+
   function renderFoxWear(world, extraClass) {
     var head = outfitBySlot(world, "head");
     var body = outfitBySlot(world, "body");
     var feet = outfitBySlot(world, "feet");
     var outShoes = !feet && wentOutTheDoor(world);
     var worn = !!(head || body || feet || outShoes);
+    var isMap = extraClass === "map";
     return (
       '<span class="day-fox-wear' +
       (extraClass ? " " + extraClass : "") +
       (worn ? " has-outfit" : "") +
       '" aria-hidden="true">' +
       (head ? '<i class="wear head">' + head.emoji + "</i>" : "") +
-      '<i class="wear face">🦊</i>' +
+      (isMap ? foxImg() : '<i class="wear face">🦊</i>') +
       (body ? '<i class="wear body">' + body.emoji + "</i>" : "") +
       (feet ? '<i class="wear feet">' + feet.emoji + "</i>" : outShoes ? '<i class="wear feet">👟</i>' : "") +
       "</span>"
@@ -6250,6 +6268,7 @@
         art: dayPlaceArt("table", world, evening),
         extraClass: "furn-table",
       }) +
+      (markerCornerOf(world) === "home" ? renderDayMarker(world) : "") +
       '<span class="day-corner-name">家</span></div>'
     );
   }
@@ -6272,6 +6291,7 @@
         art: dayPlaceArt(id, world, evening),
         extraClass: "furn-road",
       }) +
+      (markerCornerOf(world) === "road" ? renderDayMarker(world) : "") +
       '<span class="day-corner-name">馬路</span></div>'
     );
   }
@@ -6290,6 +6310,7 @@
         art: dayPlaceArt(id, world, evening),
         extraClass: "furn-park",
       }) +
+      (markerCornerOf(world) === "park" ? renderDayMarker(world) : "") +
       '<span class="day-corner-name">公園</span></div>'
     );
   }
@@ -6341,11 +6362,6 @@
       renderHomeCorner(world, evening) +
       renderRoadCorner(world, evening) +
       renderParkCorner(world, evening) +
-      "</div>" +
-      '<div class="day-marker' +
-      (crossedTheRoad(world) ? " is-park-side" : "") +
-      '" aria-hidden="true">' +
-      renderFoxWear(world, "map") +
       "</div>" +
       '<div class="day-talk">' +
       '<p class="day-world-title">小狐狸的一天</p>' +
@@ -10078,6 +10094,10 @@
           hasDressKeep: html.indexOf("day-kept") >= 0,
           parkSide: html.indexOf("is-park-side") >= 0,
           crossed: crossedTheRoad(world),
+          hasTeacherFox: html.indexOf("小狐狸老師") >= 0,
+          foxInHome: html.indexOf('corner-home') >= 0 && /corner-home[\s\S]*day-marker/.test(html),
+          foxInRoad: /corner-road[\s\S]*day-marker/.test(html),
+          foxInPark: /corner-park[\s\S]*day-marker/.test(html),
         };
       },
       finishWashForTest: function () {

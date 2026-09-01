@@ -761,6 +761,9 @@ button:focus-visible {
   --day-n: 3;
   --day-at: 0;
   --fox-x: 16%;
+  --fox-y: 18%;
+  --fox-right: auto;
+  --fox-top: auto;
   position: relative;
   flex: 1 1 auto;
   min-height: 180px;
@@ -771,15 +774,15 @@ button:focus-visible {
   background: #fffdf8;
 }
 
-.day-world.at-sink { --fox-x: 15%; }
-.day-world.at-vanity { --fox-x: 7%; }
-.day-world.at-home { --fox-x: 22%; }
-.day-world.at-door { --fox-x: 17%; }
-.day-world.at-table { --fox-x: 22%; }
-.day-world.at-road { --fox-x: 48%; }
-.day-world.at-park { --fox-x: 90%; }
-.day-world.at-road .day-marker.is-park-side { --fox-x: 58%; }
-.day-world.at-park .day-marker.is-park-side { --fox-x: 90%; }
+.day-world.at-sink { --fox-x: max(36%, calc(5% + 148px)); --fox-y: 31%; }
+.day-world.at-vanity { --fox-x: 5%; --fox-y: 31%; }
+.day-world.at-home { --fox-x: calc(max(36%, 5% + 148px) + 64px); --fox-y: 34%; }
+.day-world.at-door { --fox-x: 30%; --fox-y: 1%; }
+.day-world.at-table { --fox-x: auto; --fox-y: 10%; --fox-right: 16%; }
+.day-world.at-road { --fox-x: auto; --fox-y: 22%; --fox-right: 14%; }
+.day-world.at-park { --fox-x: 18%; --fox-y: auto; --fox-top: 26%; }
+.day-world.at-road .day-marker.is-park-side { --fox-x: auto; --fox-y: 22%; --fox-right: 8%; }
+.day-world.at-park .day-marker.is-park-side { --fox-x: 18%; --fox-y: auto; --fox-top: 26%; }
 
 .day-world.wx-rain .day-sky {
   background: linear-gradient(#6d8298, #9aafc0 55%, #c5d0d8);
@@ -928,8 +931,8 @@ button:focus-visible {
 }
 
 .dz-print {
-  width: 18px;
-  height: 14px;
+  width: 26px;
+  height: 20px;
   background: #2b2118;
   border-radius: 50% 50% 46% 46%;
 }
@@ -1593,10 +1596,10 @@ button.day-place:active {
 }
 
 .ds-towel {
-  right: 2%;
-  top: 10%;
-  width: 30%;
-  height: 54%;
+  right: 0;
+  top: 4%;
+  width: 40%;
+  height: 72%;
   background:
     repeating-linear-gradient(
       180deg,
@@ -1612,10 +1615,10 @@ button.day-place:active {
 }
 
 .ds-soap {
-  right: 4%;
-  bottom: 16%;
-  width: 28%;
-  height: 22%;
+  right: 2%;
+  bottom: 14%;
+  width: 36%;
+  height: 30%;
   background: linear-gradient(#ffa8c5, #f06595);
   border: 2px solid #c2255c;
   border-radius: 7px;
@@ -1626,12 +1629,12 @@ button.day-place:active {
 }
 
 .ds-sheen {
-  left: 10%;
-  right: 20%;
-  bottom: 16%;
-  height: 34%;
+  left: 8%;
+  right: 16%;
+  bottom: 14%;
+  height: 42%;
   background:
-    radial-gradient(ellipse at 40% 24%, rgba(255, 255, 255, 0.85) 0 16%, rgba(77, 171, 247, 0.42) 48%, rgba(34, 139, 230, 0.62) 100%);
+    radial-gradient(ellipse at 40% 24%, rgba(255, 255, 255, 0.85) 0 16%, rgba(77, 171, 247, 0.5) 48%, rgba(34, 139, 230, 0.72) 100%);
   border: 2px solid rgba(24, 100, 171, 0.35);
   border-radius: 50%;
   box-shadow: inset 0 4px 0 rgba(255, 255, 255, 0.4);
@@ -1722,8 +1725,8 @@ button.day-place:active {
 .dv-cup {
   right: 5%;
   bottom: 12%;
-  width: 42px;
-  height: 44px;
+  width: 48px;
+  height: 50px;
   background: linear-gradient(#ffffff, #fffef8);
   border: 3px solid #3d2a1a;
   border-radius: 6px 6px 12px 12px;
@@ -1739,11 +1742,11 @@ button.day-place:active {
 
 .dv-brush,
 .dv-brush.is-home {
-  right: 20px;
-  bottom: 18%;
-  width: 12px;
-  height: 52%;
-  min-height: 56px;
+  right: 22px;
+  bottom: 16%;
+  width: 14px;
+  height: 58%;
+  min-height: 64px;
   overflow: visible;
   background: linear-gradient(#51cf66, #2f9e44);
   border: 2px solid #2b8a3e;
@@ -2933,9 +2936,11 @@ button.day-place:active {
 
 .day-marker {
   position: absolute;
-  z-index: 4;
+  z-index: 6;
   left: var(--fox-x, 16%);
-  bottom: 18%;
+  right: var(--fox-right, auto);
+  top: var(--fox-top, auto);
+  bottom: var(--fox-y, 18%);
   width: auto;
   height: auto;
   display: flex;
@@ -2943,13 +2948,39 @@ button.day-place:active {
   align-items: center;
   justify-content: flex-end;
   pointer-events: none;
-  transform: translateX(-50%);
-  transition: left 0.5s ease;
+  transform: translate(-8%, 8%);
+  transition: left 0.5s ease, right 0.5s ease, bottom 0.5s ease, top 0.5s ease;
   overflow: visible;
 }
 
+.day-world.at-sink .day-marker {
+  transform: translate(6%, 8%);
+}
+
+.day-world.at-vanity .day-marker {
+  transform: translate(22%, 6%);
+}
+
+.day-world.at-home .day-marker {
+  transform: translate(-18%, 8%);
+}
+
+.day-world.at-door .day-marker {
+  transform: translate(88%, 2%);
+}
+
 .day-world.at-table .day-marker {
-  bottom: 16%;
+  left: auto;
+  transform: translate(-78%, 4%);
+}
+
+.day-world.at-road .day-marker {
+  left: auto;
+  transform: translate(-86%, 4%);
+}
+
+.day-world.at-park .day-marker {
+  transform: translate(-8%, 22%);
 }
 
 .day-fox-wear {
@@ -2965,8 +2996,13 @@ button.day-place:active {
 }
 
 .day-fox-wear.map {
-  width: 52px;
-  height: 52px;
+  width: clamp(72px, 16vmin, 92px);
+  height: clamp(72px, 16vmin, 92px);
+}
+
+.day-fox-wear.map .fox-frame {
+  width: 100%;
+  height: 100%;
 }
 
 .day-fox-wear .wear {
@@ -2982,8 +3018,7 @@ button.day-place:active {
 }
 
 .day-fox-wear.map .wear.face {
-  font-size: 38px;
-  bottom: -2px;
+  display: none;
 }
 
 .day-fox-wear .wear.head {
@@ -2993,9 +3028,9 @@ button.day-place:active {
 }
 
 .day-fox-wear.map .wear.head {
-  font-size: 20px;
-  top: auto;
-  bottom: 18px;
+  font-size: 24px;
+  top: 2%;
+  bottom: auto;
 }
 
 .day-fox-wear .wear.body {
@@ -3005,8 +3040,8 @@ button.day-place:active {
 }
 
 .day-fox-wear.map .wear.body {
-  font-size: 20px;
-  bottom: -2px;
+  font-size: 24px;
+  bottom: 16%;
 }
 
 .day-fox-wear .wear.feet {
@@ -3016,8 +3051,8 @@ button.day-place:active {
 }
 
 .day-fox-wear.map .wear.feet {
-  font-size: 16px;
-  bottom: -10px;
+  font-size: 20px;
+  bottom: -2px;
 }
 
 .day-endline {
@@ -13035,6 +13070,12 @@ button.day-place:active {
     min-width: 64px;
     min-height: 96px;
   }
+
+  .day-world.at-sink { --fox-x: max(48%, calc(8% + 126px)); --fox-y: 31%; }
+  .day-world.at-vanity { --fox-x: 4%; --fox-y: 31%; }
+  .day-world.at-home { --fox-x: calc(max(48%, 8% + 126px) + 40px); --fox-y: 34%; }
+  .day-world.at-door { --fox-x: 26%; --fox-y: 3%; }
+  .day-world.at-table { --fox-x: auto; --fox-y: 10%; --fox-right: 22%; }
 }
 
 @media (max-height: 520px) {
@@ -13263,22 +13304,14 @@ button.day-place:active {
     min-height: 140px;
   }
 
-  .day-marker {
-    bottom: 14%;
-  }
-
   .day-go-bubble {
     top: -22px;
     font-size: 12px;
   }
 
   .day-fox-wear.map {
-    width: 58px;
-    height: 68px;
-  }
-
-  .day-fox-wear.map .wear.face {
-    font-size: 34px;
+    width: clamp(64px, 18vmin, 80px);
+    height: clamp(64px, 18vmin, 80px);
   }
 
   .day-vanity-art {
