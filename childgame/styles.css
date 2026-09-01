@@ -774,8 +774,8 @@ button:focus-visible {
   background: #fffdf8;
 }
 
-.day-world.at-sink { --fox-x: calc(max(36%, calc(5% + 148px)) - 78px); --fox-y: 28%; }
-.day-world.at-vanity { --fox-x: calc(5% + 116px); --fox-y: 28%; }
+.day-world.at-sink { --fox-x: calc(max(36%, calc(5% + 148px)) - 68px); --fox-y: 24%; }
+.day-world.at-vanity { --fox-x: calc(5% + 6px); --fox-y: 24%; }
 .day-world.at-home { --fox-x: calc(max(36%, 5% + 148px) + 28px); --fox-y: 18%; }
 .day-world.at-door { --fox-x: 48%; --fox-y: 1%; }
 .day-world.at-table { --fox-x: auto; --fox-y: 8%; --fox-right: 30%; }
@@ -1464,8 +1464,8 @@ button.day-place:active {
 }
 
 .furn-wash .day-go-bubble {
-  top: -2px;
-  left: 36%;
+  top: 18px;
+  left: 32%;
   transform: translateX(-50%);
   z-index: 5;
 }
@@ -1481,15 +1481,15 @@ button.day-place:active {
 }
 
 .furn-wash .day-go-bubble::after {
-  bottom: -10px;
-  border: 8px solid transparent;
-  border-top-color: #f0c49a;
+  bottom: -12px;
+  border: 10px solid transparent;
+  border-top-color: #e8590c;
   transform: translateX(-50%);
 }
 
 .furn-wash .day-go-bubble::before {
-  bottom: -7px;
-  border: 7px solid transparent;
+  bottom: -8px;
+  border: 8px solid transparent;
   border-top-color: #ffe066;
   transform: translateX(-50%);
   z-index: 1;
@@ -1497,8 +1497,8 @@ button.day-place:active {
 
 .furn-wash .day-spot-label {
   position: absolute;
-  left: 58%;
-  top: 10px;
+  left: 54%;
+  top: 14px;
   bottom: auto;
   transform: none;
   padding: 2px 8px;
@@ -3355,8 +3355,8 @@ button.day-place:active {
 
 .day-world.at-sink .day-fox-wear.map,
 .day-world.at-vanity .day-fox-wear.map {
-  width: clamp(88px, 20vmin, 112px);
-  height: clamp(88px, 20vmin, 112px);
+  width: clamp(76px, 16vmin, 92px);
+  height: clamp(76px, 16vmin, 92px);
 }
 
 .day-fox-wear.map .fox-frame {
@@ -13387,15 +13387,15 @@ button.day-place:active {
   }
 
   .furn-wash .day-go-bubble {
-    top: 0;
-    left: 36%;
+    top: 14px;
+    left: 32%;
     transform: translateX(-50%);
     padding: 1px 8px;
     font-size: 12px;
   }
 
   .furn-wash .day-spot-label {
-    left: 58%;
+    left: 54%;
     top: 12px;
     font-size: 12px;
   }
@@ -13450,8 +13450,8 @@ button.day-place:active {
     min-height: 96px;
   }
 
-  .day-world.at-sink { --fox-x: calc(max(48%, calc(8% + 126px)) - 70px); --fox-y: 26%; }
-  .day-world.at-vanity { --fox-x: calc(4% + 108px); --fox-y: 26%; }
+  .day-world.at-sink { --fox-x: calc(max(48%, calc(8% + 126px)) - 60px); --fox-y: 22%; }
+  .day-world.at-vanity { --fox-x: calc(4% + 6px); --fox-y: 22%; }
   .day-world.at-home { --fox-x: calc(max(48%, 8% + 126px) + 16px); --fox-y: 16%; }
   .day-world.at-door { --fox-x: 46%; --fox-y: 3%; }
   .day-world.at-table { --fox-x: auto; --fox-y: 8%; --fox-right: 34%; }
@@ -13695,8 +13695,8 @@ button.day-place:active {
 
   .day-world.at-sink .day-fox-wear.map,
   .day-world.at-vanity .day-fox-wear.map {
-    width: clamp(80px, 22vmin, 100px);
-    height: clamp(80px, 22vmin, 100px);
+    width: clamp(72px, 18vmin, 88px);
+    height: clamp(72px, 18vmin, 88px);
   }
 
   .day-vanity-art {
