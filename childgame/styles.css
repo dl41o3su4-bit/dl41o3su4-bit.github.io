@@ -775,7 +775,7 @@ button:focus-visible {
 }
 
 .day-world.at-sink { --fox-x: calc(5% + 10px); --fox-y: 24%; }
-.day-world.at-vanity { --fox-x: calc(max(36%, calc(5% + 148px)) + 8px); --fox-y: 24%; }
+.day-world.at-vanity { --fox-x: calc(max(36%, calc(5% + 148px)) - 48px); --fox-y: 18%; }
 .day-world.at-home { --fox-x: calc(max(36%, 5% + 148px) + 28px); --fox-y: 18%; }
 .day-world.at-door { --fox-x: 48%; --fox-y: 1%; }
 .day-world.at-table { --fox-x: auto; --fox-y: 8%; --fox-right: 30%; }
@@ -931,13 +931,21 @@ button:focus-visible {
   width: 24px;
   height: 18px;
   margin-left: -12px;
-  margin-top: calc(-10px + var(--w, 0px));
+  margin-top: calc(-10px + var(--w, 0px) - var(--up, 0px));
   color: #8d5a2b;
   background: currentColor;
   border-radius: 50% 50% 46% 46%;
   transform: rotate(var(--r, 0deg));
   pointer-events: none;
   box-shadow: 1px 2px 0 rgba(61, 42, 26, 0.22);
+}
+
+.dt-paw.at-wash {
+  left: calc((1.15 / 3) * 0.05 / 0.94 * 100% - 3% / 0.94 + 38px);
+}
+
+.dt-paw.at-brush {
+  left: calc(max((1.15 / 3) * 0.36 / 0.94 * 100%, (1.15 / 3) * 0.05 / 0.94 * 100% + 148px) - 3% / 0.94 + 28px);
 }
 
 .dt-paw::before {
@@ -1519,7 +1527,7 @@ button.day-place:active {
 
 .furn-brush .day-go-bubble {
   left: 33%;
-  top: -4px;
+  top: -8px;
   transform: translateX(-50%);
   z-index: 5;
 }
@@ -1535,15 +1543,15 @@ button.day-place:active {
 }
 
 .furn-brush .day-go-bubble::after {
-  bottom: -10px;
-  border: 8px solid transparent;
-  border-top-color: #f0c49a;
+  bottom: -12px;
+  border: 10px solid transparent;
+  border-top-color: #e8590c;
   transform: translateX(-50%);
 }
 
 .furn-brush .day-go-bubble::before {
-  bottom: -7px;
-  border: 7px solid transparent;
+  bottom: -8px;
+  border: 8px solid transparent;
   border-top-color: #ffe066;
   transform: translateX(-50%);
   z-index: 1;
@@ -1551,8 +1559,8 @@ button.day-place:active {
 
 .furn-brush .day-spot-label {
   position: absolute;
-  left: 60%;
-  top: 0;
+  left: 64%;
+  top: -2px;
   bottom: auto;
   transform: none;
   padding: 2px 8px;
@@ -13408,15 +13416,15 @@ button.day-place:active {
 
   .furn-brush .day-go-bubble {
     left: 33%;
-    top: -2px;
+    top: -6px;
     transform: translateX(-50%);
-    padding: 1px 6px;
-    font-size: 11px;
+    padding: 1px 8px;
+    font-size: 12px;
   }
 
   .furn-brush .day-spot-label {
-    left: 58%;
-    top: 10px;
+    left: 64%;
+    top: 0;
     font-size: 12px;
   }
 
@@ -13450,8 +13458,16 @@ button.day-place:active {
     min-height: 96px;
   }
 
+  .dt-paw.at-wash {
+    left: calc((1.15 / 3) * 0.04 / 0.94 * 100% - 3% / 0.94 + 34px);
+  }
+
+  .dt-paw.at-brush {
+    left: calc(max((1.15 / 3) * 0.48 / 0.94 * 100%, (1.15 / 3) * 0.08 / 0.94 * 100% + 126px) - 3% / 0.94 + 24px);
+  }
+
   .day-world.at-sink { --fox-x: calc(4% + 8px); --fox-y: 22%; }
-  .day-world.at-vanity { --fox-x: calc(max(48%, calc(8% + 126px)) + 6px); --fox-y: 22%; }
+  .day-world.at-vanity { --fox-x: calc(max(48%, calc(8% + 126px)) - 44px); --fox-y: 16%; }
   .day-world.at-home { --fox-x: calc(max(48%, 8% + 126px) + 16px); --fox-y: 16%; }
   .day-world.at-door { --fox-x: 46%; --fox-y: 3%; }
   .day-world.at-table { --fox-x: auto; --fox-y: 8%; --fox-right: 34%; }

@@ -6344,10 +6344,10 @@
     var next = nextDayTask(world);
     var stretchWash = (world && world.lastTask) === "wash" && next === "brush";
     var paws = [
-      { x: 16, w: -5, r: -14, id: "wash" },
-      { x: 20, w: 8, r: 10, after: "wash" },
-      { x: 24, w: -4, r: -8, id: "brush" },
-      { x: 28, w: 9, r: 14, after: "brush" },
+      { x: 6, w: -5, r: -14, id: "wash", up: 14 },
+      { x: 10, w: 6, r: 10, after: "wash", up: 12 },
+      { x: 16, w: -4, r: -8, id: "brush", up: 14 },
+      { x: 22, w: 8, r: 12, after: "brush", up: 5 },
       { x: 32, w: -7, r: -12, id: "dress" },
       { x: 36, w: 6, r: 8, after: "dress" },
       { x: 40, w: -3, r: -6, id: "table" },
@@ -6360,7 +6360,7 @@
       { x: 86, w: 5, r: 12, id: "habitat" },
     ];
     if (stretchWash) {
-      paws.splice(2, 0, { x: 22, w: 1, r: 4, kind: "stretch" });
+      paws.splice(2, 0, { x: 13, w: 1, r: 4, kind: "stretch", up: 13 });
     }
     return (
       '<div class="day-trail' +
@@ -6372,13 +6372,16 @@
             '<i class="dt-paw ' +
             trailPawKind(world, p) +
             (p.id ? " at-" + p.id : "") +
+            (p.up ? " is-up" : "") +
             '" style="--x:' +
             p.x +
             "%;--w:" +
             p.w +
             "px;--r:" +
             p.r +
-            'deg"></i>'
+            "deg" +
+            (p.up ? ";--up:" + p.up + "vmin" : "") +
+            '"></i>'
           );
         })
         .join("") +
