@@ -6317,21 +6317,13 @@
       '">' +
       topTools(
         '<div class="day-top-left">' +
-          '<button class="home-btn" type="button" data-action="school-home" aria-label="回家">🏠</button>' +
+          '<button class="home-btn" type="button" data-action="school-home" aria-label="去學堂選課">🏠</button>' +
           '<div class="progress-chip day-count">今天 ' +
           done +
           " / " +
           plan.length +
           "</div></div>"
       ) +
-      '<div class="home-hero">' +
-      '<p class="kicker">和小狐狸一起過一天</p>' +
-      '<h1 class="title">小狐狸的一天</h1></div>' +
-      '<div class="fox-row">' +
-      foxImg() +
-      '<p class="speech" aria-live="polite">' +
-      escapeHtml(state.foxMsg) +
-      "</p></div>" +
       '<div class="day-world' +
       (evening ? " is-evening" : "") +
       " " +
@@ -6354,7 +6346,12 @@
       (crossedTheRoad(world) ? " is-park-side" : "") +
       '" aria-hidden="true">' +
       renderFoxWear(world, "map") +
-      "</div></div>" +
+      "</div>" +
+      '<div class="day-talk">' +
+      '<p class="day-world-title">小狐狸的一天</p>' +
+      '<p class="speech" aria-live="polite">' +
+      escapeHtml(state.foxMsg) +
+      "</p></div></div>" +
       (evening ? '<p class="day-endline">' + escapeHtml(dayRecapLine(world)) + "</p>" : "") +
       "</div>"
     );
@@ -9935,9 +9932,10 @@
 
   function bootFromHash() {
     var id = (location.hash || "").replace("#", "");
-    if (id === "day") openDayWorld();
+    if (!id || id === "day") openDayWorld();
     else if (isLevelId(id)) startLevel(id);
     else if (state.screen !== "home") goHome();
+    else render();
   }
 
   window.addEventListener("hashchange", bootFromHash);
@@ -9951,7 +9949,6 @@
     } catch (e) {}
   }
 
-  render();
   bootFromHash();
 
   try {
