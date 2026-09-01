@@ -637,8 +637,8 @@ button:focus-visible {
   transition: left 0.45s ease;
 }
 
-.day-banner-scene.at-sink .day-fox-wear.mini { left: 10%; }
-.day-banner-scene.at-vanity .day-fox-wear.mini { left: 8%; }
+.day-banner-scene.at-sink .day-fox-wear.mini { left: 8%; }
+.day-banner-scene.at-vanity .day-fox-wear.mini { left: 22%; }
 .day-banner-scene.at-door .day-fox-wear.mini { left: 20%; }
 .day-banner-scene.at-table .day-fox-wear.mini { left: 26%; }
 .day-banner-scene.at-road .day-fox-wear.mini { left: 48%; }
@@ -774,8 +774,8 @@ button:focus-visible {
   background: #fffdf8;
 }
 
-.day-world.at-sink { --fox-x: calc(max(36%, calc(5% + 148px)) - 68px); --fox-y: 24%; }
-.day-world.at-vanity { --fox-x: calc(5% + 6px); --fox-y: 24%; }
+.day-world.at-sink { --fox-x: calc(5% + 10px); --fox-y: 24%; }
+.day-world.at-vanity { --fox-x: calc(max(36%, calc(5% + 148px)) + 8px); --fox-y: 24%; }
 .day-world.at-home { --fox-x: calc(max(36%, 5% + 148px) + 28px); --fox-y: 18%; }
 .day-world.at-door { --fox-x: 48%; --fox-y: 1%; }
 .day-world.at-table { --fox-x: auto; --fox-y: 8%; --fox-right: 30%; }
@@ -1456,7 +1456,7 @@ button.day-place:active {
 }
 
 .furn-wash {
-  left: max(36%, calc(5% + 148px));
+  left: 5%;
   bottom: 31%;
   min-width: 110px;
   min-height: 88px;
@@ -1464,8 +1464,8 @@ button.day-place:active {
 }
 
 .furn-wash .day-go-bubble {
-  top: 18px;
-  left: 32%;
+  top: -6px;
+  left: 38%;
   transform: translateX(-50%);
   z-index: 5;
 }
@@ -1497,8 +1497,8 @@ button.day-place:active {
 
 .furn-wash .day-spot-label {
   position: absolute;
-  left: 54%;
-  top: 14px;
+  left: 64%;
+  top: -2px;
   bottom: auto;
   transform: none;
   padding: 2px 8px;
@@ -1510,7 +1510,7 @@ button.day-place:active {
 }
 
 .furn-brush {
-  left: 5%;
+  left: max(36%, calc(5% + 148px));
   bottom: 31%;
   min-width: 110px;
   min-height: 118px;
@@ -1518,8 +1518,8 @@ button.day-place:active {
 }
 
 .furn-brush .day-go-bubble {
-  left: 30%;
-  top: 2px;
+  left: 33%;
+  top: -4px;
   transform: translateX(-50%);
   z-index: 5;
 }
@@ -1551,8 +1551,8 @@ button.day-place:active {
 
 .furn-brush .day-spot-label {
   position: absolute;
-  left: 58%;
-  top: 14px;
+  left: 60%;
+  top: 0;
   bottom: auto;
   transform: none;
   padding: 2px 8px;
@@ -3355,8 +3355,8 @@ button.day-place:active {
 
 .day-world.at-sink .day-fox-wear.map,
 .day-world.at-vanity .day-fox-wear.map {
-  width: clamp(76px, 16vmin, 92px);
-  height: clamp(76px, 16vmin, 92px);
+  width: clamp(64px, 14vmin, 76px);
+  height: clamp(64px, 14vmin, 76px);
 }
 
 .day-fox-wear.map .fox-frame {
@@ -13381,42 +13381,42 @@ button.day-place:active {
   }
 
   .furn-wash {
-    left: max(48%, calc(8% + 126px));
+    left: 4%;
     min-width: 110px;
     min-height: 88px;
   }
 
   .furn-wash .day-go-bubble {
-    top: 14px;
-    left: 32%;
+    top: -4px;
+    left: 38%;
     transform: translateX(-50%);
     padding: 1px 8px;
     font-size: 12px;
   }
 
   .furn-wash .day-spot-label {
-    left: 54%;
-    top: 12px;
+    left: 64%;
+    top: 0;
     font-size: 12px;
   }
 
   .furn-brush {
-    left: 4%;
+    left: max(48%, calc(8% + 126px));
     min-width: 110px;
     min-height: 118px;
   }
 
   .furn-brush .day-go-bubble {
-    left: 28%;
-    top: 2px;
+    left: 33%;
+    top: -2px;
     transform: translateX(-50%);
     padding: 1px 6px;
     font-size: 11px;
   }
 
   .furn-brush .day-spot-label {
-    left: 56%;
-    top: 14px;
+    left: 58%;
+    top: 10px;
     font-size: 12px;
   }
 
@@ -13450,8 +13450,8 @@ button.day-place:active {
     min-height: 96px;
   }
 
-  .day-world.at-sink { --fox-x: calc(max(48%, calc(8% + 126px)) - 60px); --fox-y: 22%; }
-  .day-world.at-vanity { --fox-x: calc(4% + 6px); --fox-y: 22%; }
+  .day-world.at-sink { --fox-x: calc(4% + 8px); --fox-y: 22%; }
+  .day-world.at-vanity { --fox-x: calc(max(48%, calc(8% + 126px)) + 6px); --fox-y: 22%; }
   .day-world.at-home { --fox-x: calc(max(48%, 8% + 126px) + 16px); --fox-y: 16%; }
   .day-world.at-door { --fox-x: 46%; --fox-y: 3%; }
   .day-world.at-table { --fox-x: auto; --fox-y: 8%; --fox-right: 34%; }
@@ -13695,8 +13695,8 @@ button.day-place:active {
 
   .day-world.at-sink .day-fox-wear.map,
   .day-world.at-vanity .day-fox-wear.map {
-    width: clamp(72px, 18vmin, 88px);
-    height: clamp(72px, 18vmin, 88px);
+    width: clamp(60px, 16vmin, 72px);
+    height: clamp(60px, 16vmin, 72px);
   }
 
   .day-vanity-art {
