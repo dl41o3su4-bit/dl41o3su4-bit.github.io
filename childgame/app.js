@@ -6344,23 +6344,23 @@
     var next = nextDayTask(world);
     var stretchWash = (world && world.lastTask) === "wash" && next === "brush";
     var paws = [
-      { x: 8, w: -6, r: -16, id: "wash" },
-      { x: 13, w: 8, r: 12, after: "wash" },
-      { x: 18, w: -4, r: -8, id: "brush" },
-      { x: 23, w: 10, r: 16, after: "brush" },
-      { x: 28, w: -8, r: -14, id: "dress" },
-      { x: 33, w: 6, r: 8, after: "dress" },
-      { x: 38, w: -2, r: -6, id: "table" },
-      { x: 43, w: 10, r: 14, after: "table" },
+      { x: 16, w: -5, r: -14, id: "wash" },
+      { x: 20, w: 8, r: 10, after: "wash" },
+      { x: 24, w: -4, r: -8, id: "brush" },
+      { x: 28, w: 9, r: 14, after: "brush" },
+      { x: 32, w: -7, r: -12, id: "dress" },
+      { x: 36, w: 6, r: 8, after: "dress" },
+      { x: 40, w: -3, r: -6, id: "table" },
+      { x: 44, w: 8, r: 12, after: "table" },
       { x: 48, w: -6, r: -10, id: "out" },
-      { x: 54, w: 4, r: 6, after: "out" },
-      { x: 60, w: -8, r: -12, id: "light" },
-      { x: 68, w: 8, r: 10, after: "light" },
-      { x: 76, w: -4, r: -8, after: "light" },
-      { x: 84, w: 6, r: 12, id: "habitat" },
+      { x: 55, w: 4, r: 6, after: "out" },
+      { x: 62, w: -8, r: -12, id: "light" },
+      { x: 70, w: 7, r: 10, after: "light" },
+      { x: 78, w: -4, r: -8, after: "light" },
+      { x: 86, w: 5, r: 12, id: "habitat" },
     ];
     if (stretchWash) {
-      paws.splice(2, 0, { x: 15.5, w: 1, r: 4, kind: "stretch" });
+      paws.splice(2, 0, { x: 22, w: 1, r: 4, kind: "stretch" });
     }
     return (
       '<div class="day-trail' +

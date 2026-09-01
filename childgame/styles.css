@@ -774,8 +774,8 @@ button:focus-visible {
   background: #fffdf8;
 }
 
-.day-world.at-sink { --fox-x: calc(max(36%, calc(5% + 148px)) + 74px); --fox-y: 20%; }
-.day-world.at-vanity { --fox-x: calc(5% + 86px); --fox-y: 20%; }
+.day-world.at-sink { --fox-x: calc(max(36%, calc(5% + 148px)) + 86px); --fox-y: 30%; }
+.day-world.at-vanity { --fox-x: calc(5% + 92px); --fox-y: 30%; }
 .day-world.at-home { --fox-x: calc(max(36%, 5% + 148px) + 28px); --fox-y: 18%; }
 .day-world.at-door { --fox-x: 48%; --fox-y: 1%; }
 .day-world.at-table { --fox-x: auto; --fox-y: 8%; --fox-right: 30%; }
@@ -13326,8 +13326,8 @@ button.day-place:active {
     min-height: 96px;
   }
 
-  .day-world.at-sink { --fox-x: calc(max(48%, calc(8% + 126px)) + 96px); --fox-y: 24%; }
-  .day-world.at-vanity { --fox-x: calc(4% + 100px); --fox-y: 24%; }
+  .day-world.at-sink { --fox-x: calc(max(48%, calc(8% + 126px)) + 78px); --fox-y: 28%; }
+  .day-world.at-vanity { --fox-x: calc(4% + 86px); --fox-y: 28%; }
   .day-world.at-home { --fox-x: calc(max(48%, 8% + 126px) + 16px); --fox-y: 16%; }
   .day-world.at-door { --fox-x: 46%; --fox-y: 3%; }
   .day-world.at-table { --fox-x: auto; --fox-y: 8%; --fox-right: 34%; }
