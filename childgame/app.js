@@ -6345,7 +6345,7 @@
     var stretchWash = (world && world.lastTask) === "wash" && next === "brush";
     var paws = [
       { x: 6, w: -5, r: -14, id: "wash", up: 14 },
-      { x: 10, w: 6, r: 10, after: "wash", up: 12 },
+      { x: 8, w: 6, r: 10, after: "wash", up: 13, near: "wash" },
       { x: 16, w: -4, r: -8, id: "brush", up: 14 },
       { x: 22, w: 8, r: 12, after: "brush", up: 5 },
       { x: 32, w: -7, r: -12, id: "dress" },
@@ -6372,6 +6372,7 @@
             '<i class="dt-paw ' +
             trailPawKind(world, p) +
             (p.id ? " at-" + p.id : "") +
+            (p.near ? " near-" + p.near : "") +
             (p.up ? " is-up" : "") +
             '" style="--x:' +
             p.x +
