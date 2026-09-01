@@ -4593,7 +4593,9 @@
         "</span></span>";
     }
     return (
-      '<span class="day-table-art">' +
+      '<span class="day-table-art' +
+      (items.length ? " is-set" : "") +
+      '">' +
       '<i class="dtb-top"></i><i class="dtb-leg a"></i><i class="dtb-leg b"></i>' +
       bits +
       "</span>"
@@ -6178,7 +6180,9 @@
       '<i class="dbd-frame"></i><i class="dbd-blanket"></i><i class="dbd-pillow"></i>' +
       hints +
       "</span>" +
-      '<span class="day-hang-art">' +
+      '<span class="day-hang-art' +
+      (hasOutfit(world) ? " is-hung" : "") +
+      '">' +
       '<i class="dh-post a"></i><i class="dh-post b"></i>' +
       '<i class="dh-rail"></i><i class="dh-peg a"></i><i class="dh-peg b"></i><i class="dh-hanger"></i>' +
       renderDayHangBits(world) +
@@ -6315,6 +6319,73 @@
     );
   }
 
+  function trailTaskNow(world, id) {
+    var next = nextDayTask(world);
+    if (!next) return false;
+    if (id === "light") return next === "light" || next === "retry";
+    if (id === "habitat") return next === "habitat" || next === "friends";
+    return next === id;
+  }
+
+  function trailTaskDone(world, id) {
+    if (id === "light") return crossedTheRoad(world);
+    return isTaskDone(world, id);
+  }
+
+  function trailPawKind(world, spec) {
+    if (spec.kind === "stretch") return "is-stretch";
+    var id = spec.id || spec.after;
+    if (spec.id && trailTaskNow(world, spec.id)) return "is-now";
+    if (trailTaskDone(world, id)) return "is-done";
+    return "is-soon";
+  }
+
+  function renderDayTrail(world) {
+    var next = nextDayTask(world);
+    var stretchWash = (world && world.lastTask) === "wash" && next === "brush";
+    var paws = [
+      { x: 8, w: -6, r: -16, id: "wash" },
+      { x: 13, w: 8, r: 12, after: "wash" },
+      { x: 18, w: -4, r: -8, id: "brush" },
+      { x: 23, w: 10, r: 16, after: "brush" },
+      { x: 28, w: -8, r: -14, id: "dress" },
+      { x: 33, w: 6, r: 8, after: "dress" },
+      { x: 38, w: -2, r: -6, id: "table" },
+      { x: 43, w: 10, r: 14, after: "table" },
+      { x: 48, w: -6, r: -10, id: "out" },
+      { x: 54, w: 4, r: 6, after: "out" },
+      { x: 60, w: -8, r: -12, id: "light" },
+      { x: 68, w: 8, r: 10, after: "light" },
+      { x: 76, w: -4, r: -8, after: "light" },
+      { x: 84, w: 6, r: 12, id: "habitat" },
+    ];
+    if (stretchWash) {
+      paws.splice(2, 0, { x: 15.5, w: 1, r: 4, kind: "stretch" });
+    }
+    return (
+      '<div class="day-trail' +
+      (stretchWash ? " just-wash" : "") +
+      '" aria-hidden="true">' +
+      paws
+        .map(function (p) {
+          return (
+            '<i class="dt-paw ' +
+            trailPawKind(world, p) +
+            (p.id ? " at-" + p.id : "") +
+            '" style="--x:' +
+            p.x +
+            "%;--w:" +
+            p.w +
+            "px;--r:" +
+            p.r +
+            'deg"></i>'
+          );
+        })
+        .join("") +
+      "</div>"
+    );
+  }
+
   function renderDayWorld() {
     var world = ensureFoxWorld();
     var evening = dayIsFinished(world);
@@ -6357,7 +6428,7 @@
       renderDaySkyFx(world) +
       "</div>" +
       '<div class="day-ground" aria-hidden="true"></div>' +
-      '<div class="day-trail" aria-hidden="true"></div>' +
+      renderDayTrail(world) +
       '<div class="day-live">' +
       renderHomeCorner(world, evening) +
       renderRoadCorner(world, evening) +
@@ -10098,6 +10169,14 @@
           foxInHome: html.indexOf('corner-home') >= 0 && /corner-home[\s\S]*day-marker/.test(html),
           foxInRoad: /corner-road[\s\S]*day-marker/.test(html),
           foxInPark: /corner-park[\s\S]*day-marker/.test(html),
+          hasTrailPaws: html.indexOf("dt-paw") >= 0,
+          trailNow: html.indexOf("dt-paw is-now") >= 0,
+          trailSoon: html.indexOf("dt-paw is-soon") >= 0,
+          trailDone: html.indexOf("dt-paw is-done") >= 0,
+          trailStretch: html.indexOf("dt-paw is-stretch") >= 0,
+          trailWashNow: html.indexOf("dt-paw is-now at-wash") >= 0,
+          trailBrushNow: html.indexOf("dt-paw is-now at-brush") >= 0,
+          emptyTrail: /<div class="day-trail"[^>]*><\/div>/.test(html),
         };
       },
       finishWashForTest: function () {
