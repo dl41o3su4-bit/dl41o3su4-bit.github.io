@@ -6082,8 +6082,17 @@
       '">' +
       '<i class="dv-mirror"></i><i class="dv-counter"></i><i class="dv-basin"></i><i class="dv-well"></i><i class="dv-tap"></i>' +
       (used
-        ? '<i class="dv-cup is-home"></i><i class="dv-brush is-home is-in-cup"></i><i class="dv-head"></i><i class="dv-foam is-in-basin"></i><i class="dv-foam-b is-in-basin"></i><i class="dv-paste is-beside"></i>'
+        ? '<i class="dv-foam is-in-basin"></i><i class="dv-foam-b is-in-basin"></i><i class="dv-paste is-beside"></i>'
         : '<i class="dv-cup"></i>') +
+      "</span>"
+    );
+  }
+
+  function renderDayUsedBrushFront(world) {
+    if (!brushedTheTeeth(world)) return "";
+    return (
+      '<span class="dv-used-front" aria-hidden="true">' +
+      '<i class="dv-cup is-home"></i><i class="dv-brush is-home is-in-cup"></i><i class="dv-head"></i>' +
       "</span>"
     );
   }
@@ -6262,6 +6271,7 @@
         art: dayPlaceArt("dress", world, evening),
         extraClass: "furn-dress",
       }) +
+      renderDayUsedBrushFront(world) +
       renderDayPlace(world, {
         id: "out",
         spot: "door",
@@ -10145,6 +10155,7 @@
           vanityHasCup: html.indexOf("dv-cup") >= 0,
           vanityHasBrush: html.indexOf("dv-brush") >= 0,
           vanityHasHead: html.indexOf("dv-head") >= 0,
+          usedFrontCup: html.indexOf("dv-used-front") >= 0 && html.indexOf("dv-cup is-home") >= 0,
           vanityHasFoam: html.indexOf("dv-foam") >= 0,
           vanityHasPaste: html.indexOf("dv-paste") >= 0,
           brushInCup: html.indexOf("dv-brush is-home is-in-cup") >= 0,
