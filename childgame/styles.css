@@ -774,8 +774,8 @@ button:focus-visible {
   background: #fffdf8;
 }
 
-.day-world.at-sink { --fox-x: calc(max(36%, calc(5% + 148px)) + 108px); --fox-y: 26%; }
-.day-world.at-vanity { --fox-x: calc(5% + 112px); --fox-y: 26%; }
+.day-world.at-sink { --fox-x: calc(max(36%, calc(5% + 148px)) + 74px); --fox-y: 20%; }
+.day-world.at-vanity { --fox-x: calc(5% + 86px); --fox-y: 20%; }
 .day-world.at-home { --fox-x: calc(max(36%, 5% + 148px) + 28px); --fox-y: 18%; }
 .day-world.at-door { --fox-x: 48%; --fox-y: 1%; }
 .day-world.at-table { --fox-x: auto; --fox-y: 8%; --fox-right: 30%; }
@@ -912,69 +912,79 @@ button:focus-visible {
   position: absolute;
   left: 0;
   right: 0;
-  top: 48%;
-  height: 6px;
+  top: 52%;
+  height: 3px;
   border-radius: 999px;
   background:
     repeating-linear-gradient(
       90deg,
-      #c1864a 0 9px,
-      #d4a373 9px 16px,
-      transparent 16px 22px
+      rgba(141, 90, 43, 0.28) 0 5px,
+      transparent 5px 13px
     );
-  opacity: 0.38;
+  opacity: 1;
 }
 
 .dt-paw {
   position: absolute;
   left: var(--x, 8%);
   top: 50%;
-  width: 18px;
-  height: 14px;
-  margin-left: -9px;
-  margin-top: calc(-8px + var(--w, 0px));
+  width: 24px;
+  height: 18px;
+  margin-left: -12px;
+  margin-top: calc(-10px + var(--w, 0px));
   color: #8d5a2b;
   background: currentColor;
   border-radius: 50% 50% 46% 46%;
   transform: rotate(var(--r, 0deg));
   pointer-events: none;
-  box-shadow: 1px 2px 0 rgba(61, 42, 26, 0.18);
+  box-shadow: 1px 2px 0 rgba(61, 42, 26, 0.22);
 }
 
 .dt-paw::before {
   content: "";
   position: absolute;
   left: 50%;
-  top: -7px;
-  width: 6px;
-  height: 7px;
-  margin-left: -3px;
+  top: -8px;
+  width: 8px;
+  height: 9px;
+  margin-left: -4px;
   background: currentColor;
   border-radius: 50%;
   box-shadow:
-    -8px 3px 0 currentColor,
-    8px 3px 0 currentColor;
+    -10px 4px 0 currentColor,
+    10px 4px 0 currentColor;
 }
 
 .dt-paw.is-done {
-  color: #6d451c;
+  color: #5c3d1e;
   opacity: 1;
 }
 
 .dt-paw.is-now {
-  width: 22px;
-  height: 17px;
-  margin-left: -11px;
+  width: 30px;
+  height: 22px;
+  margin-left: -15px;
   color: #e8590c;
   z-index: 2;
-  filter: drop-shadow(0 0 8px rgba(255, 212, 59, 0.95));
+  filter: drop-shadow(0 0 10px rgba(255, 212, 59, 1));
   animation: dt-paw-now 1.15s ease-in-out infinite;
 }
 
 .dt-paw.is-soon {
-  color: #c1864a;
-  opacity: 0.55;
-  box-shadow: none;
+  color: #a86a38;
+  opacity: 0.82;
+  background: #e8c48a;
+  box-shadow: 0 0 0 2px #8d5a2b;
+}
+
+.dt-paw.is-soon::before {
+  background: #e8c48a;
+  box-shadow:
+    -10px 4px 0 #e8c48a,
+    10px 4px 0 #e8c48a,
+    -10px 4px 0 2px #8d5a2b,
+    10px 4px 0 2px #8d5a2b,
+    0 0 0 2px #8d5a2b;
 }
 
 .dt-paw.is-stretch {
@@ -1757,39 +1767,46 @@ button.day-place:active {
 }
 
 .day-sink-art.is-used .ds-towel {
-  right: -8%;
-  top: -6%;
-  width: 54%;
-  height: 90%;
+  right: -16%;
+  top: -14%;
+  width: 68%;
+  height: 118%;
   border-width: 3px;
+  background:
+    repeating-linear-gradient(
+      180deg,
+      #fff4e0 0 8px,
+      #ff922b 8px 12px
+    );
   box-shadow:
-    inset 0 8px 0 rgba(255, 253, 248, 0.5),
-    4px 6px 0 rgba(141, 90, 43, 0.28);
+    inset 0 8px 0 rgba(255, 253, 248, 0.55),
+    5px 7px 0 rgba(141, 90, 43, 0.34);
 }
 
 .day-sink-art.is-used .ds-soap {
-  right: -4%;
-  bottom: 10%;
-  width: 46%;
-  height: 38%;
+  right: -10%;
+  bottom: 8%;
+  width: 56%;
+  height: 46%;
   border-width: 3px;
+  background: linear-gradient(#ffc9de, #f06595);
   box-shadow:
-    inset 0 5px 0 rgba(255, 253, 248, 0.55),
+    inset 0 6px 0 rgba(255, 253, 248, 0.6),
     0 3px 0 #e64980,
-    0 0 0 3px rgba(194, 37, 92, 0.18);
+    0 0 0 4px rgba(194, 37, 92, 0.22);
 }
 
 .day-sink-art.is-used .ds-sheen {
-  left: 6%;
-  right: 12%;
-  bottom: 10%;
-  height: 54%;
+  left: 4%;
+  right: 8%;
+  bottom: 8%;
+  height: 62%;
   background:
-    radial-gradient(ellipse at 40% 24%, rgba(255, 255, 255, 0.95) 0 16%, rgba(77, 171, 247, 0.7) 46%, rgba(24, 100, 171, 0.88) 100%);
-  border: 3px solid rgba(24, 100, 171, 0.5);
+    radial-gradient(ellipse at 40% 24%, rgba(255, 255, 255, 0.98) 0 14%, rgba(77, 171, 247, 0.82) 44%, rgba(24, 100, 171, 0.95) 100%);
+  border: 3px solid #1864ab;
   box-shadow:
-    inset 0 5px 0 rgba(255, 255, 255, 0.5),
-    0 0 10px rgba(34, 139, 230, 0.45);
+    inset 0 6px 0 rgba(255, 255, 255, 0.55),
+    0 0 14px rgba(34, 139, 230, 0.55);
 }
 
 .dv-mirror {
