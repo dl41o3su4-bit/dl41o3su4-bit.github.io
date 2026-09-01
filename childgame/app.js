@@ -10199,10 +10199,10 @@
           foxAtTable: /day-world[^"]*\bat-table\b/.test(html),
           foxAtHome: /day-world[^"]*\bat-home\b/.test(html),
           trailTableNow: html.indexOf("dt-paw is-now at-table") >= 0,
-          dressGoOnHang: /day-hang-art[^>]*>[\s\S]*?去這裡/.test(html) && !/day-bed-art[^>]*>[\s\S]*?去這裡[\s\S]*?<\/span>\s*<span class="day-hang-art/.test(html),
+          dressGoOnHang: /<span class="day-hang-art[^"]*"[^>]*>[\s\S]*?去這裡[\s\S]*?<\/span>\s*<\/span>/.test(html) && html.indexOf("換衣服") >= 0 && /day-world[^"]*\bat-dress\b/.test(html),
           dressGoOnBed: /day-bed-art[^>]*>[\s\S]*?去這裡[\s\S]*?<\/span>\s*<span class="day-hang-art/.test(html),
-          tableGoOnTable: /day-table-art[^>]*>[\s\S]*?去這裡/.test(html),
-          tableEatLabel: /day-table-art[^>]*>[\s\S]*?吃飯/.test(html),
+          tableGoOnTable: /<span class="day-table-art[^"]*"[^>]*>[\s\S]*?去這裡/.test(html),
+          tableEatLabel: /<span class="day-table-art[^"]*"[^>]*>[\s\S]*?吃飯/.test(html),
           emptyTrail: /<div class="day-trail"[^>]*><\/div>/.test(html),
         };
       },
