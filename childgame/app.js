@@ -1573,6 +1573,9 @@
     var rolledFirst = foxWorldSession.rolled && !foxWorldSession.greeted;
     var wall;
     if (rolledFirst && wantsNextMorningFriends(world)) return nextMorningTalk(world);
+    if (isTaskDone(world, "friends") && !ateTheMeal(world) && nextDayTask(world) && nextDayTask(world) !== "friends") {
+      return friendsVisitTalk(world);
+    }
     if (rolledFirst) {
       wall = themeTalkLine(world, true);
       if (wall) {
@@ -1600,6 +1603,9 @@
     }
     if (foxWorldSession.rolled && !foxWorldSession.greeted) {
       if (wantsNextMorningFriends(world)) return nextMorningTalk(world);
+      if (isTaskDone(world, "friends") && !ateTheMeal(world) && nextDayTask(world) && nextDayTask(world) !== "friends") {
+        return friendsVisitTalk(world);
+      }
       var wallHello = themeTalkLine(world, true);
       if (wallHello) return wallHello;
       var mem = world.memories.length ? world.memories[world.memories.length - 1] : "";
