@@ -779,7 +779,7 @@ button:focus-visible {
 .day-world.at-vanity { --fox-x: calc(max(36%, calc(5% + 148px)) - 22px); --fox-y: 28%; }
 .day-world.at-dress { --fox-x: calc(max(36%, 5% + 148px) + 132px); --fox-y: 31%; }
 .day-world.at-home { --fox-x: calc(max(36%, 5% + 148px) + 28px); --fox-y: 18%; }
-.day-world.at-door { --fox-x: 48%; --fox-y: 1%; }
+.day-world.at-door { --fox-x: calc(30% + 58px); --fox-y: 2%; }
 .day-world.at-table { --fox-x: auto; --fox-y: 7%; --fox-right: 4%; }
 .day-world.at-road { --fox-x: auto; --fox-y: 14%; --fox-right: 30%; }
 .day-world.at-park { --fox-x: 28%; --fox-y: auto; --fox-top: 30%; }
@@ -3047,6 +3047,148 @@ button.day-place:active {
   border-width: 3px;
 }
 
+.day-table-art.is-used .day-table-bits {
+  gap: 2px;
+}
+
+.day-table-art.is-used .day-utensil {
+  filter: drop-shadow(0 2px 0 rgba(109, 69, 28, 0.32));
+}
+
+.day-table-art.is-used .ware-bowl {
+  width: clamp(26px, 5.6vmin, 34px);
+  height: clamp(16px, 3.8vmin, 22px);
+  border-width: 3px;
+  background: radial-gradient(ellipse at 50% 78%, #c1864a 0 18%, #ffe8cc 52%, #e8c48a 100%);
+}
+
+.day-table-art.is-used .ware-bowl::before {
+  content: "";
+  position: absolute;
+  left: 16%;
+  right: 20%;
+  top: -22%;
+  height: 62%;
+  background: radial-gradient(ellipse at 46% 55%, #fffef8 0 36%, #fff4d6 62%, #e8c48a 100%);
+  border-radius: 50%;
+  box-shadow: 2px 1px 0 #fff8ee;
+  z-index: 1;
+}
+
+.day-table-art.is-used .ware-bowl::after {
+  content: "";
+  position: absolute;
+  left: 26%;
+  top: 36%;
+  width: 5px;
+  height: 4px;
+  background: #fffef8;
+  border-radius: 50%;
+  box-shadow: 7px 4px 0 0 #f4d9b0, -5px 6px 0 -1px #fff8ee;
+  z-index: 2;
+}
+
+.day-table-art.is-used .ware-plate {
+  width: clamp(26px, 5.6vmin, 34px);
+  height: clamp(10px, 2.4vmin, 14px);
+  border-width: 3px;
+  background: radial-gradient(ellipse at 38% 40%, #fff 0 28%, #fff4e0 58%, #f1f3f5 100%);
+}
+
+.day-table-art.is-used .ware-plate::before {
+  content: "";
+  position: absolute;
+  left: 18%;
+  top: 16%;
+  width: 42%;
+  height: 52%;
+  background: #e8c48a;
+  border-radius: 50% 40% 50% 45%;
+  opacity: 0.92;
+}
+
+.day-table-art.is-used .ware-plate::after {
+  content: "";
+  position: absolute;
+  right: 16%;
+  bottom: 18%;
+  width: 4px;
+  height: 3px;
+  background: #c1864a;
+  border-radius: 50%;
+  box-shadow: -7px 2px 0 0 #d4a574, 3px -3px 0 0 #fff8ee;
+}
+
+.day-table-art .ware-sticks {
+  width: 22px;
+  height: 10px;
+  background: none;
+  border: 0;
+  box-shadow: none;
+}
+
+.day-table-art .ware-sticks::before,
+.day-table-art .ware-sticks::after {
+  content: "";
+  position: absolute;
+  height: 4px;
+  width: 22px;
+  background: linear-gradient(90deg, #e8c48a, #8d5a2b);
+  border: 1px solid #6d451c;
+  border-radius: 2px;
+}
+
+.day-table-art.is-used .ware-sticks.is-askew::before {
+  left: 0;
+  top: 0;
+  transform: rotate(-32deg);
+}
+
+.day-table-art.is-used .ware-sticks.is-askew::after {
+  left: 2px;
+  top: 5px;
+  transform: rotate(22deg);
+}
+
+.day-table-art .dt-crumb {
+  width: 5px;
+  height: 4px;
+  background: #d4a574;
+  border: 0;
+  border-radius: 50%;
+  box-shadow: none;
+  z-index: 4;
+}
+
+.day-table-art .dt-crumb.a {
+  left: 16%;
+  top: 46%;
+}
+
+.day-table-art .dt-crumb.b {
+  left: 36%;
+  top: 50%;
+  width: 6px;
+  height: 4px;
+  background: #fff8ee;
+  box-shadow: 1px 0 0 #c1864a;
+}
+
+.day-table-art .dt-crumb.c {
+  right: 20%;
+  left: auto;
+  top: 44%;
+  background: #c1864a;
+}
+
+.day-table-art .dt-crumb.d {
+  left: 58%;
+  top: 52%;
+  width: 4px;
+  height: 3px;
+  background: #f4d9b0;
+}
+
 .place-park .day-spot-art,
 .place-friends .day-spot-art {
   min-width: 0;
@@ -3553,7 +3695,8 @@ button.day-place:active {
 .day-world.at-sink .day-fox-wear.map,
 .day-world.at-vanity .day-fox-wear.map,
 .day-world.at-dress .day-fox-wear.map,
-.day-world.at-table .day-fox-wear.map {
+.day-world.at-table .day-fox-wear.map,
+.day-world.at-door .day-fox-wear.map {
   width: clamp(64px, 14vmin, 76px);
   height: clamp(64px, 14vmin, 76px);
 }
@@ -13695,7 +13838,7 @@ button.day-place:active {
   .day-world.at-vanity { --fox-x: calc(max(48%, calc(8% + 126px)) - 18px); --fox-y: 26%; }
   .day-world.at-dress { --fox-x: calc(max(48%, 8% + 126px) + 96px); --fox-y: 30%; }
   .day-world.at-home { --fox-x: calc(max(48%, 8% + 126px) + 16px); --fox-y: 16%; }
-  .day-world.at-door { --fox-x: 46%; --fox-y: 3%; }
+  .day-world.at-door { --fox-x: calc(26% + 50px); --fox-y: 3%; }
   .day-world.at-table { --fox-x: auto; --fox-y: 7%; --fox-right: 8%; }
 }
 
@@ -13938,7 +14081,8 @@ button.day-place:active {
   .day-world.at-sink .day-fox-wear.map,
   .day-world.at-vanity .day-fox-wear.map,
   .day-world.at-dress .day-fox-wear.map,
-  .day-world.at-table .day-fox-wear.map {
+  .day-world.at-table .day-fox-wear.map,
+  .day-world.at-door .day-fox-wear.map {
     width: clamp(60px, 16vmin, 72px);
     height: clamp(60px, 16vmin, 72px);
   }

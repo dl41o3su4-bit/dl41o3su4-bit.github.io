@@ -975,6 +975,10 @@
     return !!(world && (world.wentOut || (world.todayCompleted && world.todayCompleted.out)));
   }
 
+  function ateTheMeal(world) {
+    return isTaskDone(world, "table");
+  }
+
   function yesterdayMissedRoad(world) {
     return ((world && world.yesterdayLightMistakes) || 0) >= 1;
   }
@@ -4563,8 +4567,18 @@
 
   function renderDayTableBits(world) {
     var items = world.tableItems || [];
+    var used = ateTheMeal(world);
     var bits = "";
-    if (items.length) {
+    if (used) {
+      bits =
+        '<span class="day-table-set">' +
+        '<span class="day-table-bits">' +
+        '<i class="day-utensil ware-bowl is-eaten"></i>' +
+        '<i class="day-utensil ware-plate is-eaten"></i>' +
+        '<i class="day-utensil ware-sticks is-askew"></i>' +
+        "</span></span>" +
+        '<i class="dt-crumb a"></i><i class="dt-crumb b"></i><i class="dt-crumb c"></i><i class="dt-crumb d"></i>';
+    } else if (items.length) {
       var vessels = [];
       var seen = {};
       var i;
@@ -4597,7 +4611,7 @@
       : "";
     return (
       '<span class="day-table-art' +
-      (items.length ? " is-set" : "") +
+      (used ? " is-used" : items.length ? " is-set" : "") +
       '">' +
       '<i class="dtb-top"></i><i class="dtb-leg a"></i><i class="dtb-leg b"></i>' +
       bits +
@@ -10208,8 +10222,15 @@
           foxAtVanity: /day-world[^"]*\bat-vanity\b/.test(html),
           foxAtDress: /day-world[^"]*\bat-dress\b/.test(html),
           foxAtTable: /day-world[^"]*\bat-table\b/.test(html),
+          foxAtDoor: /day-world[^"]*\bat-door\b/.test(html),
           foxAtHome: /day-world[^"]*\bat-home\b/.test(html),
           trailTableNow: html.indexOf("dt-paw is-now at-table") >= 0,
+          trailOutNow: html.indexOf("dt-paw is-now at-out") >= 0,
+          tableUsed: html.indexOf("day-table-art is-used") >= 0,
+          tableSet: html.indexOf("day-table-art is-set") >= 0,
+          tableHasCrumbs: html.indexOf("dt-crumb") >= 0,
+          tableHasAskew: html.indexOf("ware-sticks is-askew") >= 0,
+          tableHasEaten: html.indexOf("ware-bowl is-eaten") >= 0 && html.indexOf("ware-plate is-eaten") >= 0,
           dressGoOnHang: /<span class="day-hang-art[^"]*"[^>]*>[\s\S]*?去這裡[\s\S]*?<\/span>\s*<\/span>/.test(html) && html.indexOf("換衣服") >= 0 && /day-world[^"]*\bat-dress\b/.test(html),
           dressGoOnBed: /day-bed-art[^>]*>[\s\S]*?去這裡[\s\S]*?<\/span>\s*<span class="day-hang-art/.test(html),
           tableGoOnTable: /<span class="day-table-art[^"]*"[^>]*>[\s\S]*?去這裡/.test(html),
