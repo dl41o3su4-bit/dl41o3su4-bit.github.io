@@ -783,9 +783,11 @@ button:focus-visible {
 .day-world.at-table { --fox-x: auto; --fox-y: 7%; --fox-right: 4%; }
 .day-world.at-road { --fox-x: auto; --fox-y: 14%; --fox-right: 30%; }
 .day-world.at-light { --fox-x: auto; --fox-y: 6%; --fox-right: calc(14% + 64px); }
-.day-world.at-park { --fox-x: 28%; --fox-y: auto; --fox-top: 30%; }
+.day-world.at-habitat,
+.day-world.at-park { --fox-x: 34%; --fox-y: 8%; --fox-top: auto; --fox-right: auto; }
 .day-world.at-road .day-marker.is-park-side { --fox-x: auto; --fox-y: 22%; --fox-right: 8%; }
-.day-world.at-park .day-marker.is-park-side { --fox-x: 18%; --fox-y: auto; --fox-top: 26%; }
+.day-world.at-habitat .day-marker.is-park-side,
+.day-world.at-park .day-marker.is-park-side { --fox-x: 34%; --fox-y: 8%; --fox-top: auto; --fox-right: auto; }
 
 .day-world.wx-rain .day-sky {
   background: linear-gradient(#6d8298, #9aafc0 55%, #c5d0d8);
@@ -1063,10 +1065,12 @@ button:focus-visible {
 }
 
 .dz-print {
-  width: 32px;
-  height: 24px;
-  background: #1a120c;
+  width: 38px;
+  height: 28px;
+  background: #d9480f;
   border-radius: 50% 50% 46% 46%;
+  box-shadow: 0 0 0 3px #fff4e0, 2px 2px 0 rgba(61, 42, 26, 0.35);
+  z-index: 2;
 }
 
 .dz-print::before {
@@ -1074,12 +1078,12 @@ button:focus-visible {
   position: absolute;
   left: 50%;
   top: -8px;
-  width: 7px;
-  height: 8px;
-  margin-left: -3.5px;
-  background: #3d2a1a;
+  width: 8px;
+  height: 9px;
+  margin-left: -4px;
+  background: #e8590c;
   border-radius: 50%;
-  box-shadow: -8px 3px 0 #3d2a1a, 8px 3px 0 #3d2a1a;
+  box-shadow: -9px 3px 0 #e8590c, 9px 3px 0 #e8590c;
 }
 
 .dz-print.a { left: 18%; top: 42%; transform: rotate(-12deg); }
@@ -1795,21 +1799,47 @@ button.day-place:active {
 }
 
 .furn-park {
-  left: 18%;
+  left: 34%;
   right: auto;
-  top: 26%;
-  bottom: auto;
+  top: auto;
+  bottom: 14%;
   min-width: 72px;
-  min-height: 40px;
-  z-index: 3;
+  min-height: 48px;
+  z-index: 4;
 }
 
 .furn-park .day-go-bubble {
   top: auto;
-  bottom: calc(100% + 6px);
+  bottom: calc(100% + 8px);
   left: 50%;
   right: auto;
   transform: translateX(-50%);
+  z-index: 5;
+}
+
+.furn-habitat .day-go-bubble::after,
+.furn-habitat .day-go-bubble::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.furn-habitat .day-go-bubble::after {
+  bottom: -12px;
+  border: 10px solid transparent;
+  border-top-color: #e8590c;
+  transform: translateX(-50%);
+}
+
+.furn-habitat .day-go-bubble::before {
+  bottom: -8px;
+  border: 8px solid transparent;
+  border-top-color: #ffe066;
+  transform: translateX(-50%);
+  z-index: 1;
 }
 
 .furn-park .day-spot-label {
@@ -1819,7 +1849,12 @@ button.day-place:active {
   bottom: auto;
   transform: translateX(-50%);
   margin-top: 0;
+  padding: 2px 8px;
+  background: #fff8ee;
+  border: 2px solid #f0c49a;
+  border-radius: 999px;
   white-space: nowrap;
+  z-index: 5;
 }
 
 .day-sink-art,
@@ -2953,13 +2988,29 @@ button.day-place:active {
 
 .day-light-art.is-crossed .dl-lamp.red,
 .day-light-art.is-crossed .dl-lamp.amber {
-  opacity: 0.38;
-  filter: brightness(0.55);
+  opacity: 0.2;
+  filter: brightness(0.32) grayscale(0.4);
+  box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.4);
 }
 
-.day-light-art.is-crossed .dl-lamp.green {
-  filter: brightness(1.2);
-  box-shadow: 0 0 16px rgba(81, 207, 102, 0.95), inset 0 -3px 0 rgba(0, 0, 0, 0.18);
+.day-light-art.is-crossed .dl-lamp.green,
+.day-light-art.is-green .dl-lamp.green {
+  filter: brightness(1.38);
+  box-shadow:
+    0 0 20px rgba(64, 192, 87, 1),
+    0 0 8px #8ce99a,
+    inset 0 -3px 0 rgba(0, 0, 0, 0.18);
+}
+
+.day-light-art.is-crossed .dl-lamp.green::after,
+.day-light-art.is-green .dl-lamp.green::after {
+  content: "";
+  position: absolute;
+  inset: -10px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(140, 233, 154, 0.7) 0 36%, rgba(81, 207, 102, 0) 72%);
+  pointer-events: none;
+  z-index: -1;
 }
 
 .day-light-art.is-evening .dl-housing {
@@ -3259,6 +3310,7 @@ button.day-place:active {
 }
 
 .place-park .day-spot-art,
+.place-habitat .day-spot-art,
 .place-friends .day-spot-art {
   min-width: 0;
   min-height: 0;
@@ -3741,6 +3793,7 @@ button.day-place:active {
   transform: none;
 }
 
+.day-world.at-habitat .day-marker,
 .day-world.at-park .day-marker {
   transform: none;
 }
@@ -3767,7 +3820,9 @@ button.day-place:active {
 .day-world.at-dress .day-fox-wear.map,
 .day-world.at-table .day-fox-wear.map,
 .day-world.at-door .day-fox-wear.map,
-.day-world.at-light .day-fox-wear.map {
+.day-world.at-light .day-fox-wear.map,
+.day-world.at-habitat .day-fox-wear.map,
+.day-world.at-park .day-fox-wear.map {
   width: clamp(64px, 14vmin, 76px);
   height: clamp(64px, 14vmin, 76px);
 }
@@ -13912,6 +13967,8 @@ button.day-place:active {
   .day-world.at-door { --fox-x: calc(26% + 38px); --fox-y: 3%; }
   .day-world.at-table { --fox-x: auto; --fox-y: 7%; --fox-right: 8%; }
   .day-world.at-light { --fox-x: auto; --fox-y: 7%; --fox-right: calc(14% + 52px); }
+  .day-world.at-habitat,
+  .day-world.at-park { --fox-x: 32%; --fox-y: 8%; --fox-top: auto; --fox-right: auto; }
 }
 
 @media (max-height: 520px) {
@@ -14155,7 +14212,9 @@ button.day-place:active {
   .day-world.at-dress .day-fox-wear.map,
   .day-world.at-table .day-fox-wear.map,
   .day-world.at-door .day-fox-wear.map,
-  .day-world.at-light .day-fox-wear.map {
+  .day-world.at-light .day-fox-wear.map,
+  .day-world.at-habitat .day-fox-wear.map,
+  .day-world.at-park .day-fox-wear.map {
     width: clamp(60px, 16vmin, 72px);
     height: clamp(60px, 16vmin, 72px);
   }
