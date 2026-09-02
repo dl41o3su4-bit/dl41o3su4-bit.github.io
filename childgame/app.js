@@ -922,7 +922,18 @@
     return "";
   }
 
+  function day2ParkPathDone(world) {
+    return (
+      isTaskDone(world, "friends") &&
+      ateTheMeal(world) &&
+      leftHomeToday(world) &&
+      isTaskDone(world, "light") &&
+      isTaskDone(world, "habitat")
+    );
+  }
+
   function dayIsFinished(world) {
+    if (day2ParkPathDone(world)) return true;
     var plan = todayPlanOf(world);
     return plan.length > 0 && todayDoneCount(world) >= plan.length;
   }
@@ -982,7 +993,7 @@
   }
 
   function tableIsNext(world) {
-    return nextDayTask(world) === "table";
+    return !dayIsFinished(world) && nextDayTask(world) === "table";
   }
 
   function setAfterMealOutHint(world) {
@@ -1005,6 +1016,10 @@
 
   function refreshDaySpeech(world) {
     world = world || ensureFoxWorld();
+    if (dayIsFinished(world)) {
+      state.foxMsg = dayFinishedTalk(world);
+      return;
+    }
     var next = nextDayTask(world);
     if (next === "habitat") {
       state.foxMsg = parkAfterLightTalk(world);
@@ -1621,6 +1636,7 @@
     var wall;
     var next = nextDayTask(world);
     if (rolledFirst && wantsNextMorningFriends(world)) return nextMorningTalk(world);
+    if (dayIsFinished(world)) return dayFinishedTalk(world);
     if (isTaskDone(world, "friends") && !ateTheMeal(world) && next && next !== "friends") {
       return friendsVisitTalk(world);
     }
@@ -6273,7 +6289,7 @@
   function renderDayPlace(world, spec) {
     var id = spec.id;
     var done = isTaskDone(world, id);
-    var next = nextDayTask(world) === id;
+    var next = !dayIsFinished(world) && nextDayTask(world) === id;
     var tag = next ? "button" : "div";
     var action = next ? ' data-action="day-task" data-level="' + id + '"' : "";
     var cls =
@@ -6428,7 +6444,7 @@
   }
 
   function renderDayDressArt(world) {
-    var next = nextDayTask(world) === "dress";
+    var next = !dayIsFinished(world) && nextDayTask(world) === "dress";
     var hints = next
       ? '<span class="day-go-bubble">去這裡</span><span class="day-spot-label">換衣服</span>'
       : "";
@@ -6597,6 +6613,7 @@
   }
 
   function trailTaskNow(world, id) {
+    if (dayIsFinished(world)) return false;
     var next = nextDayTask(world);
     if (!next) return false;
     if (id === "light") return next === "light" || next === "retry";
@@ -10531,6 +10548,11 @@
           roadCrossed: html.indexOf("corner-road is-crossed") >= 0,
           hasZebraPrints: html.indexOf("dz-print") >= 0,
           emptyTrail: /<div class="day-trail"[^>]*><\/div>/.test(html),
+          day2Evening:
+            day2ParkPathDone(world) &&
+            (html.indexOf("day-world is-evening") >= 0 || html.indexOf("is-evening wx-") >= 0),
+          applesStill: html.indexOf("day-park-apple") >= 0 || html.indexOf("habitat-apple") >= 0,
+          animalsStill: ((world.residentAnimals || []).length > 0 && html.indexOf("day-critter") >= 0),
         };
       },
       finishWashForTest: function () {
@@ -10673,7 +10695,11 @@
       finishHabitatForTest: function (opts) {
         opts = opts || {};
         var world = ensureFoxWorld();
-        world.residentAnimals = sanitizeAnimals(opts.animals || defaultTestAnimals());
+        if (opts.animals) {
+          world.residentAnimals = sanitizeAnimals(opts.animals);
+        } else if (!hasAnimals(world)) {
+          world.residentAnimals = sanitizeAnimals(defaultTestAnimals());
+        }
         world.todayCompleted.habitat = true;
         world.lastTask = "habitat";
         if (!planHas(world, "habitat")) appendPlan(world, "habitat");
@@ -10681,7 +10707,9 @@
         growTodayPlan(world, "habitat");
         world.todayPlan = sanitizeTodayPlan(world.todayPlan);
         world.todayHints = sanitizeTodayHints(world.todayHints);
-        return saveFoxWorld(world);
+        saveFoxWorld(world);
+        refreshDaySpeech(world);
+        return world;
       },
       finishDayForTest: function () {
         var world = ensureFoxWorld();
