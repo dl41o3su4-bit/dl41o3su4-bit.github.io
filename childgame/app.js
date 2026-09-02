@@ -1006,6 +1006,10 @@
   function refreshDaySpeech(world) {
     world = world || ensureFoxWorld();
     var next = nextDayTask(world);
+    if (next === "habitat") {
+      state.foxMsg = parkAfterLightTalk(world);
+      return;
+    }
     if (leftHomeToday(world) && (next === "light" || next === "retry")) {
       state.foxMsg = afterOutLightTalk(world);
       return;
@@ -1104,6 +1108,20 @@
     else setHint(world, "light", "過馬路，看燈燈");
   }
 
+  function parkAfterLightTalk(world) {
+    return (world && world.todayHints && world.todayHints.habitat) || "到公園了，看看小動物";
+  }
+
+  function ensureHabitatAfterLight(world) {
+    if (!world || !isTaskDone(world, "light") || isTaskDone(world, "habitat")) return;
+    if ((world.lightMistakes || 0) >= 1 && !isTaskDone(world, "retry")) {
+      appendPlan(world, "retry");
+      if (!world.todayHints || !world.todayHints.retry) setHint(world, "retry", "再過一次，看清楚燈");
+    }
+    appendPlan(world, "habitat");
+    if (!world.todayHints || !world.todayHints.habitat) setHint(world, "habitat", "到公園了，看看小動物");
+  }
+
   function growFromTraces(world) {
     if (yesterdayMissedRoad(world) && !planHas(world, "light") && !isTaskDone(world, "light")) {
       appendPlan(world, "light");
@@ -1123,6 +1141,15 @@
     if (isTaskDone(world, "table") && !planHas(world, "out") && !isTaskDone(world, "out")) {
       appendPlan(world, "out");
       setAfterMealOutHint(world);
+      return;
+    }
+    if (leftHomeToday(world) && !planHas(world, "light") && !isTaskDone(world, "light")) {
+      appendPlan(world, "light");
+      setAfterOutLightHint(world);
+      return;
+    }
+    if (isTaskDone(world, "light") && !isTaskDone(world, "habitat")) {
+      ensureHabitatAfterLight(world);
     }
   }
 
@@ -1157,7 +1184,8 @@
       if (done.habitat) plan.push("habitat");
       world.todayPlan = sanitizeTodayPlan(plan);
       var last = world.lastTask || plan[plan.length - 1] || "";
-      if (last) growTodayPlan(world, last);
+      if (done.light && !done.habitat) growTodayPlan(world, "light");
+      else if (last) growTodayPlan(world, last);
       return world;
     }
     if (hasAnimals(world)) {
@@ -1448,6 +1476,7 @@
       foxWorldSession.greeted = false;
     }
     seedTodayPlan(world);
+    ensureHabitatAfterLight(world);
     world.lastVisitISO = nowISO();
     world.version = FOX_WORLD_VERSION;
     return saveFoxWorld(world);
@@ -1590,9 +1619,15 @@
   function dayOpenTalk(world) {
     var rolledFirst = foxWorldSession.rolled && !foxWorldSession.greeted;
     var wall;
+    var next = nextDayTask(world);
     if (rolledFirst && wantsNextMorningFriends(world)) return nextMorningTalk(world);
-    if (isTaskDone(world, "friends") && !ateTheMeal(world) && nextDayTask(world) && nextDayTask(world) !== "friends") {
+    if (isTaskDone(world, "friends") && !ateTheMeal(world) && next && next !== "friends") {
       return friendsVisitTalk(world);
+    }
+    if (next === "habitat") return parkAfterLightTalk(world);
+    if (leftHomeToday(world) && (next === "light" || next === "retry")) return afterOutLightTalk(world);
+    if (ateTheMeal(world) && next === "out") {
+      return (world.todayHints && world.todayHints.out) || "吃飽了，穿鞋出門";
     }
     if (rolledFirst) {
       wall = themeTalkLine(world, true);
@@ -1623,6 +1658,13 @@
       if (wantsNextMorningFriends(world)) return nextMorningTalk(world);
       if (isTaskDone(world, "friends") && !ateTheMeal(world) && nextDayTask(world) && nextDayTask(world) !== "friends") {
         return friendsVisitTalk(world);
+      }
+      if (nextDayTask(world) === "habitat") return parkAfterLightTalk(world);
+      if (leftHomeToday(world) && (nextDayTask(world) === "light" || nextDayTask(world) === "retry")) {
+        return afterOutLightTalk(world);
+      }
+      if (ateTheMeal(world) && nextDayTask(world) === "out") {
+        return (world.todayHints && world.todayHints.out) || "吃飽了，穿鞋出門";
       }
       var wallHello = themeTalkLine(world, true);
       if (wallHello) return wallHello;
@@ -1882,6 +1924,7 @@
       pushMemory(world, "我們出門了");
     }
     growTodayPlan(world, taskId);
+    if (taskId === "light" || taskId === "retry") ensureHabitatAfterLight(world);
     world.todayPlan = sanitizeTodayPlan(world.todayPlan);
     world.todayHints = sanitizeTodayHints(world.todayHints);
     return saveFoxWorld(world);
@@ -6407,7 +6450,10 @@
   }
 
   function roadIsCrossed(world) {
-    return isTaskDone(world, "light") || isTaskDone(world, "retry");
+    if (isTaskDone(world, "retry")) return true;
+    if (!isTaskDone(world, "light")) return false;
+    if (isTaskDone(world, "friends") && ateTheMeal(world) && wentOutTheDoor(world)) return true;
+    return true;
   }
 
   function renderDayLightArt(world, evening) {
@@ -10513,6 +10559,7 @@
         world.todayCompleted.out = true;
         world.lastTask = "out";
         growTodayPlan(world, "out");
+        if (!planHas(world, "light") && !isTaskDone(world, "light")) growFromTraces(world);
         world.todayPlan = sanitizeTodayPlan(world.todayPlan);
         world.todayHints = sanitizeTodayHints(world.todayHints);
         saveFoxWorld(world);
@@ -10569,9 +10616,13 @@
           world.lastTask = "retry";
           growTodayPlan(world, "retry");
         }
+        ensureHabitatAfterLight(world);
+        if (!planHas(world, "habitat") && !isTaskDone(world, "habitat")) growFromTraces(world);
         world.todayPlan = sanitizeTodayPlan(world.todayPlan);
         world.todayHints = sanitizeTodayHints(world.todayHints);
-        return saveFoxWorld(world);
+        saveFoxWorld(world);
+        refreshDaySpeech(world);
+        return world;
       },
       setAnimalsForTest: function (list) {
         var world = ensureFoxWorld();
