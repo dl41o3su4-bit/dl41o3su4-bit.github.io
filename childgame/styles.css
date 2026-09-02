@@ -825,15 +825,32 @@ button:focus-visible {
 .day-world.is-evening.wx-rain .day-sky,
 .day-world.is-evening.wx-cold .day-sky,
 .day-world.is-evening.wx-wind .day-sky {
-  background: linear-gradient(#5a6f9a 0%, #c4786a 48%, #f0b27a 100%);
+  background: linear-gradient(#1d2b55 0%, #7a3560 28%, #e8590c 58%, #ffc078 82%, #ffe8a3 100%);
+}
+
+.day-world.is-evening .day-sky::after {
+  content: "";
+  position: absolute;
+  right: 9%;
+  top: 8%;
+  width: clamp(36px, 9vmin, 56px);
+  height: clamp(36px, 9vmin, 56px);
+  border-radius: 50%;
+  background: radial-gradient(circle at 36% 34%, #fff4c2 0 28%, #ff922b 62%, #d9480f 100%);
+  box-shadow: 0 0 22px 8px rgba(255, 146, 43, 0.55);
+  pointer-events: none;
+}
+
+.day-world.is-evening .wx-sun-icon {
+  display: none;
 }
 
 .day-world.is-evening.wx-rain .day-sky {
-  background: linear-gradient(#4d5c72 0%, #8e7a86 52%, #d4a07a 100%);
+  background: linear-gradient(#2a3348 0%, #6b4a58 46%, #d4a07a 100%);
 }
 
 .day-world.is-evening.wx-cold .day-sky {
-  background: linear-gradient(#6d82a0 0%, #c4b0b8 50%, #e8c8a8 100%);
+  background: linear-gradient(#3d4d6e 0%, #8e6d78 46%, #e8c8a8 100%);
 }
 
 .day-sky .wx-drop,
@@ -896,8 +913,8 @@ button:focus-visible {
 
 .day-world.is-evening .day-ground {
   background:
-    linear-gradient(90deg, #c4b089 0 34%, transparent 34% 66%, transparent 66% 100%),
-    linear-gradient(#8bb36a, #5e8a48);
+    linear-gradient(90deg, #b08958 0 34%, transparent 34% 66%, transparent 66% 100%),
+    linear-gradient(#6f9a48, #3f6a32);
 }
 
 .day-trail {
@@ -1265,11 +1282,17 @@ button:focus-visible {
 
 .day-world.is-evening .live-win {
   background: #ffe066;
-  box-shadow: 0 0 10px rgba(255, 224, 102, 0.7);
+  border-color: #f59f00;
+  box-shadow:
+    0 0 0 2px #ffe8a3,
+    0 0 18px 6px rgba(255, 212, 80, 0.95);
 }
 
 .day-world.is-evening .park-pond {
-  background: radial-gradient(ellipse at 38% 34%, #a5d8ff 0 24%, #4dabf7 60%, #3b5bdb 100%);
+  background: radial-gradient(ellipse at 38% 34%, #ffe8a3 0 14%, #74c0fc 48%, #1c4e89 100%);
+  box-shadow:
+    inset 0 6px 0 rgba(255, 236, 180, 0.42),
+    0 0 14px rgba(255, 200, 120, 0.35);
 }
 
 .park-nature {
@@ -3335,6 +3358,29 @@ button.day-place:active {
   filter: drop-shadow(0 2px 0 rgba(43, 33, 24, 0.38));
 }
 
+.corner-park.is-looked .day-park-friends .day-critter,
+.corner-park.is-looked .day-tree .day-critter {
+  zoom: 1.65;
+  filter: drop-shadow(0 3px 0 rgba(33, 20, 10, 0.55));
+}
+
+.corner-park.is-looked .day-park-friends .day-critter.in-water {
+  left: calc(14% + var(--seat, 0) * 16%);
+  bottom: 27%;
+}
+
+.corner-park.is-looked .day-tree .day-critter.in-tree {
+  left: 16%;
+  top: 22%;
+  margin-top: 0;
+  z-index: 5;
+}
+
+.corner-park.is-looked .day-park-friends .day-critter.in-grass {
+  right: 12%;
+  bottom: 16%;
+}
+
 .day-critter {
   position: absolute;
   display: block;
@@ -3883,10 +3929,16 @@ button.day-place:active {
 }
 
 .day-endline {
-  margin: 0;
+  margin: 8px 6px 0;
+  padding: 8px 14px;
   text-align: center;
-  font-size: clamp(18px, 4vmin, 26px);
+  font-size: clamp(20px, 4.4vmin, 28px);
   font-weight: 900;
+  color: #7c2d12;
+  background: #ffe8a3;
+  border: 3px solid #e8590c;
+  border-radius: 18px;
+  box-shadow: 0 3px 0 rgba(156, 66, 18, 0.22);
 }
 
 .again.day-back {
@@ -14259,6 +14311,8 @@ button.day-place:active {
   }
 
   .day-endline {
+    margin: 6px 4px 0;
+    padding: 6px 10px;
     font-size: 16px;
   }
 

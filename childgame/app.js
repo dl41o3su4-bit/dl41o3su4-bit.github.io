@@ -991,6 +991,29 @@
     return !!(world && world.residentAnimals && world.residentAnimals.length);
   }
 
+  function defaultTestAnimals() {
+    return [
+      { emoji: "🐟", name: "魚", zone: "water" },
+      { emoji: "🐦", name: "鳥", zone: "tree" },
+      { emoji: "🐰", name: "兔子", zone: "grass" },
+      { emoji: "🦆", name: "鴨子", zone: "water" },
+    ];
+  }
+
+  function parkShowsLookTraces(world) {
+    if (!hasAnimals(world)) return false;
+    if (isTaskDone(world, "habitat")) return true;
+    if (isTaskDone(world, "friends") || nextDayTask(world) === "friends") return true;
+    return false;
+  }
+
+  function rememberLastResident(world) {
+    var last = world && world.residentAnimals && world.residentAnimals[world.residentAnimals.length - 1];
+    if (!last) return;
+    var home = last.zone === "water" ? "河裡" : last.zone === "tree" ? "樹上" : last.zone === "desert" ? "沙上" : "草地上";
+    pushMemory(world, last.name + "住進" + home);
+  }
+
   function outfitBlob(world) {
     return ((world && world.outfit) || [])
       .map(function (it) {
@@ -1440,7 +1463,8 @@
     var line = "";
     if (first.length) line += first.join("，") + "。";
     if (second.length) line += second.join("，") + "。";
-    return line || "今天我們一起玩，明天再來。";
+    if (line) return "今天走完了。" + line;
+    return "今天走完了。明天再來。";
   }
 
   function dayOpenTalk(world) {
@@ -1666,11 +1690,7 @@
       }
     }
     world.residentAnimals = sanitizeAnimals(animals);
-    var last = world.residentAnimals[world.residentAnimals.length - 1];
-    if (last) {
-      var home = last.zone === "water" ? "河裡" : last.zone === "tree" ? "樹上" : last.zone === "desert" ? "沙上" : "草地上";
-      pushMemory(world, last.name + "住進" + home);
-    }
+    rememberLastResident(world);
   }
 
   function captureFriendsVisit(world) {
@@ -5970,12 +5990,13 @@
   }
 
   function renderDayAnimals(world) {
+    if (!parkShowsLookTraces(world)) return "";
     var list = (world && world.residentAnimals) || [];
     if (!list.length) return "";
     var seats = { water: 0, grass: 0, desert: 0 };
     var bits = [];
     var i;
-    for (i = 0; i < list.length && i < 3; i++) {
+    for (i = 0; i < list.length && i < 4; i++) {
       var it = list[i];
       var zone = it.zone || "grass";
       if (zone === "tree") continue;
@@ -5988,11 +6009,12 @@
   }
 
   function renderParkTreeCritters(world) {
+    if (!parkShowsLookTraces(world)) return "";
     var list = (world && world.residentAnimals) || [];
     var bits = "";
     var seat = 0;
     var i;
-    for (i = 0; i < list.length && i < 3; i++) {
+    for (i = 0; i < list.length && i < 4; i++) {
       if (list[i].zone === "tree") {
         bits += renderDayCritterMark(list[i], i, seat);
         seat += 1;
@@ -6002,10 +6024,10 @@
   }
 
   function renderParkNature(world) {
-    var list = (world && world.residentAnimals) || [];
+    var list = parkShowsLookTraces(world) ? (world && world.residentAnimals) || [] : [];
     var hasDesert = false;
     var i;
-    for (i = 0; i < list.length && i < 3; i++) {
+    for (i = 0; i < list.length && i < 4; i++) {
       if (list[i].zone === "desert") hasDesert = true;
     }
     return (
@@ -6331,8 +6353,12 @@
   function renderParkCorner(world, evening) {
     var id = nextDayTask(world) === "friends" ? "friends" : "habitat";
     var meta = dayTaskMeta(id, world);
+    var looked = parkShowsLookTraces(world);
     return (
-      '<div class="day-corner corner-park">' +
+      '<div class="day-corner corner-park' +
+      (looked ? " is-looked" : "") +
+      (evening ? " is-evening" : "") +
+      '">' +
       renderParkNature(world) +
       renderDayAnimals(world) +
       renderDayPlace(world, {
@@ -6430,10 +6456,10 @@
     var spot = markerSpot(world);
     var next = nextDayTask(world);
     var foxAt =
-      next === "light" || next === "retry"
-        ? "at-light"
-        : next === "habitat" || next === "friends"
-          ? "at-habitat"
+      evening || next === "habitat" || next === "friends"
+        ? "at-habitat"
+        : next === "light" || next === "retry"
+          ? "at-light"
           : spot === "table"
             ? "at-table"
             : spot === "sink"
@@ -10250,6 +10276,9 @@
           tableEatLabel: /<span class="day-table-art[^"]*"[^>]*>[\s\S]*?吃飯/.test(html),
           lightGoOnLight: /place-light is-next[\s\S]*?去這裡[\s\S]*?紅燈/.test(html) || /place-light is-next[\s\S]*?紅燈[\s\S]*?去這裡/.test(html),
           parkGoOnPark: /place-habitat is-next[\s\S]*?去這裡[\s\S]*?公園/.test(html) || /place-habitat is-next[\s\S]*?公園[\s\S]*?去這裡/.test(html),
+          habitatDone: isTaskDone(world, "habitat"),
+          lookedPark: html.indexOf("corner-park is-looked") >= 0,
+          finishTalk: /今天走完了|住在公園|住進/.test(state.foxMsg || "") || /今天走完了|住在公園/.test(dayRecapLine(world)),
           lightCrossed: html.indexOf("day-light-art is-crossed") >= 0,
           lightGreen: html.indexOf("day-light-art is-crossed is-green") >= 0 || html.indexOf("is-green") >= 0,
           roadCrossed: html.indexOf("corner-road is-crossed") >= 0,
@@ -10340,14 +10369,20 @@
       },
       setAnimalsForTest: function (list) {
         var world = ensureFoxWorld();
-        world.residentAnimals = sanitizeAnimals(
-          list || [
-            { emoji: "🐟", name: "魚", zone: "water" },
-            { emoji: "🐦", name: "鳥", zone: "tree" },
-            { emoji: "🐰", name: "兔子", zone: "grass" },
-            { emoji: "🦆", name: "鴨子", zone: "water" },
-          ]
-        );
+        world.residentAnimals = sanitizeAnimals(list || defaultTestAnimals());
+        return saveFoxWorld(world);
+      },
+      finishHabitatForTest: function (opts) {
+        opts = opts || {};
+        var world = ensureFoxWorld();
+        world.residentAnimals = sanitizeAnimals(opts.animals || defaultTestAnimals());
+        world.todayCompleted.habitat = true;
+        world.lastTask = "habitat";
+        if (!planHas(world, "habitat")) appendPlan(world, "habitat");
+        rememberLastResident(world);
+        growTodayPlan(world, "habitat");
+        world.todayPlan = sanitizeTodayPlan(world.todayPlan);
+        world.todayHints = sanitizeTodayHints(world.todayHints);
         return saveFoxWorld(world);
       },
       finishDayForTest: function () {
