@@ -1115,10 +1115,7 @@
     }
     if (hasAnimals(world)) {
       world.todayPlan = ["friends"];
-      if (!hints.friends) {
-        var pal = world.residentAnimals[world.residentAnimals.length - 1];
-        hints.friends = pal.name + "還在公園，要不要先去看看？";
-      }
+      if (!hints.friends) hints.friends = nextMorningTalk(world);
       return world;
     }
     if (yesterdayMissedRoad(world)) {
@@ -1448,11 +1445,15 @@
     return names[0] + "和" + names[1];
   }
 
+  function lastResidentName(world) {
+    var animals = (world && world.residentAnimals) || [];
+    return animals.length ? animals[animals.length - 1].name : "";
+  }
+
   function dayRecapLine(world) {
     var wear = kidJoinNames((world && world.outfit) || []);
     var food = kidJoinNames((world && world.tableItems) || []);
-    var animals = (world && world.residentAnimals) || [];
-    var pal = animals.length ? animals[animals.length - 1].name : "";
+    var pal = lastResidentName(world);
     var again = isTaskDone(world, "retry") || (yesterdayMissedRoad(world) && isTaskDone(world, "light"));
     var first = [];
     if (wear) first.push("你幫我穿了" + wear);
@@ -1467,9 +1468,24 @@
     return "今天走完了。明天再來。";
   }
 
+  function dayFinishedTalk(world) {
+    return lastResidentName(world) ? "今天走完了。" : "今天走完了。明天再來。";
+  }
+
+  function nextMorningTalk(world) {
+    var pal = lastResidentName(world);
+    if (pal) return "你回來了！" + pal + "還在公園。";
+    return "你回來了！朋友還在公園。";
+  }
+
+  function wantsNextMorningFriends(world) {
+    return hasAnimals(world) && nextDayTask(world) === "friends";
+  }
+
   function dayOpenTalk(world) {
     var rolledFirst = foxWorldSession.rolled && !foxWorldSession.greeted;
     var wall;
+    if (rolledFirst && wantsNextMorningFriends(world)) return nextMorningTalk(world);
     if (rolledFirst) {
       wall = themeTalkLine(world, true);
       if (wall) {
@@ -1479,7 +1495,7 @@
       }
       return dayFoxGreeting(world);
     }
-    if (themeWallUnseen(world)) {
+    if (themeWallUnseen(world) && !wantsNextMorningFriends(world)) {
       wall = themeTalkLine(world, false);
       if (wall) {
         markThemeTold(world);
@@ -1496,21 +1512,19 @@
       return "今天要一起去哪裡？";
     }
     if (foxWorldSession.rolled && !foxWorldSession.greeted) {
+      if (wantsNextMorningFriends(world)) return nextMorningTalk(world);
       var wallHello = themeTalkLine(world, true);
       if (wallHello) return wallHello;
-      if (world.todayPlan && world.todayPlan[0] === "friends") {
-        return (world.todayHints && world.todayHints.friends) || "魚還在河邊，要不要先去看看？";
-      }
       var mem = world.memories.length ? world.memories[world.memories.length - 1] : "";
       if (mem.indexOf("昨天") === 0) return "你回來了！" + mem + "。";
       if (mem) return "你回來了！昨天" + mem + "。";
       return "你回來了！今天要一起去哪裡？";
     }
-    if (dayIsFinished(world)) return dayRecapLine(world);
+    if (dayIsFinished(world)) return dayFinishedTalk(world);
     var next = nextDayTask(world);
     if (next === "wash") return "先去那個水龍頭洗手";
+    if (next === "friends") return (world.todayHints && world.todayHints.friends) || nextMorningTalk(world);
     if (next && world.todayHints && world.todayHints[next]) return world.todayHints[next];
-    if (next === "friends") return "魚還在河邊，要不要先去看看？";
     if (next === "brush") return "去刷牙";
     if (next === "dress") {
       if (brushedTheTeeth(world)) return "牙刷放杯子裡了，去穿衣服";
@@ -10127,6 +10141,10 @@
         foxWorldSession.greeted = false;
         return saveFoxWorld(w);
       },
+      rollToNextMorningForTest: function () {
+        this.simulateNewDay();
+        return ensureFoxWorld();
+      },
       open: openDayWorld,
       playNextDayTask: function () {
         var id = nextDayTask(ensureFoxWorld());
@@ -10276,9 +10294,15 @@
           tableEatLabel: /<span class="day-table-art[^"]*"[^>]*>[\s\S]*?吃飯/.test(html),
           lightGoOnLight: /place-light is-next[\s\S]*?去這裡[\s\S]*?紅燈/.test(html) || /place-light is-next[\s\S]*?紅燈[\s\S]*?去這裡/.test(html),
           parkGoOnPark: /place-habitat is-next[\s\S]*?去這裡[\s\S]*?公園/.test(html) || /place-habitat is-next[\s\S]*?公園[\s\S]*?去這裡/.test(html),
+          friendsNext: html.indexOf("place-friends is-next") >= 0,
+          parkGoOnFriends: /place-friends is-next[\s\S]*?去這裡[\s\S]*?去看朋友/.test(html) || /place-friends is-next[\s\S]*?去看朋友[\s\S]*?去這裡/.test(html),
           habitatDone: isTaskDone(world, "habitat"),
           lookedPark: html.indexOf("corner-park is-looked") >= 0,
           finishTalk: /今天走完了|住在公園|住進/.test(state.foxMsg || "") || /今天走完了|住在公園/.test(dayRecapLine(world)),
+          finishSpeech: dayFinishedTalk(world),
+          speech: state.foxMsg || "",
+          speechIsRecap: (state.foxMsg || "") === dayRecapLine(world),
+          morningTalk: nextMorningTalk(world),
           lightCrossed: html.indexOf("day-light-art is-crossed") >= 0,
           lightGreen: html.indexOf("day-light-art is-crossed is-green") >= 0 || html.indexOf("is-green") >= 0,
           roadCrossed: html.indexOf("corner-road is-crossed") >= 0,
