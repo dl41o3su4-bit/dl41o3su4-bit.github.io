@@ -699,6 +699,7 @@
       brushedToday: false,
       wentOut: false,
       parkVisitLeft: false,
+      camelFed: false,
       morningGuestName: "",
     };
   }
@@ -876,6 +877,7 @@
     d.brushedToday = raw.brushedToday === true;
     d.wentOut = raw.wentOut === true;
     d.parkVisitLeft = raw.parkVisitLeft === true;
+    d.camelFed = raw.camelFed === true;
     d.morningGuestName = sanitizeText(raw.morningGuestName, 12);
     return d;
   }
@@ -1641,6 +1643,30 @@
     return "";
   }
 
+  function parkHasCamel(world) {
+    var list = (world && world.residentAnimals) || [];
+    var i;
+    for (i = 0; i < list.length; i++) {
+      if (dayCritterKind(list[i]) === "camel") return true;
+    }
+    return false;
+  }
+
+  function markCamelFed(world) {
+    if (world && parkHasCamel(world)) world.camelFed = true;
+  }
+
+  function parkShowsCamelFeed(world) {
+    if (!parkHasCamel(world)) return false;
+    if (world && world.camelFed) return true;
+    if (!isTaskDone(world, "friends")) return false;
+    return friendsVisitFed(world) || (world && world.morningGuestName === "駱駝");
+  }
+
+  function camelHayMark() {
+    return '<span class="camel-hay" aria-hidden="true"></span>';
+  }
+
   function friendsVisitFed(world) {
     if (world && world.friendsFed) return true;
     var mems = (world && world.memories) || [];
@@ -1675,6 +1701,9 @@
     var guest = lastFriendsGuestName(world);
     var fed = friendsVisitFed(world);
     var go = friendsAftermathGo(world);
+    var camel = parkShowsCamelFeed(world) || (world && world.morningGuestName === "駱駝") || guest === "駱駝";
+    if (camel && fed) return "餵了駱駝，" + go;
+    if (camel) return "駱駝來作客了，" + go;
     if (guest && fed) return "餵了蘋果，" + guest + "來作客，" + go;
     if (guest) return guest + "來作客了，" + go;
     if (fed) return "餵了蘋果，" + go;
@@ -1967,7 +1996,12 @@
     }
     if (fed) world.friendsFed = true;
     if (guestName) pushMemory(world, guestName + "來作客");
-    if (fed) pushMemory(world, "我們餵了蘋果");
+    if (fed) {
+      markCamelFed(world);
+      pushMemory(world, parkHasCamel(world) ? "我們餵了駱駝" : "我們餵了蘋果");
+    } else {
+      if (parkHasCamel(world) || world.morningGuestName === "駱駝") markCamelFed(world);
+    }
     if (!guestName && !fed) pushMemory(world, "我們去看朋友");
   }
 
@@ -6277,6 +6311,9 @@
       if (snack && !hungSnack) {
         extra = habitatAppleMark();
         hungSnack = true;
+      }
+      if (dayCritterKind(it) === "camel" && parkShowsCamelFeed(world)) {
+        extra += camelHayMark();
       }
       bits.push(renderDayCritterMark(it, i, seat, extra));
     }
@@ -10625,6 +10662,16 @@
             html.indexOf("day-world is-evening") < 0 &&
             html.indexOf("is-evening wx-") < 0,
           speechIsGuest: /來作客|又有朋友|多了一/.test(state.foxMsg || "") || /來作客|又有朋友|多了一/.test(nextMorningTalk(world)),
+          day3FriendsDone:
+            parkHasCamel(world) &&
+            isTaskDone(world, "friends") &&
+            html.indexOf("place-friends is-done") >= 0 &&
+            html.indexOf("place-friends is-next") < 0 &&
+            html.indexOf("day-world is-evening") < 0 &&
+            html.indexOf("is-evening wx-") < 0,
+          camelStill: html.indexOf("kind-camel") >= 0,
+          camelFedMark: html.indexOf("camel-hay") >= 0,
+          speechIsCamelFeed: /餵了駱駝/.test(state.foxMsg || "") || /餵了駱駝/.test(friendsVisitTalk(world)),
         };
       },
       finishWashForTest: function () {
@@ -10738,7 +10785,6 @@
         markParkVisitLeft(world);
         if (opts.feed !== false) {
           world.friendsFed = true;
-          pushMemory(world, "我們餵了蘋果");
         }
         if (opts.guest) {
           var g =
@@ -10753,6 +10799,12 @@
           });
           world.residentAnimals = sanitizeAnimals(animals);
           pushMemory(world, (g.name || "羊") + "來作客");
+        }
+        if (opts.feed !== false) {
+          markCamelFed(world);
+          pushMemory(world, parkHasCamel(world) ? "我們餵了駱駝" : "我們餵了蘋果");
+        } else if (parkHasCamel(world) || world.morningGuestName === "駱駝") {
+          markCamelFed(world);
         }
         if (opts.feed === false && !opts.guest) {
           pushMemory(world, "我們去看朋友");
@@ -10793,6 +10845,7 @@
           if (id === "friends") {
             world.visitedFriends = true;
             markParkVisitLeft(world);
+            markCamelFed(world);
           } else if (world.todayCompleted) world.todayCompleted[id] = true;
           if (id === "wash") world.washedToday = true;
           if (id === "brush") world.brushedToday = true;
