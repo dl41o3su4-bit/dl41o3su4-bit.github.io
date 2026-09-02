@@ -779,7 +779,7 @@ button:focus-visible {
 .day-world.at-vanity { --fox-x: calc(max(36%, calc(5% + 148px)) - 22px); --fox-y: 28%; }
 .day-world.at-dress { --fox-x: calc(max(36%, 5% + 148px) + 132px); --fox-y: 31%; }
 .day-world.at-home { --fox-x: calc(max(36%, 5% + 148px) + 28px); --fox-y: 18%; }
-.day-world.at-door { --fox-x: calc(30% + 44px); --fox-y: 2%; }
+.day-world.at-door { --fox-x: calc(30% + 18px); --fox-y: 4%; }
 .day-world.at-table { --fox-x: auto; --fox-y: 7%; --fox-right: 4%; }
 .day-world.at-road { --fox-x: auto; --fox-y: 14%; --fox-right: 30%; }
 .day-world.at-light { --fox-x: auto; --fox-y: 6%; --fox-right: calc(14% + 64px); }
@@ -1638,11 +1638,11 @@ button.day-place:active {
 
 .furn-out .day-spot-label {
   position: absolute;
-  left: calc(100% + 4px);
-  bottom: 22%;
+  left: calc(100% + 14px);
+  bottom: 14%;
   transform: none;
   white-space: nowrap;
-  z-index: 2;
+  z-index: 5;
 }
 
 .furn-dress .day-hang-art .day-go-bubble {
@@ -14100,7 +14100,7 @@ button.day-place:active {
   .day-world.at-vanity { --fox-x: calc(max(48%, calc(8% + 126px)) - 18px); --fox-y: 26%; }
   .day-world.at-dress { --fox-x: calc(max(48%, 8% + 126px) + 96px); --fox-y: 30%; }
   .day-world.at-home { --fox-x: calc(max(48%, 8% + 126px) + 16px); --fox-y: 16%; }
-  .day-world.at-door { --fox-x: calc(26% + 38px); --fox-y: 3%; }
+  .day-world.at-door { --fox-x: calc(26% + 14px); --fox-y: 5%; }
   .day-world.at-table { --fox-x: auto; --fox-y: 7%; --fox-right: 8%; }
   .day-world.at-light { --fox-x: auto; --fox-y: 7%; --fox-right: calc(14% + 52px); }
   .day-world.at-habitat,

@@ -10672,6 +10672,25 @@
           camelStill: html.indexOf("kind-camel") >= 0,
           camelFedMark: html.indexOf("camel-hay") >= 0,
           speechIsCamelFeed: /餵了駱駝/.test(state.foxMsg || ""),
+          day3TableUsed:
+            parkHasCamel(world) &&
+            ateTheMeal(world) &&
+            html.indexOf("day-table-art is-used") >= 0 &&
+            html.indexOf("dt-crumb") >= 0 &&
+            html.indexOf("ware-sticks is-askew") >= 0 &&
+            html.indexOf("place-table is-next") < 0 &&
+            html.indexOf("day-world is-evening") < 0 &&
+            html.indexOf("is-evening wx-") < 0,
+          day3DoorNext:
+            parkHasCamel(world) &&
+            ateTheMeal(world) &&
+            html.indexOf("place-door is-next") >= 0 &&
+            /day-world[^"]*\bat-door\b/.test(html),
+          speechIsDay3Out:
+            parkHasCamel(world) &&
+            ateTheMeal(world) &&
+            /吃飽了|穿鞋出門/.test(state.foxMsg || "") &&
+            !/去吃飯|餵了駱駝|去看朋友|今天走完了/.test(state.foxMsg || ""),
         };
       },
       finishWashForTest: function () {
@@ -10743,6 +10762,7 @@
         world.todayHints = sanitizeTodayHints(world.todayHints);
         saveFoxWorld(world);
         refreshDaySpeech(world);
+        if (state.dayMode) render();
         return world;
       },
       finishLightForTest: function (opts) {
