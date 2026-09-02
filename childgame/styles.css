@@ -782,6 +782,7 @@ button:focus-visible {
 .day-world.at-door { --fox-x: calc(30% + 44px); --fox-y: 2%; }
 .day-world.at-table { --fox-x: auto; --fox-y: 7%; --fox-right: 4%; }
 .day-world.at-road { --fox-x: auto; --fox-y: 14%; --fox-right: 30%; }
+.day-world.at-light { --fox-x: auto; --fox-y: 6%; --fox-right: calc(14% + 64px); }
 .day-world.at-park { --fox-x: 28%; --fox-y: auto; --fox-top: 30%; }
 .day-world.at-road .day-marker.is-park-side { --fox-x: auto; --fox-y: 22%; --fox-right: 8%; }
 .day-world.at-park .day-marker.is-park-side { --fox-x: 18%; --fox-y: auto; --fox-top: 26%; }
@@ -1743,12 +1744,54 @@ button.day-place:active {
   transform: translateX(-50%);
 }
 
+.furn-light .day-go-bubble {
+  z-index: 5;
+}
+
+.furn-light .day-go-bubble::after,
+.furn-light .day-go-bubble::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.furn-light .day-go-bubble::after {
+  bottom: -12px;
+  border: 10px solid transparent;
+  border-top-color: #e8590c;
+  transform: translateX(-50%);
+}
+
+.furn-light .day-go-bubble::before {
+  bottom: -8px;
+  border: 8px solid transparent;
+  border-top-color: #ffe066;
+  transform: translateX(-50%);
+  z-index: 1;
+}
+
 .furn-road .day-spot-label {
   position: absolute;
   left: calc(100% + 4px);
   bottom: 48%;
   transform: none;
   white-space: nowrap;
+}
+
+.furn-light .day-spot-label {
+  padding: 2px 8px;
+  background: #fff8ee;
+  border: 2px solid #f0c49a;
+  border-radius: 999px;
+  z-index: 5;
+}
+
+.place-light.is-next .dl-lamp.red {
+  filter: brightness(1.18);
+  box-shadow: 0 0 14px rgba(250, 82, 82, 0.95), inset 0 -3px 0 rgba(0, 0, 0, 0.18);
 }
 
 .furn-park {
@@ -2397,17 +2440,31 @@ button.day-place:active {
 }
 
 .day-door-art.is-open .dd-frame {
-  background: #1a120c;
-  box-shadow: inset 0 0 0 5px #6d451c, inset 0 0 18px rgba(0, 0, 0, 0.5);
+  background:
+    linear-gradient(#7ec8ff 0 40%, #ffe28a 40% 54%, #8bc34a 54%);
+  box-shadow: inset 0 0 0 5px #6d451c, inset 0 0 14px rgba(26, 18, 12, 0.35);
 }
 
 .day-door-art.is-open .dd-leaf {
   right: auto;
-  left: 12%;
-  width: 26%;
-  transform: perspective(90px) rotateY(-60deg);
+  left: 4%;
+  width: 34%;
+  overflow: visible;
+  transform: perspective(70px) rotateY(-72deg);
+  transform-origin: left center;
   background: linear-gradient(#ffe8cc, #e8c48a);
   border-width: 3px;
+  box-shadow: 8px 0 0 rgba(61, 42, 26, 0.28);
+}
+
+.day-door-art.is-open .dd-socks,
+.day-door-art.is-open .dd-shoes {
+  display: none;
+}
+
+.day-door-art.is-open .dd-mat {
+  filter: brightness(1.08);
+  box-shadow: inset 0 0 0 1px rgba(255, 248, 238, 0.35);
 }
 
 .dd-mat {
@@ -3678,7 +3735,8 @@ button.day-place:active {
   transform: none;
 }
 
-.day-world.at-road .day-marker {
+.day-world.at-road .day-marker,
+.day-world.at-light .day-marker {
   left: auto;
   transform: none;
 }
@@ -3708,7 +3766,8 @@ button.day-place:active {
 .day-world.at-vanity .day-fox-wear.map,
 .day-world.at-dress .day-fox-wear.map,
 .day-world.at-table .day-fox-wear.map,
-.day-world.at-door .day-fox-wear.map {
+.day-world.at-door .day-fox-wear.map,
+.day-world.at-light .day-fox-wear.map {
   width: clamp(64px, 14vmin, 76px);
   height: clamp(64px, 14vmin, 76px);
 }
@@ -13852,6 +13911,7 @@ button.day-place:active {
   .day-world.at-home { --fox-x: calc(max(48%, 8% + 126px) + 16px); --fox-y: 16%; }
   .day-world.at-door { --fox-x: calc(26% + 38px); --fox-y: 3%; }
   .day-world.at-table { --fox-x: auto; --fox-y: 7%; --fox-right: 8%; }
+  .day-world.at-light { --fox-x: auto; --fox-y: 7%; --fox-right: calc(14% + 52px); }
 }
 
 @media (max-height: 520px) {
@@ -14094,7 +14154,8 @@ button.day-place:active {
   .day-world.at-vanity .day-fox-wear.map,
   .day-world.at-dress .day-fox-wear.map,
   .day-world.at-table .day-fox-wear.map,
-  .day-world.at-door .day-fox-wear.map {
+  .day-world.at-door .day-fox-wear.map,
+  .day-world.at-light .day-fox-wear.map {
     width: clamp(60px, 16vmin, 72px);
     height: clamp(60px, 16vmin, 72px);
   }

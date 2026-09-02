@@ -1142,7 +1142,7 @@
     }
     if (justFinished === "out") {
       appendPlan(world, "light");
-      setHint(world, "light", "門開了，過馬路");
+      setHint(world, "light", "到馬路了，紅燈要停");
       return;
     }
     if (justFinished === "light") {
@@ -1500,7 +1500,7 @@
       return washedTheHands(world) && !isTaskDone(world, "dress") ? "手洗好了，去吃飯" : "衣服好了，去吃飯";
     }
     if (next === "out") return "吃飽了，穿鞋出門";
-    if (next === "light") return wentOutTheDoor(world) ? "門開了，過馬路" : "吃飽了，過馬路";
+    if (next === "light") return wentOutTheDoor(world) ? "到馬路了，紅燈要停" : "吃飽了，過馬路";
     if (next === "retry") return "再過一次，看清楚燈";
     if (next === "habitat") return "過了馬路，帶動物回家";
     return "今天要一起去哪裡？";
@@ -1560,7 +1560,7 @@
         emoji: "🍽️",
       };
     }
-    if (id === "light") return { spot: "road", label: "過馬路", emoji: "🚦" };
+    if (id === "light") return { spot: "light", label: "紅燈", emoji: "🚦" };
     if (id === "retry") return { spot: "retry", label: "再過一次", emoji: "🚦" };
     if (id === "habitat") return { spot: "park", label: "去公園", emoji: "🌳" };
     return { spot: "room", label: id || "", emoji: "⭐" };
@@ -6318,10 +6318,10 @@
       "</div>" +
       renderDayPlace(world, {
         id: id,
-        spot: "road",
+        spot: id === "retry" ? "retry" : "light",
         label: meta.label,
         art: dayPlaceArt(id, world, evening),
-        extraClass: "furn-road",
+        extraClass: "furn-road furn-light",
       }) +
       (markerCornerOf(world) === "road" ? renderDayMarker(world) : "") +
       '<span class="day-corner-name">馬路</span></div>'
@@ -6428,16 +6428,19 @@
     var evening = dayIsFinished(world);
     var mark = markerIndex(world);
     var spot = markerSpot(world);
+    var next = nextDayTask(world);
     var foxAt =
-      spot === "table"
-        ? "at-table"
-        : spot === "sink"
-          ? "at-sink"
-          : spot === "vanity"
-            ? "at-vanity"
-            : spot === "door"
-              ? "at-door"
-              : "at-" + spot;
+      next === "light" || next === "retry"
+        ? "at-light"
+        : spot === "table"
+          ? "at-table"
+          : spot === "sink"
+            ? "at-sink"
+            : spot === "vanity"
+              ? "at-vanity"
+              : spot === "door"
+                ? "at-door"
+                : "at-" + spot;
     var done = todayDoneCount(world);
     var plan = todayPlanOf(world);
     return (
@@ -10150,7 +10153,7 @@
           hasWindow: html.indexOf("art-window") >= 0,
           hasZebra: html.indexOf("art-zebra") >= 0,
           hasEmptyBoxClass: /art-window|art-zebra|art-table/.test(html),
-          labels: ["洗手", "刷牙", "出門", "換衣服", "擺早餐", "去野餐", "吃飯", "過馬路", "去公園", "去看朋友", "再過一次"].filter(function (s) {
+          labels: ["洗手", "刷牙", "出門", "換衣服", "擺早餐", "去野餐", "吃飯", "過馬路", "紅燈", "去公園", "去看朋友", "再過一次"].filter(function (s) {
             return html.indexOf(s) >= 0;
           }),
           hasSink: html.indexOf("day-sink-art") >= 0,
@@ -10164,6 +10167,7 @@
           sinkNext: html.indexOf("place-sink is-next") >= 0,
           vanityNext: html.indexOf("place-vanity is-next") >= 0,
           doorNext: html.indexOf("place-door is-next") >= 0,
+          lightNext: html.indexOf("place-light is-next") >= 0,
           sinkUsed: html.indexOf("day-sink-art is-used") >= 0,
           vanityUsed: html.indexOf("day-vanity-art is-used") >= 0,
           vanityHasCup: html.indexOf("dv-cup") >= 0,
@@ -10224,8 +10228,11 @@
           foxAtTable: /day-world[^"]*\bat-table\b/.test(html),
           foxAtDoor: /day-world[^"]*\bat-door\b/.test(html),
           foxAtHome: /day-world[^"]*\bat-home\b/.test(html),
+          foxAtLight: /day-world[^"]*\bat-light\b/.test(html),
+          foxAtRoad: /day-world[^"]*\bat-road\b/.test(html),
           trailTableNow: html.indexOf("dt-paw is-now at-table") >= 0,
           trailOutNow: html.indexOf("dt-paw is-now at-out") >= 0,
+          trailLightNow: html.indexOf("dt-paw is-now at-light") >= 0,
           tableUsed: html.indexOf("day-table-art is-used") >= 0,
           tableSet: html.indexOf("day-table-art is-set") >= 0,
           tableHasCrumbs: html.indexOf("dt-crumb") >= 0,
@@ -10235,6 +10242,7 @@
           dressGoOnBed: /day-bed-art[^>]*>[\s\S]*?去這裡[\s\S]*?<\/span>\s*<span class="day-hang-art/.test(html),
           tableGoOnTable: /<span class="day-table-art[^"]*"[^>]*>[\s\S]*?去這裡/.test(html),
           tableEatLabel: /<span class="day-table-art[^"]*"[^>]*>[\s\S]*?吃飯/.test(html),
+          lightGoOnLight: /place-light is-next[\s\S]*?去這裡[\s\S]*?紅燈/.test(html) || /place-light is-next[\s\S]*?紅燈[\s\S]*?去這裡/.test(html),
           emptyTrail: /<div class="day-trail"[^>]*><\/div>/.test(html),
         };
       },
