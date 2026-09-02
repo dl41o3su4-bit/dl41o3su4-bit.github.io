@@ -3376,9 +3376,8 @@ button.day-place:active {
 
 .corner-park.is-looked .day-critter.kind-camel > .camel-hay,
 .corner-park.is-visited .day-critter.kind-camel > .camel-hay {
-  width: 26px;
-  height: 15px;
-  zoom: 1.15;
+  width: 24px;
+  height: 14px;
 }
 
 .day-park-friends .day-critter {
@@ -3750,18 +3749,19 @@ button.day-place:active {
   position: absolute;
   display: block;
   left: 100%;
-  top: 55%;
-  width: 22px;
-  height: 13px;
+  top: auto;
+  bottom: -10px;
+  width: 24px;
+  height: 14px;
   margin: 0;
   background: linear-gradient(#ffe066 0 30%, #f4d06f 55%, #e8b86d 100%);
   border: 2px solid #c1864a;
   border-radius: 7px 10px 5px 6px;
   box-shadow:
     inset 3px 2px 0 -1px #fff3bf,
-    10px 3px 0 -4px #e8b86d,
+    11px 4px 0 -5px #e8b86d,
     0 3px 0 rgba(33, 20, 10, 0.42);
-  transform: translate(3px, -20%) rotate(-12deg);
+  transform: translate(10px, 6px) rotate(-14deg);
   z-index: 8;
   pointer-events: none;
   filter: drop-shadow(0 2px 0 rgba(33, 20, 10, 0.45));
@@ -3770,22 +3770,22 @@ button.day-place:active {
 .day-critter.kind-camel > .camel-hay::before {
   content: "";
   position: absolute;
-  left: 2px;
-  top: -5px;
-  width: 16px;
-  height: 8px;
+  left: 3px;
+  top: -4px;
+  width: 14px;
+  height: 7px;
   background: #ffe066;
   border: 2px solid #c1864a;
   border-radius: 8px 6px 4px 5px;
-  transform: rotate(18deg);
+  transform: rotate(16deg);
 }
 
 .day-critter.kind-camel > .camel-hay::after {
   content: "";
   position: absolute;
-  right: -3px;
-  bottom: -3px;
-  width: 10px;
+  right: -4px;
+  bottom: -4px;
+  width: 11px;
   height: 7px;
   background: #f4d06f;
   border: 2px solid #c1864a;

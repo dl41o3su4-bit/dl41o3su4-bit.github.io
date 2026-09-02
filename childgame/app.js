@@ -1701,7 +1701,7 @@
     var guest = lastFriendsGuestName(world);
     var fed = friendsVisitFed(world);
     var go = friendsAftermathGo(world);
-    var camel = parkShowsCamelFeed(world) || (world && world.morningGuestName === "駱駝") || guest === "駱駝";
+    var camel = parkShowsCamelFeed(world);
     if (camel && fed) return "餵了駱駝，" + go;
     if (camel) return "駱駝來作客了，" + go;
     if (guest && fed) return "餵了蘋果，" + guest + "來作客，" + go;
@@ -10671,7 +10671,7 @@
             html.indexOf("is-evening wx-") < 0,
           camelStill: html.indexOf("kind-camel") >= 0,
           camelFedMark: html.indexOf("camel-hay") >= 0,
-          speechIsCamelFeed: /餵了駱駝/.test(state.foxMsg || "") || /餵了駱駝/.test(friendsVisitTalk(world)),
+          speechIsCamelFeed: /餵了駱駝/.test(state.foxMsg || ""),
         };
       },
       finishWashForTest: function () {
