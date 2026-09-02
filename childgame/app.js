@@ -989,9 +989,27 @@
     setHint(world, "out", "吃飽了，穿鞋出門");
   }
 
+  function setAfterOutLightHint(world) {
+    setHint(world, "light", "到馬路了，紅燈要停");
+  }
+
+  function afterOutLightTalk(world) {
+    var next = nextDayTask(world);
+    if (next === "retry") return (world.todayHints && world.todayHints.retry) || "再過一次，看清楚燈";
+    return (world.todayHints && world.todayHints.light) || "到馬路了，紅燈要停";
+  }
+
+  function leftHomeToday(world) {
+    return wentOutTheDoor(world);
+  }
+
   function refreshDaySpeech(world) {
     world = world || ensureFoxWorld();
     var next = nextDayTask(world);
+    if (leftHomeToday(world) && (next === "light" || next === "retry")) {
+      state.foxMsg = afterOutLightTalk(world);
+      return;
+    }
     if (ateTheMeal(world) && next === "out") {
       state.foxMsg = (world.todayHints && world.todayHints.out) || "吃飽了，穿鞋出門";
       return;
@@ -1192,7 +1210,7 @@
     }
     if (justFinished === "out") {
       appendPlan(world, "light");
-      setHint(world, "light", "到馬路了，紅燈要停");
+      setAfterOutLightHint(world);
       return;
     }
     if (justFinished === "light") {
@@ -1643,7 +1661,7 @@
       return washedTheHands(world) && !isTaskDone(world, "dress") ? "手洗好了，去吃飯" : "衣服好了，去吃飯";
     }
     if (next === "out") return "吃飽了，穿鞋出門";
-    if (next === "light") return wentOutTheDoor(world) ? "到馬路了，紅燈要停" : "吃飽了，過馬路";
+    if (next === "light") return leftHomeToday(world) ? afterOutLightTalk(world) : "吃飽了，過馬路";
     if (next === "retry") return "再過一次，看清楚燈";
     if (next === "habitat") return "到公園了，看看小動物";
     return "今天要一起去哪裡？";
@@ -1739,7 +1757,7 @@
     var head = outfitBySlot(world, "head");
     var body = outfitBySlot(world, "body");
     var feet = outfitBySlot(world, "feet");
-    var outShoes = !feet && wentOutTheDoor(world);
+    var outShoes = !feet && leftHomeToday(world);
     var worn = !!(head || body || feet || outShoes);
     var isMap = extraClass === "map";
     return (
@@ -6283,7 +6301,7 @@
   }
 
   function renderDayDoorArt(world) {
-    var open = wentOutTheDoor(world);
+    var open = leftHomeToday(world);
     return (
       '<span class="day-door-art' +
       (open ? " is-open" : "") +
@@ -10440,7 +10458,10 @@
           doorGoOnDoor: /place-door is-next[\s\S]{0,400}去這裡[\s\S]{0,80}出門/.test(html) || /place-door is-next[\s\S]{0,400}出門[\s\S]{0,80}去這裡/.test(html),
           speechIsOut: /吃飽了|穿鞋出門/.test(state.foxMsg || ""),
           speechIsEat: /去吃飯/.test(state.foxMsg || ""),
+          speechIsLight: /到馬路了|紅燈要停/.test(state.foxMsg || ""),
           afterFriendsMeal: isTaskDone(world, "friends") && ateTheMeal(world) && nextDayTask(world) === "out",
+          afterFriendsOut: isTaskDone(world, "friends") && ateTheMeal(world) && leftHomeToday(world) && nextDayTask(world) === "light",
+          leftHome: leftHomeToday(world) && html.indexOf("day-door-art is-open") >= 0 && html.indexOf("dd-shoes") < 0,
           lightGoOnLight: /place-light is-next[\s\S]*?去這裡[\s\S]*?紅燈/.test(html) || /place-light is-next[\s\S]*?紅燈[\s\S]*?去這裡/.test(html),
           parkGoOnPark: /place-habitat is-next[\s\S]*?去這裡[\s\S]*?公園/.test(html) || /place-habitat is-next[\s\S]*?公園[\s\S]*?去這裡/.test(html),
           friendsNext: html.indexOf("place-friends is-next") >= 0,
@@ -10494,7 +10515,9 @@
         growTodayPlan(world, "out");
         world.todayPlan = sanitizeTodayPlan(world.todayPlan);
         world.todayHints = sanitizeTodayHints(world.todayHints);
-        return saveFoxWorld(world);
+        saveFoxWorld(world);
+        refreshDaySpeech(world);
+        return world;
       },
       finishDressForTest: function (opts) {
         opts = opts || {};
