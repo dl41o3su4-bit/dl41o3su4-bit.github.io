@@ -3354,6 +3354,26 @@ button.day-place:active {
   pointer-events: none;
 }
 
+.day-park-apple {
+  position: absolute;
+  left: 26%;
+  bottom: 20%;
+  z-index: 4;
+  width: 34px;
+  height: 34px;
+  margin: 0;
+  filter: drop-shadow(0 3px 0 rgba(33, 20, 10, 0.5));
+}
+
+.corner-park.is-looked .day-park-apple,
+.corner-park.is-visited .day-park-apple {
+  zoom: 1.35;
+}
+
+.corner-park.is-visited .day-park-friends .day-critter > .habitat-apple {
+  display: block;
+}
+
 .day-park-friends .day-critter {
   filter: drop-shadow(0 2px 0 rgba(43, 33, 24, 0.38));
 }
@@ -8106,6 +8126,17 @@ button.day-place:active {
   background: #8d5a2b;
   border-radius: 2px;
   transform: translateX(-50%);
+}
+
+.park-nature .day-park-apple.life-apple {
+  position: absolute;
+  left: 26%;
+  bottom: 20%;
+  z-index: 4;
+  width: 34px;
+  height: 34px;
+  margin: 0;
+  filter: drop-shadow(0 3px 0 rgba(33, 20, 10, 0.5));
 }
 
 .life-item.bounce {

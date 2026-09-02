@@ -694,6 +694,7 @@
       todayPlan: [],
       todayHints: {},
       visitedFriends: false,
+      friendsFed: false,
       washedToday: false,
       brushedToday: false,
       wentOut: false,
@@ -868,6 +869,7 @@
     d.todayPlan = sanitizeTodayPlan(raw.todayPlan);
     d.todayHints = sanitizeTodayHints(raw.todayHints);
     d.visitedFriends = raw.visitedFriends === true;
+    d.friendsFed = raw.friendsFed === true;
     d.washedToday = raw.washedToday === true;
     d.brushedToday = raw.brushedToday === true;
     d.wentOut = raw.wentOut === true;
@@ -1131,6 +1133,7 @@
   function growTodayPlan(world, justFinished) {
     if (justFinished === "friends") {
       growFromTraces(world);
+      setFriendsAftermathHint(world);
       return;
     }
     if (justFinished === "wash") {
@@ -1340,7 +1343,7 @@
       var live = m.match(/^(.+)住進/);
       if (live) return "昨天我們幫" + live[1] + "找到家";
       if (m.indexOf("過馬路") >= 0) return "昨天我們一起過馬路";
-      if (m.indexOf("來作客") >= 0 || m.indexOf("看朋友") >= 0) return "昨天我們去看朋友";
+      if (m.indexOf("來作客") >= 0 || m.indexOf("看朋友") >= 0 || m.indexOf("餵") >= 0) return "昨天我們去看朋友";
       if (m.indexOf("出門") >= 0) return "昨天我們出門了";
       if (m.indexOf("刷牙") >= 0) return "昨天我們刷牙了";
       if (m.indexOf("洗手") >= 0) return "昨天我們洗手了";
@@ -1377,6 +1380,7 @@
     world.todayPlan = [];
     world.todayHints = {};
     world.visitedFriends = false;
+    world.friendsFed = false;
     world.washedToday = false;
     world.brushedToday = false;
     world.wentOut = false;
@@ -1482,6 +1486,60 @@
     return hasAnimals(world) && nextDayTask(world) === "friends";
   }
 
+  function lastFriendsGuestName(world) {
+    var mems = (world && world.memories) || [];
+    var i;
+    for (i = mems.length - 1; i >= 0; i--) {
+      var m = mems[i] || "";
+      if (m.indexOf("來作客") >= 0) {
+        return sanitizeText(m.replace("來作客", ""), 12);
+      }
+    }
+    return "";
+  }
+
+  function friendsVisitFed(world) {
+    if (world && world.friendsFed) return true;
+    var mems = (world && world.memories) || [];
+    var i;
+    for (i = mems.length - 1; i >= 0; i--) {
+      if ((mems[i] || "").indexOf("餵") >= 0) return true;
+    }
+    return false;
+  }
+
+  function parkShowsVisitTraces(world) {
+    return isTaskDone(world, "friends");
+  }
+
+  function dayParkAnimalCap(world) {
+    return parkShowsVisitTraces(world) ? 6 : 4;
+  }
+
+  function friendsAftermathGo(world) {
+    var next = nextDayTask(world);
+    if (next === "table") return "去吃飯";
+    if (next === "dress") return "去換衣服";
+    if (next === "light" || next === "retry") return "去過馬路";
+    return "去吃飯";
+  }
+
+  function friendsVisitTalk(world) {
+    var guest = lastFriendsGuestName(world);
+    var fed = friendsVisitFed(world);
+    var go = friendsAftermathGo(world);
+    if (guest && fed) return "餵了蘋果，" + guest + "來作客，" + go;
+    if (guest) return guest + "來作客了，" + go;
+    if (fed) return "餵了蘋果，" + go;
+    return "看過朋友了，" + go;
+  }
+
+  function setFriendsAftermathHint(world) {
+    var next = nextDayTask(world);
+    if (!next || next === "friends") return;
+    setHint(world, next, friendsVisitTalk(world));
+  }
+
   function dayOpenTalk(world) {
     var rolledFirst = foxWorldSession.rolled && !foxWorldSession.greeted;
     var wall;
@@ -1522,6 +1580,9 @@
     }
     if (dayIsFinished(world)) return dayFinishedTalk(world);
     var next = nextDayTask(world);
+    if (world.lastTask === "friends" && isTaskDone(world, "friends") && next && next !== "friends") {
+      return friendsVisitTalk(world);
+    }
     if (next === "wash") return "先去那個水龍頭洗手";
     if (next === "friends") return (world.todayHints && world.todayHints.friends) || nextMorningTalk(world);
     if (next && world.todayHints && world.todayHints[next]) return world.todayHints[next];
@@ -1710,25 +1771,28 @@
   function captureFriendsVisit(world) {
     var q = state.questions[state.qIndex];
     var i;
+    var guestName = "";
+    var fed = false;
     if (q && q.items) {
       for (i = 0; i < q.items.length; i++) {
         var item = q.items[i];
-        if (
-          item.slot &&
-          !item.feed &&
-          state.placed[item.id] &&
-          item.name !== "車子" &&
-          item.name !== "點心"
-        ) {
+        if (!state.placed[item.id]) continue;
+        if (item.feed || item.name === "點心") {
+          fed = true;
+          continue;
+        }
+        if (item.slot && item.name !== "車子" && !guestName) {
           var animals = (world.residentAnimals || []).slice();
           animals.push({ emoji: item.emoji, name: item.name, zone: item.slot });
           world.residentAnimals = sanitizeAnimals(animals);
-          pushMemory(world, item.name + "來作客");
-          return;
+          guestName = item.name;
         }
       }
     }
-    pushMemory(world, "我們去看朋友");
+    if (fed) world.friendsFed = true;
+    if (guestName) pushMemory(world, guestName + "來作客");
+    if (fed) pushMemory(world, "我們餵了蘋果");
+    if (!guestName && !fed) pushMemory(world, "我們去看朋友");
   }
 
   function completeDayTask(id) {
@@ -6007,16 +6071,24 @@
     if (!parkShowsLookTraces(world)) return "";
     var list = (world && world.residentAnimals) || [];
     if (!list.length) return "";
+    var cap = dayParkAnimalCap(world);
     var seats = { water: 0, grass: 0, desert: 0 };
     var bits = [];
+    var hungSnack = false;
+    var snack = parkShowsVisitTraces(world);
     var i;
-    for (i = 0; i < list.length && i < 4; i++) {
+    for (i = 0; i < list.length && i < cap; i++) {
       var it = list[i];
       var zone = it.zone || "grass";
       if (zone === "tree") continue;
       var seat = seats[zone] || 0;
       seats[zone] = seat + 1;
-      bits.push(renderDayCritterMark(it, i, seat));
+      var extra = "";
+      if (snack && !hungSnack) {
+        extra = habitatAppleMark();
+        hungSnack = true;
+      }
+      bits.push(renderDayCritterMark(it, i, seat, extra));
     }
     if (!bits.length) return "";
     return '<span class="day-park-friends">' + bits.join("") + "</span>";
@@ -6025,10 +6097,11 @@
   function renderParkTreeCritters(world) {
     if (!parkShowsLookTraces(world)) return "";
     var list = (world && world.residentAnimals) || [];
+    var cap = dayParkAnimalCap(world);
     var bits = "";
     var seat = 0;
     var i;
-    for (i = 0; i < list.length && i < 4; i++) {
+    for (i = 0; i < list.length && i < cap; i++) {
       if (list[i].zone === "tree") {
         bits += renderDayCritterMark(list[i], i, seat);
         seat += 1;
@@ -6037,16 +6110,23 @@
     return bits;
   }
 
+  function renderParkVisitSnack(world) {
+    if (!parkShowsVisitTraces(world)) return "";
+    return '<span class="day-park-apple life-apple" aria-hidden="true"></span>';
+  }
+
   function renderParkNature(world) {
     var list = parkShowsLookTraces(world) ? (world && world.residentAnimals) || [] : [];
+    var cap = dayParkAnimalCap(world);
     var hasDesert = false;
     var i;
-    for (i = 0; i < list.length && i < 4; i++) {
+    for (i = 0; i < list.length && i < cap; i++) {
       if (list[i].zone === "desert") hasDesert = true;
     }
     return (
       '<div class="park-nature" aria-hidden="true">' +
       '<i class="park-pond"></i>' +
+      renderParkVisitSnack(world) +
       '<i class="park-grass"></i>' +
       (hasDesert ? '<i class="park-sand"></i>' : "") +
       '<span class="day-trees"><i class="day-tree"></i><i class="day-tree is-mid"><i class="day-branch"></i>' +
@@ -6364,13 +6444,23 @@
     );
   }
 
+  function parkPlaceId(world) {
+    var next = nextDayTask(world);
+    if (next === "friends") return "friends";
+    if (next === "habitat") return "habitat";
+    if (isTaskDone(world, "friends") && !isTaskDone(world, "habitat")) return "friends";
+    return "habitat";
+  }
+
   function renderParkCorner(world, evening) {
-    var id = nextDayTask(world) === "friends" ? "friends" : "habitat";
+    var id = parkPlaceId(world);
     var meta = dayTaskMeta(id, world);
     var looked = parkShowsLookTraces(world);
+    var visited = parkShowsVisitTraces(world);
     return (
       '<div class="day-corner corner-park' +
       (looked ? " is-looked" : "") +
+      (visited ? " is-visited" : "") +
       (evening ? " is-evening" : "") +
       '">' +
       renderParkNature(world) +
@@ -10295,6 +10385,13 @@
           lightGoOnLight: /place-light is-next[\s\S]*?去這裡[\s\S]*?紅燈/.test(html) || /place-light is-next[\s\S]*?紅燈[\s\S]*?去這裡/.test(html),
           parkGoOnPark: /place-habitat is-next[\s\S]*?去這裡[\s\S]*?公園/.test(html) || /place-habitat is-next[\s\S]*?公園[\s\S]*?去這裡/.test(html),
           friendsNext: html.indexOf("place-friends is-next") >= 0,
+          friendsDone: html.indexOf("place-friends is-done") >= 0,
+          hasParkApple: html.indexOf("day-park-apple") >= 0 || html.indexOf("life-apple") >= 0,
+          hasParkFedMark: html.indexOf("day-park-apple") >= 0 || html.indexOf("habitat-apple") >= 0,
+          parkVisited: html.indexOf("corner-park is-visited") >= 0 || html.indexOf("is-looked is-visited") >= 0,
+          friendsFed: world.friendsFed === true,
+          visitTalk: friendsVisitTalk(world),
+          speechIsVisit: /餵了|來作客|去吃飯/.test(state.foxMsg || ""),
           parkGoOnFriends: /place-friends is-next[\s\S]*?去這裡[\s\S]*?去看朋友/.test(html) || /place-friends is-next[\s\S]*?去看朋友[\s\S]*?去這裡/.test(html),
           habitatDone: isTaskDone(world, "habitat"),
           lookedPark: html.indexOf("corner-park is-looked") >= 0,
@@ -10394,6 +10491,45 @@
       setAnimalsForTest: function (list) {
         var world = ensureFoxWorld();
         world.residentAnimals = sanitizeAnimals(list || defaultTestAnimals());
+        return saveFoxWorld(world);
+      },
+      finishFriendsForTest: function (opts) {
+        opts = opts || {};
+        var world = ensureFoxWorld();
+        if (!planHas(world, "friends")) {
+          world.todayPlan = ["friends"].concat(
+            todayPlanOf(world).filter(function (id) {
+              return id !== "friends";
+            })
+          );
+        }
+        world.visitedFriends = true;
+        world.lastTask = "friends";
+        if (opts.feed !== false) {
+          world.friendsFed = true;
+          pushMemory(world, "我們餵了蘋果");
+        }
+        if (opts.guest) {
+          var g =
+            opts.guest === true
+              ? { emoji: "🐑", name: "羊", zone: "grass" }
+              : opts.guest;
+          var animals = (world.residentAnimals || []).slice();
+          animals.push({
+            emoji: g.emoji || "🐑",
+            name: g.name || "羊",
+            zone: g.zone || "grass",
+          });
+          world.residentAnimals = sanitizeAnimals(animals);
+          pushMemory(world, (g.name || "羊") + "來作客");
+        }
+        if (opts.feed === false && !opts.guest) {
+          pushMemory(world, "我們去看朋友");
+        }
+        growFromTraces(world);
+        setFriendsAftermathHint(world);
+        world.todayPlan = sanitizeTodayPlan(world.todayPlan);
+        world.todayHints = sanitizeTodayHints(world.todayHints);
         return saveFoxWorld(world);
       },
       finishHabitatForTest: function (opts) {
