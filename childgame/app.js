@@ -978,7 +978,29 @@
   }
 
   function ateTheMeal(world) {
-    return isTaskDone(world, "table");
+    return !!(world && world.todayCompleted && world.todayCompleted.table);
+  }
+
+  function tableIsNext(world) {
+    return nextDayTask(world) === "table";
+  }
+
+  function setAfterMealOutHint(world) {
+    setHint(world, "out", "吃飽了，穿鞋出門");
+  }
+
+  function refreshDaySpeech(world) {
+    world = world || ensureFoxWorld();
+    var next = nextDayTask(world);
+    if (ateTheMeal(world) && next === "out") {
+      state.foxMsg = (world.todayHints && world.todayHints.out) || "吃飽了，穿鞋出門";
+      return;
+    }
+    if (isTaskDone(world, "friends") && next && next !== "friends" && !ateTheMeal(world)) {
+      state.foxMsg = friendsVisitTalk(world);
+      return;
+    }
+    state.foxMsg = dayFoxGreeting(world);
   }
 
   function yesterdayMissedRoad(world) {
@@ -1078,6 +1100,11 @@
     if (!planHas(world, "table") && !isTaskDone(world, "table")) {
       appendPlan(world, "table");
       setTableHint(world);
+      return;
+    }
+    if (isTaskDone(world, "table") && !planHas(world, "out") && !isTaskDone(world, "out")) {
+      appendPlan(world, "out");
+      setAfterMealOutHint(world);
     }
   }
 
@@ -1160,7 +1187,7 @@
     }
     if (justFinished === "table") {
       appendPlan(world, "out");
-      setHint(world, "out", "吃飽了，穿鞋出門");
+      setAfterMealOutHint(world);
       return;
     }
     if (justFinished === "out") {
@@ -1518,9 +1545,11 @@
 
   function friendsAftermathGo(world) {
     var next = nextDayTask(world);
+    if (next === "out") return "穿鞋出門";
     if (next === "table") return "去吃飯";
     if (next === "dress") return "去換衣服";
     if (next === "light" || next === "retry") return "去過馬路";
+    if (next === "habitat") return "去公園";
     return "去吃飯";
   }
 
@@ -1580,7 +1609,16 @@
     }
     if (dayIsFinished(world)) return dayFinishedTalk(world);
     var next = nextDayTask(world);
-    if (world.lastTask === "friends" && isTaskDone(world, "friends") && next && next !== "friends") {
+    if (ateTheMeal(world) && next === "out") {
+      return (world.todayHints && world.todayHints.out) || "吃飽了，穿鞋出門";
+    }
+    if (
+      world.lastTask === "friends" &&
+      isTaskDone(world, "friends") &&
+      next &&
+      next !== "friends" &&
+      !ateTheMeal(world)
+    ) {
       return friendsVisitTalk(world);
     }
     if (next === "wash") return "先去那個水龍頭洗手";
@@ -4663,53 +4701,64 @@
     return "bowl";
   }
 
+  function renderDayTableReadyBits(items) {
+    var vessels = [];
+    var seen = {};
+    var i;
+    for (i = 0; i < items.length && vessels.length < 3; i++) {
+      var kind = wareKindOf(items[i]);
+      if (kind !== "bowl" && kind !== "cup" && kind !== "plate") {
+        if (!seen.bowl) {
+          seen.bowl = 1;
+          vessels.push("bowl");
+        }
+        continue;
+      }
+      if (seen[kind]) continue;
+      seen[kind] = 1;
+      vessels.push(kind);
+    }
+    if (!vessels.length) vessels.push("bowl");
+    return (
+      '<span class="day-table-set">' +
+      '<span class="day-table-bits">' +
+      vessels
+        .map(function (kind) {
+          return '<i class="day-utensil ware-' + kind + '"></i>';
+        })
+        .join("") +
+      "</span></span>"
+    );
+  }
+
+  function renderDayTableEatenBits() {
+    return (
+      '<span class="day-table-set">' +
+      '<span class="day-table-bits">' +
+      '<i class="day-utensil ware-bowl is-eaten"></i>' +
+      '<i class="day-utensil ware-plate is-eaten"></i>' +
+      '<i class="day-utensil ware-sticks is-askew"></i>' +
+      "</span></span>" +
+      '<i class="dt-crumb a"></i><i class="dt-crumb b"></i><i class="dt-crumb c"></i><i class="dt-crumb d"></i>'
+    );
+  }
+
   function renderDayTableBits(world) {
-    var items = world.tableItems || [];
+    var items = (world && world.tableItems) || [];
     var used = ateTheMeal(world);
+    var goEat = tableIsNext(world);
     var bits = "";
     if (used) {
-      bits =
-        '<span class="day-table-set">' +
-        '<span class="day-table-bits">' +
-        '<i class="day-utensil ware-bowl is-eaten"></i>' +
-        '<i class="day-utensil ware-plate is-eaten"></i>' +
-        '<i class="day-utensil ware-sticks is-askew"></i>' +
-        "</span></span>" +
-        '<i class="dt-crumb a"></i><i class="dt-crumb b"></i><i class="dt-crumb c"></i><i class="dt-crumb d"></i>';
-    } else if (items.length) {
-      var vessels = [];
-      var seen = {};
-      var i;
-      for (i = 0; i < items.length && vessels.length < 3; i++) {
-        var kind = wareKindOf(items[i]);
-        if (kind !== "bowl" && kind !== "cup" && kind !== "plate") {
-          if (!seen.bowl) {
-            seen.bowl = 1;
-            vessels.push("bowl");
-          }
-          continue;
-        }
-        if (seen[kind]) continue;
-        seen[kind] = 1;
-        vessels.push(kind);
-      }
-      if (!vessels.length) vessels.push("bowl");
-      bits =
-        '<span class="day-table-set">' +
-        '<span class="day-table-bits">' +
-        vessels
-          .map(function (kind) {
-            return '<i class="day-utensil ware-' + kind + '"></i>';
-          })
-          .join("") +
-        "</span></span>";
+      bits = renderDayTableEatenBits();
+    } else if (goEat || items.length) {
+      bits = renderDayTableReadyBits(items);
     }
-    var hints = nextDayTask(world) === "table"
+    var hints = goEat && !used
       ? '<span class="day-go-bubble">去這裡</span><span class="day-spot-label">吃飯</span>'
       : "";
     return (
       '<span class="day-table-art' +
-      (used ? " is-used" : items.length ? " is-set" : "") +
+      (used ? " is-used" : goEat || items.length ? " is-set" : "") +
       '">' +
       '<i class="dtb-top"></i><i class="dtb-leg a"></i><i class="dtb-leg b"></i>' +
       bits +
@@ -10380,8 +10429,12 @@
           tableHasEaten: html.indexOf("ware-bowl is-eaten") >= 0 && html.indexOf("ware-plate is-eaten") >= 0,
           dressGoOnHang: /<span class="day-hang-art[^"]*"[^>]*>[\s\S]*?去這裡[\s\S]*?<\/span>\s*<\/span>/.test(html) && html.indexOf("換衣服") >= 0 && /day-world[^"]*\bat-dress\b/.test(html),
           dressGoOnBed: /day-bed-art[^>]*>[\s\S]*?去這裡[\s\S]*?<\/span>\s*<span class="day-hang-art/.test(html),
-          tableGoOnTable: /<span class="day-table-art[^"]*"[^>]*>[\s\S]*?去這裡/.test(html),
-          tableEatLabel: /<span class="day-table-art[^"]*"[^>]*>[\s\S]*?吃飯/.test(html),
+          tableGoOnTable: /<span class="day-table-art[^"]*"[^>]*>[\s\S]{0,900}<span class="day-go-bubble">去這裡<\/span>/.test(html),
+          tableEatLabel: /<span class="day-table-art[^"]*"[^>]*>[\s\S]{0,900}<span class="day-spot-label">吃飯<\/span>/.test(html),
+          doorGoOnDoor: /place-door is-next[\s\S]{0,400}去這裡[\s\S]{0,80}出門/.test(html) || /place-door is-next[\s\S]{0,400}出門[\s\S]{0,80}去這裡/.test(html),
+          speechIsOut: /吃飽了|穿鞋出門/.test(state.foxMsg || ""),
+          speechIsEat: /去吃飯/.test(state.foxMsg || ""),
+          afterFriendsMeal: isTaskDone(world, "friends") && ateTheMeal(world) && nextDayTask(world) === "out",
           lightGoOnLight: /place-light is-next[\s\S]*?去這裡[\s\S]*?紅燈/.test(html) || /place-light is-next[\s\S]*?紅燈[\s\S]*?去這裡/.test(html),
           parkGoOnPark: /place-habitat is-next[\s\S]*?去這裡[\s\S]*?公園/.test(html) || /place-habitat is-next[\s\S]*?公園[\s\S]*?去這裡/.test(html),
           friendsNext: html.indexOf("place-friends is-next") >= 0,
@@ -10468,9 +10521,12 @@
         world.todayCompleted.table = true;
         world.lastTask = "table";
         growTodayPlan(world, "table");
+        if (!planHas(world, "out") && !isTaskDone(world, "out")) growFromTraces(world);
         world.todayPlan = sanitizeTodayPlan(world.todayPlan);
         world.todayHints = sanitizeTodayHints(world.todayHints);
-        return saveFoxWorld(world);
+        saveFoxWorld(world);
+        refreshDaySpeech(world);
+        return world;
       },
       finishLightForTest: function (opts) {
         opts = opts || {};
@@ -10530,7 +10586,9 @@
         setFriendsAftermathHint(world);
         world.todayPlan = sanitizeTodayPlan(world.todayPlan);
         world.todayHints = sanitizeTodayHints(world.todayHints);
-        return saveFoxWorld(world);
+        saveFoxWorld(world);
+        refreshDaySpeech(world);
+        return world;
       },
       finishHabitatForTest: function (opts) {
         opts = opts || {};
