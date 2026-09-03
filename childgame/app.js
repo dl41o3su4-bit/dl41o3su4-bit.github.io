@@ -933,7 +933,7 @@
     return "";
   }
 
-  function day2ParkPathDone(world) {
+  function parkLoopPathDone(world) {
     return (
       isTaskDone(world, "friends") &&
       ateTheMeal(world) &&
@@ -943,8 +943,16 @@
     );
   }
 
+  function day2ParkPathDone(world) {
+    return parkLoopPathDone(world);
+  }
+
+  function day3ParkPathDone(world) {
+    return parkHasCamel(world) && parkLoopPathDone(world);
+  }
+
   function dayIsFinished(world) {
-    if (day2ParkPathDone(world)) return true;
+    if (day2ParkPathDone(world) || day3ParkPathDone(world)) return true;
     var plan = todayPlanOf(world);
     return plan.length > 0 && todayDoneCount(world) >= plan.length;
   }
@@ -1282,6 +1290,10 @@
     if (justFinished === "retry") {
       appendPlan(world, "habitat");
       if (!world.todayHints || !world.todayHints.habitat) setHint(world, "habitat", "到公園了，看看小動物");
+      return;
+    }
+    if (justFinished === "habitat") {
+      return;
     }
   }
 
@@ -10749,6 +10761,21 @@
             !isTaskDone(world, "habitat") &&
             /到公園了|看看小動物/.test(state.foxMsg || "") &&
             !/到馬路了|紅燈要停|吃飽了|穿鞋出門|餵了駱駝|去看朋友|今天走完了/.test(state.foxMsg || ""),
+          hayStill: html.indexOf("camel-hay") >= 0,
+          day3Evening:
+            day3ParkPathDone(world) &&
+            isTaskDone(world, "habitat") &&
+            (html.indexOf("day-world is-evening") >= 0 || html.indexOf("is-evening wx-") >= 0) &&
+            html.indexOf("去這裡") < 0 &&
+            html.indexOf("place-habitat is-next") < 0 &&
+            /day-world[^"]*\bat-habitat\b/.test(html) &&
+            html.indexOf("kind-camel") >= 0 &&
+            html.indexOf("camel-hay") >= 0 &&
+            (html.indexOf("day-park-apple") >= 0 || html.indexOf("habitat-apple") >= 0) &&
+            ((world.residentAnimals || []).length > 0 && html.indexOf("day-critter") >= 0) &&
+            html.indexOf("day-endline") >= 0 &&
+            /今天走完了/.test(state.foxMsg || "") &&
+            !/到公園了|看看小動物|去看朋友|去吃飯|餵了駱駝/.test(state.foxMsg || ""),
         };
       },
       finishWashForTest: function () {
@@ -10906,20 +10933,29 @@
       finishHabitatForTest: function (opts) {
         opts = opts || {};
         var world = ensureFoxWorld();
+        var keptAnimals = (world.residentAnimals || []).slice();
+        var keptCamelFed = world.camelFed === true;
+        var keptVisit = world.parkVisitLeft === true;
         if (opts.animals) {
           world.residentAnimals = sanitizeAnimals(opts.animals);
-        } else if (!hasAnimals(world)) {
+        } else if (keptAnimals.length) {
+          world.residentAnimals = sanitizeAnimals(keptAnimals);
+        } else {
           world.residentAnimals = sanitizeAnimals(defaultTestAnimals());
         }
         world.todayCompleted.habitat = true;
         world.lastTask = "habitat";
         if (!planHas(world, "habitat")) appendPlan(world, "habitat");
+        if (keptVisit || isTaskDone(world, "friends")) world.parkVisitLeft = true;
+        if (keptCamelFed) world.camelFed = true;
+        else if (parkHasCamel(world) && isTaskDone(world, "friends")) markCamelFed(world);
         rememberLastResident(world);
         growTodayPlan(world, "habitat");
         world.todayPlan = sanitizeTodayPlan(world.todayPlan);
         world.todayHints = sanitizeTodayHints(world.todayHints);
         saveFoxWorld(world);
         refreshDaySpeech(world);
+        if (state.dayMode) render();
         return world;
       },
       finishDayForTest: function () {
