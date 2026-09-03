@@ -10889,6 +10889,40 @@
             !leftHomeToday(world) &&
             /吃飽了|穿鞋出門/.test(state.foxMsg || "") &&
             !/去吃飯|餵了螃蟹|去看朋友|今天走完了|到馬路了|紅燈要停/.test(state.foxMsg || ""),
+          day4OutDone:
+            parkHasCrab(world) &&
+            isTaskDone(world, "friends") &&
+            ateTheMeal(world) &&
+            leftHomeToday(world) &&
+            !isTaskDone(world, "light") &&
+            html.indexOf("day-door-art is-open") >= 0 &&
+            html.indexOf("dd-shoes") < 0 &&
+            html.indexOf("place-light is-next") >= 0 &&
+            /day-world[^"]*\bat-light\b/.test(html) &&
+            html.indexOf("day-world is-evening") < 0 &&
+            html.indexOf("is-evening wx-") < 0 &&
+            html.indexOf("kind-crab") >= 0 &&
+            html.indexOf("crab-snack") >= 0 &&
+            html.indexOf("kind-camel") >= 0 &&
+            html.indexOf("camel-hay") >= 0 &&
+            (html.indexOf("day-park-apple") >= 0 || html.indexOf("habitat-apple") >= 0) &&
+            html.indexOf("day-table-art is-used") >= 0,
+          day4LightNext:
+            parkHasCrab(world) &&
+            isTaskDone(world, "friends") &&
+            ateTheMeal(world) &&
+            leftHomeToday(world) &&
+            !isTaskDone(world, "light") &&
+            html.indexOf("place-light is-next") >= 0 &&
+            /place-light is-next[\s\S]*?去這裡[\s\S]*?紅燈/.test(html),
+          speechIsDay4Light:
+            parkHasCrab(world) &&
+            isTaskDone(world, "friends") &&
+            ateTheMeal(world) &&
+            leftHomeToday(world) &&
+            !isTaskDone(world, "light") &&
+            /到馬路了|紅燈要停/.test(state.foxMsg || "") &&
+            !/吃飽了|穿鞋出門|餵了螃蟹|去看朋友|今天走完了/.test(state.foxMsg || ""),
           day3Evening:
             day3ParkPathDone(world) &&
             isTaskDone(world, "habitat") &&
