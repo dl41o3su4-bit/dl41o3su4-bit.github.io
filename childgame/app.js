@@ -10584,9 +10584,9 @@
           parkSide: html.indexOf("is-park-side") >= 0,
           crossed: crossedTheRoad(world),
           hasTeacherFox: html.indexOf("小狐狸老師") >= 0,
-          foxInHome: html.indexOf('corner-home') >= 0 && /corner-home[\s\S]*day-marker/.test(html),
-          foxInRoad: /corner-road[\s\S]*day-marker/.test(html),
-          foxInPark: /corner-park[\s\S]*day-marker/.test(html),
+          foxInHome: /<div class="day-corner corner-home[\s\S]*?day-marker[\s\S]*?<span class="day-corner-name">家<\/span>/.test(html),
+          foxInRoad: /<div class="day-corner corner-road[\s\S]*?day-marker[\s\S]*?<span class="day-corner-name">馬路<\/span>/.test(html),
+          foxInPark: /<div class="day-corner corner-park[\s\S]*?day-marker[\s\S]*?<span class="day-corner-name">公園<\/span>/.test(html),
           hasTrailPaws: html.indexOf("dt-paw") >= 0,
           trailNow: html.indexOf("dt-paw is-now") >= 0,
           trailSoon: html.indexOf("dt-paw is-soon") >= 0,
@@ -10684,13 +10684,37 @@
           day3DoorNext:
             parkHasCamel(world) &&
             ateTheMeal(world) &&
+            !leftHomeToday(world) &&
             html.indexOf("place-door is-next") >= 0 &&
-            /day-world[^"]*\bat-door\b/.test(html),
+            /day-world[^"]*\bat-door\b/.test(html) &&
+            html.indexOf("day-door-art is-open") < 0 &&
+            html.indexOf("dd-shoes") >= 0,
           speechIsDay3Out:
             parkHasCamel(world) &&
             ateTheMeal(world) &&
+            !leftHomeToday(world) &&
             /吃飽了|穿鞋出門/.test(state.foxMsg || "") &&
-            !/去吃飯|餵了駱駝|去看朋友|今天走完了/.test(state.foxMsg || ""),
+            !/去吃飯|餵了駱駝|去看朋友|今天走完了|到馬路了|紅燈要停/.test(state.foxMsg || ""),
+          day3OutDone:
+            parkHasCamel(world) &&
+            ateTheMeal(world) &&
+            leftHomeToday(world) &&
+            html.indexOf("day-door-art is-open") >= 0 &&
+            html.indexOf("dd-shoes") < 0 &&
+            html.indexOf("place-light is-next") >= 0 &&
+            /day-world[^"]*\bat-light\b/.test(html) &&
+            html.indexOf("day-world is-evening") < 0 &&
+            html.indexOf("is-evening wx-") < 0,
+          day3LightNext:
+            parkHasCamel(world) &&
+            leftHomeToday(world) &&
+            html.indexOf("place-light is-next") >= 0 &&
+            /place-light is-next[\s\S]*?去這裡[\s\S]*?紅燈/.test(html),
+          speechIsDay3Light:
+            parkHasCamel(world) &&
+            leftHomeToday(world) &&
+            /到馬路了|紅燈要停/.test(state.foxMsg || "") &&
+            !/吃飽了|穿鞋出門|餵了駱駝|去看朋友|今天走完了/.test(state.foxMsg || ""),
         };
       },
       finishWashForTest: function () {
@@ -10715,15 +10739,18 @@
       },
       finishOutForTest: function () {
         var world = ensureFoxWorld();
+        if (!planHas(world, "out") && !isTaskDone(world, "out")) appendPlan(world, "out");
         world.wentOut = true;
         world.todayCompleted.out = true;
         world.lastTask = "out";
         growTodayPlan(world, "out");
         if (!planHas(world, "light") && !isTaskDone(world, "light")) growFromTraces(world);
+        if (leftHomeToday(world) && !world.todayHints.light) setAfterOutLightHint(world);
         world.todayPlan = sanitizeTodayPlan(world.todayPlan);
         world.todayHints = sanitizeTodayHints(world.todayHints);
         saveFoxWorld(world);
         refreshDaySpeech(world);
+        if (state.dayMode) render();
         return world;
       },
       finishDressForTest: function (opts) {
