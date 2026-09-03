@@ -1694,6 +1694,15 @@
     return false;
   }
 
+  function parkHasSheep(world) {
+    var list = (world && world.residentAnimals) || [];
+    var i;
+    for (i = 0; i < list.length; i++) {
+      if (dayCritterKind(list[i]) === "sheep") return true;
+    }
+    return false;
+  }
+
   function markCamelFed(world) {
     if (world && parkHasCamel(world)) world.camelFed = true;
   }
@@ -1755,6 +1764,7 @@
     var n = parkShowsVisitTraces(world) ? 6 : 4;
     if (world && world.morningGuestName) n = Math.max(n, 7);
     if (morningGuestIsExtra(world)) n = Math.max(n, 8);
+    if (parkHasSheep(world) && parkHasCrab(world)) n = Math.max(n, 9);
     return n;
   }
 
@@ -10822,7 +10832,9 @@
             /到公園了|看看小動物/.test(state.foxMsg || "") &&
             !/到馬路了|紅燈要停|吃飽了|穿鞋出門|餵了駱駝|去看朋友|今天走完了/.test(state.foxMsg || ""),
           hayStill: html.indexOf("camel-hay") >= 0,
+          sheepStill: html.indexOf("kind-sheep") >= 0,
           day4Morning:
+            world.morningGuestName === "螃蟹" &&
             morningGuestIsExtra(world) &&
             nextDayTask(world) === "friends" &&
             html.indexOf("place-friends is-next") >= 0 &&
@@ -10842,6 +10854,7 @@
             /又有朋友|也來作客|多了一/.test(state.foxMsg || "") &&
             html.indexOf("kind-crab") >= 0 &&
             html.indexOf("crab-snack") < 0 &&
+            html.indexOf("kind-sheep") < 0 &&
             !/今天走完了|先去那個水龍頭|去這裡／公園/.test(state.foxMsg || ""),
           day4FriendsDone:
             parkHasCrab(world) &&
@@ -10995,6 +11008,32 @@
             html.indexOf("day-endline") >= 0 &&
             /今天走完了/.test(state.foxMsg || "") &&
             !/到公園了|看看小動物|去看朋友|去吃飯|餵了螃蟹/.test(state.foxMsg || ""),
+          day5Morning:
+            world.morningGuestName === "羊" &&
+            parkHasSheep(world) &&
+            parkHasCrab(world) &&
+            parkHasCamel(world) &&
+            nextDayTask(world) === "friends" &&
+            html.indexOf("place-friends is-next") >= 0 &&
+            (/place-friends is-next[\s\S]*?去這裡[\s\S]*?去看朋友/.test(html) ||
+              /place-friends is-next[\s\S]*?去看朋友[\s\S]*?去這裡/.test(html)) &&
+            html.indexOf("day-world is-evening") < 0 &&
+            html.indexOf("is-evening wx-") < 0 &&
+            html.indexOf("day-endline") < 0 &&
+            html.indexOf("day-door-art is-open") < 0 &&
+            html.indexOf("dd-shoes") >= 0 &&
+            html.indexOf("day-sink-art is-used") < 0 &&
+            html.indexOf("kind-camel") >= 0 &&
+            html.indexOf("camel-hay") >= 0 &&
+            html.indexOf("kind-crab") >= 0 &&
+            html.indexOf("crab-snack") >= 0 &&
+            (html.indexOf("day-park-apple") >= 0 || html.indexOf("habitat-apple") >= 0) &&
+            html.indexOf("kind-sheep") >= 0 &&
+            ((world.residentAnimals || []).length > 6) &&
+            (html.match(/class="day-critter /g) || []).length > 6 &&
+            /羊/.test(state.foxMsg || "") &&
+            /也來作客|來作客/.test(state.foxMsg || "") &&
+            !/螃蟹也來作客了|今天走完了|先去那個水龍頭|去這裡／公園/.test(state.foxMsg || ""),
         };
       },
       finishWashForTest: function () {

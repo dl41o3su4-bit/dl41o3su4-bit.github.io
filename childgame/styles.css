@@ -3413,6 +3413,12 @@ button.day-place:active {
   bottom: 16%;
 }
 
+.corner-park.is-looked .day-park-friends .day-critter.kind-sheep,
+.corner-park.is-visited .day-park-friends .day-critter.kind-sheep {
+  right: 30%;
+  bottom: 10%;
+}
+
 .day-critter {
   position: absolute;
   display: block;
