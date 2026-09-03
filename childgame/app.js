@@ -711,6 +711,7 @@
   function sanitizeText(s, maxLen) {
     if (typeof s !== "string") return "";
     s = s.replace(/[\u0000-\u001f<>]/g, "").replace(/\s+/g, " ").trim();
+    s = s.replace(/饅了/g, "餵了").replace(/駝駝/g, "駱駝");
     if (s.length > (maxLen || 40)) s = s.slice(0, maxLen || 40);
     return s;
   }
