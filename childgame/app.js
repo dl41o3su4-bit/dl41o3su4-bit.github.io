@@ -11083,6 +11083,44 @@
           sheepFedMark: html.indexOf("sheep-clover") >= 0,
           seaweedStill: html.indexOf("crab-snack") >= 0,
           speechIsSheepFeed: /餵了羊/.test(state.foxMsg || ""),
+          day5TableUsed:
+            parkHasSheep(world) &&
+            isTaskDone(world, "friends") &&
+            ateTheMeal(world) &&
+            html.indexOf("day-table-art is-used") >= 0 &&
+            html.indexOf("dt-crumb") >= 0 &&
+            html.indexOf("ware-sticks is-askew") >= 0 &&
+            html.indexOf("ware-bowl is-eaten") >= 0 &&
+            html.indexOf("ware-plate is-eaten") >= 0 &&
+            html.indexOf("place-table is-next") < 0 &&
+            html.indexOf("day-world is-evening") < 0 &&
+            html.indexOf("is-evening wx-") < 0 &&
+            html.indexOf("kind-sheep") >= 0 &&
+            html.indexOf("sheep-clover") >= 0 &&
+            html.indexOf("kind-crab") >= 0 &&
+            html.indexOf("crab-snack") >= 0 &&
+            html.indexOf("kind-camel") >= 0 &&
+            html.indexOf("camel-hay") >= 0 &&
+            (html.indexOf("day-park-apple") >= 0 || html.indexOf("habitat-apple") >= 0),
+          day5DoorNext:
+            parkHasSheep(world) &&
+            isTaskDone(world, "friends") &&
+            ateTheMeal(world) &&
+            !leftHomeToday(world) &&
+            nextDayTask(world) === "out" &&
+            html.indexOf("place-door is-next") >= 0 &&
+            /day-world[^"]*\bat-door\b/.test(html) &&
+            (/place-door is-next[\s\S]{0,400}去這裡[\s\S]{0,80}出門/.test(html) ||
+              /place-door is-next[\s\S]{0,400}出門[\s\S]{0,80}去這裡/.test(html)) &&
+            html.indexOf("day-door-art is-open") < 0 &&
+            html.indexOf("dd-shoes") >= 0,
+          speechIsDay5Out:
+            parkHasSheep(world) &&
+            isTaskDone(world, "friends") &&
+            ateTheMeal(world) &&
+            !leftHomeToday(world) &&
+            /吃飽了|穿鞋出門/.test(state.foxMsg || "") &&
+            !/去吃飯|餵了羊|去看朋友|今天走完了|到馬路了|紅燈要停/.test(state.foxMsg || ""),
         };
       },
       finishWashForTest: function () {
@@ -11153,6 +11191,7 @@
         world.lastTask = "table";
         growTodayPlan(world, "table");
         if (!planHas(world, "out") && !isTaskDone(world, "out")) growFromTraces(world);
+        if (ateTheMeal(world) && !isTaskDone(world, "out")) setAfterMealOutHint(world);
         world.todayPlan = sanitizeTodayPlan(world.todayPlan);
         world.todayHints = sanitizeTodayHints(world.todayHints);
         saveFoxWorld(world);
