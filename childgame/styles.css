@@ -3388,8 +3388,8 @@ button.day-place:active {
 
 .corner-park.is-looked .day-critter.kind-sheep > .sheep-clover,
 .corner-park.is-visited .day-critter.kind-sheep > .sheep-clover {
-  width: 24px;
-  height: 20px;
+  width: 28px;
+  height: 22px;
 }
 
 .day-park-friends .day-critter {
@@ -3862,19 +3862,20 @@ button.day-place:active {
   display: block;
   left: 100%;
   top: auto;
-  bottom: -8px;
-  width: 22px;
-  height: 18px;
+  bottom: -10px;
+  width: 26px;
+  height: 20px;
   margin: 0;
-  background: #a9e34b;
+  background: #94d82d;
   border: 2px solid #5c940d;
   border-radius: 50%;
   box-shadow:
-    -9px 2px 0 -1px #82c91e,
-    8px -3px 0 -1px #94d82d,
-    inset 2px 2px 0 -1px #d8f5a2,
+    -11px 3px 0 -1px #74b816,
+    10px -2px 0 -1px #a9e34b,
+    12px 8px 0 -6px #82c91e,
+    inset 3px 2px 0 -1px #d8f5a2,
     0 3px 0 rgba(33, 20, 10, 0.42);
-  transform: translate(8px, 7px) rotate(10deg);
+  transform: translate(10px, 8px) rotate(-8deg);
   z-index: 8;
   pointer-events: none;
   filter: drop-shadow(0 2px 0 rgba(33, 20, 10, 0.45));
@@ -3883,28 +3884,27 @@ button.day-place:active {
 .day-critter.kind-sheep > .sheep-clover::before {
   content: "";
   position: absolute;
-  left: 6px;
-  top: 4px;
-  width: 8px;
-  height: 8px;
-  background: #fffef8;
-  border: 2px solid #e8c48a;
+  left: 9px;
+  top: 6px;
+  width: 5px;
+  height: 5px;
+  background: #ffe066;
+  border: 2px solid #f59f00;
   border-radius: 50%;
-  box-shadow: inset 2px 1px 0 -1px #ffc9c9;
   z-index: 1;
 }
 
 .day-critter.kind-sheep > .sheep-clover::after {
   content: "";
   position: absolute;
-  left: 8px;
-  bottom: -7px;
+  left: 10px;
+  bottom: -8px;
   width: 4px;
-  height: 9px;
-  background: #74b816;
-  border: 2px solid #5c940d;
+  height: 10px;
+  background: #5c940d;
+  border: 2px solid #2b8a3e;
   border-radius: 2px;
-  transform: rotate(8deg);
+  transform: rotate(6deg);
 }
 
 .day-critter.kind-crab {
