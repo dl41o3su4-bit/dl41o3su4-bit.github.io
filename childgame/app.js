@@ -954,8 +954,12 @@
     return parkHasCamel(world) && parkLoopPathDone(world);
   }
 
+  function day4ParkPathDone(world) {
+    return parkHasCrab(world) && parkLoopPathDone(world);
+  }
+
   function dayIsFinished(world) {
-    if (day2ParkPathDone(world) || day3ParkPathDone(world)) return true;
+    if (day2ParkPathDone(world) || day3ParkPathDone(world) || day4ParkPathDone(world)) return true;
     var plan = todayPlanOf(world);
     return plan.length > 0 && todayDoneCount(world) >= plan.length;
   }
@@ -2028,8 +2032,14 @@
   }
 
   function captureDayHabitat(world) {
+    var kept = sanitizeAnimals((world.residentAnimals || []).slice());
+    if (kept.length) {
+      world.residentAnimals = kept;
+      rememberLastResident(world);
+      return;
+    }
     var q = state.questions[state.qIndex];
-    var animals = (world.residentAnimals || []).slice();
+    var animals = [];
     var i;
     if (q && q.items) {
       for (i = 0; i < q.items.length; i++) {
@@ -10969,6 +10979,22 @@
             html.indexOf("day-endline") >= 0 &&
             /今天走完了/.test(state.foxMsg || "") &&
             !/到公園了|看看小動物|去看朋友|去吃飯|餵了駱駝/.test(state.foxMsg || ""),
+          day4Evening:
+            day4ParkPathDone(world) &&
+            isTaskDone(world, "habitat") &&
+            (html.indexOf("day-world is-evening") >= 0 || html.indexOf("is-evening wx-") >= 0) &&
+            html.indexOf("去這裡") < 0 &&
+            html.indexOf("place-habitat is-next") < 0 &&
+            /day-world[^"]*\bat-habitat\b/.test(html) &&
+            html.indexOf("kind-crab") >= 0 &&
+            html.indexOf("crab-snack") >= 0 &&
+            html.indexOf("kind-camel") >= 0 &&
+            html.indexOf("camel-hay") >= 0 &&
+            (html.indexOf("day-park-apple") >= 0 || html.indexOf("habitat-apple") >= 0) &&
+            ((world.residentAnimals || []).length > 0 && html.indexOf("day-critter") >= 0) &&
+            html.indexOf("day-endline") >= 0 &&
+            /今天走完了/.test(state.foxMsg || "") &&
+            !/到公園了|看看小動物|去看朋友|去吃飯|餵了螃蟹/.test(state.foxMsg || ""),
         };
       },
       finishWashForTest: function () {
@@ -11126,6 +11152,7 @@
         var keptCamelFed = world.camelFed === true;
         var keptCrabFed = world.crabFed === true;
         var keptVisit = world.parkVisitLeft === true;
+        var keptGuest = world.morningGuestName || "";
         if (opts.animals) {
           world.residentAnimals = sanitizeAnimals(opts.animals);
         } else if (keptAnimals.length) {
@@ -11137,6 +11164,7 @@
         world.lastTask = "habitat";
         if (!planHas(world, "habitat")) appendPlan(world, "habitat");
         if (keptVisit || isTaskDone(world, "friends")) world.parkVisitLeft = true;
+        if (keptGuest) world.morningGuestName = keptGuest;
         if (keptCamelFed) world.camelFed = true;
         else if (parkHasCamel(world) && isTaskDone(world, "friends")) markCamelFed(world);
         if (keptCrabFed) world.crabFed = true;
