@@ -701,6 +701,7 @@
       parkVisitLeft: false,
       camelFed: false,
       crabFed: false,
+      sheepFed: false,
       morningGuestName: "",
     };
   }
@@ -881,6 +882,7 @@
     d.parkVisitLeft = raw.parkVisitLeft === true;
     d.camelFed = raw.camelFed === true;
     d.crabFed = raw.crabFed === true;
+    d.sheepFed = raw.sheepFed === true;
     d.morningGuestName = sanitizeText(raw.morningGuestName, 12);
     return d;
   }
@@ -1711,6 +1713,10 @@
     if (world && parkHasCrab(world)) world.crabFed = true;
   }
 
+  function markSheepFed(world) {
+    if (world && parkHasSheep(world)) world.sheepFed = true;
+  }
+
   function parkShowsCamelFeed(world) {
     if (!parkHasCamel(world)) return false;
     if (world && world.camelFed) return true;
@@ -1725,6 +1731,13 @@
     return friendsVisitFed(world) || (world && world.morningGuestName === "螃蟹");
   }
 
+  function parkShowsSheepFeed(world) {
+    if (!parkHasSheep(world)) return false;
+    if (world && world.sheepFed) return true;
+    if (!isTaskDone(world, "friends")) return false;
+    return friendsVisitFed(world) || (world && world.morningGuestName === "羊");
+  }
+
   function camelHayMark() {
     return '<span class="camel-hay" aria-hidden="true"></span>';
   }
@@ -1733,17 +1746,24 @@
     return '<span class="crab-snack" aria-hidden="true"></span>';
   }
 
+  function sheepCloverMark() {
+    return '<span class="sheep-clover" aria-hidden="true"></span>';
+  }
+
   function rememberFriendsFeed(world, fed) {
     if (fed) {
       markCamelFed(world);
       markCrabFed(world);
-      if (parkHasCrab(world)) pushMemory(world, "我們餵了螃蟹");
+      markSheepFed(world);
+      if (parkHasSheep(world)) pushMemory(world, "我們餵了羊");
+      else if (parkHasCrab(world)) pushMemory(world, "我們餵了螃蟹");
       else if (parkHasCamel(world)) pushMemory(world, "我們餵了駱駝");
       else pushMemory(world, "我們餵了蘋果");
       return;
     }
     if (parkHasCamel(world) || (world && world.morningGuestName === "駱駝")) markCamelFed(world);
     if (parkHasCrab(world) || (world && world.morningGuestName === "螃蟹")) markCrabFed(world);
+    if (parkHasSheep(world) || (world && world.morningGuestName === "羊")) markSheepFed(world);
   }
 
   function friendsVisitFed(world) {
@@ -1782,8 +1802,11 @@
     var guest = lastFriendsGuestName(world);
     var fed = friendsVisitFed(world);
     var go = friendsAftermathGo(world);
+    var sheep = parkShowsSheepFeed(world);
     var crab = parkShowsCrabFeed(world);
     var camel = parkShowsCamelFeed(world);
+    if (sheep && fed) return "餵了羊，" + go;
+    if (sheep) return "羊來作客了，" + go;
     if (crab && fed) return "餵了螃蟹，" + go;
     if (crab) return "螃蟹來作客了，" + go;
     if (camel && fed) return "餵了駱駝，" + go;
@@ -6402,6 +6425,9 @@
       }
       if (dayCritterKind(it) === "crab" && parkShowsCrabFeed(world)) {
         extra += crabSnackMark();
+      }
+      if (dayCritterKind(it) === "sheep" && parkShowsSheepFeed(world)) {
+        extra += sheepCloverMark();
       }
       bits.push(renderDayCritterMark(it, i, seat, extra));
     }
@@ -11029,11 +11055,34 @@
             html.indexOf("crab-snack") >= 0 &&
             (html.indexOf("day-park-apple") >= 0 || html.indexOf("habitat-apple") >= 0) &&
             html.indexOf("kind-sheep") >= 0 &&
+            html.indexOf("sheep-clover") < 0 &&
             ((world.residentAnimals || []).length > 6) &&
             (html.match(/class="day-critter /g) || []).length > 6 &&
             /羊/.test(state.foxMsg || "") &&
             /也來作客|來作客/.test(state.foxMsg || "") &&
-            !/螃蟹也來作客了|今天走完了|先去那個水龍頭|去這裡／公園/.test(state.foxMsg || ""),
+            !/餵了羊|螃蟹也來作客了|今天走完了|先去那個水龍頭|去這裡／公園/.test(state.foxMsg || ""),
+          day5FriendsDone:
+            parkHasSheep(world) &&
+            isTaskDone(world, "friends") &&
+            html.indexOf("place-friends is-done") >= 0 &&
+            html.indexOf("place-friends is-next") < 0 &&
+            html.indexOf("day-world is-evening") < 0 &&
+            html.indexOf("is-evening wx-") < 0 &&
+            html.indexOf("day-endline") < 0 &&
+            html.indexOf("kind-sheep") >= 0 &&
+            html.indexOf("sheep-clover") >= 0 &&
+            html.indexOf("kind-crab") >= 0 &&
+            html.indexOf("crab-snack") >= 0 &&
+            html.indexOf("kind-camel") >= 0 &&
+            html.indexOf("camel-hay") >= 0 &&
+            (html.indexOf("day-park-apple") >= 0 || html.indexOf("habitat-apple") >= 0) &&
+            html.indexOf("place-table is-next") >= 0 &&
+            /day-world[^"]*\bat-table\b/.test(html) &&
+            /餵了羊|羊來作客|去吃飯/.test(state.foxMsg || "") &&
+            !/去看朋友|今天走完了/.test(state.foxMsg || ""),
+          sheepFedMark: html.indexOf("sheep-clover") >= 0,
+          seaweedStill: html.indexOf("crab-snack") >= 0,
+          speechIsSheepFeed: /餵了羊/.test(state.foxMsg || ""),
         };
       },
       finishWashForTest: function () {
@@ -11190,6 +11239,7 @@
         var keptAnimals = (world.residentAnimals || []).slice();
         var keptCamelFed = world.camelFed === true;
         var keptCrabFed = world.crabFed === true;
+        var keptSheepFed = world.sheepFed === true;
         var keptVisit = world.parkVisitLeft === true;
         var keptGuest = world.morningGuestName || "";
         if (opts.animals) {
@@ -11208,6 +11258,8 @@
         else if (parkHasCamel(world) && isTaskDone(world, "friends")) markCamelFed(world);
         if (keptCrabFed) world.crabFed = true;
         else if (parkHasCrab(world) && isTaskDone(world, "friends")) markCrabFed(world);
+        if (keptSheepFed) world.sheepFed = true;
+        else if (parkHasSheep(world) && isTaskDone(world, "friends")) markSheepFed(world);
         rememberLastResident(world);
         growTodayPlan(world, "habitat");
         world.todayPlan = sanitizeTodayPlan(world.todayPlan);
@@ -11228,6 +11280,7 @@
             markParkVisitLeft(world);
             markCamelFed(world);
             markCrabFed(world);
+            markSheepFed(world);
           } else if (world.todayCompleted) world.todayCompleted[id] = true;
           if (id === "wash") world.washedToday = true;
           if (id === "brush") world.brushedToday = true;
