@@ -3380,6 +3380,12 @@ button.day-place:active {
   height: 14px;
 }
 
+.corner-park.is-looked .day-critter.kind-crab > .crab-snack,
+.corner-park.is-visited .day-critter.kind-crab > .crab-snack {
+  width: 24px;
+  height: 16px;
+}
+
 .day-park-friends .day-critter {
   filter: drop-shadow(0 2px 0 rgba(43, 33, 24, 0.38));
 }
@@ -3790,6 +3796,53 @@ button.day-place:active {
   background: #f4d06f;
   border: 2px solid #c1864a;
   border-radius: 50% 40% 50% 40%;
+}
+
+.day-critter.kind-crab > .crab-snack {
+  position: absolute;
+  display: block;
+  left: 50%;
+  top: 100%;
+  width: 22px;
+  height: 16px;
+  margin: 0;
+  background: linear-gradient(#69db7c 0 38%, #37b24d 70%, #2f9e44 100%);
+  border: 2px solid #2b8a3e;
+  border-radius: 8px 12px 6px 10px;
+  box-shadow:
+    inset 2px 2px 0 -1px #8ce99a,
+    8px 3px 0 -4px #37b24d,
+    0 3px 0 rgba(33, 20, 10, 0.42);
+  transform: translate(-28%, 7px) rotate(-16deg);
+  z-index: 8;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 0 rgba(33, 20, 10, 0.45));
+}
+
+.day-critter.kind-crab > .crab-snack::before {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: -6px;
+  width: 7px;
+  height: 12px;
+  background: #51cf66;
+  border: 2px solid #2b8a3e;
+  border-radius: 40% 60% 50% 50%;
+  transform: rotate(-24deg);
+}
+
+.day-critter.kind-crab > .crab-snack::after {
+  content: "";
+  position: absolute;
+  right: 1px;
+  top: -5px;
+  width: 6px;
+  height: 11px;
+  background: #37b24d;
+  border: 2px solid #2b8a3e;
+  border-radius: 50% 40% 60% 40%;
+  transform: rotate(18deg);
 }
 
 .day-critter.kind-crab {

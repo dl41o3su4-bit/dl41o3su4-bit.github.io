@@ -700,6 +700,7 @@
       wentOut: false,
       parkVisitLeft: false,
       camelFed: false,
+      crabFed: false,
       morningGuestName: "",
     };
   }
@@ -879,6 +880,7 @@
     d.wentOut = raw.wentOut === true;
     d.parkVisitLeft = raw.parkVisitLeft === true;
     d.camelFed = raw.camelFed === true;
+    d.crabFed = raw.crabFed === true;
     d.morningGuestName = sanitizeText(raw.morningGuestName, 12);
     return d;
   }
@@ -1679,8 +1681,21 @@
     return false;
   }
 
+  function parkHasCrab(world) {
+    var list = (world && world.residentAnimals) || [];
+    var i;
+    for (i = 0; i < list.length; i++) {
+      if (dayCritterKind(list[i]) === "crab") return true;
+    }
+    return false;
+  }
+
   function markCamelFed(world) {
     if (world && parkHasCamel(world)) world.camelFed = true;
+  }
+
+  function markCrabFed(world) {
+    if (world && parkHasCrab(world)) world.crabFed = true;
   }
 
   function parkShowsCamelFeed(world) {
@@ -1690,8 +1705,32 @@
     return friendsVisitFed(world) || (world && world.morningGuestName === "駱駝");
   }
 
+  function parkShowsCrabFeed(world) {
+    if (!parkHasCrab(world)) return false;
+    if (world && world.crabFed) return true;
+    if (!isTaskDone(world, "friends")) return false;
+    return friendsVisitFed(world) || (world && world.morningGuestName === "螃蟹");
+  }
+
   function camelHayMark() {
     return '<span class="camel-hay" aria-hidden="true"></span>';
+  }
+
+  function crabSnackMark() {
+    return '<span class="crab-snack" aria-hidden="true"></span>';
+  }
+
+  function rememberFriendsFeed(world, fed) {
+    if (fed) {
+      markCamelFed(world);
+      markCrabFed(world);
+      if (parkHasCrab(world)) pushMemory(world, "我們餵了螃蟹");
+      else if (parkHasCamel(world)) pushMemory(world, "我們餵了駱駝");
+      else pushMemory(world, "我們餵了蘋果");
+      return;
+    }
+    if (parkHasCamel(world) || (world && world.morningGuestName === "駱駝")) markCamelFed(world);
+    if (parkHasCrab(world) || (world && world.morningGuestName === "螃蟹")) markCrabFed(world);
   }
 
   function friendsVisitFed(world) {
@@ -1729,7 +1768,10 @@
     var guest = lastFriendsGuestName(world);
     var fed = friendsVisitFed(world);
     var go = friendsAftermathGo(world);
+    var crab = parkShowsCrabFeed(world);
     var camel = parkShowsCamelFeed(world);
+    if (crab && fed) return "餵了螃蟹，" + go;
+    if (crab) return "螃蟹來作客了，" + go;
     if (camel && fed) return "餵了駱駝，" + go;
     if (camel) return "駱駝來作客了，" + go;
     if (guest && fed) return "餵了蘋果，" + guest + "來作客，" + go;
@@ -2024,12 +2066,7 @@
     }
     if (fed) world.friendsFed = true;
     if (guestName) pushMemory(world, guestName + "來作客");
-    if (fed) {
-      markCamelFed(world);
-      pushMemory(world, parkHasCamel(world) ? "我們餵了駱駝" : "我們餵了蘋果");
-    } else {
-      if (parkHasCamel(world) || world.morningGuestName === "駱駝") markCamelFed(world);
-    }
+    rememberFriendsFeed(world, fed);
     if (!guestName && !fed) pushMemory(world, "我們去看朋友");
   }
 
@@ -6342,6 +6379,9 @@
       }
       if (dayCritterKind(it) === "camel" && parkShowsCamelFeed(world)) {
         extra += camelHayMark();
+      }
+      if (dayCritterKind(it) === "crab" && parkShowsCrabFeed(world)) {
+        extra += crabSnackMark();
       }
       bits.push(renderDayCritterMark(it, i, seat, extra));
     }
@@ -10790,7 +10830,29 @@
             ((world.residentAnimals || []).length > 5) &&
             (html.match(/class="day-critter /g) || []).length > 5 &&
             /又有朋友|也來作客|多了一/.test(state.foxMsg || "") &&
+            html.indexOf("kind-crab") >= 0 &&
+            html.indexOf("crab-snack") < 0 &&
             !/今天走完了|先去那個水龍頭|去這裡／公園/.test(state.foxMsg || ""),
+          day4FriendsDone:
+            parkHasCrab(world) &&
+            isTaskDone(world, "friends") &&
+            html.indexOf("place-friends is-done") >= 0 &&
+            html.indexOf("place-friends is-next") < 0 &&
+            html.indexOf("day-world is-evening") < 0 &&
+            html.indexOf("is-evening wx-") < 0 &&
+            html.indexOf("day-endline") < 0 &&
+            html.indexOf("kind-crab") >= 0 &&
+            html.indexOf("crab-snack") >= 0 &&
+            html.indexOf("kind-camel") >= 0 &&
+            html.indexOf("camel-hay") >= 0 &&
+            (html.indexOf("day-park-apple") >= 0 || html.indexOf("habitat-apple") >= 0) &&
+            html.indexOf("place-table is-next") >= 0 &&
+            /day-world[^"]*\bat-table\b/.test(html) &&
+            /餵了螃蟹|螃蟹來作客|去吃飯/.test(state.foxMsg || "") &&
+            !/去看朋友|今天走完了/.test(state.foxMsg || ""),
+          crabStill: html.indexOf("kind-crab") >= 0,
+          crabFedMark: html.indexOf("crab-snack") >= 0,
+          speechIsCrabFeed: /餵了螃蟹/.test(state.foxMsg || ""),
           day3Evening:
             day3ParkPathDone(world) &&
             isTaskDone(world, "habitat") &&
@@ -10942,12 +11004,7 @@
           world.residentAnimals = sanitizeAnimals(animals);
           pushMemory(world, (g.name || "羊") + "來作客");
         }
-        if (opts.feed !== false) {
-          markCamelFed(world);
-          pushMemory(world, parkHasCamel(world) ? "我們餵了駱駝" : "我們餵了蘋果");
-        } else if (parkHasCamel(world) || world.morningGuestName === "駱駝") {
-          markCamelFed(world);
-        }
+        rememberFriendsFeed(world, opts.feed !== false);
         if (opts.feed === false && !opts.guest) {
           pushMemory(world, "我們去看朋友");
         }
@@ -10957,6 +11014,7 @@
         world.todayHints = sanitizeTodayHints(world.todayHints);
         saveFoxWorld(world);
         refreshDaySpeech(world);
+        if (state.dayMode) render();
         return world;
       },
       finishHabitatForTest: function (opts) {
@@ -10964,6 +11022,7 @@
         var world = ensureFoxWorld();
         var keptAnimals = (world.residentAnimals || []).slice();
         var keptCamelFed = world.camelFed === true;
+        var keptCrabFed = world.crabFed === true;
         var keptVisit = world.parkVisitLeft === true;
         if (opts.animals) {
           world.residentAnimals = sanitizeAnimals(opts.animals);
@@ -10978,6 +11037,8 @@
         if (keptVisit || isTaskDone(world, "friends")) world.parkVisitLeft = true;
         if (keptCamelFed) world.camelFed = true;
         else if (parkHasCamel(world) && isTaskDone(world, "friends")) markCamelFed(world);
+        if (keptCrabFed) world.crabFed = true;
+        else if (parkHasCrab(world) && isTaskDone(world, "friends")) markCrabFed(world);
         rememberLastResident(world);
         growTodayPlan(world, "habitat");
         world.todayPlan = sanitizeTodayPlan(world.todayPlan);
@@ -10997,6 +11058,7 @@
             world.visitedFriends = true;
             markParkVisitLeft(world);
             markCamelFed(world);
+            markCrabFed(world);
           } else if (world.todayCompleted) world.todayCompleted[id] = true;
           if (id === "wash") world.washedToday = true;
           if (id === "brush") world.brushedToday = true;
