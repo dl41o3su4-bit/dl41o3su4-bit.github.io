@@ -11157,6 +11157,40 @@
             !isTaskDone(world, "light") &&
             /到馬路了|紅燈要停/.test(state.foxMsg || "") &&
             !/吃飽了|穿鞋出門|餵了羊|去看朋友|今天走完了/.test(state.foxMsg || ""),
+          day5LightDone:
+            parkHasSheep(world) &&
+            isTaskDone(world, "friends") &&
+            ateTheMeal(world) &&
+            leftHomeToday(world) &&
+            isTaskDone(world, "light") &&
+            !isTaskDone(world, "habitat") &&
+            html.indexOf("place-habitat is-next") >= 0 &&
+            (/place-habitat is-next[\s\S]*?去這裡[\s\S]*?公園/.test(html) ||
+              /place-habitat is-next[\s\S]*?公園[\s\S]*?去這裡/.test(html)) &&
+            /day-world[^"]*\bat-habitat\b/.test(html) &&
+            (html.indexOf("corner-park") >= 0 && /<div class="day-corner corner-park[\s\S]*?day-marker[\s\S]*?<span class="day-corner-name">公園<\/span>/.test(html)) &&
+            (html.indexOf("day-light-art is-crossed") >= 0 || html.indexOf("is-green") >= 0) &&
+            html.indexOf("corner-road is-crossed") >= 0 &&
+            html.indexOf("dz-print") >= 0 &&
+            html.indexOf("place-light is-next") < 0 &&
+            html.indexOf("day-world is-evening") < 0 &&
+            html.indexOf("is-evening wx-") < 0 &&
+            html.indexOf("day-door-art is-open") >= 0 &&
+            html.indexOf("dd-shoes") < 0 &&
+            html.indexOf("day-table-art is-used") >= 0 &&
+            html.indexOf("kind-sheep") >= 0 &&
+            html.indexOf("sheep-clover") >= 0 &&
+            html.indexOf("kind-crab") >= 0 &&
+            html.indexOf("crab-snack") >= 0 &&
+            html.indexOf("kind-camel") >= 0 &&
+            html.indexOf("camel-hay") >= 0 &&
+            (html.indexOf("day-park-apple") >= 0 || html.indexOf("habitat-apple") >= 0),
+          speechIsDay5Park:
+            parkHasSheep(world) &&
+            isTaskDone(world, "light") &&
+            !isTaskDone(world, "habitat") &&
+            /到公園了|看看小動物/.test(state.foxMsg || "") &&
+            !/到馬路了|紅燈要停|吃飽了|穿鞋出門|餵了羊|去看朋友|今天走完了/.test(state.foxMsg || ""),
         };
       },
       finishWashForTest: function () {
